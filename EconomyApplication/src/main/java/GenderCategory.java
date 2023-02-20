@@ -1,3 +1,4 @@
-public class GenderCategory {
-    
+public enum GenderCategory {
+    MALE,
+    FEMALE
 }
