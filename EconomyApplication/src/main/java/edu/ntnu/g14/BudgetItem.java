@@ -1,6 +1,7 @@
 package edu.ntnu.g14;
 
 import org.apache.commons.validator.routines.BigDecimalValidator;
+import org.json.JSONObject;
 import java.math.BigDecimal;
 
 /**
@@ -10,14 +11,20 @@ import java.math.BigDecimal;
  */
 public class BudgetItem {
 
+    private static final String JSON_KEY_FINANCIAL_VALUE = "val";
+    private static final String JSON_KEY_DESCRIPTION = "desc";
+    private static final String JSON_KEY_CATEGORY = "cat";
+
     private BigDecimal financialValue;
     private String description;
     private ExpenditureCategory category;
 
+    private Budget budgetRef = null;
+
 
 
     /**
-     * Creates a new instance of BudgetItem, with default values pre-defined in this class.
+     * Creates a new instance of BudgetItem, with the default values pre-defined in this class.
      */
     public BudgetItem() {
         this(BigDecimal.ZERO, "", ExpenditureCategory.OTHER);
@@ -41,6 +48,62 @@ public class BudgetItem {
         this.category = category;
     }
 
+
+
+    /**
+     * Creates a JSON object from the current state of this BudgetItem.
+     * @return a JSON object representing the current state of this BudgetItem.
+     */
+    public JSONObject toJSONObject() {
+        JSONObject o = new JSONObject();
+        o.put(JSON_KEY_FINANCIAL_VALUE, financialValue);
+        o.put(JSON_KEY_DESCRIPTION, description);
+        o.put(JSON_KEY_CATEGORY, category);
+        return o;
+    }
+
+    /**
+     * Creates a new BudgetItem from the data defined in the submitted JSONObject.
+     * The caller is expected to submit a JSONObject created by (or parsed from the result of) the method BudgetItem::toJSONObject() in this class.
+     * @param o The JSONObject containing the data required to create a new BudgetItem.
+     * @return A new BudgetItem with a state defined by the data contained in the submitted JSONObject.
+     */
+    public static BudgetItem fromJSONObject(JSONObject o) {
+        return new BudgetItem(o.getBigDecimal(JSON_KEY_FINANCIAL_VALUE), o.getString(JSON_KEY_DESCRIPTION), ExpenditureCategory.valueOf(o.getString(JSON_KEY_CATEGORY)));
+    }
+
+    /**
+     * A method for the Budget to call when this BudgetItem is added to a budget.
+     * @param budgetRef The Budget this BudgetItem is a part of.
+     */
+    void setAssociatedBudget(Budget budgetRef) {
+        this.budgetRef = budgetRef;
+    }
+
+    /**
+     * Triggers a recalculation in this BudgetItem's associated budget.
+     * Called every time a recalculation should happen in the budget this BudgetItem is a part of.
+     */
+    private void updateBudgetCalculations() {
+        if (budgetRef != null)
+            budgetRef.updateCalculations();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null)
+            return false;
+        if (!(o instanceof BudgetItem))
+            return false;
+
+        return o.hashCode() == this.hashCode();
+    }
+
+    @Override
+    public int hashCode() {
+        return getFinancialValue().hashCode() * getDescription().hashCode() * getCategory().hashCode();
+    }
+
     /**
      * Sets the financial value of this budget item.
      * Since BigDecimal is immutable, no changes can be made to the parameter-object, thus making the internal value safe from such unexpected changes.
@@ -49,6 +112,7 @@ public class BudgetItem {
      */
     public void setFinancialValue(BigDecimal financialValue) {
         this.financialValue = financialValue;
+        updateBudgetCalculations();
     }
 
     /**
@@ -76,7 +140,6 @@ public class BudgetItem {
         setFinancialValue(newValue);
         return true;
     }
-
 
     /**
      * Sets the financial value of this budget item.
@@ -153,6 +216,7 @@ public class BudgetItem {
      */
     public void setCategory(ExpenditureCategory newCategory) {
         category = newCategory;
+        updateBudgetCalculations();
     }
 
     /**

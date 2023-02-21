@@ -29,6 +29,13 @@
             <version>1.7</version>
             <!-- https://mvnrepository.com/artifact/commons-validator/commons-validator -->
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20220924</version>
+            <!-- https://mvnrepository.com/artifact/org.json/json -->
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
