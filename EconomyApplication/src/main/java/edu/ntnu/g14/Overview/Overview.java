@@ -1,5 +1,6 @@
 package edu.ntnu.g14.Overview;
+import edu.ntnu.g14.*;
 
-public class Overview {
-    
+interface Overview {
+    public Transaction allTransactions();
 }
