@@ -17,8 +17,6 @@ public class Account {
     private final String accountNumber;
     // Name of the account assigned by a user, as String
     private String accountName;
-    // Collection of transactions affection this account, as Map
-    private Map<String, Transaction> transactions;
 
     /**
      * This constructor fascilitates the creation of instances of this class
@@ -47,7 +45,6 @@ public class Account {
         } else {
             this.accountNumber = accountNumber;
         }
-        transactions = new HashMap<String, Transaction>();
     }
 
     /**
@@ -94,16 +91,6 @@ public class Account {
     }
 
     /**
-     * This method returns a transaction given a valid transactionID
-     * @param transactionId
-     * @return transaction, as Transaction
-     */
-    public Transaction getTransaction(String transactionId) {
-        // TODO: Check if transactionID is valid
-        return transactions.get(transactionId);
-    }
-
-    /**
      * This method returns the amount in an account
      * @return amount, as BigDecimal
      */
@@ -125,13 +112,5 @@ public class Account {
      */
     public String getAccountName() {
         return accountName;
-    }
-
-    /**
-     * This method returns the transactions of an account
-     * @return Transactions, as Collection<Transaction>
-     */
-    public Collection<Transaction> getTransactions() {
-        return transactions.values();
     }
 }
