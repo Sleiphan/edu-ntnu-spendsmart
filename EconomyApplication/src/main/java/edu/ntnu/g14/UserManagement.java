@@ -8,8 +8,8 @@ public class UserManagement {
         this.users = new HashMap<>();
     }
 
-    public void createNewUser(String userId, HashMap<String, Account> accounts, HashMap<String, Invoice> invoices) {
-        User user = new User(accounts, invoices, userId);
+    public void createNewUser(String userId, HashMap<String, Account> accounts, HashMap<String, Invoice> invoices, Login loginInfo, String email, String lastName, String firstName) {
+        User user = new User(accounts, invoices, userId, loginInfo, email, lastName, firstName);
         users.put(userId, user);
     }
 
