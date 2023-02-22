@@ -12,6 +12,17 @@ public class Transaction {
     private Date dateOfTransaction;
 
     public Transaction(String fromAccountId, String toAccountId, short amount, String description, Date dateOfTransaction) {
+      if (fromAccountId.isEmpty())
+        throw new IllegalArgumentException("From account ID cannot be empty");
+      if (toAccountId.isEmpty())
+        throw new IllegalArgumentException("To account ID cannot be empty");
+      if (amount <= 0)
+        throw new IllegalArgumentException("Amount must be greater than 0");
+      if (description == null)
+        throw new IllegalArgumentException("Description cannot be null");
+      if (dateOfTransaction == null)
+        throw new IllegalArgumentException("Date of transaction cannot be null");
+
         this.fromAccountId = fromAccountId;
         this.toAccountId = toAccountId;
         this.amount = amount;
