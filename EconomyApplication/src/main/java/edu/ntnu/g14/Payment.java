@@ -9,6 +9,11 @@ public class Payment extends Transaction{
   public Payment(String fromAccountId, String toAccountId, short amount, String description,
       Date dateOfTransaction, String CID, Date dueDate) {
     super(fromAccountId, toAccountId, amount, description, dateOfTransaction);
+
+    if (CID == null)
+      throw new IllegalArgumentException("Customer ID cannot be null");
+    if (dueDate.before(new Date()))
+      throw new IllegalArgumentException("This date has already passed");
     this.CID = CID;
     this.dueDate = dueDate;
   }
