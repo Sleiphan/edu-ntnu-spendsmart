@@ -1,5 +1,5 @@
 //TODO: make sure the mouse does not start in the textfield, this makes the prompt text unreadable
-
+//TODO: make it so the user can input the email key with spaces or without. take input and remove spaces
 
 package edu.ntnu.g14;
 import java.io.IOException;

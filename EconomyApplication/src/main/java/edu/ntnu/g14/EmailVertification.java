@@ -12,9 +12,15 @@ import java.util.Random;
 public class EmailVertification {
 
     public static String sendVertificationKey(String toMail){
-        byte[] array = new byte[16];
-        new Random().nextBytes(array);
-        String key = new String(array, Charset.forName("UTF-8"));
+        int leftLimit = 97;
+        int rightLimit = 122;
+        int length = 16;
+        Random random = new Random();
+
+        String key = random.ints(leftLimit, rightLimit + 1)
+        .limit(length)
+        .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+        .toString();
 
         final String username = "economy.application@gmail.com";
         final String password = "xntgxpogksdgdjuc";
@@ -32,6 +38,12 @@ public class EmailVertification {
           }
         });
 
+        StringBuilder displayString = new StringBuilder();
+        displayString.append(key.substring(0,4) + " ")
+        .append(key.substring(4,8) + " ")
+        .append(key.substring(8,12) + " ")
+        .append(key.substring(12,16));
+       
         try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
@@ -39,7 +51,7 @@ public class EmailVertification {
             message.setSubject("Vertification key");
             message.setText("Hello,"
                 + "\nYour vertification key is: "
-                + "\n" + key
+                + "\n" + displayString
                 + "\n\n Use this code to register in the economy application");
     
             Transport.send(message);
