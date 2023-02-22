@@ -1,3 +1,6 @@
+//TODO: make sure the mouse does not start in the textfield, this makes the prompt text unreadable
+
+
 package edu.ntnu.g14;
 import java.io.IOException;
 import javafx.application.Application;
@@ -24,36 +27,13 @@ public class ApplicationFront extends Application {
     }
 
     public Scene loginChooseUser(){
-        Text chooseUser = new Text("Choose user");
-        chooseUser.setFont(Font.font("Times New Roman", FontWeight.BOLD, 30));
-        chooseUser.setX(170);
-        chooseUser.setY(40);
+        Text chooseUser = newText("Choose user", 30, false, 170, 40);
+        Text registerNew = newText("Register new account", 10, true, 400, 280);
 
-        Text registerNew = new Text("Register new account?");
-        registerNew.setFont(Font.font("Times New Roman", 10));
-        registerNew.setUnderline(true);
-        registerNew.setX(400);
-        registerNew.setY(280);
-
-        ChoiceBox<String> user = new ChoiceBox();
-        user.setStyle("-fx-border-color: black;" + 
-        "-fx-background-color: white;" +
-        "-fx-pref-width: 250;" +
-        "-fx-pref-height: 20;" +
-        "-fx-font-size: 15px;");
-        user.setLayoutX(125);
-        user.setLayoutY(70);
         String[] users = {"Barack Obama", "Donald Trump"}; //TODO: make variable
-        user.getItems().addAll(users);
+        ChoiceBox<String> user = newChoiceBox(users, "black", "white", 250, 20, 15, 125, 70);
 
-        Button confirm = new Button("Confirm");
-        confirm.setLayoutX(175);
-        confirm.setLayoutY(110);
-        confirm.setStyle("-fx-border-color: black;" + 
-        "-fx-background-color: white;" +
-        "-fx-pref-width: 150;" +
-        "-fx-pref-height: 20;" +
-        "-fx-font-size: 15px;");
+        Button confirm = newButton("Confirm", 175, 110, "black", "white", 150, 20, 15);
         confirm.setOnAction(e -> {
             stage.setScene(loginUser(user.getValue()));
         });
@@ -65,47 +45,19 @@ public class ApplicationFront extends Application {
     }
 
     public Scene loginUser(String user){ //TODO: add User user as parameter
-        Text chooseUser = new Text("Welcome back " + user); //TODO: add variable name
-        chooseUser.setFont(Font.font("Times New Roman", FontWeight.BOLD, 25));
-        chooseUser.setX(120);
-        chooseUser.setY(40);
-
-        Text notYou = new Text("Is this not you?");
-        notYou.setFont(Font.font("Times New Roman", 10));
-        notYou.setUnderline(true);
-        notYou.setX(400);
-        notYou.setY(280);
+        Text chooseUser = newText("Welcome back " + user, 25, false, 120, 40);
+        Text notYou = newText("Is this not you?", 10, true, 400, 280);
         notYou.setOnMouseClicked(e -> {
             stage.setScene(loginChooseUser());
         });
 
-        Text forgotPassword = new Text("Forgot password?");
-        forgotPassword.setFont(Font.font("Times New Roman", 10));
-        forgotPassword.setUnderline(true);
-        forgotPassword.setX(400);
-        forgotPassword.setY(260);
+        Text forgotPassword = newText("Forgot password", 10, true, 400, 260);
         forgotPassword.setOnMouseClicked(e -> {
             stage.setScene(loginForgotPasswordFirst(user));
         });
 
-        TextField textField = new TextField ();
-        textField.setLayoutX(120);
-        textField.setLayoutY(60);
-        textField.setStyle("-fx-border-color: black;" + 
-        "-fx-background-color: white;" +
-        "-fx-pref-width: 250;" +
-        "-fx-pref-height: 40;" +
-        "-fx-font-size: 25px;");
-        textField.setPromptText("Password..");
-
-        Button loginButton = new Button("Login");
-        loginButton.setLayoutX(185);
-        loginButton.setLayoutY(130);
-        loginButton.setStyle("-fx-border-color: black;" + 
-        "-fx-background-color: white;" +
-        "-fx-pref-width: 100;" +
-        "-fx-pref-height: 30;" +
-        "-fx-font-size: 25px;");
+        TextField textField = newTextField("Password", 120, 60, "black", "white", 250, 40, 25);
+        Button loginButton = newButton("Login", 185, 130, "black", "white", 100, 30, 25);
         loginButton.setOnAction(e -> {
             if(textField.getText() == "Passord123"){ //add password based on user
                 //stage.setScene(overview(user));
@@ -113,8 +65,6 @@ public class ApplicationFront extends Application {
                 //add what happens if the password is wrong
             }
         });
-        //TODO: make sure the mouse does not start in the textfield, this makes the prompt text unreadable
-
 
         Group root = new Group(chooseUser, notYou, forgotPassword, textField, loginButton);
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
@@ -122,86 +72,29 @@ public class ApplicationFront extends Application {
     }
 
     public Scene loginForgotPasswordFirst(String user){
-        Text codeText = new Text("An email with a code-key has been sent to:");
-        codeText.setFont(Font.font("Times New Roman", FontWeight.BOLD, 15));
-        codeText.setX(130);
-        codeText.setY(40);
-
-        Text emailText = new Text("Oboooma@gmail.com");
-        emailText.setFont(Font.font("Times New Roman", 15));
-        emailText.setX(170);
-        emailText.setY(60);
-
-        Text goBack = new Text("Go back?");
-        goBack.setFont(Font.font("Times New Roman", FontWeight.BOLD, 10));
-        goBack.setUnderline(true);
-        goBack.setX(400);
-        goBack.setY(260);
+        Text goBack = newText("Go back?", 10, true, 400, 260);
         goBack.setOnMouseClicked(e -> {
             stage.setScene(loginUser(user));
         });
 
-        TextField keyField = new TextField ();
-        keyField.setLayoutX(120);
-        keyField.setLayoutY(70);
-        keyField.setStyle("-fx-border-color: black;" + 
-        "-fx-background-color: white;" +
-        "-fx-pref-width: 250;" +
-        "-fx-pref-height: 30;" +
-        "-fx-font-size: 25px;");
-        keyField.setPromptText("Code-key..");
+        TextField keyField = newTextField("Code-key", 120, 70, "black", "white", 250, 30, 25);
+        Button loginButton = newButton("Make new password", 120, 140, "black", "white", 250, 20, 15);
+        
 
-        Button loginButton = new Button("Make new password");
-        loginButton.setLayoutX(120);
-        loginButton.setLayoutY(140);
-        loginButton.setStyle("-fx-border-color: black;" + 
-        "-fx-background-color: white;" +
-        "-fx-pref-width: 250;" +
-        "-fx-pref-height: 20;" +
-        "-fx-font-size: 15px;");
-
-        Group root = new Group(codeText, emailText, goBack, keyField, loginButton);
+        Group root = new Group(newText("An email with a code-key has been sent to:", 15, false, 130, 40),
+        newText("Oboooma@gmail.com", 15, false, 170, 60), 
+        goBack, keyField, loginButton);
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
         return scene;
     }
 
     public Scene loginForgotpasswordSecond(){
-        Text goBack = new Text("Go back?");
-        goBack.setFont(Font.font("Times New Roman", FontWeight.BOLD, 10));
-        goBack.setUnderline(true);
-        goBack.setX(400);
-        goBack.setY(260);
+        TextField newPassword = newTextField("New password", 125, 70, "black", "white", 250, 20, 15);
+        TextField retypeNewPassword = newTextField("Retype new password", 125, 110, "black", "white", 250, 20, 15);
+        Button confirmButton = newButton("Confirm", 175, 150, "black", "white", 150, 20, 15);
+        Text goBack = newText("Go back", 10, true, 400, 260);
 
-        TextField newPassword = new TextField ();
-        newPassword.setLayoutX(125);
-        newPassword.setLayoutY(70);
-        newPassword.setStyle("-fx-border-color: black;" + 
-        "-fx-background-color: white;" +
-        "-fx-pref-width: 250;" +
-        "-fx-pref-height: 20;" +
-        "-fx-font-size: 15px;");
-        newPassword.setPromptText("New password..");
-
-        TextField reNewPassword = new TextField ();
-        reNewPassword.setLayoutX(125);
-        reNewPassword.setLayoutY(110);
-        reNewPassword.setStyle("-fx-border-color: black;" + 
-        "-fx-background-color: white;" +
-        "-fx-pref-width: 250;" +
-        "-fx-pref-height: 20;" +
-        "-fx-font-size: 15px;");
-        reNewPassword.setPromptText("retype new password..");
-
-        Button confirm = new Button("Confirm");
-        confirm.setLayoutX(175);
-        confirm.setLayoutY(150);
-        confirm.setStyle("-fx-border-color: black;" + 
-        "-fx-background-color: white;" +
-        "-fx-pref-width: 150;" +
-        "-fx-pref-height: 20;" +
-        "-fx-font-size: 15px;");
-
-        Group root = new Group(goBack, newPassword, reNewPassword, confirm);
+        Group root = new Group(goBack, newPassword, retypeNewPassword, confirmButton);
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
         return scene;
     }
@@ -228,6 +121,56 @@ public class ApplicationFront extends Application {
         Group root = new Group();
         Scene scene = new Scene(root, 800, 500, Color.WHITE);
         return scene;
+    }
+
+    public Button newButton(String text, int x, int y, String borderColor,
+    String backgroundColor, int width, int height, int fontSize){
+        Button button = new Button(text);
+        button.setLayoutX(x);
+        button.setLayoutY(y);
+        button.setStyle("-fx-border-color: " + borderColor + ";" + 
+        "-fx-background-color: " + backgroundColor + ";" +
+        "-fx-pref-width: " + width + ";" +
+        "-fx-pref-height: " + height + ";" +
+        "-fx-font-size: " + fontSize + "px;");
+        return button;
+    }
+
+    public TextField newTextField(String promptText, int x, int y, String borderColor,
+    String backgroundColor, int width, int height, int fontSize){
+        TextField textField = new TextField ();
+        textField.setPromptText(promptText);
+        textField.setLayoutX(x);
+        textField.setLayoutY(y);
+        textField.setStyle("-fx-border-color: " + borderColor + ";" + 
+        "-fx-background-color: " + backgroundColor + ";" +
+        "-fx-pref-width: " + width + ";" +
+        "-fx-pref-height: " + height + ";" +
+        "-fx-font-size: " + fontSize + "px;");
+        return textField;
+    }
+
+    public Text newText(String title, int size, boolean underline, int x, int y){
+        Text text = new Text(title);
+        text.setFont(Font.font("Times New Roman", FontWeight.BOLD, size));
+        text.setUnderline(underline);
+        text.setX(x);
+        text.setY(y);
+        return text;
+    }
+
+    public ChoiceBox<String> newChoiceBox(String[] choices, String borderColor,
+    String backgroundColor, int width, int height, int fontSize, int x, int y){
+        ChoiceBox<String> choiceBox = new ChoiceBox();
+        choiceBox.getItems().addAll(choices);
+        choiceBox.setStyle("-fx-border-color: " + borderColor + ";" + 
+        "-fx-background-color: " + backgroundColor + ";" +
+        "-fx-pref-width: " + width + ";" +
+        "-fx-pref-height: " + height + ";" +
+        "-fx-font-size: " + fontSize + "px;");
+        choiceBox.setLayoutX(x);
+        choiceBox.setLayoutY(y);
+        return choiceBox;
     }
 
     public static void main(String[] args){launch();}
