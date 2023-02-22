@@ -45,7 +45,6 @@ public class ApplicationFront extends Application {
     }
 
     public Scene loginUser(String user){ //TODO: add User user as parameter
-        Text chooseUser = newText("Welcome back " + user, 25, false, 120, 40);
         Text notYou = newText("Is this not you?", 10, true, 400, 280);
         notYou.setOnMouseClicked(e -> {
             stage.setScene(loginChooseUser());
@@ -66,7 +65,8 @@ public class ApplicationFront extends Application {
             }
         });
 
-        Group root = new Group(chooseUser, notYou, forgotPassword, textField, loginButton);
+        Group root = new Group(newText("Welcome back " + user, 25, false, 120, 40),
+        notYou, forgotPassword, textField, loginButton);
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
         return scene;
     }
@@ -100,7 +100,20 @@ public class ApplicationFront extends Application {
     }
 
     public Scene registerFirst(){
-        Group root = new Group();
+        TextField firstName = newTextField("", 0, 0, "black", "white", 100, 20, 15);
+        TextField lastName = newTextField("", 0, 0, "black", "white", 100, 20, 15);
+        TextField email = newTextField("", 0, 0, "black", "white", 100, 20, 15);
+        TextField password = newTextField("", 0, 0, "black", "white", 100, 20, 15);
+        TextField confirmPassword = newTextField("", 0, 0, "black", "white", 100, 20, 15);
+        Button next = newButton("Next", 0, 0, "black", "white", 50, 20, 15);
+
+        Group root = new Group(firstName, lastName,
+        email, password, confirmPassword,
+        newText("First name", 30, false, 0, 0),
+        newText("Last name", 30, false, 0, 0),
+        newText("Email", 30, false, 0, 0),
+        newText("Password", 30, false, 0, 0),
+        newText("Confirm password", 30, false, 0, 0));
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
         return scene;
     }
