@@ -59,14 +59,9 @@ public class Transaction {
         this.dateOfTransaction = dateOfTransaction;
     }
 
-    public Transaction newTransaction() {
-        return new Transaction(fromAccountId, toAccountId, amount, description, dateOfTransaction);
-    }
-
     //This method needs a better string representation of the transaction
     @Override
     public String toString() {
         return "Transaction{" + "fromAccountId=" + fromAccountId + ", toAccountId=" + toAccountId + ", amount=" + amount + ", description=" + description + ", dateOfTransaction=" + dateOfTransaction + '}';
     }
-
 }
