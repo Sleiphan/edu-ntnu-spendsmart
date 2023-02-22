@@ -6,9 +6,11 @@ import java.io.IOException;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -29,6 +31,9 @@ public class ApplicationFront extends Application {
     public Scene loginChooseUser(){
         Text chooseUser = newText("Choose user", 30, false, 170, 40);
         Text registerNew = newText("Register new account", 10, true, 400, 280);
+        registerNew.setOnMouseClicked(e -> {
+            stage.setScene(registerFirst());
+        });
 
         String[] users = {"Barack Obama", "Donald Trump"}; //TODO: make variable
         ChoiceBox<String> user = newChoiceBox(users, "black", "white", 250, 20, 15, 125, 70);
@@ -100,26 +105,51 @@ public class ApplicationFront extends Application {
     }
 
     public Scene registerFirst(){
-        TextField firstName = newTextField("", 0, 0, "black", "white", 100, 20, 15);
-        TextField lastName = newTextField("", 0, 0, "black", "white", 100, 20, 15);
-        TextField email = newTextField("", 0, 0, "black", "white", 100, 20, 15);
-        TextField password = newTextField("", 0, 0, "black", "white", 100, 20, 15);
-        TextField confirmPassword = newTextField("", 0, 0, "black", "white", 100, 20, 15);
-        Button next = newButton("Next", 0, 0, "black", "white", 50, 20, 15);
+        TextField firstName = newTextField("", 10, 35, "black", "white", 100, 20, 15);
+        TextField lastName = newTextField("", 10, 135, "black", "white", 100, 20, 15);
+        TextField email = newTextField("", 10, 235, "black", "white", 100, 20, 15);
+        TextField password = newTextField("", 260, 35, "black", "white", 100, 20, 15);
+        TextField confirmPassword = newTextField("", 260, 135, "black", "white", 100, 20, 15);
+        Button next = newButton("Next", 260, 235, "black", "white", 100, 20, 15);
+        next.setOnAction(e -> {
+            if(firstName.getText() != "" && lastName.getText() != ""
+            && email.getText() != "" && password.getText() != ""
+            && confirmPassword.getText() != ""){
+                //TODO: add register user
+                String key = EmailVertification.sendVertificationKey(email.getText().replace(" ", ""));
+                stage.setScene(registerSecond(key, email.getText()));
+            } else {
+                alertBox("ERROR", "Missing information", "Pleace fill out all required information");
+            }
+        });
 
         Group root = new Group(firstName, lastName,
-        email, password, confirmPassword,
-        newText("First name", 30, false, 0, 0),
-        newText("Last name", 30, false, 0, 0),
-        newText("Email", 30, false, 0, 0),
-        newText("Password", 30, false, 0, 0),
-        newText("Confirm password", 30, false, 0, 0));
+        email, password, confirmPassword, next,
+        newText("First name", 30, false, 10, 25),
+        newText("Last name", 30, false, 10, 125),
+        newText("Email", 30, false, 10, 225),
+        newText("Password", 30, false, 260, 25),
+        newText("Confirm password", 30, false, 260, 125));
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
         return scene;
     }
 
-    public Scene registerSecond(){
-        Group root = new Group();
+    public Scene registerSecond(String key, String email){
+        TextField keyInput = newTextField("", 120, 195, "black", "white", 100, 20, 15);
+        Button next = newButton("Next", 240, 195, "black", "white", 100, 20, 15);
+        next.setOnAction(e -> {
+            if(keyInput.getText().replace(" ", "").equals(key.replace(" ", ""))){
+                stage.setScene(registerThird());
+            } else {
+                alertBox("ERROR", "Wrong key", "The wrong key has been input");
+            }
+        });
+        
+        Group root = new Group(keyInput, next,
+        newText("An email with a confirmation code", 25, false, 60, 25),
+        newText("has been sent to", 25, false, 140, 50),
+        newText(email, 25, false, 140, 75),
+        newText("Code:", 30, false, 20, 225));
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
         return scene;
     }
@@ -135,6 +165,8 @@ public class ApplicationFront extends Application {
         Scene scene = new Scene(root, 800, 500, Color.WHITE);
         return scene;
     }
+
+    
 
     public Button newButton(String text, int x, int y, String borderColor,
     String backgroundColor, int width, int height, int fontSize){
@@ -184,6 +216,14 @@ public class ApplicationFront extends Application {
         choiceBox.setLayoutX(x);
         choiceBox.setLayoutY(y);
         return choiceBox;
+    }
+
+    public void alertBox(String title, String header, String content){
+        Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle(title);
+            alert.setHeaderText(header);
+            alert.setContentText(content);
+            alert.showAndWait();
     }
 
     public static void main(String[] args){launch();}
