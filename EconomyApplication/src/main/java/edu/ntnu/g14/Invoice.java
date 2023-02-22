@@ -8,9 +8,7 @@ public class Invoice {
     private final String invoiceID;
     private BigDecimal amount;
     private String recipientAccountNumber;
-    private String orgNumber;
-
-    public Invoice(final Date dueDate, final BigDecimal amount, String recipientAccountNumber, String orgNumber) {
+    public Invoice(final Date dueDate, final BigDecimal amount, String recipientAccountNumber) {
         if (amount.intValue() < 1) {
             throw new IllegalArgumentException("The invoice must have a value greater than 1");
         }
@@ -27,7 +25,6 @@ public class Invoice {
         this.dueDate = dueDate;
         this.amount = amount;
         this.recipientAccountNumber = recipientAccountNumber;
-        this.orgNumber = orgNumber; //TODO: Explore what organization number is and what it consists of and implement a setter
         this.invoiceID = null; // TODO: Explore what an invoice ID should consist of and ultimately how it should be built
     }
 
@@ -56,10 +53,6 @@ public class Invoice {
         this.amount = newAmount;
         return true;
     }
-    public String getOrgNumber() {
-        return orgNumber;
-    }
-
     public String getRecipientAccountNumber() {
         return recipientAccountNumber;
     }
