@@ -10,7 +10,7 @@ public class Invoice {
     private String recipientAccountNumber;
     private String orgNumber;
 
-    public Invoice(Date dueDate, BigDecimal amount, String recipientAccountNumber, String orgNumber) {
+    public Invoice(final Date dueDate, final BigDecimal amount, String recipientAccountNumber, String orgNumber) {
         if (amount.intValue() < 1) {
             throw new IllegalArgumentException("The invoice must have a value greater than 1");
         }
@@ -42,14 +42,14 @@ public class Invoice {
         this.recipientAccountNumber = newRecipientAccountNumber;
         return true;
     }
-    public boolean changeDueDate(Date newDueDate) {
+    public boolean changeDueDate(final Date newDueDate) {
         if (newDueDate.before(new Date())) {
             throw new IllegalArgumentException("This date has already passed");
         }
         this.dueDate = newDueDate;
         return true;
     }
-    public boolean changeAmount(BigDecimal newAmount) {
+    public boolean changeAmount(final BigDecimal newAmount) {
         if (amount.intValue() < 1) {
             throw new IllegalArgumentException("The invoice must have a value greater than 1");
         }
@@ -72,7 +72,7 @@ public class Invoice {
         return dueDate;
     }
 
-    public String getInvoiceID() {
+    public String getInvoiceId() {
         return invoiceID;
     }
 }
