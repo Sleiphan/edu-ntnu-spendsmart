@@ -1,3 +1,6 @@
 .idea
 pom.xml
 .vscode
+target/
+EconomyApplication/target/
+EconomyApplication/EconomyApplication.iml
