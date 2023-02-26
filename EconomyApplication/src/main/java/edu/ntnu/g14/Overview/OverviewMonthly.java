@@ -11,12 +11,13 @@ public class OverviewMonthly implements Overview {
 
     public OverviewMonthly(Date month){
         this.month = month;
-        this.totalIncome =; //add
-        this.totalExpenses = ; //add
+        this.totalIncome = 0; //add
+        this.totalExpenses = 0; //add
         this.totalSavings = this.totalIncome - this.totalExpenses;
     }
 
     public Transaction allTransactions(){
         //return user.get(transactions(month))
+        return null;
     }
 }

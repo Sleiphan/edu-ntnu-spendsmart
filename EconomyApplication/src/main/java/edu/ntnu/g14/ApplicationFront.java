@@ -3,19 +3,24 @@
 
 package edu.ntnu.g14;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.apache.commons.validator.routines.BigDecimalValidator;
 
 public class ApplicationFront extends Application {
     
@@ -166,7 +171,88 @@ public class ApplicationFront extends Application {
         return scene;
     }
 
-    
+    public Scene invoice() {
+        List<Invoice> invoices = new ArrayList<>(); // TODO: Fill with actal data.
+        invoices.add(new Invoice(new Date(System.currentTimeMillis() + 24*3600), BigDecimal.valueOf(769.43), "17535.83.78287"));
+        invoices.add(new Invoice(new Date(System.currentTimeMillis() + 24*3600), BigDecimal.valueOf(769.43), "17535.83.78287"));
+        invoices.add(new Invoice(new Date(System.currentTimeMillis() + 24*3600), BigDecimal.valueOf(769.43), "17535.83.78287"));
+
+        Text amount_t     = newText("Amount (kr):",    17, false, 11, 345-136);
+        Text accountNum_t = newText("Account number:", 17, false, 11, 376-136);
+        Text cidComment_t = newText("CID / Comment:",  17, false, 11, 407-136);
+        Text dueDate_t    = newText("Due date:",       17, false, 11, 438-136);
+        TextField amount_tf     = newTextField("Amount (kr)",    198, 322-136, "black", "white", 206, 20, 14);
+        TextField accountNum_tf = newTextField("Account number", 198, 353-136, "black", "white", 206, 20, 14);
+        TextField cidComment_tf = newTextField("CID / Comment",  198, 384-136, "black", "white", 206, 20, 14);
+
+        DatePicker due_dp = new DatePicker();
+        due_dp.setLayoutX(527-329);
+        due_dp.setLayoutY(422-136);
+
+        ListView<Invoice> invoices_lv = new ListView<>();
+        invoices_lv.setLayoutX(782-329);
+        invoices_lv.setLayoutY(326-136);
+        invoices_lv.getItems().setAll(invoices);
+        invoices_lv.setEditable(false);
+
+        Button clear_bt    = newButton("Clear",    358-329, 570-136, "white", "grey", 159, 61, 16);
+        Button register_bt = newButton("Register", 549-329, 570-136, "white", "grey", 159, 61, 16);
+        Button back_bt     = newButton("Back",     358-329, 637-136, "white", "grey", 159, 35, 16);
+        Button payNow_bt   = newButton("Pay now",  817-329, 493-136, "white", "grey", 159, 61, 16);
+        Button delete_bt   = newButton("Delete",   817-329, 570-136, "white", "grey", 159, 61, 16);
+
+        clear_bt.setOnAction(e -> {
+            amount_tf.clear();
+            accountNum_tf.clear();
+            cidComment_tf.clear();
+        });
+        register_bt.setOnAction(e -> {
+            if (amount_tf.getText().isBlank()) {
+                alertBox("Missing input", "Missing information", "Please enter the financial amount in the new invoice first.");
+                return;
+            }
+
+            if (accountNum_tf.getText().isBlank()) {
+                alertBox("Missing input", "Missing information", "Please enter the account number this invoice .");
+                return;
+            }
+
+            BigDecimal amount = BigDecimalValidator.getInstance().validate(amount_tf.getText());
+            if (amount == null) {
+                alertBox("Invalid input", "Invalid amount", "Could not understand the amount specified. Make sure to only enter numbers and use the period-sign instead of comma.");
+                return;
+            }
+
+            // TODO: Check validity of account number.
+
+            // TODO: Reconsider use of Date class.
+            LocalDate due = due_dp.getValue();
+            Invoice newInvoice = new Invoice(new Date(due.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()), amount, accountNum_tf.getText());
+            invoices.add(newInvoice);
+
+            clear_bt.getOnAction().handle(null);
+            throw new RuntimeException("Action not connected to backend.");
+        });
+        back_bt.setOnAction(e -> { stage.setScene(overview()); });
+        payNow_bt.setOnAction(e -> {
+            invoices.remove(invoices_lv.getSelectionModel().getSelectedItem());
+            throw new RuntimeException("Action not connected to backend.");
+        });
+        delete_bt.setOnAction(e -> {
+            invoices.remove(invoices_lv.getSelectionModel().getSelectedItem());
+            throw new RuntimeException("Action not connected to backend.");
+        });
+
+        Group root = new Group(
+                amount_t, accountNum_t, cidComment_t, dueDate_t,
+                amount_tf, accountNum_tf, cidComment_tf,
+                invoices_lv,
+                due_dp,
+                clear_bt, register_bt, back_bt, payNow_bt, delete_bt);
+        return new Scene(root, 728, 567, Color.WHITE);
+    }
+
+
 
     public Button newButton(String text, int x, int y, String borderColor,
     String backgroundColor, int width, int height, int fontSize){
