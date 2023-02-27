@@ -11,6 +11,9 @@ import java.util.Date;
 import java.util.List;
 
 import javafx.application.Application;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -258,6 +261,65 @@ public class ApplicationFront extends Application {
         return new Scene(root, 728, 567, Color.WHITE);
     }
 
+    public ObservableList<ObservableList<Object>> initializeRevenuesData() {
+        ObservableList<ObservableList<Object>> revenuesData = FXCollections.observableArrayList();
+        revenuesData.add(FXCollections.observableArrayList("Sales", new BigDecimal("1000.00")));
+        revenuesData.add(FXCollections.observableArrayList("Rent", new BigDecimal("500.00")));
+        revenuesData.add(FXCollections.observableArrayList("Salaries", new BigDecimal("2000.00")));
+        return revenuesData;
+    }
+
+    public ObservableList<ObservableList<Object>> initializeExpenditureData() {
+        ObservableList<ObservableList<Object>> expenditureData = FXCollections.observableArrayList();
+        expenditureData.add(FXCollections.observableArrayList("Food and Drink", new BigDecimal("200.00")));
+        expenditureData.add(FXCollections.observableArrayList("Travel", new BigDecimal("300.00")));
+        expenditureData.add(FXCollections.observableArrayList("Other", new BigDecimal("2000.00")));
+        return expenditureData;
+    }
+
+
+
+    public Scene budgeting() {
+        TableView<ObservableList<Object>> revenues = newTableView(new String[]{"Revenues", "Amount"}, 20, 200, 400, 600);
+        ObservableList<ObservableList<Object>> revenuesData = initializeRevenuesData();
+        revenues.setItems(revenuesData);
+
+        TableView<ObservableList<Object>> expenditure = newTableView(new String[]{"Expenditures", "Budget"},20,900,400,600);
+        ObservableList<ObservableList<Object>> expenditureData = initializeExpenditureData();
+        revenues.setItems(expenditureData);
+
+        Button CreateNewBudget = newButton("Create new budget", 240, 195, "black", "white", 100, 20, 15);
+        Button budgetSuggestions = newButton("Budget suggestion",400, 400, "black", "white", 100, 20, 15);
+
+        CreateNewBudget.setOnAction(e -> {stage.setScene(createNewBudgetScene());});
+        budgetSuggestions.setOnAction(e -> {stage.setScene(budgetSuggestionsScene());});
+
+        Group root = new Group(revenues, expenditure, CreateNewBudget, budgetSuggestions);
+        Scene scene = new Scene(root, 500, 300, Color.WHITE);
+        return scene;
+    }
+    public Scene createNewBudgetScene() {
+
+        String[] revenues = {"Revenues", "Salary", "Income"};
+        ChoiceBox<String> revenue = newChoiceBox(revenues, "black", "white", 250, 20, 15, 125, 70);
+        TextField revenueInput = newTextField("", 120, 195, "black", "white", 100, 20, 15);
+
+        String[] expenditures = {"Expenditure", "Food", "Clothes", "Other"};
+        ChoiceBox<String> expenditure = newChoiceBox(expenditures, "black", "white", 250, 20, 15, 125, 70);
+        TextField expenditureInput = newTextField("", 400, 195, "black", "white", 100, 20, 15);
+
+        String[] personals = {"Personal", "Age", "Gender", "Household"};
+        ChoiceBox<String> personal = newChoiceBox(personals, "black", "white", 250, 20, 15, 125, 70);
+        TextField personalInput = newTextField("", 120, 600, "black", "white", 100, 20, 15);
+        Group root = new Group(revenue, revenueInput, expenditure, expenditureInput, personal, personalInput);
+        Scene scene = new Scene(root, 500, 300, Color.WHITE);
+        return scene;
+    }
+    public Scene budgetSuggestionsScene() {
+        // TODO: create a scene for budgetSuggestions
+        return null;
+    }
+
     public Scene payment() {
         int x = 300;
         int y = 35;
@@ -358,6 +420,23 @@ public class ApplicationFront extends Application {
         text.setX(x);
         text.setY(y);
         return text;
+    }
+
+    public TableView<ObservableList<Object>> newTableView(String[] columnTitles, double x, double y, double width, double height) {
+        TableView<ObservableList<Object>> tableView = new TableView<>();
+        tableView.setLayoutX(x);
+        tableView.setLayoutY(y);
+        tableView.setPrefWidth(width);
+        tableView.setPrefHeight(height);
+
+        // create columns
+        for (String title : columnTitles) {
+            TableColumn<ObservableList<Object>, Object> column = new TableColumn<>(title);
+            column.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue().get(tableView.getColumns().indexOf(column))));
+            tableView.getColumns().add(column);
+        }
+
+        return tableView;
     }
 
     public ChoiceBox<String> newChoiceBox(String[] choices, String borderColor,
