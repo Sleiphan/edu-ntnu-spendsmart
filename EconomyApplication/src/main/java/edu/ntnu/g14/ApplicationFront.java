@@ -258,6 +258,70 @@ public class ApplicationFront extends Application {
         return new Scene(root, 728, 567, Color.WHITE);
     }
 
+    public Scene payment() {
+        int x = 300;
+        int y = 35;
+        int n = 85;
+        int m = n - 5;
+
+        TextField fromAccount = newTextField("12345678910", x, y, "black", "white", 200, 20, 15);
+        TextField amount = newTextField("50kr", x, y + n, "black", "white", 100, 20, 15);
+        TextField dueDate = newTextField("dd.mm.yy", x, y + 2 * n, "black", "white", 100, 20, 15);
+        TextField toAccount = newTextField("10987654321", x, y + 3 * n, "black", "white", 100, 20, 15);
+        TextField cid = newTextField("0123456789", x, y + 4 * n, "black", "white", 100, 20, 15);
+
+        Button pay = newButton("Pay", 200, 450, "black", "white", 100, 20, 15);
+        Button cancel = newButton("Cancel", 350, 450, "black", "white", 100, 20, 15);
+        pay.setOnAction(e -> {
+            stage.setScene(paymentConfirmation());
+        });
+        cancel.setOnAction(e -> {
+            stage.setScene(overview());
+        });
+        Group root = new Group(fromAccount, amount, dueDate, toAccount, cid,
+            newText("From account", 30,false, x, y - 5),
+            newText("Amount:", 30, false, x, y + m),
+            newText("Due date:", 30, false, x,y + 2 * m),
+            newText("To account:", 30, false, x, y + 3 * m),
+            newText("CID:", 30, false, x, y + 4 * m),
+            pay, cancel);
+        Scene scene = new Scene(root, 800, 500, Color.WHITE);
+        return scene;
+    }
+
+    public Scene paymentConfirmation() {
+        Group root = new Group();
+        Scene scene = new Scene(root, 800, 500, Color.WHITE);
+        return scene;
+    }
+
+    public Scene transfer() {
+        int x = 300;
+        int y = 35;
+        int n = 85;
+        int m = n - 5;
+
+        TextField fromAccount = newTextField("12345678910", x, y, "black", "white", 200, 20, 15);
+        TextField amount = newTextField("50kr", x, y + n, "black", "white", 100, 20, 15);
+        TextField toAccount = newTextField("10987654321", x, y + 2 * n, "black", "white", 100, 20, 15);
+
+        Button transfer = newButton("Pay", 200, 255, "black", "white", 100, 20, 15);
+        Button cancel = newButton("Cancel", 350, 255, "black", "white", 100, 20, 15);
+        transfer.setOnAction(e -> {
+            stage.setScene(overview());
+        });
+        cancel.setOnAction(e -> {
+            stage.setScene(overview());
+        });
+        Group root = new Group(fromAccount, amount, toAccount,
+            newText("From account", 30,false, x, y - 5),
+            newText("Amount:", 30, false, x, y + m),
+            newText("To account:", 30, false, x, y + 2 * m),
+            transfer, cancel);
+        Scene scene = new Scene(root, 800, 500, Color.WHITE);
+        return scene;
+    }
+
 
     
     public Button newButton(String text, int x, int y, String borderColor,
