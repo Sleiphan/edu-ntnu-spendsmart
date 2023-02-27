@@ -28,6 +28,7 @@ import org.apache.commons.validator.routines.BigDecimalValidator;
 public class ApplicationFront extends Application {
     
     private Stage stage;
+    User loggedInUser;
 
     @Override
     public void start(Stage stage) throws IOException, InterruptedException {
