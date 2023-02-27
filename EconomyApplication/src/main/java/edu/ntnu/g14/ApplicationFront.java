@@ -186,29 +186,29 @@ public class ApplicationFront extends Application {
         invoices.add(new Invoice(new Date(System.currentTimeMillis() + 24*3600), BigDecimal.valueOf(769.43), "17535.83.78287"));
         invoices.add(new Invoice(new Date(System.currentTimeMillis() + 24*3600), BigDecimal.valueOf(769.43), "17535.83.78287"));
 
-        Text amount_t     = newText("Amount (kr):",    17, false, 11, 345-136);
-        Text accountNum_t = newText("Account number:", 17, false, 11, 376-136);
-        Text cidComment_t = newText("CID / Comment:",  17, false, 11, 407-136);
-        Text dueDate_t    = newText("Due date:",       17, false, 11, 438-136);
-        TextField amount_tf     = newTextField("Amount (kr)",    198, 322-136, "black", "white", 206, 20, 14);
-        TextField accountNum_tf = newTextField("Account number", 198, 353-136, "black", "white", 206, 20, 14);
-        TextField cidComment_tf = newTextField("CID / Comment",  198, 384-136, "black", "white", 206, 20, 14);
+        Text amount_t     = newText("Amount (kr):",    17, false, 11, 345-186);
+        Text accountNum_t = newText("Account number:", 17, false, 11, 376-186);
+        Text cidComment_t = newText("CID / Comment:",  17, false, 11, 407-186);
+        Text dueDate_t    = newText("Due date:",       17, false, 11, 438-186);
+        TextField amount_tf     = newTextField("Amount (kr)",    198, 322-186, "black", "white", 206, 20, 14);
+        TextField accountNum_tf = newTextField("Account number", 198, 353-186, "black", "white", 206, 20, 14);
+        TextField cidComment_tf = newTextField("CID / Comment",  198, 384-186, "black", "white", 206, 20, 14);
 
         DatePicker due_dp = new DatePicker();
         due_dp.setLayoutX(527-329);
-        due_dp.setLayoutY(422-136);
+        due_dp.setLayoutY(422-186);
 
         ListView<Invoice> invoices_lv = new ListView<>();
         invoices_lv.setLayoutX(782-329);
-        invoices_lv.setLayoutY(326-136);
+        invoices_lv.setLayoutY(326-186);
         invoices_lv.getItems().setAll(invoices);
         invoices_lv.setEditable(false);
 
-        Button clear_bt    = newButton("Clear",    358-329, 570-136, "white", "grey", 159, 61, 16);
-        Button register_bt = newButton("Register", 549-329, 570-136, "white", "grey", 159, 61, 16);
-        Button back_bt     = newButton("Back",     358-329, 637-136, "white", "grey", 159, 35, 16);
-        Button payNow_bt   = newButton("Pay now",  817-329, 493-136, "white", "grey", 159, 61, 16);
-        Button delete_bt   = newButton("Delete",   817-329, 570-136, "white", "grey", 159, 61, 16);
+        Button clear_bt    = newButton("Clear",    358-329, 570-186, "white", "grey", 159, 61, 16);
+        Button register_bt = newButton("Register", 549-329, 570-186, "white", "grey", 159, 61, 16);
+        Button back_bt     = newButton("Back",     358-329, 637-186, "white", "grey", 159, 35, 16);
+        Button payNow_bt   = newButton("Pay now",  817-329, 493-186, "white", "grey", 159, 61, 16);
+        Button delete_bt   = newButton("Delete",   817-329, 570-186, "white", "grey", 159, 61, 16);
 
         clear_bt.setOnAction(e -> {
             amount_tf.clear();
@@ -261,24 +261,6 @@ public class ApplicationFront extends Application {
         return new Scene(root, 728, 567, Color.WHITE);
     }
 
-    public ObservableList<ObservableList<Object>> initializeRevenuesData() {
-        ObservableList<ObservableList<Object>> revenuesData = FXCollections.observableArrayList();
-        revenuesData.add(FXCollections.observableArrayList("Sales", new BigDecimal("1000.00")));
-        revenuesData.add(FXCollections.observableArrayList("Rent", new BigDecimal("500.00")));
-        revenuesData.add(FXCollections.observableArrayList("Salaries", new BigDecimal("2000.00")));
-        return revenuesData;
-    }
-
-    public ObservableList<ObservableList<Object>> initializeExpenditureData() {
-        ObservableList<ObservableList<Object>> expenditureData = FXCollections.observableArrayList();
-        expenditureData.add(FXCollections.observableArrayList("Food and Drink", new BigDecimal("200.00")));
-        expenditureData.add(FXCollections.observableArrayList("Travel", new BigDecimal("300.00")));
-        expenditureData.add(FXCollections.observableArrayList("Other", new BigDecimal("2000.00")));
-        return expenditureData;
-    }
-
-
-
     public Scene budgeting() {
         TableView<ObservableList<Object>> revenues = newTableView(new String[]{"Revenues", "Amount"}, 20, 200, 400, 600);
         ObservableList<ObservableList<Object>> revenuesData = initializeRevenuesData();
@@ -298,6 +280,7 @@ public class ApplicationFront extends Application {
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
         return scene;
     }
+
     public Scene createNewBudgetScene() {
 
         String[] revenues = {"Revenues", "Salary", "Income"};
@@ -315,6 +298,7 @@ public class ApplicationFront extends Application {
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
         return scene;
     }
+
     public Scene budgetSuggestionsScene() {
         // TODO: create a scene for budgetSuggestions
         return null;
@@ -384,8 +368,22 @@ public class ApplicationFront extends Application {
         return scene;
     }
 
+    public ObservableList<ObservableList<Object>> initializeRevenuesData() {
+        ObservableList<ObservableList<Object>> revenuesData = FXCollections.observableArrayList();
+        revenuesData.add(FXCollections.observableArrayList("Sales", new BigDecimal("1000.00")));
+        revenuesData.add(FXCollections.observableArrayList("Rent", new BigDecimal("500.00")));
+        revenuesData.add(FXCollections.observableArrayList("Salaries", new BigDecimal("2000.00")));
+        return revenuesData;
+    }
 
-    
+    public ObservableList<ObservableList<Object>> initializeExpenditureData() {
+        ObservableList<ObservableList<Object>> expenditureData = FXCollections.observableArrayList();
+        expenditureData.add(FXCollections.observableArrayList("Food and Drink", new BigDecimal("200.00")));
+        expenditureData.add(FXCollections.observableArrayList("Travel", new BigDecimal("300.00")));
+        expenditureData.add(FXCollections.observableArrayList("Other", new BigDecimal("2000.00")));
+        return expenditureData;
+    }
+
     public Button newButton(String text, int x, int y, String borderColor,
     String backgroundColor, int width, int height, int fontSize){
         Button button = new Button(text);
