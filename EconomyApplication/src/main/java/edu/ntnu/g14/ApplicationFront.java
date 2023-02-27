@@ -389,11 +389,9 @@ public class ApplicationFront extends Application {
         Button button = new Button(text);
         button.setLayoutX(x);
         button.setLayoutY(y);
-        button.setStyle("-fx-border-color: " + borderColor + ";" + 
-        "-fx-background-color: " + backgroundColor + ";" +
-        "-fx-pref-width: " + width + ";" +
-        "-fx-pref-height: " + height + ";" +
-        "-fx-font-size: " + fontSize + "px;");
+        button.setStyle(setStyleString(borderColor, backgroundColor, width, height, fontSize));
+        button.setOnMouseEntered(e -> button.setStyle(setStyleString(borderColor, "grey", width, height, fontSize)));
+        button.setOnMouseExited(e -> button.setStyle(setStyleString(borderColor, backgroundColor, width, height, fontSize)));
         return button;
     }
 
@@ -403,11 +401,7 @@ public class ApplicationFront extends Application {
         textField.setPromptText(promptText);
         textField.setLayoutX(x);
         textField.setLayoutY(y);
-        textField.setStyle("-fx-border-color: " + borderColor + ";" + 
-        "-fx-background-color: " + backgroundColor + ";" +
-        "-fx-pref-width: " + width + ";" +
-        "-fx-pref-height: " + height + ";" +
-        "-fx-font-size: " + fontSize + "px;");
+        textField.setStyle(setStyleString(borderColor, backgroundColor, width, height, fontSize));
         return textField;
     }
 
@@ -441,11 +435,7 @@ public class ApplicationFront extends Application {
     String backgroundColor, int width, int height, int fontSize, int x, int y){
         ChoiceBox<String> choiceBox = new ChoiceBox();
         choiceBox.getItems().addAll(choices);
-        choiceBox.setStyle("-fx-border-color: " + borderColor + ";" + 
-        "-fx-background-color: " + backgroundColor + ";" +
-        "-fx-pref-width: " + width + ";" +
-        "-fx-pref-height: " + height + ";" +
-        "-fx-font-size: " + fontSize + "px;");
+        choiceBox.setStyle(setStyleString(borderColor, backgroundColor, width, height, fontSize));
         choiceBox.setLayoutX(x);
         choiceBox.setLayoutY(y);
         return choiceBox;
@@ -457,6 +447,15 @@ public class ApplicationFront extends Application {
             alert.setHeaderText(header);
             alert.setContentText(content);
             alert.showAndWait();
+    }
+
+    public String setStyleString(String borderColor,
+    String backgroundColor, int width, int height, int fontSize){
+        return "-fx-border-color: " + borderColor + ";" + 
+        "-fx-background-color: " + backgroundColor + ";" +
+        "-fx-pref-width: " + width + ";" +
+        "-fx-pref-height: " + height + ";" +
+        "-fx-font-size: " + fontSize + "px;";
     }
 
     public static void main(String[] args){launch();}
