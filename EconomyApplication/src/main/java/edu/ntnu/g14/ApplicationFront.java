@@ -10,22 +10,22 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.ListView;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -42,7 +42,7 @@ public class ApplicationFront extends Application {
     @Override
     public void start(Stage stage) throws IOException, InterruptedException {
         this.stage = stage;
-        stage.setScene(paymentConfirmation());
+        stage.setScene(mainPage());
         stage.show();
     }
 
@@ -446,6 +446,97 @@ public class ApplicationFront extends Application {
         Scene scene = new Scene(root, 800, 500, Color.WHITE);
         return scene;
     }
+    public Scene mainPage() {
+        String [] columnTitlesLatestActivitiesTable = {"Transaction", "Amount"};
+        String [] columnTitlesDuePaymentsTable = {"Date", "Recipient", "Amount"};
+        String [] accountsList = {"Savings", "Spending", "Pension"};
+        Text actionsText = newText("Actions", 20, false, 160, 30);
+        Button transfer = newButton("Transfer", 30, 50, "white", "grey", 157, 25, 16);
+        transfer.setOnMouseClicked(e -> stage.setScene(transfer()));
+        Button invoice = newButton("Invoice", 192, 50,"white", "grey", 157,25,16);
+        invoice.setOnMouseClicked(e -> stage.setScene(invoice()));
+        Button payment = newButton("Payment", 30, 90, "white", "grey", 157, 25, 16);
+        payment.setOnMouseClicked(e -> stage.setScene(payment()));
+        Button overview = newButton("Overview", 192,90, "white", "grey", 157,25,16);
+        overview.setOnMouseClicked(e -> stage.setScene(overview()));
+        Button accounts = newButton("Accounts", 30,130, "white", "grey", 157, 25, 16);
+        accounts.setOnMouseClicked(e -> stage.setScene(accountOverview()));
+        Button budgeting = newButton("Budgeting", 192, 130, "white", "grey", 157, 25,16);
+        budgeting.setOnMouseClicked(e -> stage.setScene(budgeting()));
+        Text latestActivitiesText = newText("Latest Activities", 20, false,130, 210);
+        TableView latestActivitiesTable = newTableView(columnTitlesLatestActivitiesTable, 30, 230, 324, 300);
+        ObservableList<ObservableList<Object>> latestActivitiesData = initializeLatestActivitiesData();
+        latestActivitiesTable.setItems(latestActivitiesData);
+        latestActivitiesTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        Text duePaymentsText = newText("Due Payments", 20, false, 473, 210);
+        TableView duePaymentsTable = newTableView(columnTitlesDuePaymentsTable, 728-30-324, 230, 324, 300);
+        duePaymentsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        Text accountsText = newText("Accounts", 20, false, 500, 30);
+        ListView accountsListView = newListView(accountsList, 728-30-324, 50, 324, 115);
+        Group root = new Group(actionsText, transfer, invoice, payment, overview, accounts, budgeting, latestActivitiesText, latestActivitiesTable, duePaymentsTable, duePaymentsText, accountsListView, accountsText);
+        return new Scene(root, 728, 567, Color.WHITE);
+    }
+
+    public Scene generalOverview() {
+
+        String [] columnTitlesTransactionsTable = {"Date", "Transaction", "Amount", "Account"};
+        Text totalOfAllAccountsCombinedText = newText("Total of all Accounts Combined (excl. Pension)", 16, false, 200, 30);
+        Text bigSumText = newText("736 000 kr", 35, false,280, 90);
+        Text totalIncomeText = newText("Income all accounts: 19 929 kr", 20, false, 40, 150);
+        Text totalExpensesText = newText("Expenses all account: 10 320 kr", 20, false, (728/2 + 40), 150);
+        ToggleGroup intervalToggles = new ToggleGroup();
+
+        ToggleButton yearlyToggle = newToggleButton("Yearly", 40, 190, "white", "grey", 80,20, 16);
+        yearlyToggle.setToggleGroup(intervalToggles);
+        ToggleButton monthlyToggle = newToggleButton("Monthly", 120, 190, "white", "grey", 80,20, 16);
+        monthlyToggle.setToggleGroup(intervalToggles);
+        TableView<ObservableList<Object>> transactionsTables = newTableView(columnTitlesTransactionsTable, 40, 230, 658, 300);
+        Group root = new Group(totalOfAllAccountsCombinedText, bigSumText, totalIncomeText, totalExpensesText, yearlyToggle, monthlyToggle, transactionsTables);
+        return new Scene(root, 728, 567, Color.WHITE);
+    }
+    public Scene accountOverview() {
+        //TODO: Choices should get the different accounts a user has. Example: "user.getAccounts().asArray()"
+        String [] columnTitlesTransactionsTable = {"Transaction", "Date", "Amount"};
+        String [] choices = {"Spendings Account", "Savings Account"};
+        ChoiceBox<String> accountChoiceBox = newChoiceBox(choices, "white", "grey", 364, 30, 30, 364-(364/2), 30);
+
+        //TODO: Take the first element of the Array and make it the default label of the choice box when account overview is opened
+
+        Text accountNumberText = newText("9293 11 39239", 14, false, 325, 130);
+        Text amountText = newText("Amount: 23 340 kr", 20, false, 290, 160);
+        Button addTransaction = newButton("Add Transaction", 20, 30, "white", "grey", 120, 20, 14);
+        Button addAccount = newButton("Add Account", 20, 60, "white", "grey", 120, 20, 14);
+        Text lastTransactionsText = newText("Last Transactions:", 24, false, 20, 200);
+        TableView lastTransactionsTable = newTableView(columnTitlesTransactionsTable, 20, 230, 688, 300);
+        ObservableList<ObservableList<Object>> lastTransactionsData = initializeLastTransactionsData();
+        lastTransactionsTable.setItems(lastTransactionsData);
+        lastTransactionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        addAccount.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                Dialog<Account> accountDialog = new AccountDialog(new Account(AccountCategory.SAVINGS_ACCOUNT, new BigDecimal(2),"9293.11.39233","Big Buckz"));
+                Optional<Account> result = accountDialog.showAndWait();
+                if (result.isPresent()) {
+                    Account account = result.get();
+                    System.out.println(Integer.toString(account.getAmount().intValue()) + ""+ account.getAccountNumber() + " " + account.getAccountName());
+                    //TODO: Add the account to the users list of accounts
+                }
+            }
+        });
+        addTransaction.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                Dialog<Transaction> transactionDialog = new TransactionDialog(new Transaction("9293.11.39233", "9293.11.39234", (short) 32121, "Hope it is enough", new Date()));
+                Optional<Transaction> result = transactionDialog.showAndWait();
+                if (result.isPresent()) {
+                    Transaction transaction = result.get();
+                    //TODO: ---
+                }
+            }
+        });
+        Group root = new Group(accountChoiceBox, accountNumberText, amountText, addTransaction, addAccount, lastTransactionsText, lastTransactionsTable);
+        return new Scene(root, 728, 567, Color.WHITE);
+    }
 
     public ObservableList<ObservableList<Object>> initializeRevenuesData() {
         ObservableList<ObservableList<Object>> revenuesData = FXCollections.observableArrayList();
@@ -474,6 +565,28 @@ public class ApplicationFront extends Application {
         return paymentData;
     }
 
+    public ObservableList<ObservableList<Object>> initializeLatestActivitiesData() {
+        //TODO: Use for loop to loop for the amount and description of the latest activities of a user
+        ObservableList<ObservableList<Object>> latestActivitiesData = FXCollections.observableArrayList();
+        latestActivitiesData.add(FXCollections.observableArrayList("Elkjøp (Reserved)", new BigDecimal("10000.00")));
+        latestActivitiesData.add(FXCollections.observableArrayList("Vinmonopolet", new BigDecimal("5000.00")));
+        latestActivitiesData.add(FXCollections.observableArrayList("Kiwi Minipris", new BigDecimal("458.00")));
+        latestActivitiesData.add(FXCollections.observableArrayList("Trap Star", new BigDecimal("1350.00")));
+        latestActivitiesData.add(FXCollections.observableArrayList("Savings -> Spendings", new BigDecimal("2300.00")));
+        latestActivitiesData.add(FXCollections.observableArrayList("Pay Check", new BigDecimal("53202.00")));
+        latestActivitiesData.add(FXCollections.observableArrayList("PayPal", new BigDecimal("200.00")));
+        return  latestActivitiesData;
+    }
+    public ObservableList<ObservableList<Object>> initializeLastTransactionsData() {
+        ObservableList<ObservableList<Object>> lastTransactionsData = FXCollections.observableArrayList();
+        lastTransactionsData.add(FXCollections.observableArrayList("Elkjøp (Reserved)", "10.02.2022", new BigDecimal("10000.00")));
+        lastTransactionsData.add(FXCollections.observableArrayList("Harampolet", "10.02.2022", new BigDecimal("5000.00")));
+        lastTransactionsData.add(FXCollections.observableArrayList("Kiwi Groceries","09.02.2022", new BigDecimal("458.00")));
+        lastTransactionsData.add(FXCollections.observableArrayList("Steampowered","03.02.2022", new BigDecimal("900.00")));
+        lastTransactionsData.add(FXCollections.observableArrayList("Harambet","29.01.2022", new BigDecimal("1700.00")));
+        return lastTransactionsData;
+    }
+
     public Button newButton(String text, int x, int y, String borderColor,
         String backgroundColor, int width, int height, int fontSize) {
         Button button = new Button(text);
@@ -485,6 +598,15 @@ public class ApplicationFront extends Application {
         button.setOnMouseExited(e -> button.setStyle(
             setStyleString(borderColor, backgroundColor, width, height, fontSize)));
         return button;
+    }
+    public ToggleButton newToggleButton(String text, int x, int y, String borderColor, String backgroundColor, int width, int height, int fontSize) {
+        ToggleButton toggleButton = new ToggleButton(text);
+        toggleButton.setLayoutX(x);
+        toggleButton.setLayoutY(y);
+        toggleButton.setStyle(setStyleString(borderColor, backgroundColor, width, height, fontSize));
+        toggleButton.setOnMouseEntered(e -> toggleButton.setStyle(setStyleString(borderColor, "grey", width, height, fontSize)));
+        toggleButton.setOnMouseExited(e -> toggleButton.setStyle(setStyleString(borderColor, backgroundColor, width, height, fontSize)));
+        return toggleButton;
     }
 
     public TextField newTextField(String promptText, int x, int y, String borderColor,
@@ -526,6 +648,18 @@ public class ApplicationFront extends Application {
 
         return tableView;
     }
+    public ListView<String> newListView(String[] elements, double x, double y, double width, double height) {
+        ListView<String> listView = new ListView<>();
+        listView.setLayoutX(x);
+        listView.setLayoutY(y);
+        listView.setPrefWidth(width);
+        listView.setPrefHeight(height);
+
+        for (String element: elements) {
+            listView.getItems().add(element);
+        }
+        return listView;
+    }
     
     public Rectangle newRectangle(int x, int y, int width, int height){
         Rectangle rectangle = new Rectangle();
@@ -563,6 +697,182 @@ public class ApplicationFront extends Application {
             "-fx-pref-width: " + width + ";" +
             "-fx-pref-height: " + height + ";" +
             "-fx-font-size: " + fontSize + "px;";
+    }
+    public class AccountDialog extends Dialog<Account> {
+        private Account account;
+        private ChoiceBox<String> accountTypeField;
+        private TextField amountField;
+        private TextField accountNumberField;
+        private TextField accountNameField;
+
+        public AccountDialog(Account account) {
+            super();
+            this.setTitle("Add Account");
+            this.account = account;
+            buildUI();
+            setPropertyBindings();
+            setResultConverter();
+        }
+        private void setPropertyBindings() {
+            // TODO: Implement String Properties to Account class
+        }
+        private void setResultConverter() {
+            javafx.util.Callback<ButtonType, Account> accountResultConverter = new javafx.util.Callback<ButtonType, Account>() {
+                @Override
+                public Account call(ButtonType param) {
+                    if (param == ButtonType.APPLY) {
+                        return account;
+                    } else {
+                        return null;
+                    }
+                }
+            };
+            setResultConverter(accountResultConverter);
+        }
+        private void buildUI() {
+            Pane pane = createGridPane();
+            getDialogPane().setContent(pane);
+            getDialogPane().getButtonTypes().addAll(ButtonType.APPLY, ButtonType.CANCEL);
+            Button applyButton = (Button) getDialogPane().lookupButton(ButtonType.APPLY);
+            applyButton.addEventFilter(ActionEvent.ACTION, new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    if (!validateDialog()) {
+                        event.consume();
+
+                    }
+                }
+                private boolean validateDialog() {
+                    if (accountNumberField.getText().isBlank() || amountField.getText().isBlank() || accountNameField.getText().isBlank()) {
+                        return false;
+                    }
+                    return true;
+                }
+            });
+        }
+        public Pane createGridPane() {
+            VBox content = new VBox(10);
+            Label accountTypeLabel = new Label("Choose the type of account:");
+            Label accountNumberLabel = new Label("Enter the account number:");
+            Label amountLabel = new Label("Enter the balance of your account:");
+            Label accountNameLabel = new Label("Choose a name for your account:");
+            this.accountTypeField = new ChoiceBox<>();
+            this.accountNumberField = new TextField();
+            this.amountField = new TextField();
+            this.accountNameField = new TextField();
+            this.accountTypeField.getItems().addAll("Spendings Account", "Savings Account", "Pensions Account", "Other");
+            GridPane grid = new GridPane();
+            grid.setHgap(10);
+            grid.setVgap(5);
+            grid.add(accountTypeLabel,0,0);
+            grid.add(accountNumberLabel,0,1);
+            grid.add(amountLabel,0,2);
+            grid.add(accountNameLabel,0,3);
+            grid.add(accountTypeField,1,0);
+            GridPane.setHgrow(this.accountTypeField, Priority.ALWAYS);
+            grid.add(accountNumberField, 1,1);
+            GridPane.setHgrow(this.accountNumberField,Priority.ALWAYS);
+            grid.add(amountField,1,2);
+            GridPane.setHgrow(this.amountField,Priority.ALWAYS);
+            grid.add(accountNameField,1,3);
+            GridPane.setHgrow(this.accountNameField,Priority.ALWAYS);
+
+            content.getChildren().add(grid);
+            return content;
+
+        }
+    }
+    class TransactionDialog extends Dialog<Transaction> {
+        Transaction transaction;
+        private ChoiceBox<String> fromAccountNumberField;
+        private TextField toAccountNumberField;
+        private TextField amountField;
+        private TextField descriptionField;
+        private DatePicker dateOfTransactionField;
+        public TransactionDialog(Transaction transaction) {
+            super();
+            this.setTitle("Add Transaction");
+            this.transaction = transaction;
+            buildUI();
+            setPropertyBindings();
+            setResultConverter();
+        }
+        private void setPropertyBindings() {
+            // TODO: Implement String Properties to Account class
+        }
+        private void setResultConverter() {
+            javafx.util.Callback<ButtonType, Transaction> transactionResultConverter = new javafx.util.Callback<ButtonType, Transaction>() {
+                @Override
+                public Transaction call(ButtonType param) {
+                    if (param == ButtonType.APPLY) {
+                        return transaction;
+                    } else {
+                        return null;
+                    }
+                }
+            };
+            setResultConverter(transactionResultConverter);
+        }
+        private void buildUI() {
+            Pane pane = createGridPane();
+            getDialogPane().setContent(pane);
+            getDialogPane().getButtonTypes().addAll(ButtonType.APPLY, ButtonType.CANCEL);
+            Button applyButton = (Button) getDialogPane().lookupButton(ButtonType.APPLY);
+            applyButton.addEventFilter(ActionEvent.ACTION, new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    if (!validateDialog()) {
+                        event.consume();
+
+                    }
+                }
+                private boolean validateDialog() {
+                    if (toAccountNumberField.getText().isBlank() || amountField.getText().isBlank()
+                            || descriptionField.getText().isBlank()) {
+                        return false;
+                    }
+                    return true;
+                }
+            });
+        }
+        public Pane createGridPane() {
+            VBox content = new VBox(10);
+            Label fromAccountLabel = new Label("Select the account you want to send from:");
+            Label toAccountLabel = new Label("Enter the recipient account number:");
+            Label amountLabel = new Label("Enter the amount you want to send:");
+            Label descriptionLabel = new Label("Enter the description of the transaction:");
+            Label dateOfTransactionLabel = new Label("Choose the date of the transaction:")   ;
+
+            this.fromAccountNumberField = new ChoiceBox<>();
+            this.toAccountNumberField = new TextField();
+            this.amountField = new TextField();
+            this.descriptionField = new TextField();
+            this.dateOfTransactionField = new DatePicker();
+            //TODO: Change format
+            this.fromAccountNumberField.getItems().addAll("Spendings Account", "Savings Account", "Pensions Account");
+            //TODO: Make it retrieve a users accounts which are not savings or pensions
+            GridPane grid = new GridPane();
+            grid.setHgap(10);
+            grid.setVgap(5);
+            grid.add(fromAccountLabel,0,0);
+            grid.add(toAccountLabel,0,1);
+            grid.add(amountLabel,0,2);
+            grid.add(descriptionLabel,0,3);
+            grid.add(dateOfTransactionLabel,0,4);
+            GridPane.setHgrow(this.fromAccountNumberField, Priority.ALWAYS);
+            grid.add(fromAccountNumberField, 1,0);
+            GridPane.setHgrow(this.toAccountNumberField,Priority.ALWAYS);
+            grid.add(toAccountNumberField,1,1);
+            grid.add(amountField,1,2);
+            GridPane.setHgrow(this.amountField,Priority.ALWAYS);
+            grid.add(descriptionField,1,3);
+            GridPane.setHgrow(this.descriptionField,Priority.ALWAYS);
+            grid.add(dateOfTransactionField,1,4);
+            GridPane.setHgrow(this.dateOfTransactionField,Priority.ALWAYS);
+
+            content.getChildren().add(grid);
+            return content;
+        }
     }
 
     public static void main(String[] args) {
