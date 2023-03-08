@@ -206,12 +206,6 @@ public class ApplicationFront extends Application {
         return scene;
     }
 
-    public Scene overview() {
-        Group root = new Group();
-        Scene scene = new Scene(root, 800, 500, Color.WHITE);
-        return scene;
-    }
-
     public Scene invoice() {
         List<Invoice> invoices = new ArrayList<>(); // TODO: Fill with actal data.
         invoices.add(
@@ -289,7 +283,7 @@ public class ApplicationFront extends Application {
             throw new RuntimeException("Action not connected to backend.");
         });
         back_bt.setOnAction(e -> {
-            stage.setScene(overview());
+            stage.setScene(mainPage());
         });
         payNow_bt.setOnAction(e -> {
             invoices.remove(invoices_lv.getSelectionModel().getSelectedItem());
@@ -380,7 +374,7 @@ public class ApplicationFront extends Application {
             stage.setScene(paymentConfirmation());
         });
         cancel.setOnAction(e -> {
-            stage.setScene(overview());
+            stage.setScene(mainPage());
         });
         Group root = new Group(fromAccount, amount, dueDate, toAccount, cid,
             newText("From account", 30, false, x, y - 5),
@@ -406,7 +400,7 @@ public class ApplicationFront extends Application {
 
 
         confirm.setOnAction(e -> {
-            stage.setScene(overview());
+            stage.setScene(mainPage());
         });
         cancel.setOnAction(e -> {
             stage.setScene(payment());
@@ -433,10 +427,10 @@ public class ApplicationFront extends Application {
         Button transfer = newButton("Pay", 200, 255, "black", "white", 100, 20, 15);
         Button cancel = newButton("Cancel", 350, 255, "black", "white", 100, 20, 15);
         transfer.setOnAction(e -> {
-            stage.setScene(overview());
+            stage.setScene(mainPage());
         });
         cancel.setOnAction(e -> {
-            stage.setScene(overview());
+            stage.setScene(mainPage());
         });
         Group root = new Group(fromAccount, amount, toAccount,
             newText("From account", 30, false, x, y - 5),
@@ -458,7 +452,7 @@ public class ApplicationFront extends Application {
         Button payment = newButton("Payment", 30, 90, "white", "grey", 157, 25, 16);
         payment.setOnMouseClicked(e -> stage.setScene(payment()));
         Button overview = newButton("Overview", 192,90, "white", "grey", 157,25,16);
-        overview.setOnMouseClicked(e -> stage.setScene(overview()));
+        overview.setOnMouseClicked(e -> stage.setScene(generalOverview()));
         Button accounts = newButton("Accounts", 30,130, "white", "grey", 157, 25, 16);
         accounts.setOnMouseClicked(e -> stage.setScene(accountOverview()));
         Button budgeting = newButton("Budgeting", 192, 130, "white", "grey", 157, 25,16);
