@@ -40,7 +40,7 @@ public class Account {
             this.accountName = accountName;
         }
         // TODO: Check if account with this accountNumber already exists
-        if (accountNumber.length() < 14) {
+        if (accountNumber.length() < 13) {
             throw new IllegalArgumentException("Account number must contain 11 digits, seperated by 2 dots");
         } else {
             this.accountNumber = accountNumber;
