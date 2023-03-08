@@ -27,6 +27,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -45,7 +46,9 @@ public class ApplicationFront extends Application {
         stage.show();
     }
 
-    public Scene loginChooseUser() {
+    
+    //TODO: REMOVE dropdown and add to all other scenes
+    public Scene loginChooseUser(){
         Text chooseUser = newText("Choose user", 30, false, 170, 40);
         Text registerNew = newText("Register new account", 10, true, 400, 280);
         registerNew.setOnMouseClicked(e -> {
@@ -59,11 +62,30 @@ public class ApplicationFront extends Application {
         confirm.setOnAction(e -> {
             stage.setScene(loginUser(user.getValue()));
         });
-
-        Group root = new Group(chooseUser, registerNew, user, confirm);
+        
+        Button testDropDown = newButton("test", 0, 0, "black", "white", 10, 10, 10);
+        Group dropDown = dropDownMenu();
+        Group root = new Group(chooseUser, registerNew, user, confirm, testDropDown);
+        testDropDown.setOnAction(e -> {
+            root.getChildren().add(dropDown);
+        });
+        
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
+        scene.setOnMouseClicked(e -> {
+            root.getChildren().remove(dropDown);
+        });
         return scene;
+    }
 
+    //TODO: MISSING BUTTONS
+    public Group dropDownMenu(){
+        Rectangle rectangle = newRectangle(0, 0, 150, 200);
+        Button invoice = newButton("invoice", 15, 15, "black", "white", 130, 40, 25);
+        Button transfer = newButton("transfer", 15, 70, "black", "white", 130, 40, 25);
+        Button payment = newButton("payment", 15, 125, "black", "white", 130, 40, 25);
+
+        Group group = new Group(rectangle, invoice, transfer, payment);
+        return group;
     }
 
     public Scene loginUser(String user) { //TODO: add User user as parameter
@@ -504,8 +526,17 @@ public class ApplicationFront extends Application {
 
         return tableView;
     }
-
-
+    
+    public Rectangle newRectangle(int x, int y, int width, int height){
+        Rectangle rectangle = new Rectangle();
+        rectangle.setX(x);
+        rectangle.setY(y);
+        rectangle.setWidth(width);
+        rectangle.setHeight(height);
+        rectangle.setStroke(Color.BLACK);
+        rectangle.setFill(Color.WHITE);
+        return rectangle;
+    }
 
     public ChoiceBox<String> newChoiceBox(String[] choices, String borderColor,
         String backgroundColor, int width, int height, int fontSize, int x, int y) {
