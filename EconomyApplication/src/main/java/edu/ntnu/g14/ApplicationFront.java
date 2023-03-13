@@ -40,10 +40,9 @@ public class ApplicationFront extends Application {
     @Override
     public void start(Stage stage) throws IOException, InterruptedException {
         this.stage = stage;
-        stage.setScene(deleteUserScene());
+        stage.setScene(UserManagement());
         stage.show();
     }
-
 
     //TODO: REMOVE dropdown and add to all other scenes
     public Scene loginChooseUser() {
@@ -385,8 +384,6 @@ public class ApplicationFront extends Application {
         return scene;
     }
 
-
-
     public Scene createNewBudgetScene() {
 
         String[] revenues = {"Revenues", "Salary", "Income"};
@@ -477,8 +474,6 @@ public class ApplicationFront extends Application {
         return scene;
     }
 
-
-
     public Scene transfer() {
         int x = 300;
         int y = 35;
@@ -505,6 +500,7 @@ public class ApplicationFront extends Application {
         Scene scene = new Scene(root, 800, 500, Color.WHITE);
         return scene;
     }
+    
     public Scene mainPage() {
         String [] columnTitlesLatestActivitiesTable = {"Transaction", "Amount"};
         String [] columnTitlesDuePaymentsTable = {"Date", "Recipient", "Amount"};
@@ -553,6 +549,7 @@ public class ApplicationFront extends Application {
         Group root = new Group(totalOfAllAccountsCombinedText, bigSumText, totalIncomeText, totalExpensesText, yearlyToggle, monthlyToggle, transactionsTables);
         return new Scene(root, 728, 567, Color.WHITE);
     }
+    
     public Scene accountOverview() {
         //TODO: Choices should get the different accounts a user has. Example: "user.getAccounts().asArray()"
         String [] columnTitlesTransactionsTable = {"Transaction", "Date", "Amount"};
@@ -648,6 +645,7 @@ public class ApplicationFront extends Application {
         Group root = new Group(loggedInUser, loggedInUserEmail,password, switchUser, edit, delete, logOut, confirm);
         return new Scene(root, 500, 300, Color.WHITE);
     }
+    
     public Scene deleteUserScene() {
         Text loggedInUser = newText("Walter Banks", 60, false, 600, 150);
         Text loggedInUserEmail = newText("walBa76@gmail.com", 20, false, 685, 200);
@@ -716,6 +714,7 @@ public class ApplicationFront extends Application {
         latestActivitiesData.add(FXCollections.observableArrayList("PayPal", new BigDecimal("200.00")));
         return  latestActivitiesData;
     }
+    
     public ObservableList<ObservableList<Object>> initializeLastTransactionsData() {
         ObservableList<ObservableList<Object>> lastTransactionsData = FXCollections.observableArrayList();
         lastTransactionsData.add(FXCollections.observableArrayList("Elkjøp (Reserved)", "10.02.2022", new BigDecimal("10000.00")));
@@ -738,6 +737,7 @@ public class ApplicationFront extends Application {
             setStyleString(borderColor, backgroundColor, width, height, fontSize)));
         return button;
     }
+    
     public ToggleButton newToggleButton(String text, int x, int y, String borderColor, String backgroundColor, int width, int height, int fontSize) {
         ToggleButton toggleButton = new ToggleButton(text);
         toggleButton.setLayoutX(x);
@@ -787,6 +787,7 @@ public class ApplicationFront extends Application {
 
         return tableView;
     }
+    
     public ListView<String> newListView(String[] elements, double x, double y, double width, double height) {
         ListView<String> listView = new ListView<>();
         listView.setLayoutX(x);
@@ -837,6 +838,7 @@ public class ApplicationFront extends Application {
             "-fx-pref-height: " + height + ";" +
             "-fx-font-size: " + fontSize + "px;";
     }
+    
     public class AccountDialog extends Dialog<Account> {
         private Account account;
         private ChoiceBox<String> accountTypeField;
@@ -921,6 +923,7 @@ public class ApplicationFront extends Application {
 
         }
     }
+    
     class TransactionDialog extends Dialog<Transaction> {
         Transaction transaction;
         private ChoiceBox<String> fromAccountNumberField;
