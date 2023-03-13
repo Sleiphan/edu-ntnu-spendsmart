@@ -22,11 +22,9 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -42,13 +40,13 @@ public class ApplicationFront extends Application {
     @Override
     public void start(Stage stage) throws IOException, InterruptedException {
         this.stage = stage;
-        stage.setScene(mainPage());
+        stage.setScene(deleteUserScene());
         stage.show();
     }
 
-    
+
     //TODO: REMOVE dropdown and add to all other scenes
-    public Scene loginChooseUser(){
+    public Scene loginChooseUser() {
         Text chooseUser = newText("Choose user", 30, false, 170, 40);
         Text registerNew = newText("Register new account", 10, true, 400, 280);
         registerNew.setOnMouseClicked(e -> {
@@ -62,14 +60,14 @@ public class ApplicationFront extends Application {
         confirm.setOnAction(e -> {
             stage.setScene(loginUser(user.getValue()));
         });
-        
+
         Button testDropDown = newButton("test", 0, 0, "black", "white", 10, 10, 10);
         Group dropDown = dropDownMenu();
         Group root = new Group(chooseUser, registerNew, user, confirm, testDropDown);
         testDropDown.setOnAction(e -> {
             root.getChildren().add(dropDown);
         });
-        
+
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
         scene.setOnMouseClicked(e -> {
             root.getChildren().remove(dropDown);
@@ -78,7 +76,7 @@ public class ApplicationFront extends Application {
     }
 
     //TODO: MISSING BUTTONS
-    public Group dropDownMenu(){
+    public Group dropDownMenu() {
         Rectangle rectangle = newRectangle(0, 0, 150, 200);
         Button invoice = newButton("invoice", 15, 15, "black", "white", 130, 40, 25);
         Button transfer = newButton("transfer", 15, 70, "black", "white", 130, 40, 25);
@@ -110,7 +108,7 @@ public class ApplicationFront extends Application {
         });
 
         Group root = new Group(newText("Welcome back " + user, 25, false, 120, 40),
-            notYou, forgotPassword, textField, loginButton);
+                notYou, forgotPassword, textField, loginButton);
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
         return scene;
     }
@@ -125,9 +123,9 @@ public class ApplicationFront extends Application {
         Button loginButton = newButton("Make new password", 120, 140, "black", "white", 250, 20, 15);
 
         Group root = new Group(
-            newText("An email with a code-key has been sent to:", 15, false, 130, 40),
-            newText("Oboooma@gmail.com", 15, false, 170, 60),
-            goBack, keyField, loginButton);
+                newText("An email with a code-key has been sent to:", 15, false, 130, 40),
+                newText("Oboooma@gmail.com", 15, false, 170, 60),
+                goBack, keyField, loginButton);
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
         return scene;
     }
@@ -135,7 +133,7 @@ public class ApplicationFront extends Application {
     public Scene loginForgotpasswordSecond() {
         TextField newPassword = newTextField("New password", 125, 70, "black", "white", 250, 20, 15);
         TextField retypeNewPassword = newTextField("Retype new password", 125, 110, "black", "white",
-            250, 20, 15);
+                250, 20, 15);
         Button confirmButton = newButton("Confirm", 175, 150, "black", "white", 150, 20, 15);
         Text goBack = newText("Go back", 10, true, 400, 260);
 
@@ -153,8 +151,8 @@ public class ApplicationFront extends Application {
         Button next = newButton("Next", 260, 235, "black", "white", 100, 20, 15);
         next.setOnAction(e -> {
             if (firstName.getText() != "" && lastName.getText() != ""
-                && email.getText() != "" && password.getText() != ""
-                && confirmPassword.getText() != "") {
+                    && email.getText() != "" && password.getText() != ""
+                    && confirmPassword.getText() != "") {
                 //TODO: add register user
                 String key = EmailVertification.sendVertificationKey(email.getText().replace(" ", ""));
                 stage.setScene(registerSecond(key, email.getText()));
@@ -164,12 +162,12 @@ public class ApplicationFront extends Application {
         });
 
         Group root = new Group(firstName, lastName,
-            email, password, confirmPassword, next,
-            newText("First name", 30, false, 10, 25),
-            newText("Last name", 30, false, 10, 125),
-            newText("Email", 30, false, 10, 225),
-            newText("Password", 30, false, 260, 25),
-            newText("Confirm password", 30, false, 260, 125));
+                email, password, confirmPassword, next,
+                newText("First name", 30, false, 10, 25),
+                newText("Last name", 30, false, 10, 125),
+                newText("Email", 30, false, 10, 225),
+                newText("Password", 30, false, 260, 25),
+                newText("Confirm password", 30, false, 260, 125));
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
         return scene;
     }
@@ -186,10 +184,10 @@ public class ApplicationFront extends Application {
         });
 
         Group root = new Group(keyInput, next,
-            newText("An email with a confirmation code", 25, false, 60, 25),
-            newText("has been sent to", 25, false, 140, 50),
-            newText(email, 25, false, 140, 75),
-            newText("Code:", 30, false, 20, 225));
+                newText("An email with a confirmation code", 25, false, 60, 25),
+                newText("has been sent to", 25, false, 140, 50),
+                newText(email, 25, false, 140, 75),
+                newText("Code:", 30, false, 20, 225));
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
         return scene;
     }
@@ -200,8 +198,8 @@ public class ApplicationFront extends Application {
         Button addDefault = newButton("Add default accounts", 150, 220, "black", "white", 150, 20, 15);
 
         Group root = new Group(yes, skip, addDefault,
-            newText("Would you like to add", 25, false, 130, 40),
-            newText("account information", 25, false, 130, 80));
+                newText("Would you like to add", 25, false, 130, 40),
+                newText("account information", 25, false, 130, 80));
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
         return scene;
     }
@@ -209,25 +207,25 @@ public class ApplicationFront extends Application {
     public Scene invoice() {
         List<Invoice> invoices = new ArrayList<>(); // TODO: Fill with actal data.
         invoices.add(
-            new Invoice(new Date(System.currentTimeMillis() + 24 * 3600), BigDecimal.valueOf(769.43),
-                "17535.83.78287"));
+                new Invoice(new Date(System.currentTimeMillis() + 24 * 3600), BigDecimal.valueOf(769.43),
+                        "17535.83.78287"));
         invoices.add(
-            new Invoice(new Date(System.currentTimeMillis() + 24 * 3600), BigDecimal.valueOf(769.43),
-                "17535.83.78287"));
+                new Invoice(new Date(System.currentTimeMillis() + 24 * 3600), BigDecimal.valueOf(769.43),
+                        "17535.83.78287"));
         invoices.add(
-            new Invoice(new Date(System.currentTimeMillis() + 24 * 3600), BigDecimal.valueOf(769.43),
-                "17535.83.78287"));
+                new Invoice(new Date(System.currentTimeMillis() + 24 * 3600), BigDecimal.valueOf(769.43),
+                        "17535.83.78287"));
 
         Text amount_t = newText("Amount (kr):", 17, false, 11, 345 - 186);
         Text accountNum_t = newText("Account number:", 17, false, 11, 376 - 186);
         Text cidComment_t = newText("CID / Comment:", 17, false, 11, 407 - 186);
         Text dueDate_t = newText("Due date:", 17, false, 11, 438 - 186);
         TextField amount_tf = newTextField("Amount (kr)", 198, 322 - 186, "black", "white", 206, 20,
-            14);
+                14);
         TextField accountNum_tf = newTextField("Account number", 198, 353 - 186, "black", "white", 206,
-            20, 14);
+                20, 14);
         TextField cidComment_tf = newTextField("CID / Comment", 198, 384 - 186, "black", "white", 206,
-            20, 14);
+                20, 14);
 
         DatePicker due_dp = new DatePicker();
         due_dp.setLayoutX(527 - 329);
@@ -253,20 +251,20 @@ public class ApplicationFront extends Application {
         register_bt.setOnAction(e -> {
             if (amount_tf.getText().isBlank()) {
                 alertBox("Missing input", "Missing information",
-                    "Please enter the financial amount in the new invoice first.");
+                        "Please enter the financial amount in the new invoice first.");
                 return;
             }
 
             if (accountNum_tf.getText().isBlank()) {
                 alertBox("Missing input", "Missing information",
-                    "Please enter the account number this invoice .");
+                        "Please enter the account number this invoice .");
                 return;
             }
 
             BigDecimal amount = BigDecimalValidator.getInstance().validate(amount_tf.getText());
             if (amount == null) {
                 alertBox("Invalid input", "Invalid amount",
-                    "Could not understand the amount specified. Make sure to only enter numbers and use the period-sign instead of comma.");
+                        "Could not understand the amount specified. Make sure to only enter numbers and use the period-sign instead of comma.");
                 return;
             }
 
@@ -275,8 +273,8 @@ public class ApplicationFront extends Application {
             // TODO: Reconsider use of Date class.
             LocalDate due = due_dp.getValue();
             Invoice newInvoice = new Invoice(
-                new Date(due.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()), amount,
-                accountNum_tf.getText());
+                    new Date(due.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()), amount,
+                    accountNum_tf.getText());
             invoices.add(newInvoice);
 
             clear_bt.getOnAction().handle(null);
@@ -295,58 +293,125 @@ public class ApplicationFront extends Application {
         });
 
         Group root = new Group(
-            amount_t, accountNum_t, cidComment_t, dueDate_t,
-            amount_tf, accountNum_tf, cidComment_tf,
-            invoices_lv,
-            due_dp,
-            clear_bt, register_bt, back_bt, payNow_bt, delete_bt);
+                amount_t, accountNum_t, cidComment_t, dueDate_t,
+                amount_tf, accountNum_tf, cidComment_tf,
+                invoices_lv,
+                due_dp,
+                clear_bt, register_bt, back_bt, payNow_bt, delete_bt);
         return new Scene(root, 728, 567, Color.WHITE);
     }
 
     public Scene budgeting() {
-        TableView<ObservableList<Object>> revenues = newTableView(new String[]{"Revenues", "Amount"},
-            20, 200, 400, 600);
+        TableView<ObservableList<Object>> revenues = newTableView(new String[]{"Revenues", "Amount"}, 80, 160, 660, 150);
         ObservableList<ObservableList<Object>> revenuesData = initializeRevenuesData();
         revenues.setItems(revenuesData);
+        revenues.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        revenues.setFixedCellSize(50);
 
-        TableView<ObservableList<Object>> expenditure = newTableView(
-            new String[]{"Expenditures", "Budget"}, 20, 900, 400, 600);
+        TableView<ObservableList<Object>> expenditures = newTableView(new String[]{"Expenditures", "Budget"}, 80, 320, 660, 310);
         ObservableList<ObservableList<Object>> expenditureData = initializeExpenditureData();
-        revenues.setItems(expenditureData);
+        expenditures.setItems(expenditureData);
+        expenditures.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        expenditures.setFixedCellSize(50);
 
-        Button CreateNewBudget = newButton("Create new budget", 240, 195, "black", "white", 100, 20,
-            15);
-        Button budgetSuggestions = newButton("Budget suggestion", 400, 400, "black", "white", 100, 20,
-            15);
+        Label backgroundLabel = new Label();
+        backgroundLabel.setPrefWidth(700);
+        backgroundLabel.setPrefHeight(600);
+        backgroundLabel.setLayoutX(60);
+        backgroundLabel.setLayoutY(100);
+        backgroundLabel.setStyle("-fx-background-color: #f0f0f0;");
 
-        CreateNewBudget.setOnAction(e -> {
+        Text MonthlyBudget = newText("Monthly Budget", 30, false, 70, 130 );
+        MonthlyBudget.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
+        Text savings = newText("Savings: 3000", 30, false, 70, 670 );
+        savings.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+
+
+
+        Button createNewBudget = newButton("Create new budget", 850, 300, "black", "white", 380, 80, 15);
+        Button budgetSuggestions = newButton("Budget suggestion", 850, 500, "black", "white", 380, 80, 15);
+
+        createNewBudget.setOnAction(e -> {
             stage.setScene(createNewBudgetScene());
         });
         budgetSuggestions.setOnAction(e -> {
             stage.setScene(budgetSuggestionsScene());
         });
 
-        Group root = new Group(revenues, expenditure, CreateNewBudget, budgetSuggestions);
+        Group root = new Group(backgroundLabel, revenues, expenditures,createNewBudget,
+                budgetSuggestions, MonthlyBudget, savings);
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
         return scene;
     }
 
+    public Scene emptyBudgetScene() {
+        TableView<ObservableList<Object>> revenues = newTableView(new String[]{"Revenues", "Amount"}, 80, 160, 660, 150);
+        revenues.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        revenues.setFixedCellSize(50);
+
+        TableView<ObservableList<Object>> expenditures = newTableView(new String[]{"Expenditures", "Budget"}, 80, 320, 660, 310);
+        expenditures.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        expenditures.setFixedCellSize(50);
+
+        Label backgroundLabel = new Label();
+        backgroundLabel.setPrefWidth(700);
+        backgroundLabel.setPrefHeight(600);
+        backgroundLabel.setLayoutX(60);
+        backgroundLabel.setLayoutY(100);
+        backgroundLabel.setStyle("-fx-background-color: #f0f0f0;");
+
+        Text MonthlyBudget = newText("Monthly Budget", 30, false, 70, 130 );
+        MonthlyBudget.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+
+        Text savings = newText("Savings: 3000", 30, false, 70, 670 );
+        savings.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+
+
+
+        Button createNewBudget = newButton("Create new budget", 850, 300, "black", "white", 380, 80, 15);
+        Button budgetSuggestions = newButton("Budget suggestion", 850, 500, "black", "white", 380, 80, 15);
+
+        createNewBudget.setOnAction(e -> {
+            stage.setScene(createNewBudgetScene());
+        });
+        budgetSuggestions.setOnAction(e -> {
+            stage.setScene(budgetSuggestionsScene());
+        });
+
+        Group root = new Group(backgroundLabel, revenues, expenditures,createNewBudget,
+                budgetSuggestions, MonthlyBudget, savings);
+        Scene scene = new Scene(root, 500, 300, Color.WHITE);
+        return scene;
+    }
+
+
+
     public Scene createNewBudgetScene() {
 
         String[] revenues = {"Revenues", "Salary", "Income"};
-        ChoiceBox<String> revenue = newChoiceBox(revenues, "black", "white", 250, 20, 15, 125, 70);
-        TextField revenueInput = newTextField("", 120, 195, "black", "white", 100, 20, 15);
+        ChoiceBox<String> revenue = newChoiceBox(revenues, "black", "white", 200, 50, 15, 150, 200);
+        revenue.setValue("Revenues");
+        TextField revenueInput = newTextField("", 360, 205, "black", "white", 150, 40, 15);
 
         String[] expenditures = {"Expenditure", "Food", "Clothes", "Other"};
-        ChoiceBox<String> expenditure = newChoiceBox(expenditures, "black", "white", 250, 20, 15, 125,
-            70);
-        TextField expenditureInput = newTextField("", 400, 195, "black", "white", 100, 20, 15);
+        ChoiceBox<String> expenditure = newChoiceBox(expenditures, "black", "white", 200, 50, 15, 1000, 200);
+        expenditure.setValue("Expenditure");
+        TextField expenditureInput = newTextField("", 1210,205 , "black", "white", 150, 40, 15);
 
         String[] personals = {"Personal", "Age", "Gender", "Household"};
-        ChoiceBox<String> personal = newChoiceBox(personals, "black", "white", 250, 20, 15, 125, 70);
-        TextField personalInput = newTextField("", 120, 600, "black", "white", 100, 20, 15);
-        Group root = new Group(revenue, revenueInput, expenditure, expenditureInput, personal,
-            personalInput);
+        ChoiceBox<String> personal = newChoiceBox(personals, "black", "white", 200, 50, 15, 150, 550);
+        personal.setValue("Personal");
+        TextField personalInput = newTextField("", 360, 555, "black", "white", 150, 40, 15);
+
+        Button cancelBtn= newButton("Cancel", 800, 690, "black", "white", 80, 30, 18);
+        cancelBtn.setOnAction(e -> stage.setScene(emptyBudgetScene()));
+
+        Button createBtn= newButton("Create", 650, 690, "black", "white", 80, 30, 18);
+        createBtn.setOnAction(e -> stage.setScene(budgeting()));
+
+        Group root = new Group(revenue, revenueInput, expenditure, expenditureInput,
+                personal, personalInput, cancelBtn, createBtn);
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
         return scene;
     }
@@ -532,6 +597,82 @@ public class ApplicationFront extends Application {
         return new Scene(root, 728, 567, Color.WHITE);
     }
 
+    public Scene UserManagement() {
+        Text loggedInUser = newText("Walter Banks", 60, false, 600, 150);
+        Text loggedInUserEmail = newText("walBa76@gmail.com", 20, false, 685, 200);
+
+        Button password = newButton("Password", 700, 400 ,"white", "grey", 157,60,16);
+       // password.setOnAction(event -> stage.setScene(createNewPasswordScene()));
+
+        Button switchUser = newButton("Switch User", 700, 470,"white", "grey", 157,60,16);
+        Button logOut = newButton("Log out", 870, 470,"white", "grey", 157,50,16);
+        logOut.setVisible(false);
+
+        switchUser.setOnAction(event -> {
+            if (switchUser.getText().equals("Switch User")) {
+                switchUser.setText("Cancel");
+                logOut.setVisible(true);
+
+            } else {
+                switchUser.setText("Switch User");
+                logOut.setVisible(false);
+            }
+        });
+
+        logOut.setOnAction(event -> stage.setScene(loginChooseUser()));
+
+        Button edit = newButton("Edit", 700, 520,"white", "grey", 157,60,16);
+        Button confirm = newButton("confirm", 870, 520,"white", "grey", 157,50,16);
+        confirm.setVisible(false);
+        edit.setOnAction(event -> {
+            if (edit.getText().equals("Edit")) {
+                edit.setText("Cancel");
+                confirm.setVisible(true);
+                loggedInUser.setText("Edited User");
+                loggedInUserEmail.setText("Edited User Email");
+
+            } else {
+                edit.setText("Edit");
+                confirm.setVisible(false);
+                loggedInUser.setText("Walter Banks");
+                loggedInUserEmail.setText("walBa76@gmail.com");
+            }
+        });
+        confirm.setOnAction(event -> {loggedInUser.setText("Edited User");
+            loggedInUserEmail.setText("Edited User Email"); confirm.setVisible(false);
+            edit.setText("Edit");});
+
+
+        Button delete = newButton("Delete", 700, 570,"white", "grey", 157,60,16);
+        delete.setOnAction(event -> stage.setScene(deleteUserScene()));
+        Group root = new Group(loggedInUser, loggedInUserEmail,password, switchUser, edit, delete, logOut, confirm);
+        return new Scene(root, 500, 300, Color.WHITE);
+    }
+    public Scene deleteUserScene() {
+        Text loggedInUser = newText("Walter Banks", 60, false, 600, 150);
+        Text loggedInUserEmail = newText("walBa76@gmail.com", 20, false, 685, 200);
+        Text warningText = newText("Are you sure you want to delete this user?\n" +
+                "_____This action cannot be undone____\n" +
+                "___________10 seconds left__________", 20, false, 600, 350);
+
+
+        Button confirm = newButton("Edit", 700, 520,"white", "grey", 157,60,16);
+        confirm.setStyle("-fx-background-color: red");
+        confirm.setTextFill(Paint.valueOf("WHITE"));
+        confirm.setMinWidth(157);
+        confirm.setMinHeight(50);
+        confirm.setOnMousePressed(event -> {alertBox("Deleted user", "You have deleted user", "Walter Banks R.I.P");    confirm.setStyle("-fx-background-color: red");
+            confirm.setTextFill(Paint.valueOf("WHITE"));
+            confirm.setMinWidth(157);
+            confirm.setMinHeight(50);});
+
+        Button cancel = newButton("Delete", 700, 570,"white", "grey", 157,60,16);
+        cancel.setOnAction(event -> stage.setScene(UserManagement()));
+
+        Group root = new Group(loggedInUser, loggedInUserEmail, cancel, confirm, warningText);
+        return new Scene(root, 500, 300, Color.WHITE);
+    }
+
     public ObservableList<ObservableList<Object>> initializeRevenuesData() {
         ObservableList<ObservableList<Object>> revenuesData = FXCollections.observableArrayList();
         revenuesData.add(FXCollections.observableArrayList("Sales", new BigDecimal("1000.00")));
@@ -546,6 +687,10 @@ public class ApplicationFront extends Application {
             FXCollections.observableArrayList("Food and Drink", new BigDecimal("200.00")));
         expenditureData.add(FXCollections.observableArrayList("Travel", new BigDecimal("300.00")));
         expenditureData.add(FXCollections.observableArrayList("Other", new BigDecimal("2000.00")));
+        expenditureData.add(FXCollections.observableArrayList("Clothes and Shoes", new BigDecimal("2500.00")));
+        expenditureData.add(FXCollections.observableArrayList("Personal Care", new BigDecimal("1000.00")));
+        expenditureData.add(FXCollections.observableArrayList("Leisure", new BigDecimal("500.00")));
+        expenditureData.add(FXCollections.observableArrayList("Alcohol and tobacco", new BigDecimal("200.00")));
         return expenditureData;
     }
 
