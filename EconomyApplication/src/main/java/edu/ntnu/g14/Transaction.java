@@ -9,7 +9,7 @@ public class Transaction {
     private String toAccountId;
     private short amount;
     private String description;
-    private Date dateOfTransaction;
+    private Date dateOfTransaction; 
 
     public Transaction(String fromAccountId, String toAccountId, short amount, String description, Date dateOfTransaction) {
       if (fromAccountId.isEmpty())

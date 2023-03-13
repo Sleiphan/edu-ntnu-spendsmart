@@ -1,0 +1,2 @@
+olav1,13.03.2023;-200;per1;olav1;brukte penger på ting,13.02.2023;-200;per1;olav1;brukte penger på ting
+per2,13.01.2023;-200;per1;olav1;brukte penger på ting,13.02.2024;-200;per1;olav1;brukte penger på ting
