@@ -33,14 +33,18 @@ public class FileManagement {
     public static String readAllTransactions(String userID) throws IOException {
         InputStream input = FileManagement.class.getResourceAsStream("/resources/textfiles/transactions.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-        
+    
         String transactionsInfoString = reader.lines()
             .map(String::trim)
             .filter(line -> line.startsWith(userID + ","))
             .findFirst()
             .orElse(null);
-        
+    
         reader.close();
+        if (transactionsInfoString != null) {
+            int index = transactionsInfoString.indexOf(",");
+            transactionsInfoString = transactionsInfoString.substring(index + 1);
+        }
         return transactionsInfoString;
     }
 
