@@ -40,7 +40,7 @@ public class ApplicationFront extends Application {
     @Override
     public void start(Stage stage) throws IOException, InterruptedException {
         this.stage = stage;
-        stage.setScene(UserManagement());
+        stage.setScene(mainPage());
         stage.show();
     }
 
@@ -52,11 +52,12 @@ public class ApplicationFront extends Application {
             stage.setScene(registerFirst());
         });
 
-        String[] users = {"Barack Obama", "Donald Trump"}; //TODO: make variable
+        String[][] users = {"Barack Obama", "Donald Trump"}; //TODO: make variable
         ChoiceBox<String> user = newChoiceBox(users, "black", "white", 250, 20, 15, 125, 70);
 
         Button confirm = newButton("Confirm", 175, 110, "black", "white", 150, 20, 15);
         confirm.setOnAction(e -> {
+            //loggedInUser = new User(FileManagement.readUser(userId));
             stage.setScene(loginUser(user.getValue()));
         });
 
@@ -201,6 +202,37 @@ public class ApplicationFront extends Application {
                 newText("account information", 25, false, 130, 80));
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
         return scene;
+    }
+
+    public Scene mainPage() {
+        String [] columnTitlesLatestActivitiesTable = {"Transaction", "Amount"};
+        String [] columnTitlesDuePaymentsTable = {"Date", "Recipient", "Amount"};
+        String [] accountsList = {"Savings", "Spending", "Pension"};
+        Text actionsText = newText("Actions", 20, false, 160, 30);
+        Button transfer = newButton("Transfer", 30, 50, "white", "grey", 157, 25, 16);
+        transfer.setOnMouseClicked(e -> stage.setScene(transfer()));
+        Button invoice = newButton("Invoice", 192, 50,"white", "grey", 157,25,16);
+        invoice.setOnMouseClicked(e -> stage.setScene(invoice()));
+        Button payment = newButton("Payment", 30, 90, "white", "grey", 157, 25, 16);
+        payment.setOnMouseClicked(e -> stage.setScene(payment()));
+        Button overview = newButton("Overview", 192,90, "white", "grey", 157,25,16);
+        overview.setOnMouseClicked(e -> stage.setScene(generalOverview()));
+        Button accounts = newButton("Accounts", 30,130, "white", "grey", 157, 25, 16);
+        accounts.setOnMouseClicked(e -> stage.setScene(accountOverview()));
+        Button budgeting = newButton("Budgeting", 192, 130, "white", "grey", 157, 25,16);
+        budgeting.setOnMouseClicked(e -> stage.setScene(budgeting()));
+        Text latestActivitiesText = newText("Latest Activities", 20, false,130, 210);
+        TableView latestActivitiesTable = newTableView(columnTitlesLatestActivitiesTable, 30, 230, 324, 300);
+        ObservableList<ObservableList<Object>> latestActivitiesData = initializeLatestActivitiesData();
+        latestActivitiesTable.setItems(latestActivitiesData);
+        latestActivitiesTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        Text duePaymentsText = newText("Due Payments", 20, false, 473, 210);
+        TableView duePaymentsTable = newTableView(columnTitlesDuePaymentsTable, 728-30-324, 230, 324, 300);
+        duePaymentsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        Text accountsText = newText("Accounts", 20, false, 500, 30);
+        ListView accountsListView = newListView(accountsList, 728-30-324, 50, 324, 115);
+        Group root = new Group(actionsText, transfer, invoice, payment, overview, accounts, budgeting, latestActivitiesText, latestActivitiesTable, duePaymentsTable, duePaymentsText, accountsListView, accountsText);
+        return new Scene(root, 728, 567, Color.WHITE);
     }
 
     public Scene invoice() {
@@ -501,37 +533,6 @@ public class ApplicationFront extends Application {
         return scene;
     }
     
-    public Scene mainPage() {
-        String [] columnTitlesLatestActivitiesTable = {"Transaction", "Amount"};
-        String [] columnTitlesDuePaymentsTable = {"Date", "Recipient", "Amount"};
-        String [] accountsList = {"Savings", "Spending", "Pension"};
-        Text actionsText = newText("Actions", 20, false, 160, 30);
-        Button transfer = newButton("Transfer", 30, 50, "white", "grey", 157, 25, 16);
-        transfer.setOnMouseClicked(e -> stage.setScene(transfer()));
-        Button invoice = newButton("Invoice", 192, 50,"white", "grey", 157,25,16);
-        invoice.setOnMouseClicked(e -> stage.setScene(invoice()));
-        Button payment = newButton("Payment", 30, 90, "white", "grey", 157, 25, 16);
-        payment.setOnMouseClicked(e -> stage.setScene(payment()));
-        Button overview = newButton("Overview", 192,90, "white", "grey", 157,25,16);
-        overview.setOnMouseClicked(e -> stage.setScene(generalOverview()));
-        Button accounts = newButton("Accounts", 30,130, "white", "grey", 157, 25, 16);
-        accounts.setOnMouseClicked(e -> stage.setScene(accountOverview()));
-        Button budgeting = newButton("Budgeting", 192, 130, "white", "grey", 157, 25,16);
-        budgeting.setOnMouseClicked(e -> stage.setScene(budgeting()));
-        Text latestActivitiesText = newText("Latest Activities", 20, false,130, 210);
-        TableView latestActivitiesTable = newTableView(columnTitlesLatestActivitiesTable, 30, 230, 324, 300);
-        ObservableList<ObservableList<Object>> latestActivitiesData = initializeLatestActivitiesData();
-        latestActivitiesTable.setItems(latestActivitiesData);
-        latestActivitiesTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        Text duePaymentsText = newText("Due Payments", 20, false, 473, 210);
-        TableView duePaymentsTable = newTableView(columnTitlesDuePaymentsTable, 728-30-324, 230, 324, 300);
-        duePaymentsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        Text accountsText = newText("Accounts", 20, false, 500, 30);
-        ListView accountsListView = newListView(accountsList, 728-30-324, 50, 324, 115);
-        Group root = new Group(actionsText, transfer, invoice, payment, overview, accounts, budgeting, latestActivitiesText, latestActivitiesTable, duePaymentsTable, duePaymentsText, accountsListView, accountsText);
-        return new Scene(root, 728, 567, Color.WHITE);
-    }
-
     public Scene generalOverview() {
 
         String [] columnTitlesTransactionsTable = {"Date", "Transaction", "Amount", "Account"};

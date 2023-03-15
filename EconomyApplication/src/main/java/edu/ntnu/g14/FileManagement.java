@@ -16,7 +16,8 @@ import java.util.stream.Collectors;
 
 public class FileManagement {
      
-    public static String readUsers(String userID) throws IOException {
+    //gjør om til return Login[] usernames
+    public static String readUsers() throws IOException {
         InputStream input = FileManagement.class.getResourceAsStream("/resources/textfiles/users.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         
@@ -30,26 +31,34 @@ public class FileManagement {
         return userInfoString;
     }
 
+    //gjør om til typen transaction[]
     public static String readAllTransactions(String userID) throws IOException {
         InputStream input = FileManagement.class.getResourceAsStream("/resources/textfiles/transactions.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-        
+    
         String transactionsInfoString = reader.lines()
             .map(String::trim)
             .filter(line -> line.startsWith(userID + ","))
             .findFirst()
             .orElse(null);
-        
+    
         reader.close();
-        return transactionsInfoString;
+        if (transactionsInfoString != null) {
+            int index = transactionsInfoString.indexOf(",");
+            transactionsInfoString = transactionsInfoString.substring(index + 1);
+        }
+        String[] transactions = transactionsInfoString.split(",");
+        for(String element: transactions){
+
+        }
     }
 
-    public static String findTransaction(LocalDate from, LocalDate to, String userID) throws IOException {
+    //TODO: gjør om til typen transaction[]
+    public static String findTransactions(LocalDate from, LocalDate to, String userID) throws IOException { 
         String allTransactions = readAllTransactions(userID);
         String[] transactions = allTransactions.split(",");
         
         return Arrays.stream(transactions)
-                .skip(1)
                 .map(String::trim)
                 .filter(line -> !line.isEmpty())
                 .map(transaction -> {
@@ -63,12 +72,21 @@ public class FileManagement {
                 .collect(Collectors.joining());
     }
     
+    public static User readUser(String userId){
+        
+    }
+
+    public static Transaction readLatestTransactions(String userId, int amount){
+        
+    }
+
+   
 
     public static void main(String[] args) {
         LocalDate from = LocalDate.of(2023, 03, 12);
         LocalDate to = LocalDate.of(2024, 01, 13);
         try {
-            String title = findTransaction(from, to, "kkk");
+            String title = findTransaction(from, to, "olav1");
             System.out.println(title);
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());

@@ -6,14 +6,13 @@ import java.util.List;
 public class User extends Personalia {
     private HashMap<String, Account> accounts;
     private HashMap<String, Invoice> invoices;
-    private String userId;
 
-    public User(HashMap<String, Account> accounts,HashMap<String, Invoice> invoices, String userId, Login loginInfo, String email, String lastName, String firstName ) {
+    public User(HashMap<String, Account> accounts,HashMap<String, Invoice> invoices,
+        Login loginInfo, String email, String lastName, String firstName,
+        Transaction[] transactions, Budget budget) {
         super(loginInfo,email,lastName,firstName);
         this.accounts=accounts;
         this.invoices=invoices;
-        this.userId=userId;
-
     }
 
     public List<Account> getAllAccounts() {
@@ -26,4 +25,5 @@ public class User extends Personalia {
     public String getUserId() {
         return userId;
     }
+
 }
