@@ -1,5 +1,6 @@
 package edu.ntnu.g14;
 
+import java.time.Instant;
 import java.util.Date;
 
 public class Transaction {
@@ -74,5 +75,31 @@ public class Transaction {
     @Override
     public String toString() {
         return "Transaction{" + "fromAccountId=" + fromAccountId + ", toAccountId=" + toAccountId + ", amount=" + amount + ", description=" + description + ", dateOfTransaction=" + dateOfTransaction + '}';
+    }
+
+    public static final String CSV_FIELD_DELIMITER = ";";
+    public String toCSVString() {
+      StringBuilder sb = new StringBuilder();
+      sb.append(fromAccountId)
+              .append(CSV_FIELD_DELIMITER)
+              .append(toAccountId)
+              .append(CSV_FIELD_DELIMITER)
+              .append(amount)
+              .append(CSV_FIELD_DELIMITER)
+              .append(description)
+              .append(CSV_FIELD_DELIMITER)
+              .append(dateOfTransaction.toInstant().toEpochMilli());
+      return sb.toString();
+    }
+
+    public static Transaction fromCSVString(String csvString) {
+      String[] fields = csvString.split(CSV_FIELD_DELIMITER);
+      String fromAccountId   = fields[0];
+      String toAccountId     = fields[1];
+      short amount           = Short.parseShort(fields[2]);
+      String description     = fields[3];
+      Date dateOfTransaction = Date.from(Instant.ofEpochMilli(Long.parseLong(fields[4])));
+
+      return new Transaction(fromAccountId, toAccountId, amount, description, dateOfTransaction);
     }
 }

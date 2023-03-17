@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-
+import java.util.stream.Stream;
 
 
 //TODO: create exceptions
@@ -31,26 +31,26 @@ public class FileManagement {
         return userInfoString;
     }
 
-    //gjør om til typen transaction[]
-    public static String readAllTransactions(String userID) throws IOException {
-        InputStream input = FileManagement.class.getResourceAsStream("/resources/textfiles/transactions.txt");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-    
-        String transactionsInfoString = reader.lines()
-            .map(String::trim)
-            .filter(line -> line.startsWith(userID + ","))
-            .findFirst()
-            .orElse(null);
-    
-        reader.close();
-        if (transactionsInfoString != null) {
-            int index = transactionsInfoString.indexOf(",");
-            transactionsInfoString = transactionsInfoString.substring(index + 1);
-        }
-        String[] transactions = transactionsInfoString.split(",");
-        for(String element: transactions){
 
-        }
+    public static Transaction[] readAllTransactions(String userID) throws IOException {
+        InputStream input = FileManagement.class.getResourceAsStream("/resources/textfiles/transactions.txt");
+        assert input != null;
+        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+
+        Stream<String> userTrans = reader.lines() // Find the entry with the submitted userID.
+                .filter(line -> line.startsWith(userID + ","));
+        reader.close();
+
+        if (userTrans.findAny().isEmpty()) // If we could not find an entry with the requested userID, ...
+            return null; // ... and return null.
+
+        Transaction[] transactions = userTrans
+                .flatMap(s -> Arrays.stream(s.split(",")) // Perform the String::split-operation on every entry, and explode the results into a common one-dimensional array.
+                        .skip(1)) // Skip the first element in every line, as it contains the userID and not a parsable transaction.
+                .map(Transaction::fromCSVString) // Create a Transaction object for every string.
+                .toArray(Transaction[]::new);
+
+        return transactions;
     }
 
     //TODO: gjør om til typen transaction[]
