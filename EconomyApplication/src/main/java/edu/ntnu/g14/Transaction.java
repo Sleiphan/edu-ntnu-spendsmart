@@ -77,19 +77,34 @@ public class Transaction {
         return "Transaction{" + "fromAccountId=" + fromAccountId + ", toAccountId=" + toAccountId + ", amount=" + amount + ", description=" + description + ", dateOfTransaction=" + dateOfTransaction + '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+      if (!(o instanceof Transaction))
+        return false;
+
+      Transaction t = (Transaction) o;
+      if (amount != t.amount)
+        return false;
+      if (!toAccountId.equals(t.toAccountId))
+        return false;
+      if (!fromAccountId.equals(t.fromAccountId))
+        return false;
+      if (!description.equals(t.description))
+        return false;
+      if (!dateOfTransaction.equals(t.dateOfTransaction))
+        return false;
+
+      return true;
+    }
+
     public static final String CSV_FIELD_DELIMITER = ";";
     public String toCSVString() {
-      StringBuilder sb = new StringBuilder();
-      sb.append(fromAccountId)
-              .append(CSV_FIELD_DELIMITER)
-              .append(toAccountId)
-              .append(CSV_FIELD_DELIMITER)
-              .append(amount)
-              .append(CSV_FIELD_DELIMITER)
-              .append(description)
-              .append(CSV_FIELD_DELIMITER)
-              .append(dateOfTransaction.toInstant().toEpochMilli());
-      return sb.toString();
+      String sb = fromAccountId + CSV_FIELD_DELIMITER +
+              toAccountId + CSV_FIELD_DELIMITER +
+              amount + CSV_FIELD_DELIMITER +
+              description + CSV_FIELD_DELIMITER +
+              dateOfTransaction.toInstant().toEpochMilli();
+      return sb;
     }
 
     public static Transaction fromCSVString(String csvString) {
