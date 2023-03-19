@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 
@@ -66,8 +67,24 @@ public class FileManagement {
                 })
                 .collect(Collectors.joining());
     }
-    
+    public static Transaction[] findTransactionsToFromDate(Date from, Date to, String userId) throws IOException {
+        String allTransactions = readAllTransactions(userId); //TODO: Med formatet til csv fila er linje 72 & 73 unødvenige
+        String[] transactions = allTransactions.split(",");
+        //Dummy transaksjon
+        Transaction[] transactionsOfUser = {new Transaction("9299.02.00303", "9339.03.00303", (short) 2030, "BUCKZ", new Date())};
 
+        return (Transaction[]) Arrays.stream(transactionsOfUser) //TODO: Bytt med parameter med readAllTransactions(userId), slett foregående linje
+                .filter(transaction -> transaction.getDateOfTransaction().compareTo(from) >= 0 && transaction.getDateOfTransaction().compareTo(to) >= 0)
+                .toArray();
+    }
+
+    public static Transaction[] findTransactionsOfUserAndAccountNumber(String userId, String accountNumber) throws IOException {
+        Transaction[] transactionsOfUser = {new Transaction("9299.02.00303", "9339.03.00303", (short) 2030, "BUCKZ", new Date())};
+
+        return (Transaction[]) Arrays.stream(transactionsOfUser) //TODO: Bytt med parameter med readAllTransactions(userId), slett foregående linje
+                .filter(transaction -> transaction.getFromAccountId().equals(accountNumber) || transaction.getToAccountId().equals(accountNumber))
+                .toArray();
+    }
     public static void main(String[] args) {
         LocalDate from = LocalDate.of(2023, 03, 12);
         LocalDate to = LocalDate.of(2024, 01, 13);
