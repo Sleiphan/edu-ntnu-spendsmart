@@ -16,19 +16,23 @@ import java.util.stream.Collectors;
 
 public class FileManagement {
      
-    //gjør om til return Login[] usernames
-    public static String readUsers() throws IOException {
+    public static Login[] readUsers() throws IOException {
         InputStream input = FileManagement.class.getResourceAsStream("/resources/textfiles/users.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-        
-        String userInfoString = reader.lines()
-            .map(String::trim)
-            .filter(line -> line.startsWith(userID + ","))
-            .findFirst()
-            .orElse(null);
-        
+        int lines = 0;
+        while (reader.readLine() != null) lines++;
         reader.close();
-        return userInfoString;
+        String[] users = new String[lines];
+        for(int i = 0; i < lines; i++){
+           users[i] = reader.readLine();
+        }
+        Login[] logins = new Login[lines];
+        for(int i = 0; i < lines; i++){
+            String[] user = users[i].split(",");
+            logins[i] = new Login(user[1], user[3], user[0]);
+        }
+        reader.close();
+        return logins;
     }
 
     //gjør om til typen transaction[]

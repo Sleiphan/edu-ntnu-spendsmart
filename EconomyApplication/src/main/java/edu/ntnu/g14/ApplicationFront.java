@@ -45,20 +45,43 @@ public class ApplicationFront extends Application {
     }
 
     //TODO: REMOVE dropdown and add to all other scenes
-    public Scene loginChooseUser() {
+    public Scene loginChooseUser() throws IOException {
         Text chooseUser = newText("Choose user", 30, false, 170, 40);
         Text registerNew = newText("Register new account", 10, true, 400, 280);
         registerNew.setOnMouseClicked(e -> {
             stage.setScene(registerFirst());
         });
 
-        String[][] users = {"Barack Obama", "Donald Trump"}; //TODO: make variable
-        ChoiceBox<String> user = newChoiceBox(users, "black", "white", 250, 20, 15, 125, 70);
+        String[] usernames = new String[FileManagement.readUsers().length];
+        Login[] logins = FileManagement.readUsers();
+        for(int i = 0; i < FileManagement.readUsers().length; i++){
+            usernames[i] = logins[i].getUserName();
+        }
+        
+        ChoiceBox<String> user = newChoiceBox(usernames, "black", "white", 250, 20, 15, 125, 70);
 
         Button confirm = newButton("Confirm", 175, 110, "black", "white", 150, 20, 15);
         confirm.setOnAction(e -> {
-            //loggedInUser = new User(FileManagement.readUser(userId));
-            stage.setScene(loginUser(user.getValue()));
+            if(user.getValue() != null){
+                try {
+                    for(int i = 0; i < FileManagement.readUsers().length; i++){
+                        if(user.getValue() == logins[i].getUserName()){
+                            loggedInUser = new User(FileManagement.readUser(logins[i].getUserId()).getAllAccounts(),
+                            FileManagement.readUser(logins[i].getUserId()).getAllInvoices(),
+                            FileManagement.readUser(logins[i].getUserId()).getLoginInfo(),
+                            FileManagement.readUser(logins[i].getUserId()).getEmail(),
+                            FileManagement.readUser(logins[i].getUserId()).getLastName(),
+                            FileManagement.readUser(logins[i].getUserId()).getFirstName(),
+                            FileManagement.readUser(logins[i].getUserId()).getTransactions(),
+                            FileManagement.readUser(logins[i].getUserId()).getBudget());
+                            stage.setScene(loginUser());
+                        }
+                    }
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+            }
         });
 
         Button testDropDown = newButton("test", 0, 0, "black", "white", 10, 10, 10);
@@ -86,50 +109,66 @@ public class ApplicationFront extends Application {
         return group;
     }
 
-    public Scene loginUser(String user) { //TODO: add User user as parameter
+    public Scene loginUser() {
         Text notYou = newText("Is this not you?", 10, true, 400, 280);
         notYou.setOnMouseClicked(e -> {
-            stage.setScene(loginChooseUser());
+            try {
+                stage.setScene(loginChooseUser());
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         });
 
         Text forgotPassword = newText("Forgot password", 10, true, 400, 260);
         forgotPassword.setOnMouseClicked(e -> {
-            stage.setScene(loginForgotPasswordFirst(user));
+            String key = EmailVertification.sendVertificationKey(loggedInUser.getEmail());
+            stage.setScene(loginForgotPasswordFirst(key));
         });
 
         TextField textField = newTextField("Password", 120, 60, "black", "white", 250, 40, 25);
         Button loginButton = newButton("Login", 185, 130, "black", "white", 100, 30, 25);
         loginButton.setOnAction(e -> {
-            if (textField.getText() == "Passord123") { //add password based on user
-                //stage.setScene(overview(user));
+            if (textField.getText() == loggedInUser.getLoginInfo().getPassword()) {
+                stage.setScene(mainPage());
             } else {
-                //add what happens if the password is wrong
+                alertBox("ERROR", "Wrong password", "Please insert the right password");
             }
         });
+        
+        
 
-        Group root = new Group(newText("Welcome back " + user, 25, false, 120, 40),
+        Group root = new Group(newText("Welcome back " + loggedInUser.getLoginInfo().getUserName(), 25, false, 120, 40),
                 notYou, forgotPassword, textField, loginButton);
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
         return scene;
     }
 
-    public Scene loginForgotPasswordFirst(String user) {
+    public Scene loginForgotPasswordFirst(String key) {
         Text goBack = newText("Go back?", 10, true, 400, 260);
         goBack.setOnMouseClicked(e -> {
-            stage.setScene(loginUser(user));
+            stage.setScene(loginUser());
         });
 
         TextField keyField = newTextField("Code-key", 120, 70, "black", "white", 250, 30, 25);
         Button loginButton = newButton("Make new password", 120, 140, "black", "white", 250, 20, 15);
+        loginButton.setOnAction(e -> {
+            if (keyField.getText().replace(" ", "").equals(key.replace(" ", ""))) {
+                stage.setScene(loginForgotpasswordSecond());
+            } else {
+                alertBox("ERROR", "Wrong key", "The wrong key has been input");
+            }
+        });
 
         Group root = new Group(
                 newText("An email with a code-key has been sent to:", 15, false, 130, 40),
-                newText("Oboooma@gmail.com", 15, false, 170, 60),
+                newText(loggedInUser.getEmail(), 15, false, 170, 60),
                 goBack, keyField, loginButton);
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
         return scene;
     }
 
+    //TODO: update password on update
     public Scene loginForgotpasswordSecond() {
         TextField newPassword = newTextField("New password", 125, 70, "black", "white", 250, 20, 15);
         TextField retypeNewPassword = newTextField("Retype new password", 125, 110, "black", "white",
@@ -617,7 +656,14 @@ public class ApplicationFront extends Application {
             }
         });
 
-        logOut.setOnAction(event -> stage.setScene(loginChooseUser()));
+        logOut.setOnAction(event -> {
+            try {
+                stage.setScene(loginChooseUser());
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        });
 
         Button edit = newButton("Edit", 700, 520,"white", "grey", 157,60,16);
         Button confirm = newButton("confirm", 870, 520,"white", "grey", 157,50,16);
