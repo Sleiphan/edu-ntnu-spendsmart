@@ -4,12 +4,14 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class Transaction {
-    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+    private static final DateTimeFormatter dateFormatter = 
+    DateTimeFormatter.ofPattern("dd/MM/yyyy");
   //These private fields should maybe be public instead?
     private String fromAccountId;
     private String toAccountId;
     private short amount;
     private String description;
+
     private LocalDate dateOfTransaction;
 
     public Transaction(String fromAccountId, String toAccountId, short amount, String description, LocalDate dateOfTransaction) {
@@ -17,8 +19,6 @@ public class Transaction {
         throw new IllegalArgumentException("From account ID cannot be empty");
       if (toAccountId.isEmpty())
         throw new IllegalArgumentException("To account ID cannot be empty");
-      if (amount <= 0)
-        throw new IllegalArgumentException("Amount must be greater than 0");
       if (description == null)
         throw new IllegalArgumentException("Description cannot be null");
       if (dateOfTransaction == null)
@@ -99,22 +99,23 @@ public class Transaction {
 
     public static final String CSV_FIELD_DELIMITER = ";";
     public String toCSVString() {
-      String sb = fromAccountId + CSV_FIELD_DELIMITER +
-              toAccountId + CSV_FIELD_DELIMITER +
+      String sb =
+              dateOfTransaction.format(dateFormatter) +
               amount + CSV_FIELD_DELIMITER +
-              description + CSV_FIELD_DELIMITER +
-              dateOfTransaction.format(dateFormatter);
+              toAccountId + CSV_FIELD_DELIMITER +
+              fromAccountId + CSV_FIELD_DELIMITER +
+              description + CSV_FIELD_DELIMITER;
 
       return sb;
     }
 
     public static Transaction fromCSVString(String csvString) {
       String[] fields = csvString.split(CSV_FIELD_DELIMITER);
-      String fromAccountId   = fields[0];
-      String toAccountId     = fields[1];
-      short amount           = Short.parseShort(fields[2]);
-      String description     = fields[3];
-      LocalDate dateOfTransaction = LocalDate.parse(fields[4], dateFormatter);
+      String fromAccountId   = fields[3];
+      String toAccountId     = fields[2];
+      short amount           = Short.parseShort(fields[1]);
+      String description     = fields[4];
+      LocalDate dateOfTransaction = LocalDate.parse(fields[0], dateFormatter);
 
       return new Transaction(fromAccountId, toAccountId, amount, description, dateOfTransaction);
     }

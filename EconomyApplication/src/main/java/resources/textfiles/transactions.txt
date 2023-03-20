@@ -1,3 +1,3 @@
-##useriD,date,amount,to,from,account,description
-olav1,13.03.2023;-200;kiwi;olav1;konto;brukte penger på ting,13.02.2023;-200;elkjøp;olav1;konto;brukte penger på ting
-per2,13.01.2023;-200;olav1;per1;konto;brukte penger på ting,
+##useriD,date,amount,toAccountNumber,fromAccountNumber,description
+olav#1,13/03/2023;200;kiwi;olav1;brukte penger på ting,13/02/2023;200;elkjøp;olav1;brukte penger på ting
+per2,13/01/2023;200;olav1;per1;brukte penger på ting,

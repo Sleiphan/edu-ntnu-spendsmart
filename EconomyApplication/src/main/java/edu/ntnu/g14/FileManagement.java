@@ -48,14 +48,13 @@ public class FileManagement {
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         Stream<String> userTrans = reader.lines() 
                 .filter(line -> line.startsWith(userID + ","));
-        reader.close();
-        if (userTrans.findAny().isEmpty()) 
-            return null; 
+        
         Transaction[] transactions = userTrans
                 .flatMap(s -> Arrays.stream(s.split(",")) 
                         .skip(1)) 
                 .map(Transaction::fromCSVString) 
                 .toArray(Transaction[]::new);
+        reader.close();
         return transactions;
     }
 
@@ -89,6 +88,7 @@ public class FileManagement {
         Transaction[] transactions = readAllTransactions(userId);
         if (userInfoString != null) {
             String[] userInfoArray = userInfoString.split(",");
+            System.out.println(userInfoArray[0]);
 
             String username = userInfoArray[1];
             String email = userInfoArray[2];
@@ -140,8 +140,8 @@ public class FileManagement {
     }
 
     public static void main(String[] args) throws IOException {
-        Transaction[] tr = readAllTransactions("olav#1");
-        System.out.println(tr[0].getDescription());
+        User a = readUser("Olav#1");
+        System.out.println(a[0].getEmail());
     }
 
 }
