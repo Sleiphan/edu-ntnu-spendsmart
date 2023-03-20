@@ -65,32 +65,9 @@ public class FileManagement {
                 .toArray(Transaction[]::new);
 
         return transactions;
-        if (transactionsInfoString != null) {
-            int index = transactionsInfoString.indexOf(",");
-            transactionsInfoString = transactionsInfoString.substring(index + 1);
-        }
-        return transactionsInfoString;
     }
 
-    //TODO: gjør om til typen transaction[]
-    public static String findTransactions(LocalDate from, LocalDate to, String userID) throws IOException {
-        String allTransactions = readAllTransactions(userID);
-        String[] transactions = allTransactions.split(",");
-        
-        return Arrays.stream(transactions)
-                .skip(1)
-                .map(String::trim)
-                .filter(line -> !line.isEmpty())
-                .map(transaction -> {
-                    String[] info = transaction.split(";");
-                    LocalDate date = LocalDate.parse(info[0], DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-                    if (date.compareTo(from) >= 0 && date.compareTo(to) <= 0) {
-                        return transaction + ",";
-                    }
-                    return "";
-                })
-                .collect(Collectors.joining());
-    }
+   
     public static Transaction[] findTransactionsToFromDate(Date from, Date to, String userId) throws IOException {
         String allTransactions = readAllTransactions(userId); //TODO: Med formatet til csv fila er linje 72 & 73 unødvenige
         String[] transactions = allTransactions.split(",");
@@ -103,16 +80,8 @@ public class FileManagement {
     }
 
     public static User readUser(String userId) throws IOException {
-        String userInfoString = readUsers(userId);
+        String userInfoString = readUsers();
         List<Transaction> transactions = readAllTransactions(userId);
-
-    public static Transaction[] findTransactionsOfUserAndAccountNumber(String userId, String accountNumber) throws IOException {
-        Transaction[] transactionsOfUser = {new Transaction("9299.02.00303", "9339.03.00303", (short) 2030, "BUCKZ", new Date())};
-
-        return (Transaction[]) Arrays.stream(transactionsOfUser) //TODO: Bytt med parameter med readAllTransactions(userId), slett foregående linje
-                .filter(transaction -> transaction.getFromAccountId().equals(accountNumber) || transaction.getToAccountId().equals(accountNumber))
-                .toArray();
-    }
         if (userInfoString != null) {
             String[] userInfoArray = userInfoString.split(",");
 
@@ -136,9 +105,21 @@ public class FileManagement {
         }
     }
 
+    public static Transaction[] findTransactionsOfUserAndAccountNumber(String userId, String accountNumber) throws IOException {
+        Transaction[] transactionsOfUser = {new Transaction("9299.02.00303", "9339.03.00303", (short) 2030, "BUCKZ", new Date())};
 
-    public static Transaction readLatestTransactions(String userId, int amount){
+        return (Transaction[]) Arrays.stream(transactionsOfUser) //TODO: Bytt med parameter med readAllTransactions(userId), slett foregående linje
+                .filter(transaction -> transaction.getFromAccountId().equals(accountNumber) || transaction.getToAccountId().equals(accountNumber))
+                .toArray();
+    }
 
+
+    public static Transaction[] readLatestTransactions(String userId, int amount){
+        Transaction[] allTransactions = readAllTransactions(userId);
+        for(int i = 0; i < allTransactions.length; i++){
+            allTransactions[]
+        }
+        
     }
 
 

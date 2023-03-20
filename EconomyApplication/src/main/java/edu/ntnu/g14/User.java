@@ -1,8 +1,6 @@
 package edu.ntnu.g14;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 public class User extends Personalia {
     private HashMap<String, Account> accounts;
     private HashMap<String, Invoice> invoices;
