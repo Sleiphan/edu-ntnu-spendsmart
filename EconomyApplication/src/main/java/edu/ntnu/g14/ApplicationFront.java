@@ -64,21 +64,9 @@ public class ApplicationFront extends Application {
         confirm.setOnAction(e -> {
             if(user.getValue() != null){
                 try {
-                    for(int i = 0; i < FileManagement.readUsers().length; i++){
-                        if(user.getValue() == logins[i].getUserName()){
-                            loggedInUser = new User(FileManagement.readUser(logins[i].getUserId()).getAllAccounts(),
-                            FileManagement.readUser(logins[i].getUserId()).getAllInvoices(),
-                            FileManagement.readUser(logins[i].getUserId()).getLoginInfo(),
-                            FileManagement.readUser(logins[i].getUserId()).getEmail(),
-                            FileManagement.readUser(logins[i].getUserId()).getLastName(),
-                            FileManagement.readUser(logins[i].getUserId()).getFirstName(),
-                            FileManagement.readUser(logins[i].getUserId()).getTransactions(),
-                            FileManagement.readUser(logins[i].getUserId()).getBudget());
-                            stage.setScene(loginUser());
-                        }
-                    }
+                    loggedInUser = FileManagement.readUser(user.getValue());
+                    stage.setScene(loginUser());
                 } catch (IOException e1) {
-                    // TODO Auto-generated catch block
                     e1.printStackTrace();
                 }
             }

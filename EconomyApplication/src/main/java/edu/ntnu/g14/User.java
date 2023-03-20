@@ -1,13 +1,13 @@
 package edu.ntnu.g14;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 public class User extends Personalia {
-    private HashMap<String, Account> accounts;
-    private HashMap<String, Invoice> invoices;
+    private Account[] accounts;
+    private Invoice[] invoices;
     private Transaction[] transactions;
     private Budget budget;
 
-    public User(HashMap<String, Account> accounts,HashMap<String, Invoice> invoices,
+    public User(Account[] accounts, Invoice[] invoices,
         Login loginInfo, String email, String lastName, String firstName,
         Transaction[] transactions, Budget budget) {
         super(loginInfo,email,lastName,firstName);
@@ -17,10 +17,10 @@ public class User extends Personalia {
         this.budget = budget;
     }
 
-    public HashMap<String, Account> getAllAccounts() {
+    public Account[] getAllAccounts() {
         return accounts;
     }
-    public HashMap<String, Invoice> getAllInvoices() {
+    public Invoice[] getAllInvoices() {
         return invoices;
     }
 

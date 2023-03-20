@@ -86,7 +86,7 @@ public class FileManagement {
         while (reader.readLine() != null) lines++;
         reader.close();
         String[] users = new String[lines];
-        String userInfoString;
+        String userInfoString = "";
         for(int i = 0; i < lines; i++){
            users[i] = reader.readLine();
            String[] user= users[i].split(",");
@@ -106,8 +106,8 @@ public class FileManagement {
             String[] accountNames = userInfoArray[6].split("\\.");
 
             //TODO: make users.txt contain accounts, innvoices, and Budget
-            HashMap<String, Account> accounts = getAccountsForUser(userId, accountNames);
-            HashMap<String, Invoice> invoices = getInvoicesForUser(userId);
+            Account[] accounts = getAccountsForUser(userId);
+            Invoice[] invoices = getInvoicesForUser(userId);
             Budget budget = getBudgetForUser(userId);
 
             Login loginInfo = new Login(username,password, userId);
@@ -117,6 +117,19 @@ public class FileManagement {
             return null;
         }
     }
+
+    public static Account[] getAccountsForUser(String userId){
+        return null;
+    }
+
+    public static Invoice[] getInvoicesForUser(String userId){
+        return null;
+    }
+
+    public static Budget getBudgetForUser(String userId){
+        return null;
+    }
+
 
     public static Transaction[] findTransactionsOfUserAndAccountNumber(String userId, String accountNumber) throws IOException {
         Transaction[] transactionsOfUser = {new Transaction("9299.02.00303", "9339.03.00303", (short) 2030, "BUCKZ", new Date())};
