@@ -1,6 +1,5 @@
 package edu.ntnu.g14;
 
-import java.util.ArrayList;
 public class User extends Personalia {
     private Account[] accounts;
     private Invoice[] invoices;

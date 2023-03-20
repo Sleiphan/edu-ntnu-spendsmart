@@ -40,7 +40,7 @@ public class ApplicationFront extends Application {
     public void start(Stage stage) throws IOException, InterruptedException {
         this.stage = stage;
         stage.setResizable(false);
-        stage.setScene(loginChooseUser());
+        stage.setScene(mainPage());
         stage.show();
     }
 
@@ -611,6 +611,7 @@ public class ApplicationFront extends Application {
                 Optional<AccountWithProperty> result = accountWithPropertyDialog.showAndWait();
                 if (result.isPresent()) {
                     AccountWithProperty account = result.get();
+                    System.out.println(account.getAccountType());
                     //TODO: Add the account to the users list of accounts
                 }
             }
@@ -922,6 +923,7 @@ public class ApplicationFront extends Application {
             amountField.textProperty().bindBidirectional(account.amountProperty());
             accountNumberField.textProperty().bindBidirectional(account.accountNumberProperty());
             accountNameField.textProperty().bindBidirectional(account.accountNameProperty());
+            accountTypeField.valueProperty().bindBidirectional(account.accountTypeProperty());
             // TODO: Implement String Properties to Account class
         }
         private void setResultConverter() {
@@ -951,10 +953,14 @@ public class ApplicationFront extends Application {
                     }
                 }
                 private boolean validateDialog() {
-                    if (accountNumberField.getText().isBlank() || amountField.getText().isBlank() || accountNameField.getText().isBlank()) {
+                    BigDecimal amountBigDecimal;
+                    try {
+                        amountBigDecimal = new BigDecimal(amountField.getText());
+                    } catch (NumberFormatException e) {
                         return false;
                     }
-                    return true;
+                    return !accountNumberField.getText().isBlank() && !accountNameField.getText().isBlank() && !accountTypeField.getValue().isBlank()
+                            && accountNumberField.getText().length() != 13 && !(amountBigDecimal.floatValue() < 0);
                 }
             });
         }
@@ -964,7 +970,7 @@ public class ApplicationFront extends Application {
             Label accountNumberLabel = new Label("Enter the account number:");
             Label amountLabel = new Label("Enter the balance of your account:");
             Label accountNameLabel = new Label("Choose a name for your account:");
-            this.accountTypeField = new ChoiceBox<>();
+            this.accountTypeField = new ChoiceBox<String>();
             this.accountNumberField = new TextField();
             this.amountField = new TextField();
             this.accountNameField = new TextField();
