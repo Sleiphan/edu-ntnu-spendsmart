@@ -607,11 +607,10 @@ public class ApplicationFront extends Application {
         addAccount.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                Dialog<Account> accountDialog = new AccountDialog(new Account(AccountCategory.SAVINGS_ACCOUNT, new BigDecimal(2),"9293.11.39233","Big Buckz"));
-                Optional<Account> result = accountDialog.showAndWait();
+                Dialog<AccountWithProperty> accountWithPropertyDialog = new AccountWithPropertyDialog(new AccountWithProperty(null, null, null, null));
+                Optional<AccountWithProperty> result = accountWithPropertyDialog.showAndWait();
                 if (result.isPresent()) {
-                    Account account = result.get();
-                    System.out.println(Integer.toString(account.getAmount().intValue()) + ""+ account.getAccountNumber() + " " + account.getAccountName());
+                    AccountWithProperty account = result.get();
                     //TODO: Add the account to the users list of accounts
                 }
             }
@@ -904,14 +903,14 @@ public class ApplicationFront extends Application {
             "-fx-font-size: " + fontSize + "px;";
     }
     
-    public class AccountDialog extends Dialog<Account> {
-        private Account account;
+    public class AccountWithPropertyDialog extends Dialog<AccountWithProperty> {
+        private AccountWithProperty account;
         private ChoiceBox<String> accountTypeField;
         private TextField amountField;
         private TextField accountNumberField;
         private TextField accountNameField;
 
-        public AccountDialog(Account account) {
+        public AccountWithPropertyDialog(AccountWithProperty account) {
             super();
             this.setTitle("Add Account");
             this.account = account;
@@ -920,12 +919,15 @@ public class ApplicationFront extends Application {
             setResultConverter();
         }
         private void setPropertyBindings() {
+            amountField.textProperty().bindBidirectional(account.amountProperty());
+            accountNumberField.textProperty().bindBidirectional(account.accountNumberProperty());
+            accountNameField.textProperty().bindBidirectional(account.accountNameProperty());
             // TODO: Implement String Properties to Account class
         }
         private void setResultConverter() {
-            javafx.util.Callback<ButtonType, Account> accountResultConverter = new javafx.util.Callback<ButtonType, Account>() {
+            javafx.util.Callback<ButtonType, AccountWithProperty> accountResultConverter = new javafx.util.Callback<ButtonType, AccountWithProperty>() {
                 @Override
-                public Account call(ButtonType param) {
+                public AccountWithProperty call(ButtonType param) {
                     if (param == ButtonType.APPLY) {
                         return account;
                     } else {
