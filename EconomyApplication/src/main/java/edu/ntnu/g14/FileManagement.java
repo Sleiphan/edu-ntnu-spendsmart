@@ -88,7 +88,6 @@ public class FileManagement {
         Transaction[] transactions = readAllTransactions(userId);
         if (userInfoString != null) {
             String[] userInfoArray = userInfoString.split(",");
-            System.out.println(userInfoArray[0]);
 
             String username = userInfoArray[1];
             String email = userInfoArray[2];
@@ -140,8 +139,8 @@ public class FileManagement {
     }
 
     public static void main(String[] args) throws IOException {
-        User a = readUser("Olav#1");
-        System.out.println(a[0].getEmail());
+        User a = readUser("olav#1");
+        System.out.println(a.getEmail());
     }
 
 }

@@ -65,7 +65,13 @@ public class ApplicationFront extends Application {
         confirm.setOnAction(e -> {
             if(user.getValue() != null){
                 try {
-                    loggedInUser = FileManagement.readUser(user.getValue());
+                    String usersID = "";
+                    for(int i = 0; i < FileManagement.readUsers().length; i++){
+                        if(user.getValue().equals(logins[i].getUserName())){
+                            usersID = logins[i].getUserId();
+                        }
+                    }
+                    loggedInUser = FileManagement.readUser(usersID);
                     stage.setScene(loginUser());
                 } catch (IOException e1) {
                     e1.printStackTrace();
@@ -118,7 +124,7 @@ public class ApplicationFront extends Application {
         TextField textField = newTextField("Password", 120, 60, "black", "white", 250, 40, 25);
         Button loginButton = newButton("Login", 185, 130, "black", "white", 100, 30, 25);
         loginButton.setOnAction(e -> {
-            if (textField.getText() == loggedInUser.getLoginInfo().getPassword()) {
+            if (textField.getText().equals(loggedInUser.getLoginInfo().getPassword())) {
                 stage.setScene(mainPage());
             } else {
                 alertBox("ERROR", "Wrong password", "Please insert the right password");
@@ -162,6 +168,7 @@ public class ApplicationFront extends Application {
         TextField newPassword = newTextField("New password", 125, 70, "black", "white", 250, 20, 15);
         TextField retypeNewPassword = newTextField("Retype new password", 125, 110, "black", "white",
                 250, 20, 15);
+        //TODO: actually update password and take user to login again
         Button confirmButton = newButton("Confirm", 175, 150, "black", "white", 150, 20, 15);
         Text goBack = newText("Go back", 10, true, 400, 260);
 
