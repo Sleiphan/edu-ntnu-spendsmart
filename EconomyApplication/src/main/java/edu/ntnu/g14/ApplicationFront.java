@@ -264,13 +264,13 @@ public class ApplicationFront extends Application {
     public Scene invoice() {
         List<Invoice> invoices = new ArrayList<>(); // TODO: Fill with actal data.
         invoices.add(
-                new Invoice(new Date(System.currentTimeMillis() + 24 * 3600), BigDecimal.valueOf(769.43),
+                new Invoice(LocalDate.now().plusDays(1), BigDecimal.valueOf(769.43),
                         "17535.83.78287"));
         invoices.add(
-                new Invoice(new Date(System.currentTimeMillis() + 24 * 3600), BigDecimal.valueOf(769.43),
+                new Invoice(LocalDate.now().plusDays(1), BigDecimal.valueOf(769.43),
                         "17535.83.78287"));
         invoices.add(
-                new Invoice(new Date(System.currentTimeMillis() + 24 * 3600), BigDecimal.valueOf(769.43),
+                new Invoice(LocalDate.now().plusDays(1), BigDecimal.valueOf(769.43),
                         "17535.83.78287"));
 
         Text amount_t = newText("Amount (kr):", 17, false, 11, 345 - 186);
@@ -330,7 +330,8 @@ public class ApplicationFront extends Application {
             // TODO: Reconsider use of Date class.
             LocalDate due = due_dp.getValue();
             Invoice newInvoice = new Invoice(
-                    new Date(due.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()), amount,
+                    due.atStartOfDay(ZoneId.systemDefault()).toLocalDate(), 
+                    amount,
                     accountNum_tf.getText());
             invoices.add(newInvoice);
 
