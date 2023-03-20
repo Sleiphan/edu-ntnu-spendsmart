@@ -80,8 +80,21 @@ public class FileManagement {
     }
 
     public static User readUser(String userId) throws IOException {
-        String userInfoString = readUsers();
-        List<Transaction> transactions = readAllTransactions(userId);
+        InputStream input = FileManagement.class.getResourceAsStream("/resources/textfiles/users.txt");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+        int lines = 0;
+        while (reader.readLine() != null) lines++;
+        reader.close();
+        String[] users = new String[lines];
+        String userInfoString;
+        for(int i = 0; i < lines; i++){
+           users[i] = reader.readLine();
+           String[] user= users[i].split(",");
+           if(user[0].equals(userId)){
+            userInfoString = users[i];
+           }
+        }
+        Transaction[] transactions = readAllTransactions(userId);
         if (userInfoString != null) {
             String[] userInfoArray = userInfoString.split(",");
 
