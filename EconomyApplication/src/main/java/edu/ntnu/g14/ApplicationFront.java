@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -610,7 +609,7 @@ public class ApplicationFront extends Application {
         addTransaction.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                Dialog<Transaction> transactionDialog = new TransactionDialog(new Transaction("9293.11.39233", "9293.11.39234", (short) 32121, "Hope it is enough", new Date()));
+                Dialog<Transaction> transactionDialog = new TransactionDialog(new Transaction("9293.11.39233", "9293.11.39234", (short) 32121, "Hope it is enough", LocalDate.now()));
                 Optional<Transaction> result = transactionDialog.showAndWait();
                 if (result.isPresent()) {
                     Transaction transaction = result.get();

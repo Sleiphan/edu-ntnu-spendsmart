@@ -43,39 +43,23 @@ public class FileManagement {
         InputStream input = FileManagement.class.getResourceAsStream("/resources/textfiles/transactions.txt");
         assert input != null;
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-
         Stream<String> userTrans = reader.lines() // Find the entry with the submitted userID.
                 .filter(line -> line.startsWith(userID + ","));
-
-        String transactionsInfoString = reader.lines()
-            .map(String::trim)
-            .filter(line -> line.startsWith(userID + ","))
-            .findFirst()
-            .orElse(null);
-
         reader.close();
-
         if (userTrans.findAny().isEmpty()) // If we could not find an entry with the requested userID, ...
             return null; // ... and return null.
-
         Transaction[] transactions = userTrans
                 .flatMap(s -> Arrays.stream(s.split(",")) // Perform the String::split-operation on every entry, and explode the results into a common one-dimensional array.
                         .skip(1)) // Skip the first element in every line, as it contains the userID and not a parsable transaction.
                 .map(Transaction::fromCSVString) // Create a Transaction object for every string.
                 .toArray(Transaction[]::new);
-
         return transactions;
     }
 
    
-    public static Transaction[] findTransactionsToFromDate(Date from, Date to, String userId) throws IOException {
-        String allTransactions = readAllTransactions(userId); //TODO: Med formatet til csv fila er linje 72 & 73 unødvenige
-        String[] transactions = allTransactions.split(",");
-        //Dummy transaksjon
-        Transaction[] transactionsOfUser = {new Transaction("9299.02.00303", "9339.03.00303", (short) 2030, "BUCKZ", new Date())};
-
-        return (Transaction[]) Arrays.stream(transactionsOfUser) //TODO: Bytt med parameter med readAllTransactions(userId), slett foregående linje
-                .filter(transaction -> transaction.getDateOfTransaction().compareTo(from) >= 0 && transaction.getDateOfTransaction().compareTo(to) >= 0)
+    public static Transaction[] findTransactionsToFromDate(LocalDate from, LocalDate to, String userId) throws IOException {
+        return (Transaction[]) Arrays.stream(readAllTransactions(userId)) //TODO: Bytt med parameter med readAllTransactions(userId), slett foregående linje
+                .filter(transaction -> transaction.getDateOfTransaction().isAfter(from) && transaction.getDateOfTransaction().isBefore(to))
                 .toArray();
     }
 
@@ -103,7 +87,6 @@ public class FileManagement {
             String password = userInfoArray[3];
             String firstName = userInfoArray[4];
             String lastName = userInfoArray[5];
-            String[] accountNames = userInfoArray[6].split("\\.");
 
             //TODO: make users.txt contain accounts, innvoices, and Budget
             Account[] accounts = getAccountsForUser(userId);
@@ -132,9 +115,7 @@ public class FileManagement {
 
 
     public static Transaction[] findTransactionsOfUserAndAccountNumber(String userId, String accountNumber) throws IOException {
-        Transaction[] transactionsOfUser = {new Transaction("9299.02.00303", "9339.03.00303", (short) 2030, "BUCKZ", new Date())};
-
-        return (Transaction[]) Arrays.stream(transactionsOfUser) //TODO: Bytt med parameter med readAllTransactions(userId), slett foregående linje
+        return (Transaction[]) Arrays.stream(readAllTransactions(userId)) //TODO: Bytt med parameter med readAllTransactions(userId), slett foregående linje
                 .filter(transaction -> transaction.getFromAccountId().equals(accountNumber) || transaction.getToAccountId().equals(accountNumber))
                 .toArray();
     }
@@ -150,17 +131,5 @@ public class FileManagement {
         }
     }
 
-
-
-    public static void main(String[] args) {
-        LocalDate from = LocalDate.of(2023, 03, 12);
-        LocalDate to = LocalDate.of(2024, 01, 13);
-        try {
-            String title = findTransaction(from, to, "olav1");
-            System.out.println(title);
-        } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
-        }
-    }
 }
 
