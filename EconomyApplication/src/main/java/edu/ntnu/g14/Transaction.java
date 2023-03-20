@@ -1,18 +1,18 @@
 package edu.ntnu.g14;
 
-import java.time.Instant;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Transaction {
-
+    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
   //These private fields should maybe be public instead?
     private String fromAccountId;
     private String toAccountId;
     private short amount;
     private String description;
-    private Date dateOfTransaction; 
+    private LocalDate dateOfTransaction;
 
-    public Transaction(String fromAccountId, String toAccountId, short amount, String description, Date dateOfTransaction) {
+    public Transaction(String fromAccountId, String toAccountId, short amount, String description, LocalDate dateOfTransaction) {
       if (fromAccountId.isEmpty())
         throw new IllegalArgumentException("From account ID cannot be empty");
       if (toAccountId.isEmpty())
@@ -47,7 +47,7 @@ public class Transaction {
         return description;
     }
 
-    public Date getDateOfTransaction() {
+    public LocalDate getDateOfTransaction() {
         return dateOfTransaction;
     }
 
@@ -67,7 +67,7 @@ public class Transaction {
         this.description = description;
     }
 
-    public void setDateOfTransaction(Date dateOfTransaction) {
+    public void setDateOfTransaction(LocalDate dateOfTransaction) {
         this.dateOfTransaction = dateOfTransaction;
     }
 
@@ -103,7 +103,8 @@ public class Transaction {
               toAccountId + CSV_FIELD_DELIMITER +
               amount + CSV_FIELD_DELIMITER +
               description + CSV_FIELD_DELIMITER +
-              dateOfTransaction.toInstant().toEpochMilli();
+              dateOfTransaction.format(dateFormatter);
+
       return sb;
     }
 
@@ -113,7 +114,7 @@ public class Transaction {
       String toAccountId     = fields[1];
       short amount           = Short.parseShort(fields[2]);
       String description     = fields[3];
-      Date dateOfTransaction = Date.from(Instant.ofEpochMilli(Long.parseLong(fields[4])));
+      LocalDate dateOfTransaction = LocalDate.parse(fields[4], dateFormatter);
 
       return new Transaction(fromAccountId, toAccountId, amount, description, dateOfTransaction);
     }
