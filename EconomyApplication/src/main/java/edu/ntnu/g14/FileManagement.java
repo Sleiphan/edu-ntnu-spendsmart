@@ -127,12 +127,14 @@ public class FileManagement {
     }
 
 
-    public static Transaction[] readLatestTransactions(String userId, int amount){
+    public static Transaction[] readLatestTransactions(String userId, int amount) throws IOException{
         Transaction[] allTransactions = readAllTransactions(userId);
-        for(int i = 0; i < allTransactions.length; i++){
-            allTransactions[]
+        if (allTransactions.length >= amount) {
+            Transaction[] latestTransaction = Arrays.copyOfRange(allTransactions, allTransactions.length - amount, allTransactions.length);
+            return latestTransaction;
+        } else {
+            return null;
         }
-        
     }
 
 
