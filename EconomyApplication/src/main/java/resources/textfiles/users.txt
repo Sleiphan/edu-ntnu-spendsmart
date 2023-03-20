@@ -1,4 +1,4 @@
 ##user-id,username,mail,password,first-name,last-name,accounts,
 olav#1,olavsie,olav@mail.no,Passord123,olav,sie,sparekonto.brukskonto.pensjon,
-pge2,
-per3,
+pge2,ola23232,olav@mail.no,Passord123,olav,sie,sparekonto.brukskonto.pensjon,
+per3,olae2,olav@mail.no,Passord123,olav,sie,sparekonto.brukskonto.pensjon,

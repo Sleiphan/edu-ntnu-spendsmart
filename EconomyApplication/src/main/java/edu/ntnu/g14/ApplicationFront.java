@@ -39,7 +39,8 @@ public class ApplicationFront extends Application {
     @Override
     public void start(Stage stage) throws IOException, InterruptedException {
         this.stage = stage;
-        stage.setScene(mainPage());
+        stage.setResizable(false);
+        stage.setScene(loginChooseUser());
         stage.show();
     }
 
@@ -56,7 +57,8 @@ public class ApplicationFront extends Application {
         for(int i = 0; i < FileManagement.readUsers().length; i++){
             usernames[i] = logins[i].getUserName();
         }
-        
+    
+
         ChoiceBox<String> user = newChoiceBox(usernames, "black", "white", 250, 20, 15, 125, 70);
 
         Button confirm = newButton("Confirm", 175, 110, "black", "white", 150, 20, 15);

@@ -5,13 +5,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
@@ -20,18 +20,21 @@ import java.util.stream.Stream;
 public class FileManagement {
      
     public static Login[] readUsers() throws IOException {
+        
+        List<String> lines = new ArrayList<>();
         InputStream input = FileManagement.class.getResourceAsStream("/resources/textfiles/users.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-        int lines = 0;
-        while (reader.readLine() != null) lines++;
-        reader.close();
-        String[] users = new String[lines];
-        for(int i = 0; i < lines; i++){
-           users[i] = reader.readLine();
+        reader.readLine();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            lines.add(line);
         }
-        Login[] logins = new Login[lines];
-        for(int i = 0; i < lines; i++){
-            String[] user = users[i].split(",");
+        String[] linesArray = lines.toArray(new String[0]);
+
+
+        Login[] logins = new Login[linesArray.length];
+        for(int i = 0; i < linesArray.length; i++){
+            String[] user = linesArray[i].split(",");
             logins[i] = new Login(user[1], user[3], user[0]);
         }
         reader.close();
@@ -43,15 +46,15 @@ public class FileManagement {
         InputStream input = FileManagement.class.getResourceAsStream("/resources/textfiles/transactions.txt");
         assert input != null;
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-        Stream<String> userTrans = reader.lines() // Find the entry with the submitted userID.
+        Stream<String> userTrans = reader.lines() 
                 .filter(line -> line.startsWith(userID + ","));
         reader.close();
-        if (userTrans.findAny().isEmpty()) // If we could not find an entry with the requested userID, ...
-            return null; // ... and return null.
+        if (userTrans.findAny().isEmpty()) 
+            return null; 
         Transaction[] transactions = userTrans
-                .flatMap(s -> Arrays.stream(s.split(",")) // Perform the String::split-operation on every entry, and explode the results into a common one-dimensional array.
-                        .skip(1)) // Skip the first element in every line, as it contains the userID and not a parsable transaction.
-                .map(Transaction::fromCSVString) // Create a Transaction object for every string.
+                .flatMap(s -> Arrays.stream(s.split(",")) 
+                        .skip(1)) 
+                .map(Transaction::fromCSVString) 
                 .toArray(Transaction[]::new);
         return transactions;
     }
@@ -64,20 +67,25 @@ public class FileManagement {
     }
 
     public static User readUser(String userId) throws IOException {
+        List<String> lines = new ArrayList<>();
         InputStream input = FileManagement.class.getResourceAsStream("/resources/textfiles/users.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-        int lines = 0;
-        while (reader.readLine() != null) lines++;
-        reader.close();
-        String[] users = new String[lines];
+        reader.readLine();
+
+        String line;
+        while ((line = reader.readLine()) != null) {
+            lines.add(line);
+        }
+        String[] linesArray = lines.toArray(new String[0]);
+
         String userInfoString = "";
-        for(int i = 0; i < lines; i++){
-           users[i] = reader.readLine();
-           String[] user= users[i].split(",");
+        for(int i = 0; i < linesArray.length; i++){
+           String[] user= linesArray[i].split(",");
            if(user[0].equals(userId)){
-            userInfoString = users[i];
+            userInfoString = linesArray[i];
            }
         }
+        
         Transaction[] transactions = readAllTransactions(userId);
         if (userInfoString != null) {
             String[] userInfoArray = userInfoString.split(",");
@@ -129,6 +137,11 @@ public class FileManagement {
         } else {
             return null;
         }
+    }
+
+    public static void main(String[] args) throws IOException {
+        Transaction[] tr = readAllTransactions("olav#1");
+        System.out.println(tr[0].getDescription());
     }
 
 }
