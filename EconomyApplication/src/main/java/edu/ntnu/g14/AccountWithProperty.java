@@ -1,2 +1,5 @@
-package edu.ntnu.g14;public class AccountWithProperty {
+package edu.ntnu.g14;
+
+public class AccountWithProperty {
+
 }
