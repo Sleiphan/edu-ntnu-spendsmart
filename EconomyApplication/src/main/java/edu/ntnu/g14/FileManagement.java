@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -75,10 +77,34 @@ public class FileManagement {
                 })
                 .collect(Collectors.joining());
     }
-    
-    public static User readUser(String userId){
-        
+
+    public static User readUser(String userId) throws IOException {
+        String userInfoString = readUsers(userId);
+        List<Transaction> transactions = readAllTransactions(userId);
+
+        if (userInfoString != null) {
+            String[] userInfoArray = userInfoString.split(",");
+
+            String username = userInfoArray[1];
+            String email = userInfoArray[2];
+            String password = userInfoArray[3];
+            String firstName = userInfoArray[4];
+            String lastName = userInfoArray[5];
+            String[] accountNames = userInfoArray[6].split("\\.");
+
+            //TODO: make users.txt contain accounts, innvoices, and Budget
+            HashMap<String, Account> accounts = getAccountsForUser(userId, accountNames);
+            HashMap<String, Invoice> invoices = getInvoicesForUser(userId);
+            Budget budget = getBudgetForUser(userId);
+
+            Login loginInfo = new Login(username,password, userId);
+
+            return new User(accounts, invoices, loginInfo, email, lastName, firstName, transactions, budget);
+        } else {
+            return null;
+        }
     }
+
 
     public static Transaction readLatestTransactions(String userId, int amount){
         
