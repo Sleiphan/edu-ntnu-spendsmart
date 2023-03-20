@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,6 +46,13 @@ public class FileManagement {
 
         Stream<String> userTrans = reader.lines() // Find the entry with the submitted userID.
                 .filter(line -> line.startsWith(userID + ","));
+
+        String transactionsInfoString = reader.lines()
+            .map(String::trim)
+            .filter(line -> line.startsWith(userID + ","))
+            .findFirst()
+            .orElse(null);
+
         reader.close();
 
         if (userTrans.findAny().isEmpty()) // If we could not find an entry with the requested userID, ...
@@ -57,14 +65,20 @@ public class FileManagement {
                 .toArray(Transaction[]::new);
 
         return transactions;
+        if (transactionsInfoString != null) {
+            int index = transactionsInfoString.indexOf(",");
+            transactionsInfoString = transactionsInfoString.substring(index + 1);
+        }
+        return transactionsInfoString;
     }
 
     //TODO: gjør om til typen transaction[]
-    public static String findTransactions(LocalDate from, LocalDate to, String userID) throws IOException { 
+    public static String findTransactions(LocalDate from, LocalDate to, String userID) throws IOException {
         String allTransactions = readAllTransactions(userID);
         String[] transactions = allTransactions.split(",");
         
         return Arrays.stream(transactions)
+                .skip(1)
                 .map(String::trim)
                 .filter(line -> !line.isEmpty())
                 .map(transaction -> {
@@ -77,11 +91,28 @@ public class FileManagement {
                 })
                 .collect(Collectors.joining());
     }
+    public static Transaction[] findTransactionsToFromDate(Date from, Date to, String userId) throws IOException {
+        String allTransactions = readAllTransactions(userId); //TODO: Med formatet til csv fila er linje 72 & 73 unødvenige
+        String[] transactions = allTransactions.split(",");
+        //Dummy transaksjon
+        Transaction[] transactionsOfUser = {new Transaction("9299.02.00303", "9339.03.00303", (short) 2030, "BUCKZ", new Date())};
+
+        return (Transaction[]) Arrays.stream(transactionsOfUser) //TODO: Bytt med parameter med readAllTransactions(userId), slett foregående linje
+                .filter(transaction -> transaction.getDateOfTransaction().compareTo(from) >= 0 && transaction.getDateOfTransaction().compareTo(to) >= 0)
+                .toArray();
+    }
 
     public static User readUser(String userId) throws IOException {
         String userInfoString = readUsers(userId);
         List<Transaction> transactions = readAllTransactions(userId);
 
+    public static Transaction[] findTransactionsOfUserAndAccountNumber(String userId, String accountNumber) throws IOException {
+        Transaction[] transactionsOfUser = {new Transaction("9299.02.00303", "9339.03.00303", (short) 2030, "BUCKZ", new Date())};
+
+        return (Transaction[]) Arrays.stream(transactionsOfUser) //TODO: Bytt med parameter med readAllTransactions(userId), slett foregående linje
+                .filter(transaction -> transaction.getFromAccountId().equals(accountNumber) || transaction.getToAccountId().equals(accountNumber))
+                .toArray();
+    }
         if (userInfoString != null) {
             String[] userInfoArray = userInfoString.split(",");
 
@@ -107,10 +138,10 @@ public class FileManagement {
 
 
     public static Transaction readLatestTransactions(String userId, int amount){
-        
+
     }
 
-   
+
 
     public static void main(String[] args) {
         LocalDate from = LocalDate.of(2023, 03, 12);

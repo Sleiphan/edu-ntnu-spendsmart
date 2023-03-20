@@ -701,8 +701,7 @@ public class ApplicationFront extends Application {
                 "___________10 seconds left__________", 20, false, 600, 350);
 
 
-        Button confirm = newButton("Edit", 700, 520,"white", "grey", 157,60,16);
-        confirm.setStyle("-fx-background-color: red");
+        Button confirm = newButton("Delete", 700, 520,"white", "red", 157,60,16);
         confirm.setTextFill(Paint.valueOf("WHITE"));
         confirm.setMinWidth(157);
         confirm.setMinHeight(50);
@@ -711,12 +710,34 @@ public class ApplicationFront extends Application {
             confirm.setMinWidth(157);
             confirm.setMinHeight(50);});
 
-        Button cancel = newButton("Delete", 700, 570,"white", "grey", 157,60,16);
+        Button cancel = newButton("Cancel", 700, 570,"white", "grey", 157,60,16);
         cancel.setOnAction(event -> stage.setScene(UserManagement()));
 
         Group root = new Group(loggedInUser, loggedInUserEmail, cancel, confirm, warningText);
         return new Scene(root, 500, 300, Color.WHITE);
     }
+
+    public Scene manageUserChangePassword(){
+        String email = "xxputinxx@gmail.com";
+        String name = "vladimir putin";
+        Text nameText = newText(name, 40, false, 563-329, 234-136);
+        Text emailText = newText(email, 17, false, 616-329, 283-136);
+
+        Button cancelButton = newButton("Cancel", 594-329, 399-136, "black", "white", 159, 61, 16);
+        Button confirmButton = newButton("Confirm", 761-329, 399-136, "black", "white", 159, 61, 16);
+        Text oldPassword = newText("Enter old password", 16, false, 446-329, 494-136);
+        Text newPassword = newText("Enter new password", 16, false, 438-329, 528-136);
+        Text reNewPassword = newText("Re-enter new password", 16, false, 413-329, 562-136);
+        TextField oldPasswordField = newTextField("", 594-329, 476-136, "black", "white", 326, 30, 0);
+        TextField newPasswordField = newTextField("", 594-329, 510-136, "black", "white", 326, 30, 0);
+        TextField reNewPasswordField = newTextField("", 594-329, 544-136, "black", "white", 326, 30, 0);
+        Group root = new Group(nameText, emailText, cancelButton, confirmButton,
+        oldPassword, newPassword, reNewPassword, oldPasswordField,
+        newPasswordField, reNewPasswordField);
+        Scene scene = new Scene(root, 800, 500, Color.WHITE);
+        return scene;
+    }
+	
 
     public ObservableList<ObservableList<Object>> initializeRevenuesData() {
         ObservableList<ObservableList<Object>> revenuesData = FXCollections.observableArrayList();
