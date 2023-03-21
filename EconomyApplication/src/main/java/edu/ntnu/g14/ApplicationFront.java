@@ -10,6 +10,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -611,7 +612,6 @@ public class ApplicationFront extends Application {
                 Optional<AccountWithProperty> result = accountWithPropertyDialog.showAndWait();
                 if (result.isPresent()) {
                     AccountWithProperty account = result.get();
-                    System.out.println(account.getAccountType());
                     //TODO: Add the account to the users list of accounts
                 }
             }
@@ -953,14 +953,21 @@ public class ApplicationFront extends Application {
                     }
                 }
                 private boolean validateDialog() {
+                    String regexAccountNumber = "[0-9]{4}+\\.[0-9]{2}+\\.[0-9]{5}";
                     BigDecimal amountBigDecimal;
                     try {
                         amountBigDecimal = new BigDecimal(amountField.getText());
-                    } catch (NumberFormatException e) {
+                    } catch (NumberFormatException | NullPointerException e) {
                         return false;
                     }
-                    return !accountNumberField.getText().isBlank() && !accountNameField.getText().isBlank() && !accountTypeField.getValue().isBlank()
-                            && accountNumberField.getText().length() != 13 && !(amountBigDecimal.floatValue() < 0);
+                    return !accountNumberField.getText().isBlank()
+                            && accountNumberField.getText() != null
+                            && !accountNameField.getText().isBlank()
+                            && !accountNameField.getText().isBlank()
+                            && accountNameField.getText() != null
+                            && !accountTypeField.getValue().isBlank()
+                            && !(amountBigDecimal.floatValue() < 0)
+                            && Pattern.matches(regexAccountNumber, accountNumberField.getText());
                 }
             });
         }
