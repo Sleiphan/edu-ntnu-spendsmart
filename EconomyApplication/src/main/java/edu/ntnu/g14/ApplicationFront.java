@@ -592,8 +592,8 @@ public class ApplicationFront extends Application {
         //TODO: Choices should get the different accounts a user has. Example: "user.getAccounts().asArray()"
         String [] columnTitlesTransactionsTable = {"Transaction", "Date", "Amount"};
         String [] choices = {"Spendings Account", "Savings Account"};
-        ChoiceBox<String> accountChoiceBox = newChoiceBox(choices, "white", "grey", 364, 30, 30, 364-(364/2), 30);
-
+        ChoiceBox<String> accountChoiceBox = newChoiceBox(choices, "black", "white", 364, 30, 30, 364-(364/2), 30);
+        accountChoiceBox.setValue("Spendings Account");
         //TODO: Take the first element of the Array and make it the default label of the choice box when account overview is opened
 
         Text accountNumberText = newText("9293 11 39239", 14, false, 325, 130);
