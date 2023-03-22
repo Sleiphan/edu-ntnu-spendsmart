@@ -43,7 +43,7 @@ public class FileManagement {
 
 
     public static Transaction[] readAllTransactions(String userID) throws IOException {
-        InputStream input = FileManagement.class.getResourceAsStream("/resources/textfiles/transactions.txt");
+        InputStream input = FileManagement.class.getResourceAsStream("/textfiles/transactions.txt");
         assert input != null;
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         Stream<String> userTrans = reader.lines() 
@@ -67,7 +67,7 @@ public class FileManagement {
 
     public static User readUser(String userId) throws IOException {
         List<String> lines = new ArrayList<>();
-        InputStream input = FileManagement.class.getResourceAsStream("/resources/textfiles/users.txt");
+        InputStream input = FileManagement.class.getResourceAsStream("/textfiles/users.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         reader.readLine();
 
