@@ -88,7 +88,6 @@ public class FileManagement {
         Transaction[] transactions = readAllTransactions(userId);
         if (userInfoString != null) {
             String[] userInfoArray = userInfoString.split(",");
-            System.out.println(userInfoArray[0]);
 
             String username = userInfoArray[1];
             String email = userInfoArray[2];

@@ -245,17 +245,17 @@ public class ApplicationFront extends Application {
         String [] columnTitlesDuePaymentsTable = {"Date", "Recipient", "Amount"};
         String [] accountsList = {"Savings", "Spending", "Pension"};
         Text actionsText = newText("Actions", 20, false, 160, 30);
-        Button transfer = newButton("Transfer", 30, 50, "white", "grey", 157, 25, 16);
+        Button transfer = newButton("Transfer", 30, 50, "black", "white", 157, 25, 16);
         transfer.setOnMouseClicked(e -> stage.setScene(transfer()));
-        Button invoice = newButton("Invoice", 192, 50,"white", "grey", 157,25,16);
+        Button invoice = newButton("Invoice", 192, 50,"black", "white", 157,25,16);
         invoice.setOnMouseClicked(e -> stage.setScene(invoice()));
-        Button payment = newButton("Payment", 30, 90, "white", "grey", 157, 25, 16);
+        Button payment = newButton("Payment", 30, 90, "black", "white", 157, 25, 16);
         payment.setOnMouseClicked(e -> stage.setScene(payment()));
-        Button overview = newButton("Overview", 192,90, "white", "grey", 157,25,16);
+        Button overview = newButton("Overview", 192,90, "black", "white", 157,25,16);
         overview.setOnMouseClicked(e -> stage.setScene(generalOverview()));
-        Button accounts = newButton("Accounts", 30,130, "white", "grey", 157, 25, 16);
+        Button accounts = newButton("Accounts", 30,130, "black", "white", 157, 25, 16);
         accounts.setOnMouseClicked(e -> stage.setScene(accountOverview()));
-        Button budgeting = newButton("Budgeting", 192, 130, "white", "grey", 157, 25,16);
+        Button budgeting = newButton("Budgeting", 192, 130, "black", "white", 157, 25,16);
         budgeting.setOnMouseClicked(e -> stage.setScene(budgeting()));
         Text latestActivitiesText = newText("Latest Activities", 20, false,130, 210);
         TableView latestActivitiesTable = newTableView(columnTitlesLatestActivitiesTable, 30, 230, 324, 300);
@@ -304,11 +304,11 @@ public class ApplicationFront extends Application {
         invoices_lv.getItems().setAll(invoices);
         invoices_lv.setEditable(false);
 
-        Button clear_bt = newButton("Clear", 358 - 329, 570 - 186, "white", "grey", 159, 61, 16);
-        Button register_bt = newButton("Register", 549 - 329, 570 - 186, "white", "grey", 159, 61, 16);
-        Button back_bt = newButton("Back", 358 - 329, 637 - 186, "white", "grey", 159, 35, 16);
-        Button payNow_bt = newButton("Pay now", 817 - 329, 493 - 186, "white", "grey", 159, 61, 16);
-        Button delete_bt = newButton("Delete", 817 - 329, 570 - 186, "white", "grey", 159, 61, 16);
+        Button clear_bt = newButton("Clear", 358 - 329, 570 - 186, "black", "white", 159, 61, 16);
+        Button register_bt = newButton("Register", 549 - 329, 570 - 186, "black", "white", 159, 61, 16);
+        Button back_bt = newButton("Back", 358 - 329, 637 - 186, "black", "white", 159, 35, 16);
+        Button payNow_bt = newButton("Pay now", 817 - 329, 493 - 186, "black", "white", 159, 61, 16);
+        Button delete_bt = newButton("Delete", 817 - 329, 570 - 186, "black", "white", 159, 61, 16);
 
         clear_bt.setOnAction(e -> {
             amount_tf.clear();
@@ -579,9 +579,9 @@ public class ApplicationFront extends Application {
         Text totalExpensesText = newText("Expenses all account: 10 320 kr", 20, false, (728/2 + 40), 150);
         ToggleGroup intervalToggles = new ToggleGroup();
 
-        ToggleButton yearlyToggle = newToggleButton("Yearly", 40, 190, "white", "grey", 80,20, 16);
+        ToggleButton yearlyToggle = newToggleButton("Yearly", 40, 190, "black", "white", 80,20, 16);
         yearlyToggle.setToggleGroup(intervalToggles);
-        ToggleButton monthlyToggle = newToggleButton("Monthly", 120, 190, "white", "grey", 80,20, 16);
+        ToggleButton monthlyToggle = newToggleButton("Monthly", 120, 190, "black", "white", 80,20, 16);
         monthlyToggle.setToggleGroup(intervalToggles);
         TableView<ObservableList<Object>> transactionsTables = newTableView(columnTitlesTransactionsTable, 40, 230, 658, 300);
         Group root = new Group(totalOfAllAccountsCombinedText, bigSumText, totalIncomeText, totalExpensesText, yearlyToggle, monthlyToggle, transactionsTables);
@@ -598,8 +598,8 @@ public class ApplicationFront extends Application {
 
         Text accountNumberText = newText("9293 11 39239", 14, false, 325, 130);
         Text amountText = newText("Amount: 23 340 kr", 20, false, 290, 160);
-        Button addTransaction = newButton("Add Transaction", 20, 30, "white", "grey", 120, 20, 14);
-        Button addAccount = newButton("Add Account", 20, 60, "white", "grey", 120, 20, 14);
+        Button addTransaction = newButton("Add Transaction", 20, 30, "black", "white", 120, 20, 14);
+        Button addAccount = newButton("Add Account", 20, 60, "black", "white", 120, 20, 14);
         Text lastTransactionsText = newText("Last Transactions:", 24, false, 20, 200);
         TableView lastTransactionsTable = newTableView(columnTitlesTransactionsTable, 20, 230, 688, 300);
         ObservableList<ObservableList<Object>> lastTransactionsData = initializeLastTransactionsData();
@@ -627,7 +627,7 @@ public class ApplicationFront extends Application {
                 }
             }
         });
-        Button back_bt = newButton("Back", 20, 90, "white", "grey", 120, 20, 14);
+        Button back_bt = newButton("Back", 20, 90, "black", "white", 120, 20, 14);
         back_bt.setOnAction(e -> {
             stage.setScene(mainPage());
         });
