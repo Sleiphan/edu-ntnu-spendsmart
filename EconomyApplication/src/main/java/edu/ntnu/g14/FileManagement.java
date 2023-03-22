@@ -22,7 +22,7 @@ public class FileManagement {
     public static Login[] readUsers() throws IOException {
         
         List<String> lines = new ArrayList<>();
-        InputStream input = FileManagement.class.getResourceAsStream("/resources/textfiles/users.txt");
+        InputStream input = FileManagement.class.getResourceAsStream("/textfiles/users.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         reader.readLine();
         String line;

@@ -41,7 +41,7 @@ public class ApplicationFront extends Application {
     public void start(Stage stage) throws IOException, InterruptedException {
         this.stage = stage;
         stage.setResizable(false);
-        stage.setScene(mainPage());
+        stage.setScene(loginChooseUser());
         stage.show();
     }
 
