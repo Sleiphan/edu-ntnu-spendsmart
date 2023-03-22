@@ -41,7 +41,7 @@ public class ApplicationFront extends Application {
     public void start(Stage stage) throws IOException, InterruptedException {
         this.stage = stage;
         stage.setResizable(false);
-        stage.setScene(loginChooseUser());
+        stage.setScene(mainPage());
         stage.show();
     }
 
@@ -579,12 +579,18 @@ public class ApplicationFront extends Application {
         Text totalExpensesText = newText("Expenses all account: 10 320 kr", 20, false, (728/2 + 40), 150);
         ToggleGroup intervalToggles = new ToggleGroup();
 
+        Button back_bt = newButton("Back", 40, 30, "black", "white", 60, 20, 14);
+        back_bt.setOnAction(e -> {
+            stage.setScene(mainPage());
+        });
         ToggleButton yearlyToggle = newToggleButton("Yearly", 40, 190, "black", "white", 80,20, 16);
         yearlyToggle.setToggleGroup(intervalToggles);
         ToggleButton monthlyToggle = newToggleButton("Monthly", 120, 190, "black", "white", 80,20, 16);
         monthlyToggle.setToggleGroup(intervalToggles);
         TableView<ObservableList<Object>> transactionsTables = newTableView(columnTitlesTransactionsTable, 40, 230, 658, 300);
-        Group root = new Group(totalOfAllAccountsCombinedText, bigSumText, totalIncomeText, totalExpensesText, yearlyToggle, monthlyToggle, transactionsTables);
+        transactionsTables.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        Group root = new Group(back_bt, totalOfAllAccountsCombinedText, bigSumText, totalIncomeText, totalExpensesText, yearlyToggle, monthlyToggle, transactionsTables);
         return new Scene(root, 728, 567, Color.WHITE);
     }
     
