@@ -627,7 +627,11 @@ public class ApplicationFront extends Application {
                 }
             }
         });
-        Group root = new Group(accountChoiceBox, accountNumberText, amountText, addTransaction, addAccount, lastTransactionsText, lastTransactionsTable);
+        Button back_bt = newButton("Back", 20, 90, "white", "grey", 120, 20, 14);
+        back_bt.setOnAction(e -> {
+            stage.setScene(mainPage());
+        });
+        Group root = new Group(accountChoiceBox, accountNumberText, amountText, addTransaction, addAccount, lastTransactionsText, lastTransactionsTable, back_bt);
         return new Scene(root, 728, 567, Color.WHITE);
     }
 
