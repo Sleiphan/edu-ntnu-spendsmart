@@ -413,7 +413,7 @@ public class ApplicationFront extends Application {
 
         Group root = new Group(backgroundLabel, revenues, expenditures,createNewBudget,
                 budgetSuggestions, MonthlyBudget, savings);
-        Scene scene = new Scene(root, 500, 300, Color.WHITE);
+        Scene scene = new Scene(root, 1920, 1080, Color.WHITE);
         return scene;
     }
 
@@ -453,7 +453,7 @@ public class ApplicationFront extends Application {
 
         Group root = new Group(backgroundLabel, revenues, expenditures,createNewBudget,
                 budgetSuggestions, MonthlyBudget, savings);
-        Scene scene = new Scene(root, 500, 300, Color.WHITE);
+        Scene scene = new Scene(root, 1920, 1080, Color.WHITE);
         return scene;
     }
 
@@ -482,7 +482,7 @@ public class ApplicationFront extends Application {
 
         Group root = new Group(revenue, revenueInput, expenditure, expenditureInput,
                 personal, personalInput, cancelBtn, createBtn);
-        Scene scene = new Scene(root, 500, 300, Color.WHITE);
+        Scene scene = new Scene(root, 1920, 1080, Color.WHITE);
         return scene;
     }
 
