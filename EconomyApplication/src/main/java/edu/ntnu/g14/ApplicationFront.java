@@ -22,6 +22,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -128,6 +129,14 @@ public class ApplicationFront extends Application {
         passwordField.setLayoutY(60);
         passwordField.setFocusTraversable(false);
         Button loginButton = newButton("Login", 185, 130, "black", "white", 100, 30, 25);
+        passwordField.setOnKeyPressed(keyEvent -> {
+            KeyCode key = keyEvent.getCode();
+            if (key == KeyCode.ENTER && passwordField.getText().equals(loggedInUser.getLoginInfo().getPassword())) {
+                stage.setScene(mainPage());
+            } else if(key == KeyCode.ENTER && !passwordField.getText().equals(loggedInUser.getLoginInfo().getPassword())) {
+                alertBox("ERROR", "Wrong password", "Please insert the right password");
+            }
+        });
         loginButton.setOnAction(e -> {
             if (passwordField.getText().equals(loggedInUser.getLoginInfo().getPassword())) {
                 stage.setScene(mainPage());
