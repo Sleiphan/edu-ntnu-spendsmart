@@ -126,6 +126,7 @@ public class ApplicationFront extends Application {
         passwordField.setStyle(setStyleString("black", "white", 250, 40, 25));
         passwordField.setLayoutX(120);
         passwordField.setLayoutY(60);
+        passwordField.setFocusTraversable(false);
         Button loginButton = newButton("Login", 185, 130, "black", "white", 100, 30, 25);
         loginButton.setOnAction(e -> {
             if (passwordField.getText().equals(loggedInUser.getLoginInfo().getPassword())) {
