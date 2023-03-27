@@ -41,7 +41,7 @@ public class ApplicationFront extends Application {
     public void start(Stage stage) throws IOException, InterruptedException {
         this.stage = stage;
         stage.setResizable(false);
-        stage.setScene(mainPage());
+        stage.setScene(loginChooseUser());
         stage.show();
     }
 
@@ -121,11 +121,14 @@ public class ApplicationFront extends Application {
             String key = EmailVertification.sendVertificationKey(loggedInUser.getEmail());
             stage.setScene(loginForgotPasswordFirst(key));
         });
-
-        TextField textField = newTextField("Password", 120, 60, "black", "white", 250, 40, 25);
+        PasswordField passwordField = new PasswordField();
+        passwordField.setPromptText("Password");
+        passwordField.setStyle(setStyleString("black", "white", 250, 40, 25));
+        passwordField.setLayoutX(120);
+        passwordField.setLayoutY(60);
         Button loginButton = newButton("Login", 185, 130, "black", "white", 100, 30, 25);
         loginButton.setOnAction(e -> {
-            if (textField.getText().equals(loggedInUser.getLoginInfo().getPassword())) {
+            if (passwordField.getText().equals(loggedInUser.getLoginInfo().getPassword())) {
                 stage.setScene(mainPage());
             } else {
                 alertBox("ERROR", "Wrong password", "Please insert the right password");
@@ -135,7 +138,7 @@ public class ApplicationFront extends Application {
         
 
         Group root = new Group(newText("Welcome back " + loggedInUser.getLoginInfo().getUserName(), 25, false, 120, 40),
-                notYou, forgotPassword, textField, loginButton);
+                notYou, forgotPassword, passwordField, loginButton);
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
         return scene;
     }
