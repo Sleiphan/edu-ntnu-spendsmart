@@ -1,6 +1,6 @@
 module edu.ntnu.g14 {
-    requires javafx.controls;
-    requires javafx.fxml;
+    requires transitive javafx.controls;
+    requires transitive javafx.fxml;
     requires transitive javafx.graphics;
     requires java.sql;
     requires commons.validator;
