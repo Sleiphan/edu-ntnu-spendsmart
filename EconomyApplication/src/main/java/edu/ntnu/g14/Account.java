@@ -1,6 +1,7 @@
 package edu.ntnu.g14;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -112,5 +113,36 @@ public class Account {
      */
     public String getAccountName() {
         return accountName;
+    }
+
+    public boolean equals(Object o) {
+        if (!(o instanceof Account))
+            return false;
+
+        Account a = (Account) o;
+        return accountType == a.accountType &&
+                amount.equals(a.amount) &&
+                accountNumber.equals(a.accountNumber) &&
+                accountName.equals(accountName);
+    }
+
+    public static final String CSV_FIELD_DELIMITER = ";";
+    public String toCSVString() {
+        String sb = accountType + CSV_FIELD_DELIMITER +
+                amount.toString() + CSV_FIELD_DELIMITER +
+                accountNumber + CSV_FIELD_DELIMITER +
+                accountName + CSV_FIELD_DELIMITER;
+
+        return sb;
+    }
+
+    public static Account fromCSVString(String csvString) {
+        String[] fields = csvString.split(CSV_FIELD_DELIMITER);
+        AccountCategory accountType = AccountCategory.valueOf(fields[0]);
+        BigDecimal amount           = new BigDecimal(fields[1]);
+        String accountNumber        = fields[2];
+        String accountName          = fields[3];
+
+        return new Account(accountType, amount, accountNumber, accountName);
     }
 }

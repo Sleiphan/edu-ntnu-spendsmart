@@ -1,18 +1,19 @@
 package edu.ntnu.g14;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Payment extends Transaction{
     private String CID;
-    private Date dueDate;
+    private LocalDate dueDate;
 
   public Payment(String fromAccountId, String toAccountId, short amount, String description,
-      Date dateOfTransaction, String CID, Date dueDate) {
+      LocalDate dateOfTransaction, String CID, LocalDate dueDate) {
     super(fromAccountId, toAccountId, amount, description, dateOfTransaction);
 
     if (CID == null)
       throw new IllegalArgumentException("Customer ID cannot be null");
-    if (dueDate.before(new Date()))
+    if (dueDate.isBefore(LocalDate.now()))
       throw new IllegalArgumentException("This date has already passed");
     this.CID = CID;
     this.dueDate = dueDate;
@@ -22,7 +23,7 @@ public class Payment extends Transaction{
     return CID;
   }
 
-  private Date getDueDate() {
+  private LocalDate getDueDate() {
     return dueDate;
   }
 
@@ -30,7 +31,7 @@ public class Payment extends Transaction{
     this.CID = CID;
   }
 
-  private void setDueDate(Date dueDate) {
+  private void setDueDate(LocalDate dueDate) {
     this.dueDate = dueDate;
   }
 }
