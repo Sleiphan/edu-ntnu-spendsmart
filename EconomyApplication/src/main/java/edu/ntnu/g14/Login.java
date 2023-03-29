@@ -2,10 +2,12 @@ package edu.ntnu.g14;
 public class Login {
     private String userName;
     private String password;
+    private String userId;
 
-    public Login (String userName, String password){
+    public Login (String userName, String password, String userId){
         this.userName=userName;
         this.password=password;
+        this.userId=userId;
     }
 
     public String getUserName() {
@@ -22,5 +24,9 @@ public class Login {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getUserId(){
+        return userId;
     }
 }
