@@ -36,6 +36,18 @@
             <!-- https://mvnrepository.com/artifact/org.json/json -->
         </dependency>
         <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.9.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.9.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
             <version>1.6.2</version>
@@ -64,7 +76,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>edu.ntnu.g14.ApplicationFront</mainClass>
+                            <mainClass>edu.ntnu.g14.frontend.ApplicationFront</mainClass>
                         </configuration>
                     </execution>
                 </executions>

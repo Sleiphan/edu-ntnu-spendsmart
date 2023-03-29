@@ -1,14 +1,14 @@
 package edu.ntnu.g14;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Invoice {
-    private Date dueDate;
+    private LocalDate dueDate;
     private final String invoiceID;
     private BigDecimal amount;
     private String recipientAccountNumber;
-    public Invoice(final Date dueDate, final BigDecimal amount, String recipientAccountNumber) {
+    public Invoice(final LocalDate dueDate, final BigDecimal amount, String recipientAccountNumber) {
         if (amount.intValue() < 1) {
             throw new IllegalArgumentException("The invoice must have a value greater than 1");
         }
@@ -19,7 +19,7 @@ public class Invoice {
             throw new IllegalArgumentException("The recipients account number must contain 11 digits, " +
                     "seperated by 2 dots");
         }
-        if (dueDate.before(new Date())) {
+        if (dueDate.isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("This date has already passed");
         }
         this.dueDate = dueDate;
@@ -39,8 +39,8 @@ public class Invoice {
         this.recipientAccountNumber = newRecipientAccountNumber;
         return true;
     }
-    public boolean changeDueDate(final Date newDueDate) {
-        if (newDueDate.before(new Date())) {
+    public boolean changeDueDate(final LocalDate newDueDate) {
+        if (newDueDate.isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("This date has already passed");
         }
         this.dueDate = newDueDate;
@@ -61,7 +61,7 @@ public class Invoice {
         return amount;
     }
 
-    public Date getDueDate() {
+    public LocalDate getDueDate() {
         return dueDate;
     }
 
