@@ -76,7 +76,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>edu.ntnu.g14.ApplicationFront</mainClass>
+                            <mainClass>edu.ntnu.g14.frontend.ApplicationFront</mainClass>
                         </configuration>
                     </execution>
                 </executions>

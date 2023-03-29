@@ -12,7 +12,7 @@ public class AccountWithProperty {
     private final StringProperty accountName;
     public static final String CSV_FIELD_DELIMITER = ";";
 
-    AccountWithProperty(String accountType, String amount, String accountName, String accountNumber) {
+    public AccountWithProperty(String accountType, String amount, String accountName, String accountNumber) {
         this.accountType = new SimpleStringProperty(accountType);
         this.amount = new SimpleStringProperty(amount);
         this.accountName = new SimpleStringProperty(accountName);
