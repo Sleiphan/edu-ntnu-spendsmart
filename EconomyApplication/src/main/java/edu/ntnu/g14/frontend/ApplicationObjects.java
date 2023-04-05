@@ -1,5 +1,8 @@
 package edu.ntnu.g14.frontend;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.regex.Pattern;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -9,27 +12,102 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import edu.ntnu.g14.AccountWithProperty;
 import edu.ntnu.g14.Transaction;
+import edu.ntnu.g14.Overview.OverviewMonthly;
 
 
 public class ApplicationObjects {
-    
+    static Stage stage = ApplicationFront.getStage();
 
-    //TODO: MISSING BUTTONS
+    public static Group userMenu() {
+        Rectangle rectangle = newRectangle(553, 10, 145, 110);
+        
+        Button logOut = newButton("overview", 563, 15, "black", "white", 130, 40, 15);
+        logOut.setOnAction(e -> {
+            try {
+                stage.setScene(LoginChooseUserScene.scene());
+            } catch (IOException e1) {
+                
+                e1.printStackTrace();
+            }
+        });
+        Button manageUser = newButton("manage user", 563, 70, "black", "white", 130, 40, 15);
+        manageUser.setOnAction(e -> {
+            try {
+                stage.setScene(UserManagementScene.scene());
+            } catch (FileNotFoundException e1) {
+                
+                e1.printStackTrace();
+            }
+        });
+        Group group = new Group(rectangle, logOut, manageUser);
+        return group;
+    }
+
     public static Group dropDownMenu() {
-        Rectangle rectangle = newRectangle(0, 0, 150, 200);
-        Button invoice = newButton("invoice", 15, 15, "black", "white", 130, 40, 25);
-        Button transfer = newButton("transfer", 15, 70, "black", "white", 130, 40, 25);
-        Button payment = newButton("payment", 15, 125, "black", "white", 130, 40, 25);
-
-        Group group = new Group(rectangle, invoice, transfer, payment);
+        Rectangle rectangle = newRectangle(553, 10, 145, 340);
+        Button invoice = newButton("invoice", 563, 15, "black", "white", 130, 40, 20);
+        invoice.setOnAction(e -> {
+            try {
+                stage.setScene(InvoiceScene.scene());
+            } catch (FileNotFoundException e1) {
+                e1.printStackTrace();
+            }
+        });
+        Button transfer = newButton("transfer", 563, 70, "black", "white", 130, 40, 20);
+        transfer.setOnAction(e -> {
+            try {
+                stage.setScene(TransferScene.scene());
+            } catch (FileNotFoundException e1) {
+                e1.printStackTrace();
+            }
+        });
+        Button payment = newButton("payment", 563, 125, "black", "white", 130, 40, 20);
+        payment.setOnAction(e -> {
+            try {
+                stage.setScene(PaymentScene.scene());
+            } catch (FileNotFoundException e1) {
+                e1.printStackTrace();
+            }
+        });
+        Button accounts = newButton("accounts", 563, 180, "black", "white", 130, 40, 20);
+        accounts.setOnAction(e -> {
+            try {
+                stage.setScene(AccountOverviewScene.scene());
+            } catch (FileNotFoundException e1) {
+                
+                e1.printStackTrace();
+            }
+        });
+        Button overview = newButton("overview", 563, 235, "black", "white", 130, 40, 20);
+        overview.setOnAction(e -> {
+            try {
+                stage.setScene(GeneralOverviewScene.scene());
+            } catch (FileNotFoundException e1) {
+                
+                e1.printStackTrace();
+            }
+        });
+        Button budgetting = newButton("budgetting", 563, 290, "black", "white", 130, 40, 20);
+        budgetting.setOnAction(e -> {
+            try {
+                stage.setScene(BudgetingScene.scene());
+            } catch (FileNotFoundException e1) {
+                
+                e1.printStackTrace();
+            }
+        });
+        Group group = new Group(rectangle, invoice, transfer, payment, accounts, overview, budgetting);
         return group;
     }
 
@@ -64,6 +142,19 @@ public class ApplicationObjects {
         textField.setLayoutY(y);
         textField.setStyle(setStyleString(borderColor, backgroundColor, width, height, fontSize));
         return textField;
+    }
+
+    public static ImageView newImage(String imagename,
+     int x, int y, int width, int height) throws FileNotFoundException{
+        ImageView imageview = new ImageView();
+        Image image = new Image(new FileInputStream("src/main/resources/images/" + imagename));
+        imageview.setImage(image);
+        imageview.setX(x);
+        imageview.setY(y);
+        imageview.setFitHeight(width);
+        imageview.setFitWidth(height);
+        imageview.setPreserveRatio(true);
+        return imageview;
     }
 
     public static Text newText(String title, int size, boolean underline, int x, int y) {

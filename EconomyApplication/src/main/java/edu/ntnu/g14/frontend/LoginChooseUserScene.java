@@ -47,17 +47,10 @@ public class LoginChooseUserScene {
             }
         });
     
-        Button testDropDown = ApplicationObjects.newButton("test", 0, 0, "black", "white", 10, 10, 10);
-        Group dropDown = ApplicationObjects.dropDownMenu();
-        Group root = new Group(chooseUser, registerNew, user, confirm, testDropDown);
-        testDropDown.setOnAction(e -> {
-            root.getChildren().add(dropDown);
-        });
-
+        
+        Group root = new Group(chooseUser, registerNew, user, confirm);
         Scene scene = new Scene(root, 500, 300, Color.WHITE);
-        scene.setOnMouseClicked(e -> {
-            root.getChildren().remove(dropDown);
-        });
+        
         return scene;
     }
     

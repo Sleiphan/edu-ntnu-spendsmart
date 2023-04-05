@@ -1,6 +1,8 @@
 package edu.ntnu.g14.frontend;
 
 import edu.ntnu.g14.*;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -39,14 +41,24 @@ public class LoginUserScene {
         passwordField.setOnKeyPressed(keyEvent -> {
             KeyCode key = keyEvent.getCode();
             if (key == KeyCode.ENTER && passwordField.getText().equals(ApplicationFront.getLoggedInUser().getLoginInfo().getPassword())) {
-                stage.setScene(MainPageScene.scene());
+                try {
+                    stage.setScene(MainPageScene.scene());
+                } catch (FileNotFoundException e1) {
+                    
+                    e1.printStackTrace();
+                }
             } else if(key == KeyCode.ENTER && !passwordField.getText().equals(ApplicationFront.getLoggedInUser().getLoginInfo().getPassword())) {
                 ApplicationObjects.alertBox("ERROR", "Wrong password", "Please insert the right password");
             }
         });
         loginButton.setOnAction(e -> {
             if (passwordField.getText().equals(ApplicationFront.getLoggedInUser().getLoginInfo().getPassword())) {
-                stage.setScene(MainPageScene.scene());
+                try {
+                    stage.setScene(MainPageScene.scene());
+                } catch (FileNotFoundException e1) {
+                   
+                    e1.printStackTrace();
+                }
             } else {
                 ApplicationObjects.alertBox("ERROR", "Wrong password", "Please insert the right password");
             }

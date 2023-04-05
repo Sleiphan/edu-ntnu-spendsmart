@@ -1,5 +1,6 @@
 package edu.ntnu.g14.frontend;
 
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -10,6 +11,8 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -20,7 +23,7 @@ public class AccountOverviewScene {
     static Stage stage = ApplicationFront.getStage();
 
 
-    static public Scene scene() {
+    static public Scene scene() throws FileNotFoundException {
         //TODO: Choices should get the different accounts a user has. Example: "user.getAccounts().asArray()"
         String [] columnTitlesTransactionsTable = {"Transaction", "Date", "Amount"};
         String [] choices = {"Spendings Account", "Savings Account"};
@@ -61,10 +64,48 @@ public class AccountOverviewScene {
         });
         Button back_bt = ApplicationObjects.newButton("Back", 20, 90, "black", "white", 120, 20, 14);
         back_bt.setOnAction(e -> {
-            stage.setScene(MainPageScene.scene());
+            try {
+                stage.setScene(MainPageScene.scene());
+            } catch (FileNotFoundException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         });
-        Group root = new Group(accountChoiceBox, accountNumberText, amountText, addTransaction, addAccount, lastTransactionsText, lastTransactionsTable, back_bt);
-        return new Scene(root, 728, 567, Color.WHITE);
+    
+
+
+        ImageView homeButton = ApplicationObjects.newImage("home.png", 10, 10, 20, 20);
+        homeButton.setOnMouseClicked(e -> {
+            try {
+                stage.setScene(MainPageScene.scene());
+            } catch (FileNotFoundException e1) {
+                e1.printStackTrace();
+            }
+        });
+        
+        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, "black", "white", 10, 10, 10);
+        Group dropDown = ApplicationObjects.dropDownMenu();
+        ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
+        Group root = new Group(accountChoiceBox, accountNumberText, amountText, addTransaction,
+         addAccount, lastTransactionsText, lastTransactionsTable, back_bt, dropDownButton, homeButton, manageUserButton);
+        dropDownButton.setOnAction(e -> {
+            root.getChildren().add(dropDown);
+        });
+
+        Scene scene = new Scene(root, 728, 567, Color.WHITE);
+        
+
+        
+        Group userButtons = ApplicationObjects.userMenu();
+        manageUserButton.setOnMouseEntered(e -> {
+            root.getChildren().add(userButtons);
+        });
+        scene.setOnMouseClicked(e -> {
+            root.getChildren().remove(userButtons);
+            root.getChildren().remove(dropDown);
+        });
+
+        return scene;
     }
 
 

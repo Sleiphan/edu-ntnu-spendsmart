@@ -1,6 +1,8 @@
 package edu.ntnu.g14.frontend;
 
 import edu.ntnu.g14.*;
+
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -9,6 +11,7 @@ import java.util.List;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -17,7 +20,7 @@ import org.apache.commons.validator.routines.BigDecimalValidator;
 public class InvoiceScene {
     static Stage stage = ApplicationFront.getStage();
 
-    static public Scene scene() {
+    static public Scene scene() throws FileNotFoundException {
         List<Invoice> invoices = new ArrayList<>(); // TODO: Fill with actal data.
         invoices.add(new Invoice(LocalDate.now().plusDays(1), BigDecimal.valueOf(769.43), "17535.83.78287"));
         invoices.add(new Invoice(LocalDate.now().plusDays(1), BigDecimal.valueOf(769.43), "17535.83.78287"));
@@ -89,7 +92,12 @@ public class InvoiceScene {
             throw new RuntimeException("Action not connected to backend.");
         });
         back_bt.setOnAction(e -> {
-            stage.setScene(MainPageScene.scene());
+            try {
+                stage.setScene(MainPageScene.scene());
+            } catch (FileNotFoundException e1) {
+               
+                e1.printStackTrace();
+            }
         });
         payNow_bt.setOnAction(e -> {
             invoices.remove(invoices_lv.getSelectionModel().getSelectedItem());
@@ -100,13 +108,37 @@ public class InvoiceScene {
             throw new RuntimeException("Action not connected to backend.");
         });
 
-        Group root = new Group(
-                amount_t, accountNum_t, cidComment_t, dueDate_t,
-                amount_tf, accountNum_tf, cidComment_tf,
-                invoices_lv,
-                due_dp,
-                clear_bt, register_bt, back_bt, payNow_bt, delete_bt);
-        return new Scene(root, 728, 567, Color.WHITE);
+        ImageView homeButton = ApplicationObjects.newImage("home.png", 10, 10, 20, 20);
+        homeButton.setOnMouseClicked(e -> {
+            try {
+                stage.setScene(MainPageScene.scene());
+            } catch (FileNotFoundException e1) {
+                e1.printStackTrace();
+            }
+        });
+        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, "black", "white", 10, 10, 10);
+        Group dropDown = ApplicationObjects.dropDownMenu();
+        ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
+        Group root = new Group(amount_t, accountNum_t, cidComment_t, dueDate_t,
+        amount_tf, accountNum_tf, cidComment_tf,
+        invoices_lv, due_dp,
+        clear_bt, register_bt, back_bt, payNow_bt, delete_bt, dropDownButton, homeButton, manageUserButton);
+        dropDownButton.setOnAction(e -> {
+            root.getChildren().add(dropDown);
+        });
+
+        Scene scene = new Scene(root, 728, 567, Color.WHITE);
+        
+        
+        Group userButtons = ApplicationObjects.userMenu();
+        manageUserButton.setOnMouseEntered(e -> {
+            root.getChildren().add(userButtons);
+        });
+        scene.setOnMouseClicked(e -> {
+            root.getChildren().remove(userButtons);
+            root.getChildren().remove(dropDown);
+        });
+        return scene;
     }
 
 }
