@@ -3,6 +3,7 @@ package edu.ntnu.g14;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -259,6 +260,70 @@ public class FileManagement {
         return null;
     }
 
+    public static void writeNewTransaction(String userId, Transaction transaction) throws IOException{
+        String addonText = "" + transaction.getDateOfTransaction() + "," + transaction.getAmount() + "," +
+        transaction.getToAccountId() + "," + transaction.getFromAccountId() + "," + transaction.getDescription() + ",";
+        RandomAccessFile file = new RandomAccessFile("textfiles/transactions.txt", "rw");
+        String line;
+        long pos = 0;
+        while ((line = file.readLine()) != null) {
+            if (line.startsWith(userId + ",")) {
+                pos = file.getFilePointer() - line.length();
+                file.seek(pos + line.getBytes().length);
+                file.writeBytes(addonText);
+                break;
+            }
+        }
+        file.close();
+    }
+
+    public static void writeNewAccount(String userId, Account account) throws IOException{
+        String addonText = "" + account.getAccountName() + ",";
+        RandomAccessFile file = new RandomAccessFile("textfiles/accounts.txt", "rw");
+        String line;
+        long pos = 0;
+        while ((line = file.readLine()) != null) {
+            if (line.startsWith(userId + ",")) {
+                pos = file.getFilePointer() - line.length();
+                file.seek(pos + line.getBytes().length);
+                file.writeBytes(addonText);
+                break;
+            }
+        }
+        file.close();
+    }
+
+    public static void writeNewInvoice(String userId, Invoice invoice) throws IOException{
+        String addonText = ""; //TODO: make in format of invoice
+        RandomAccessFile file = new RandomAccessFile("textfiles/invoices.txt", "rw");
+        String line;
+        long pos = 0;
+        while ((line = file.readLine()) != null) {
+            if (line.startsWith(userId + ",")) {
+                pos = file.getFilePointer() - line.length();
+                file.seek(pos + line.getBytes().length);
+                file.writeBytes(addonText);
+                break;
+            }
+        }
+        file.close();
+    }
+
+    public static void writeNewBudget(String userId, Budget budget) throws IOException{
+        String addonText = ""; //TODO: make in format of budget
+        RandomAccessFile file = new RandomAccessFile("textfiles/transactions.txt", "rw");
+        String line;
+        long pos = 0;
+        while ((line = file.readLine()) != null) {
+            if (line.startsWith(userId + ",")) {
+                pos = file.getFilePointer() - line.length();
+                file.seek(pos + line.getBytes().length);
+                file.writeBytes(addonText);
+                break;
+            }
+        }
+        file.close();
+    }
 
     public static Transaction[] findTransactionsOfUserAndAccountNumber(String userId, String accountNumber) throws IOException {
         return (Transaction[]) Arrays.stream(readAllTransactions(userId)) //TODO: Bytt med parameter med readAllTransactions(userId), slett foregående linje
