@@ -2,9 +2,12 @@ package edu.ntnu.g14;
 
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -106,6 +109,142 @@ public class FileManagement {
         } else {
             return null;
         }
+    }
+
+    public static void writeNewUser(User newUser) throws IOException{
+        String userInfo = "" + newUser.getLoginInfo().getUserId() + "," + newUser.getLoginInfo().getUserName() + "," + 
+            newUser.getEmail() + "," + newUser.getLoginInfo().getPassword() + "," + newUser.getFirstName() + "," + newUser.getLastName();
+            
+        //write new user to user.txt
+        try {
+            RandomAccessFile file = new RandomAccessFile("/textfiles/users.txt", "rw");
+            String line;
+            boolean isFirstEmptyLineFound = false;
+            long pos = 0;
+            while ((line = file.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    if (!isFirstEmptyLineFound) {
+                        pos = file.getFilePointer() - line.length() - 1;
+                        file.seek(pos);
+                        file.writeBytes(userInfo + "\n");
+                        isFirstEmptyLineFound = true;
+                    }
+                }
+            }
+            
+            
+            if (!isFirstEmptyLineFound && pos != 0) {
+                file.writeBytes(userInfo + "\n");
+            }
+            file.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        //write new user to invoices
+        try {
+            RandomAccessFile file = new RandomAccessFile("/textfiles/invoices.txt", "rw");
+            String line;
+            boolean isFirstEmptyLineFound = false;
+            long pos = 0;
+            while ((line = file.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    if (!isFirstEmptyLineFound) {
+                        pos = file.getFilePointer() - line.length() - 1;
+                        file.seek(pos);
+                        file.writeBytes(newUser.getLoginInfo().getPassword() + ", \n");
+                        isFirstEmptyLineFound = true;
+                    }
+                }
+            }
+            
+            
+            if (!isFirstEmptyLineFound && pos != 0) {
+                file.writeBytes(newUser.getLoginInfo().getPassword() + ", \n");
+            }
+            file.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //write new user to accounts
+        try {
+            RandomAccessFile file = new RandomAccessFile("/textfiles/accounts.txt", "rw");
+            String line;
+            boolean isFirstEmptyLineFound = false;
+            long pos = 0;
+            while ((line = file.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    if (!isFirstEmptyLineFound) {
+                        pos = file.getFilePointer() - line.length() - 1;
+                        file.seek(pos);
+                        file.writeBytes(newUser.getLoginInfo().getPassword() + ", \n");
+                        isFirstEmptyLineFound = true;
+                    }
+                }
+            }
+            
+            
+            if (!isFirstEmptyLineFound && pos != 0) {
+                file.writeBytes(newUser.getLoginInfo().getPassword() + ", \n");
+            }
+            file.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //write new user to budgets
+        try {
+            RandomAccessFile file = new RandomAccessFile("/textfiles/budgets.txt", "rw");
+            String line;
+            boolean isFirstEmptyLineFound = false;
+            long pos = 0;
+            while ((line = file.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    if (!isFirstEmptyLineFound) {
+                        pos = file.getFilePointer() - line.length() - 1;
+                        file.seek(pos);
+                        file.writeBytes(newUser.getLoginInfo().getPassword() + ", \n");
+                        isFirstEmptyLineFound = true;
+                    }
+                }
+            }
+            
+            
+            if (!isFirstEmptyLineFound && pos != 0) {
+                file.writeBytes(newUser.getLoginInfo().getPassword() + ", \n");
+            }
+            file.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //write new user to transactions
+        try {
+            RandomAccessFile file = new RandomAccessFile("/textfiles/transactions.txt", "rw");
+            String line;
+            boolean isFirstEmptyLineFound = false;
+            long pos = 0;
+            while ((line = file.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    if (!isFirstEmptyLineFound) {
+                        pos = file.getFilePointer() - line.length() - 1;
+                        file.seek(pos);
+                        file.writeBytes(newUser.getLoginInfo().getPassword() + ", \n");
+                        isFirstEmptyLineFound = true;
+                    }
+                }
+            }
+            
+            
+            if (!isFirstEmptyLineFound && pos != 0) {
+                file.writeBytes(newUser.getLoginInfo().getPassword() + ", \n");
+            }
+            file.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public static Account[] getAccountsForUser(String userId){
