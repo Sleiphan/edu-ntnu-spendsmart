@@ -248,8 +248,32 @@ public class FileManagement {
 
     }
 
-    public static Account[] getAccountsForUser(String userId){
-        return null;
+    public static Account[] getAccountsForUser(String userId) throws IOException{
+        InputStream input = FileManagement.class.getResourceAsStream("/textfiles/accounts.txt");
+        assert input != null;
+        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+        Stream<String> userTrans = reader.lines() 
+                .filter(line -> line.startsWith(userId + ","));
+        System.out.println(userTrans);
+
+        Account[] accounts = userTrans
+        .flatMap(s -> Arrays.stream(s.split(",")) 
+                .skip(1)) 
+        .map(Account::fromCSVString) 
+        .toArray(Account[]::new);
+        reader.close();
+        return accounts;
+    }
+
+    public static Account getAccountForUser(String userId, String accountNumber) throws IOException{
+        Account[] accounts = getAccountsForUser(userId);
+        Account account = null;
+        for(int i = 0; i < accounts.length; i++){
+            if(accounts[i].getAccountNumber().equals(accountNumber)){
+                account = accounts[0];
+            }
+        }
+        return account;
     }
 
     public static Invoice[] getInvoicesForUser(String userID) throws IOException {
@@ -291,7 +315,8 @@ public class FileManagement {
     }
 
     public static void writeNewAccount(String userId, Account account) throws IOException{
-        String addonText = "" + account.getAccountName() + ",";
+        String addonText = "" + account.getAccountType() + "." + account.getAmount() + "." + account.getAccountNumber() + "." + 
+        account.getAccountName() + ",";
         RandomAccessFile file = new RandomAccessFile("textfiles/accounts.txt", "rw");
         String line;
         long pos = 0;
