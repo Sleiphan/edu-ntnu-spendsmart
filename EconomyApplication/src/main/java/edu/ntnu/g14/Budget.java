@@ -17,11 +17,11 @@ public class Budget {
 
     /**
      * Creates a new empty budget.
-     * @param ownerAge The age of the person following this budget.
+     * @param i The age of the person following this budget.
      * @param ownerGender The gender of the person following this budget.
      */
-    public Budget(byte ownerAge, GenderCategory ownerGender) {
-        this.age = ownerAge;
+    public Budget(byte i, GenderCategory ownerGender) {
+        this.age = i;
         this.gender = ownerGender;
 
         entries = new ArrayList<>();
