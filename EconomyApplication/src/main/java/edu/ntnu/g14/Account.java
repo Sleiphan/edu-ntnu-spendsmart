@@ -126,7 +126,7 @@ public class Account {
                 accountName.equals(accountName);
     }
 
-    public static final String CSV_FIELD_DELIMITER = ";";
+    public static final String CSV_FIELD_DELIMITER = ".s";
     public String toCSVString() {
         String sb = accountType + CSV_FIELD_DELIMITER +
                 amount.toString() + CSV_FIELD_DELIMITER +

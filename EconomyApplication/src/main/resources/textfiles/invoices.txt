@@ -1,2 +1,3 @@
-olav#1,invoice.info.info,invoice2.info.info,
+##userID,date.amount.recipient,
+olav#1,01/01/01.2000.Fjordkraft,invoice2.info.info,
 Yasin£2,invoice.info.info,
