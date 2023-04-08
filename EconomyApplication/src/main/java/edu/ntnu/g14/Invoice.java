@@ -2,12 +2,15 @@ package edu.ntnu.g14;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Invoice {
     private LocalDate dueDate;
     private final String invoiceID;
     private BigDecimal amount;
     private String recipientAccountNumber;
+    private static final DateTimeFormatter dateFormatter = 
+    DateTimeFormatter.ofPattern("dd/MM/yyyy");
     public Invoice(final LocalDate dueDate, final BigDecimal amount, String recipientAccountNumber) {
         if (amount.intValue() < 1) {
             throw new IllegalArgumentException("The invoice must have a value greater than 1");
@@ -67,5 +70,24 @@ public class Invoice {
 
     public String getInvoiceId() {
         return invoiceID;
+    }
+
+    public static final String CSV_FIELD_DELIMITER = ".";
+    public String toCSVString() {
+      String sb =
+              dueDate.format(dateFormatter) +
+              amount + CSV_FIELD_DELIMITER +
+              recipientAccountNumber + CSV_FIELD_DELIMITER;
+
+      return sb;
+    }
+
+    public static Invoice fromCSVString(String csvString) {
+      String[] fields = csvString.split(CSV_FIELD_DELIMITER);
+      String recipient   = fields[2];
+      BigDecimal amount           = BigDecimal.valueOf(Short.parseShort(fields[1]));
+      LocalDate dateOfTransaction = LocalDate.parse(fields[0], dateFormatter);
+
+      return new Invoice(dateOfTransaction, amount, recipient);
     }
 }

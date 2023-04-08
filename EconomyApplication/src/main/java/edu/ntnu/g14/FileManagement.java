@@ -252,8 +252,21 @@ public class FileManagement {
         return null;
     }
 
-    public static Invoice[] getInvoicesForUser(String userId){
-        return null;
+    public static Invoice[] getInvoicesForUser(String userID) throws IOException {
+        InputStream input = FileManagement.class.getResourceAsStream("/textfiles/invoices.txt");
+        assert input != null;
+        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+        Stream<String> userTrans = reader.lines() 
+                .filter(line -> line.startsWith(userID + ","));
+        System.out.println(userTrans);
+
+        Invoice[] invoices = userTrans
+        .flatMap(s -> Arrays.stream(s.split(",")) 
+                .skip(1)) 
+        .map(Invoice::fromCSVString) 
+        .toArray(Invoice[]::new);
+        reader.close();
+        return invoices;
     }
 
     public static Budget getBudgetForUser(String userId){
@@ -261,8 +274,8 @@ public class FileManagement {
     }
 
     public static void writeNewTransaction(String userId, Transaction transaction) throws IOException{
-        String addonText = "" + transaction.getDateOfTransaction() + "," + transaction.getAmount() + "," +
-        transaction.getToAccountId() + "," + transaction.getFromAccountId() + "," + transaction.getDescription() + ",";
+        String addonText = "" + transaction.getDateOfTransaction() + ";" + transaction.getAmount() + ";" +
+        transaction.getToAccountId() + ";" + transaction.getFromAccountId() + ";" + transaction.getDescription() + ",";
         RandomAccessFile file = new RandomAccessFile("textfiles/transactions.txt", "rw");
         String line;
         long pos = 0;
@@ -294,7 +307,7 @@ public class FileManagement {
     }
 
     public static void writeNewInvoice(String userId, Invoice invoice) throws IOException{
-        String addonText = ""; //TODO: make in format of invoice
+        String addonText = "" + invoice.getDueDate() + "." + invoice.getAmount() + "." + invoice.getRecipientAccountNumber() + ",";
         RandomAccessFile file = new RandomAccessFile("textfiles/invoices.txt", "rw");
         String line;
         long pos = 0;
@@ -326,7 +339,7 @@ public class FileManagement {
     }
 
     public static Transaction[] findTransactionsOfUserAndAccountNumber(String userId, String accountNumber) throws IOException {
-        return (Transaction[]) Arrays.stream(readAllTransactions(userId)) //TODO: Bytt med parameter med readAllTransactions(userId), slett foregående linje
+        return (Transaction[]) Arrays.stream(readAllTransactions(userId)) 
                 .filter(transaction -> transaction.getFromAccountId().equals(accountNumber) || transaction.getToAccountId().equals(accountNumber))
                 .toArray();
     }
@@ -343,8 +356,7 @@ public class FileManagement {
     }
 
     public static void main(String[] args) throws IOException {
-        User a = readUser("olav#1");
-        System.out.println(a.getEmail());
+        
     }
 
 }
