@@ -26,7 +26,7 @@ public class UserManagementScene {
         // Create a VBox to hold loggedInUser and loggedInUserEmail
         VBox userInfoBox = new VBox(5, loggedInUser, loggedInUserEmail);
         userInfoBox.setAlignment(Pos.CENTER);
-        userInfoBox.setLayoutX(220); // Set the HBox's layoutX and layoutY to position it on the screen
+        userInfoBox.setLayoutX(220); // Set the VBox's layoutX and layoutY to position it on the screen
         userInfoBox.setLayoutY(75);
 
         Button password = ApplicationObjects.newButton("Password", 0, 0 ,"white", "grey", 157,60,16);

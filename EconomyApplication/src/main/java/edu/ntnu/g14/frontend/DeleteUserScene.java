@@ -32,7 +32,7 @@ public class DeleteUserScene {
         // Create a VBox to hold loggedInUser and loggedInUserEmail
         VBox userInfoBox = new VBox(5, loggedInUser, loggedInUserEmail);
         userInfoBox.setAlignment(Pos.CENTER);
-        userInfoBox.setLayoutX(220); // Set the HBox's layoutX and layoutY to position it on the screen
+        userInfoBox.setLayoutX(220); // Set the VBox's layoutX and layoutY to position it on the screen
         userInfoBox.setLayoutY(75);
 
 
@@ -57,7 +57,7 @@ public class DeleteUserScene {
                 e.printStackTrace();
             }
         });
-        // Create an HBox to hold warningText, confirm and cancel
+        // Create an VBox to hold warningText, confirm and cancel
         VBox deleteUserBox = new VBox(5, warningText, confirm, cancel);
         deleteUserBox.setAlignment(Pos.CENTER);
         deleteUserBox.setLayoutX(180); // Set the VBox's layoutX and layoutY to position it on the screen
