@@ -15,37 +15,35 @@ public class EmptyBudgetScene {
     static Stage stage = ApplicationFront.getStage();
 
     static public Scene scene() throws FileNotFoundException {
-        TableView<ObservableList<Object>> revenues = ApplicationObjects.newTableView(new String[]{"Revenues", "Amount"}, 80, 160, 660, 150);
+        TableView<ObservableList<Object>> revenues = ApplicationObjects.newTableView(new String[]{"Revenues", "Amount"}, 40, 70, 380, 120);
         revenues.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         revenues.setFixedCellSize(50);
 
-        TableView<ObservableList<Object>> expenditures = ApplicationObjects.newTableView(new String[]{"Expenditures", "Budget"}, 80, 320, 660, 310);
+        TableView<ObservableList<Object>> expenditures = ApplicationObjects.newTableView(new String[]{"Expenditures", "Budget"}, 40, 210, 380, 250);
         expenditures.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         expenditures.setFixedCellSize(50);
 
         Label backgroundLabel = new Label();
-        backgroundLabel.setPrefWidth(700);
-        backgroundLabel.setPrefHeight(600);
-        backgroundLabel.setLayoutX(60);
-        backgroundLabel.setLayoutY(100);
+        backgroundLabel.setPrefWidth(400);
+        backgroundLabel.setPrefHeight(500);
+        backgroundLabel.setLayoutX(30);
+        backgroundLabel.setLayoutY(40);
         backgroundLabel.setStyle("-fx-background-color: #f0f0f0;");
 
-        Text MonthlyBudget = ApplicationObjects.newText("Monthly Budget", 30, false, 70, 130 );
+        Text MonthlyBudget = ApplicationObjects.newText("Monthly Budget", 30, false, 40, 60);
         MonthlyBudget.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
-        Text savings = ApplicationObjects.newText("Savings: 3000", 30, false, 70, 670 );
+        Text savings = ApplicationObjects.newText("Savings: ", 30, false, 40, 480);
         savings.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
 
-
-
-        Button createNewBudget = ApplicationObjects.newButton("Create new budget", 850, 300, "black", "white", 380, 80, 15);
-        Button budgetSuggestions = ApplicationObjects.newButton("Budget suggestion", 850, 500, "black", "white", 380, 80, 15);
+        Button createNewBudget = ApplicationObjects.newButton("Create new budget", 470, 180, "black", "white", 157, 25, 16);
+        Button budgetSuggestions = ApplicationObjects.newButton("Budget suggestion", 470, 270, "black", "white", 157, 25, 16);
 
         createNewBudget.setOnAction(e -> {
             try {
                 stage.setScene(CreateNewBudgetScene.scene());
             } catch (FileNotFoundException e1) {
-                
+
                 e1.printStackTrace();
             }
         });
@@ -53,12 +51,13 @@ public class EmptyBudgetScene {
             try {
                 stage.setScene(BudgetSuggestionsScene.scene());
             } catch (FileNotFoundException e1) {
-                
+
                 e1.printStackTrace();
             }
         });
 
-    
+
+
         ImageView homeButton = ApplicationObjects.newImage("home.png", 10, 10, 20, 20);
         homeButton.setOnMouseClicked(e -> {
             try {
@@ -70,15 +69,15 @@ public class EmptyBudgetScene {
         Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, "black", "white", 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
-        Group root = new Group(backgroundLabel, revenues, expenditures,createNewBudget,
-        budgetSuggestions, MonthlyBudget, savings, dropDownButton, homeButton, manageUserButton);
+        Group root = new Group(backgroundLabel, revenues, expenditures, createNewBudget,
+                budgetSuggestions, MonthlyBudget, savings, dropDownButton, homeButton, manageUserButton);
         dropDownButton.setOnAction(e -> {
             root.getChildren().add(dropDown);
         });
 
         Scene scene = new Scene(root, 728, 567, Color.WHITE);
-        
-        
+
+
         Group userButtons = ApplicationObjects.userMenu();
         manageUserButton.setOnMouseEntered(e -> {
             root.getChildren().add(userButtons);
@@ -89,5 +88,4 @@ public class EmptyBudgetScene {
         });
         return scene;
     }
-
 }
