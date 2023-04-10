@@ -15,21 +15,23 @@ public class CreateNewBudgetScene {
     static public Scene scene() throws FileNotFoundException {
 
         String[] revenues = {"Revenues", "Salary", "Income"};
-        ChoiceBox<String> revenue = ApplicationObjects.newChoiceBox(revenues, "black", "white", 200, 50, 15, 150, 200);
+        ChoiceBox<String> revenue = ApplicationObjects.newChoiceBox(revenues, "black", "white", 150, 34, 15, 50, 100);
         revenue.setValue("Revenues");
-        TextField revenueInput = ApplicationObjects.newTextField("", 360, 205, "black", "white", 150, 40, 15);
+        TextField revenueInput = ApplicationObjects.newTextField("", 210, 100, "black", "white", 130, 30, 15);
+
 
         String[] expenditures = {"Expenditure", "Food", "Clothes", "Other"};
-        ChoiceBox<String> expenditure = ApplicationObjects.newChoiceBox(expenditures, "black", "white", 200, 50, 15, 1000, 200);
+        ChoiceBox<String> expenditure = ApplicationObjects.newChoiceBox(expenditures, "black", "white", 150, 34, 15, 400, 100);
         expenditure.setValue("Expenditure");
-        TextField expenditureInput = ApplicationObjects.newTextField("", 1210,205 , "black", "white", 150, 40, 15);
+        TextField expenditureInput = ApplicationObjects.newTextField("", 560, 100, "black", "white", 130, 30, 15);
+
 
         String[] personals = {"Personal", "Age", "Gender", "Household"};
-        ChoiceBox<String> personal = ApplicationObjects.newChoiceBox(personals, "black", "white", 200, 50, 15, 150, 550);
+        ChoiceBox<String> personal = ApplicationObjects.newChoiceBox(personals, "black", "white", 150, 34, 15, 50, 300);
         personal.setValue("Personal");
-        TextField personalInput = ApplicationObjects.newTextField("", 360, 555, "black", "white", 150, 40, 15);
+        TextField personalInput = ApplicationObjects.newTextField("", 210, 300, "black", "white", 130, 30, 15);
 
-        Button cancelBtn= ApplicationObjects.newButton("Cancel", 800, 690, "black", "white", 80, 30, 18);
+        Button cancelBtn= ApplicationObjects.newButton("Cancel", 200, 480, "black", "white", 157, 25, 16);
         cancelBtn.setOnAction(e -> {
             try {
                 stage.setScene(EmptyBudgetScene.scene());
@@ -39,7 +41,7 @@ public class CreateNewBudgetScene {
             }
         });
 
-        Button createBtn= ApplicationObjects.newButton("Create", 650, 690, "black", "white", 80, 30, 18);
+        Button createBtn= ApplicationObjects.newButton("Create", 380, 480, "black", "white", 157, 25, 16);
         createBtn.setOnAction(e -> {
             try {
                 stage.setScene(BudgetingScene.scene());
