@@ -14,6 +14,7 @@ public class BudgetItem {
     private static final String JSON_KEY_FINANCIAL_VALUE = "val";
     private static final String JSON_KEY_DESCRIPTION = "desc";
     private static final String JSON_KEY_CATEGORY = "cat";
+    private static final char CSV_DELIMITER = ';';
 
     private BigDecimal financialValue;
     private String description;
@@ -70,6 +71,23 @@ public class BudgetItem {
      */
     public static BudgetItem fromJSONObject(JSONObject o) {
         return new BudgetItem(o.getBigDecimal(JSON_KEY_FINANCIAL_VALUE), o.getString(JSON_KEY_DESCRIPTION), ExpenditureCategory.valueOf(o.getString(JSON_KEY_CATEGORY)));
+    }
+
+    public String toCSV() {
+        return  financialValue.toPlainString() + CSV_DELIMITER +
+                "\"" + description + "\"" + CSV_DELIMITER +
+                category;
+    }
+
+    public static BudgetItem fromCSV(String data) {
+        String[] fields = data.split(CSV_DELIMITER + "(?!\\s)");
+        fields[1] = fields[1].substring(1, fields[1].length() - 1);
+
+        BigDecimal financialValue = new BigDecimal(fields[0]);
+        String description = fields[1];
+        ExpenditureCategory category = ExpenditureCategory.valueOf(fields[2]);
+
+        return new BudgetItem(financialValue, description, category);
     }
 
     /**

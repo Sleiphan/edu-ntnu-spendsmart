@@ -1,5 +1,32 @@
 package edu.ntnu.g14;
 
+import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+
 public class TestBudgetItem {
+
+    @Test
+    public void equals_ok() {
+        BudgetItem item1 = new BudgetItem(new BigDecimal("99.75"), "Expense", ExpenditureCategory.OTHER);
+        BudgetItem item2 = new BudgetItem(new BigDecimal("99.75"), "Expense", ExpenditureCategory.OTHER);
+        BudgetItem unequal = new BudgetItem(new BigDecimal("50.2"), "Another expense", ExpenditureCategory.OTHER);
+
+        assert(item1.equals(item2));
+        assert(item2.equals(item1));
+        assert(!item1.equals(unequal));
+        assert(!item2.equals(unequal));
+        assert(!unequal.equals(item1));
+        assert(!unequal.equals(item2));
+    }
+
+    @Test
+    public void csv_parsing_ok() {
+        BudgetItem item = new BudgetItem(new BigDecimal("99.75"), "Expense", ExpenditureCategory.OTHER);
+        String csv = item.toCSV();
+        BudgetItem copy = BudgetItem.fromCSV(csv);
+
+        assert(item.equals(copy));
+    }
 
 }

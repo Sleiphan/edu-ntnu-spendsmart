@@ -7,11 +7,13 @@ import java.util.List;
 
 public class Budget {
 
-    private BigDecimal salary;
-    private BigDecimal savings;
+    private static final char CSV_DELIMITER = ',';
+
+    private BigDecimal salary = BigDecimal.ZERO;
+    private BigDecimal savings = BigDecimal.ZERO;
     private byte age;
     private GenderCategory gender;
-    private final List<BudgetItem> entries;
+    private final List<BudgetItem> entries = new ArrayList<>();
 
 
 
@@ -23,8 +25,6 @@ public class Budget {
     public Budget(byte i, GenderCategory ownerGender) {
         this.age = i;
         this.gender = ownerGender;
-
-        entries = new ArrayList<>();
     }
 
 
@@ -58,6 +58,112 @@ public class Budget {
 
         removed.setAssociatedBudget(null);
         return true;
+    }
+
+    // BigDecimal salary = BigDecimal.ZERO;
+    // BigDecimal savings = BigDecimal.ZERO;
+    // byte age;
+    // GenderCategory gender;
+    // final List<BudgetItem> entries = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null)
+            return false;
+        if (!(o instanceof Budget))
+            return false;
+
+        return o.hashCode() == this.hashCode();
+    }
+
+    @Override
+    public int hashCode() {
+        return salary.hashCode() * savings.hashCode() * age * gender.hashCode() * entries.hashCode();
+    }
+
+    public String toCSV() {
+        StringBuilder allEntries = new StringBuilder();
+        for (BudgetItem b : entries)
+            allEntries.append(b.toCSV()).append(CSV_DELIMITER);
+
+        // Pop the last element, as it is a lone delimiter.
+        allEntries.deleteCharAt(allEntries.length() - 1);
+
+        return  salary .toPlainString() + CSV_DELIMITER +
+                savings.toPlainString() + CSV_DELIMITER +
+                age                     + CSV_DELIMITER +
+                gender                  + CSV_DELIMITER +
+                allEntries.toString();
+    }
+
+    public static Budget fromCSV(String data) {
+        final String[] fields = data.split(CSV_DELIMITER + "(?!\\s)");//splitIgnoreStringLiterals(data, CSV_DELIMITER);
+        final BigDecimal salary = new BigDecimal(fields[0]);
+        final BigDecimal savings = new BigDecimal(fields[1]);
+        final byte age = Byte.parseByte(fields[2]);
+        final GenderCategory gender = GenderCategory.valueOf(fields[3]);
+        final List<BudgetItem> entries = new ArrayList<>();
+
+        for (int i = 4; i < fields.length; i++) {
+            entries.add(BudgetItem.fromCSV(fields[i]));
+        }
+
+        Budget budget = new Budget(age, gender);
+        budget.setSalary(salary);
+        budget.setSavings(savings);
+        for (BudgetItem i : entries) {
+            budget.addBudgetItem(i);
+            i.setAssociatedBudget(budget);
+        }
+
+        return budget;
+    }
+
+    /**
+     * Performs the same split operation as String::split, but ignores String literals within that string, marked by the character '"'. <br>
+     * For example, this operation: <br>
+     *     <code>splitIgnoreStringLiterals("54, \"Hello, world!\"", ',');</code> <br>
+     * will return this array: <br>
+     *     <code>["54", "Hello, world!]</code><br>
+     * @param text The string to be split.
+     * @param delimiter The character to split this string
+     * @return An array of strings containing the result of the split
+     */
+    private static String[] splitIgnoreStringLiterals(String text, char delimiter) {
+        // We need a place to store the position of all the delimiters we find.
+        List<Integer> splitIndices = new ArrayList<>();
+        // Add an entry to make sure we include the first part of the text.
+        splitIndices.add(-1);
+
+        boolean inString = false;
+        int index = 0;
+        while (index < text.length()) {
+            switch (text.charAt(index)) {
+                case CSV_DELIMITER:
+                    if (!inString)
+                        splitIndices.add(index);
+                case '"':
+                    if (index > 0 && text.charAt(index - 1) != '\\')
+                        inString = !inString;
+            }
+            index++;
+        }
+
+        // Add an entry to make sure we include the last part of the text.
+        splitIndices.add(text.length() - 1);
+
+        // If no occurrences of the delimiter was found, return an array with the whole text as the only element
+        if (splitIndices.size() <= 2)
+            return new String[]{text};
+
+        // Split the text based on the indices recorded in 'splitIndices'
+        List<String> stringParts = new ArrayList<>();
+
+        for (int i = 1; i < splitIndices.size() - 1; i++) // For every index in 'splitIndices' ...
+            stringParts.add(text.substring(splitIndices.get(i) + 1, splitIndices.get(i + 1))); // ... append a substring of the text, based on recorded indices.
+
+        // Return the resulting array
+        return stringParts.toArray(String[]::new);
     }
 
 
