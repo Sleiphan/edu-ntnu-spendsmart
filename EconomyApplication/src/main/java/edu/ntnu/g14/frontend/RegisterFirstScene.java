@@ -1,5 +1,7 @@
 package edu.ntnu.g14.frontend;
 
+import java.io.IOException;
+
 import edu.ntnu.g14.*;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -21,12 +23,17 @@ public class RegisterFirstScene {
         next.setOnAction(e -> {
             if (firstName.getText() != "" && lastName.getText() != ""
                     && email.getText() != "" && password.getText() != ""
-                    && confirmPassword.getText() != "") {
-                //TODO: add register user
+                    && confirmPassword.getText() != "" && confirmPassword.getText().equals(password.getText())) {
+                Login logininfo = new Login(firstName.getText() + lastName.getText(), password.getText(), firstName.getText() + lastName.getText() + "#1");
+                try {
+                    FileManagement.writeNewUser(new User(null, null, logininfo, email.getText(), lastName.getText(), firstName.getText(), null, null));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
                 String key = EmailVertification.sendVertificationKey(email.getText().replace(" ", ""));
-                stage.setScene(RegisterSecondScene.scene(key, email.getText()));
+                stage.setScene(RegisterSecondScene.scene(key, email.getText(), firstName.getText() + lastName.getText() + "#1"));
             } else {
-                ApplicationObjects.alertBox("ERROR", "Missing information", "Pleace fill out all required information");
+                ApplicationObjects.alertBox("ERROR", "Missing information or password dont match", "Pleace fill out all required information");
             }
         });
 

@@ -18,7 +18,7 @@ public class Invoice {
         if (recipientAccountNumber.isBlank()) {
             throw new IllegalArgumentException("The recipients account number must be entered!");
         }
-        else if (recipientAccountNumber.length() < 14) {
+        else if (recipientAccountNumber.length() != 13) {
             throw new IllegalArgumentException("The recipients account number must contain 11 digits, " +
                     "seperated by 2 dots");
         }
@@ -35,7 +35,7 @@ public class Invoice {
         if (recipientAccountNumber.isBlank()) {
             throw new IllegalArgumentException("The recipients account number must be entered!");
         }
-        else if (recipientAccountNumber.length() < 14) {
+        else if (recipientAccountNumber.length() != 13) {
             throw new IllegalArgumentException("The recipients account number must contain 11 digits, " +
                     "seperated by 2 dots");
         }
@@ -72,7 +72,7 @@ public class Invoice {
         return invoiceID;
     }
 
-    public static final String CSV_FIELD_DELIMITER = ".";
+    public static final String CSV_FIELD_DELIMITER = ";";
     public String toCSVString() {
       String sb =
               dueDate.format(dateFormatter) +

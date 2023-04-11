@@ -21,7 +21,6 @@ public class LoginUserScene {
             try {
                 stage.setScene(LoginChooseUserScene.scene());
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         });

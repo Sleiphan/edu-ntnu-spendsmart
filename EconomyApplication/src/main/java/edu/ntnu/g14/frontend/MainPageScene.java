@@ -1,7 +1,12 @@
 package edu.ntnu.g14.frontend;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
+
+import edu.ntnu.g14.Account;
+import edu.ntnu.g14.FileManagement;
+import edu.ntnu.g14.Transaction;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
@@ -18,7 +23,13 @@ public class MainPageScene {
     static public Scene scene() throws FileNotFoundException {
         String [] columnTitlesLatestActivitiesTable = {"Transaction", "Amount"};
         String [] columnTitlesDuePaymentsTable = {"Date", "Recipient", "Amount"};
-        String [] accountsList = {"Savings", "Spending", "Pension"};
+
+        String [] accountsList = new String [ApplicationFront.getLoggedInUser().getAllAccounts().length];
+        Account[] accounts = ApplicationFront.getLoggedInUser().getAllAccounts();
+        for (int i = 0; i < ApplicationFront.getLoggedInUser().getAllAccounts().length; i++){
+            accountsList[i] = accounts[i].getAccountName();
+        }
+
         Text actionsText = ApplicationObjects.newText("Actions", 20, false, 160, 30);
         Button transfer = ApplicationObjects.newButton("Transfer", 30, 50, "black", "white", 157, 25, 16);
         transfer.setOnMouseClicked(e -> {
@@ -56,8 +67,8 @@ public class MainPageScene {
                 e1.printStackTrace();
             }
         });
-        Button accounts = ApplicationObjects.newButton("Accounts", 30,130, "black", "white", 157, 25, 16);
-        accounts.setOnMouseClicked(e -> {
+        Button accountsButton = ApplicationObjects.newButton("Accounts", 30,130, "black", "white", 157, 25, 16);
+        accountsButton.setOnMouseClicked(e -> {
             try {
                 stage.setScene(AccountOverviewScene.scene());
             } catch (FileNotFoundException e1) {
@@ -76,8 +87,13 @@ public class MainPageScene {
         });
         Text latestActivitiesText = ApplicationObjects.newText("Latest Activities", 20, false,130, 210);
         TableView latestActivitiesTable = ApplicationObjects.newTableView(columnTitlesLatestActivitiesTable, 30, 230, 324, 300);
-        ObservableList<ObservableList<Object>> latestActivitiesData = initializeLatestActivitiesData();
-        latestActivitiesTable.setItems(latestActivitiesData);
+        ObservableList<ObservableList<Object>> latestActivitiesData;
+        try {
+            latestActivitiesData = initializeLatestActivitiesData();
+            latestActivitiesTable.setItems(latestActivitiesData);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        } 
         latestActivitiesTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         Text duePaymentsText = ApplicationObjects.newText("Due Payments", 20, false, 473, 210);
         TableView duePaymentsTable = ApplicationObjects.newTableView(columnTitlesDuePaymentsTable, 728-30-324, 230, 324, 300);
@@ -91,7 +107,7 @@ public class MainPageScene {
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
         Group root = new Group(actionsText, transfer, invoice, payment, 
-        overview, accounts, budgeting, latestActivitiesText, latestActivitiesTable, 
+        overview, accountsButton, budgeting, latestActivitiesText, latestActivitiesTable, 
         duePaymentsTable, duePaymentsText, accountsListView, accountsText, dropDownButton, homeButton, manageUserButton);
         dropDownButton.setOnAction(e -> {
             root.getChildren().add(dropDown);
@@ -111,16 +127,17 @@ public class MainPageScene {
         return scene;
     }
 
-    static public ObservableList<ObservableList<Object>> initializeLatestActivitiesData() {
-        //TODO: Use for loop to loop for the amount and description of the latest activities of a user
+    static public ObservableList<ObservableList<Object>> initializeLatestActivitiesData() throws IOException {
+        int length = ApplicationFront.getLoggedInUser().getTransactions().length;
+        if (length > 10){
+            length = 10;
+        }
+        Transaction[] transactions = FileManagement.readLatestTransactions(ApplicationFront.getLoggedInUser().getLoginInfo().getUserId(), length);
         ObservableList<ObservableList<Object>> latestActivitiesData = FXCollections.observableArrayList();
-        latestActivitiesData.add(FXCollections.observableArrayList("Elkjøp (Reserved)", new BigDecimal("10000.00")));
-        latestActivitiesData.add(FXCollections.observableArrayList("Vinmonopolet", new BigDecimal("5000.00")));
-        latestActivitiesData.add(FXCollections.observableArrayList("Kiwi Minipris", new BigDecimal("458.00")));
-        latestActivitiesData.add(FXCollections.observableArrayList("Trap Star", new BigDecimal("1350.00")));
-        latestActivitiesData.add(FXCollections.observableArrayList("Savings -> Spendings", new BigDecimal("2300.00")));
-        latestActivitiesData.add(FXCollections.observableArrayList("Pay Check", new BigDecimal("53202.00")));
-        latestActivitiesData.add(FXCollections.observableArrayList("PayPal", new BigDecimal("200.00")));
+        for(int i = 0; i < length; i++){
+            latestActivitiesData.add(FXCollections.observableArrayList(transactions[i].getToAccountId(), new BigDecimal(transactions[i].getAmount())));
+        }
+        
         return  latestActivitiesData;
     }
   

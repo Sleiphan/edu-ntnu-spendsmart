@@ -1,5 +1,7 @@
 package edu.ntnu.g14;
 
+import java.util.Arrays;
+
 public class User extends Personalia {
     private Account[] accounts;
     private Invoice[] invoices;
@@ -30,4 +32,5 @@ public class User extends Personalia {
     public Budget getBudget(){
         return budget;
     }
+
 }

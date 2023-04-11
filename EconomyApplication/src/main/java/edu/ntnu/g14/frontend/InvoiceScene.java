@@ -3,6 +3,7 @@ package edu.ntnu.g14.frontend;
 import edu.ntnu.g14.*;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -21,10 +22,12 @@ public class InvoiceScene {
     static Stage stage = ApplicationFront.getStage();
 
     static public Scene scene() throws FileNotFoundException {
-        List<Invoice> invoices = new ArrayList<>(); // TODO: Fill with actal data.
-        invoices.add(new Invoice(LocalDate.now().plusDays(1), BigDecimal.valueOf(769.43), "17535.83.78287"));
-        invoices.add(new Invoice(LocalDate.now().plusDays(1), BigDecimal.valueOf(769.43), "17535.83.78287"));
-        invoices.add(new Invoice(LocalDate.now().plusDays(1), BigDecimal.valueOf(769.43), "17535.83.78287"));
+        Invoice[] invoicesUser = ApplicationFront.getLoggedInUser().getAllInvoices();
+        List<Invoice> invoices = new ArrayList<Invoice>();
+        for(int i = 0; i < ApplicationFront.getLoggedInUser().getAllInvoices().length; i++){
+                invoices.add(invoicesUser[i]);
+        }
+        
 
         Text amount_t = ApplicationObjects.newText("Amount (kr):", 17, false, 11, 345 - 186);
         Text accountNum_t = ApplicationObjects.newText("Account number:", 17, false, 11, 376 - 186);
@@ -87,6 +90,11 @@ public class InvoiceScene {
                     amount,
                     accountNum_tf.getText());
             invoices.add(newInvoice);
+            try {
+                FileManagement.writeNewInvoice(ApplicationFront.getLoggedInUser().getLoginInfo().getUserId(), newInvoice);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
 
             clear_bt.getOnAction().handle(null);
             throw new RuntimeException("Action not connected to backend.");
@@ -101,11 +109,11 @@ public class InvoiceScene {
         });
         payNow_bt.setOnAction(e -> {
             invoices.remove(invoices_lv.getSelectionModel().getSelectedItem());
-            throw new RuntimeException("Action not connected to backend.");
+            //TODO: connect to backend
         });
         delete_bt.setOnAction(e -> {
             invoices.remove(invoices_lv.getSelectionModel().getSelectedItem());
-            throw new RuntimeException("Action not connected to backend.");
+            //TODO: connect to backend
         });
 
         ImageView homeButton = ApplicationObjects.newImage("home.png", 10, 10, 20, 20);

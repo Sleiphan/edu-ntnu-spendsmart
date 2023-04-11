@@ -41,7 +41,7 @@ public class Account {
             this.accountName = accountName;
         }
         // TODO: Check if account with this accountNumber already exists
-        if (accountNumber.length() < 13) {
+        if (accountNumber.length() != 13) {
             throw new IllegalArgumentException("Account number must contain 11 digits, seperated by 2 dots");
         } else {
             this.accountNumber = accountNumber;
@@ -126,7 +126,7 @@ public class Account {
                 accountName.equals(accountName);
     }
 
-    public static final String CSV_FIELD_DELIMITER = ".s";
+    public static final String CSV_FIELD_DELIMITER = ";";
     public String toCSVString() {
         String sb = accountType + CSV_FIELD_DELIMITER +
                 amount.toString() + CSV_FIELD_DELIMITER +

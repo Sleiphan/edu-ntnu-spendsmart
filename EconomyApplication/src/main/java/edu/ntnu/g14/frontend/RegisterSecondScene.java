@@ -1,5 +1,8 @@
 package edu.ntnu.g14.frontend;
 
+import java.io.IOException;
+
+import edu.ntnu.g14.FileManagement;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -9,11 +12,16 @@ import javafx.stage.Stage;
 public class RegisterSecondScene {
     static Stage stage = ApplicationFront.getStage();
 
-    static public Scene scene(String key, String email) {
+    static public Scene scene(String key, String email, String usersID) {
         TextField keyInput = ApplicationObjects.newTextField("", 120, 195, "black", "white", 100, 20, 15);
         Button next = ApplicationObjects.newButton("Next", 240, 195, "black", "white", 100, 20, 15);
         next.setOnAction(e -> {
             if (keyInput.getText().replace(" ", "").equals(key.replace(" ", ""))) {
+                try {
+                    ApplicationFront.setLoggedInUser(FileManagement.readUser(usersID));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
                 stage.setScene(RegisterThirdScene.scene());
             } else {
                 ApplicationObjects.alertBox("ERROR", "Wrong key", "The wrong key has been input");

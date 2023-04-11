@@ -1,16 +1,30 @@
 package edu.ntnu.g14;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import org.junit.jupiter.api.Test;
 
-public class TestFileManagement {
-    Account testAccount = new Account(AccountCategory.SAVINGS_ACCOUNT, BigDecimal.valueOf(100000), "1232.232.1232", "kortkonto");
-    Invoice testInvoice = new Invoice(LocalDate.of(2023, 12, 4), BigDecimal.valueOf(100000), "1232.232.1232");
-    Transaction testTransaction = new Transaction("1232.232.1232", "1244.232.1232", Short.parseShort("344"), "brukte penger", LocalDate.of(2023, 12, 4));
+class TestFileManagement {
+    Account testAccount = new Account(AccountCategory.SAVINGS_ACCOUNT, BigDecimal.valueOf(100000), "1232.232.12322", "kortkonto");
+    Invoice testInvoice = new Invoice(LocalDate.of(2023, 12, 4), BigDecimal.valueOf(100000), "1232.232.12322");
+    Transaction testTransaction = new Transaction("1232.232.12322", "1244.232.12322", Short.parseShort("344"), "brukte penger", LocalDate.of(2023, 12, 4));
     Budget testBudget = new Budget(Byte.parseByte("90"), GenderCategory.FEMALE);
-    User testUser = new User(null, null, null, null, null, null, null, testBudget);
+    Login loginInfo = new Login("test", "test", "Test#1");
+    User testUser = new User(null, null, loginInfo, null, null, null, null, testBudget);
 
+    @Test
+    void write() throws IOException{
+        FileManagement.writeNewTransaction("olav#1", testTransaction);
+        FileManagement.writeNewUser(testUser);
+        FileManagement.writeNewAccount("olav#1", testAccount);
+        FileManagement.writeNewInvoice("olav#1", testInvoice);
+        FileManagement.writeNewBudget("olav#1", testBudget);
 
-
+        System.out.println(FileManagement.readAllTransactions("olav#1").toString());
+        System.out.println(FileManagement.readLatestTransactions("olav#1", 3).toString());
+        System.out.println(FileManagement.getInvoicesForUser("olav#1").toString());
+        
+    }
     //test methods
 }
