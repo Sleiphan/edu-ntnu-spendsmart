@@ -116,122 +116,71 @@ public class FileManagement {
         String userInfo = "" + newUser.getLoginInfo().getUserId() + "," + newUser.getLoginInfo().getUserName() + "," + 
             newUser.getEmail() + "," + newUser.getLoginInfo().getPassword() + "," + newUser.getFirstName() + "," + newUser.getLastName();
             
-        //write new user to user.txt
-        try {
-            boolean isFirstEmptyLineFound = false;
-            try (RandomAccessFile file = new RandomAccessFile(PATH_USERS, "rw")) {
-                String line;
-                long pos = 0;
-                while ((line = file.readLine()) != null) {
-                    if (line.trim().isEmpty()) {
-                        if (!isFirstEmptyLineFound) {
-                            pos = file.getFilePointer() - line.length() - 1;
-                            file.seek(pos);
-                            file.writeBytes(userInfo + ", \n");
-                            isFirstEmptyLineFound = true;
-                        }
-                    }
-                }
-                if (!isFirstEmptyLineFound && pos != 0) {
-                    file.writeBytes(newUser.getLoginInfo().getUserId() + ", \n");
+           
+        try (RandomAccessFile file = new RandomAccessFile(PATH_USERS, "rw")) {
+            String line;
+            while ((line = file.readLine()) != null) {
+                if (line.startsWith(" ")) {
+                    file.seek(file.getFilePointer() - line.length());
+                    file.write(userInfo.getBytes());
+                    file.close();
+                    break;
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         
-        try {
-            boolean isFirstEmptyLineFound = false;
-            try (RandomAccessFile file = new RandomAccessFile(PATH_INVOICES, "rw")) {
-                String line;
-                long pos = 0;
-                while ((line = file.readLine()) != null) {
-                    if (line.trim().isEmpty()) {
-                        if (!isFirstEmptyLineFound) {
-                            pos = file.getFilePointer() - line.length() - 1;
-                            file.seek(pos);
-                            file.writeBytes(newUser.getLoginInfo().getPassword() + ", \n");
-                            isFirstEmptyLineFound = true;
-                        }
-                    }
-                }
-                if (!isFirstEmptyLineFound && pos != 0) {
-                    file.writeBytes(newUser.getLoginInfo().getUserId() + ", \n");
+        String addonTextInvoice = newUser.getLoginInfo().getUserId();
+        try (RandomAccessFile file = new RandomAccessFile(PATH_INVOICES, "rw")) {
+            String line;
+            while ((line = file.readLine()) != null) {
+                if (line.startsWith(" ")) {
+                    file.seek(file.getFilePointer() - line.length());
+                    file.write(addonTextInvoice.getBytes());
+                    file.close();
+                    break;
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
-        try {
-            boolean isFirstEmptyLineFound = false;
-            try (RandomAccessFile file = new RandomAccessFile(PATH_ACCOUNTS, "rw")) {
-                String line;
-                long pos = 0;
-                while ((line = file.readLine()) != null) {
-                    if (line.trim().isEmpty()) {
-                        if (!isFirstEmptyLineFound) {
-                            pos = file.getFilePointer() - line.length() - 1;
-                            file.seek(pos);
-                            file.writeBytes(newUser.getLoginInfo().getPassword() + ", \n");
-                            isFirstEmptyLineFound = true;
-                        }
-                    }
-                }
-                if (!isFirstEmptyLineFound && pos != 0) {
-                    file.writeBytes(newUser.getLoginInfo().getUserId() + ", \n");
+        String addonTextAccount = newUser.getLoginInfo().getUserId();
+        try (RandomAccessFile file = new RandomAccessFile(PATH_ACCOUNTS, "rw")) {
+            String line;
+            while ((line = file.readLine()) != null) {
+                if (line.startsWith(" ")) {
+                    file.seek(file.getFilePointer() - line.length());
+                    file.write(addonTextAccount.getBytes());
+                    file.close();
+                    break;
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
         
-        try {
-            boolean isFirstEmptyLineFound = false;
-            try (RandomAccessFile file = new RandomAccessFile(PATH_BUDGETS, "rw")) {
-                String line;
-                long pos = 0;
-                while ((line = file.readLine()) != null) {
-                    if (line.trim().isEmpty()) {
-                        if (!isFirstEmptyLineFound) {
-                            pos = file.getFilePointer() - line.length() - 1;
-                            file.seek(pos);
-                            file.writeBytes(newUser.getLoginInfo().getPassword() + ", \n");
-                            isFirstEmptyLineFound = true;
-                        }
-                    }
-                }
-                if (!isFirstEmptyLineFound && pos != 0) {
-                    file.writeBytes(newUser.getLoginInfo().getUserId() + ", \n");
+        String addonTextBudget = newUser.getLoginInfo().getUserId();
+        try (RandomAccessFile file = new RandomAccessFile(PATH_BUDGETS, "rw")) {
+            String line;
+            while ((line = file.readLine()) != null) {
+                if (line.startsWith(" ")) {
+                    file.seek(file.getFilePointer() - line.length());
+                    file.write(addonTextBudget.getBytes());
+                    file.close();
+                    break;
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
         
-        try {
-            boolean isFirstEmptyLineFound = false;
-            try (RandomAccessFile file = new RandomAccessFile(PATH_TRANSACTIONS, "rw")) {
-                String line;
-                long pos = 0;
-                while ((line = file.readLine()) != null) {
-                    if (line.trim().isEmpty()) {
-                        if (!isFirstEmptyLineFound) {
-                            pos = file.getFilePointer() - line.length() - 1;
-                            file.seek(pos);
-                            file.writeBytes(newUser.getLoginInfo().getPassword() + ", \n");
-                            isFirstEmptyLineFound = true;
-                        }
-                    }
-                }
-                if (!isFirstEmptyLineFound && pos != 0) {
-                    file.writeBytes(newUser.getLoginInfo().getUserId() + ", \n");
+        String addonTextTransactions = newUser.getLoginInfo().getUserId();
+        try (RandomAccessFile file = new RandomAccessFile(PATH_TRANSACTIONS, "rw")) {
+            String line;
+            while ((line = file.readLine()) != null) {
+                if (line.startsWith(" ")) {
+                    file.seek(file.getFilePointer() - line.length());
+                    file.write(addonTextTransactions.getBytes());
+                    file.close();
+                    break;
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
     }
@@ -286,9 +235,9 @@ public class FileManagement {
             long pos = 0;
             while ((line = file.readLine()) != null) {
                 if (line.startsWith(userId + ",")) {
-                    pos = file.getFilePointer() - line.length() - 1;
-                    file.seek(pos + line.getBytes().length + 1);
-                    file.write("kake".getBytes());
+                    pos = file.getFilePointer() - line.length() + line.indexOf("   ") - 3;
+                    file.seek(pos);
+                    file.write(addonText.getBytes());
                     file.close();
                     break;
                 }
@@ -304,9 +253,9 @@ public class FileManagement {
             long pos = 0;
             while ((line = file.readLine()) != null) {
                 if (line.startsWith(userId + ",")) {
-                    pos = file.getFilePointer() + line.length() - 1;
-                    file.seek(pos + line.getBytes().length + 1);
-                    file.write("kake".getBytes());
+                    pos = file.getFilePointer() - line.length() + line.indexOf("   ") - 3;
+                    file.seek(pos);
+                    file.write(addonText.getBytes());
                     file.close();
                     break;
                 }
@@ -321,9 +270,9 @@ public class FileManagement {
             long pos = 0;
             while ((line = file.readLine()) != null) {
                 if (line.startsWith(userId + ",")) {
-                    pos = file.getFilePointer() + line.length() - 1;
-                    file.seek(pos + line.getBytes().length + 1);
-                    file.write("kake".getBytes());
+                    pos = file.getFilePointer() - line.length() + line.indexOf("   ") - 3;
+                    file.seek(pos);
+                    file.write(addonText.getBytes());
                     file.close();
                     break;
                 }
@@ -338,9 +287,9 @@ public class FileManagement {
             long pos = 0;
             while ((line = file.readLine()) != null) {
                 if (line.startsWith(userId + ",")) {
-                    pos = file.getFilePointer() + line.length() - 1;
-                    file.seek(pos + line.getBytes().length + 1);
-                    file.write("kake".getBytes());
+                    pos = file.getFilePointer() - line.length() + line.indexOf("   ") - 3;
+                    file.seek(pos);
+                    file.write(addonText.getBytes());
                     file.close();
                     break;
                 }
