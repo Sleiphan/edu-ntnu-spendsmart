@@ -1,7 +1,10 @@
 package edu.ntnu.g14.frontend;
 
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
@@ -11,12 +14,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import edu.ntnu.g14.Payment;
+
 public class PaymentConfirmationScene {
     static Stage stage = ApplicationFront.getStage();
+    private static ArrayList<String> paymentInfo;
 
     static public Scene scene() throws FileNotFoundException {
         TableView<ObservableList<Object>> payment = ApplicationObjects.newTableView(new String[]{"Payment", "Information"}, 100, 150, 602, 150);
-        ObservableList<ObservableList<Object>> paymentData = initializePaymentData();
+        ObservableList<ObservableList<Object>> paymentData = initializePaymentData(getPaymentInfo());
         payment.setItems(paymentData);
         payment.getColumns().forEach(colum -> colum.setMinWidth(300));
         payment.getColumns().forEach(column -> column.setSortable(false));
@@ -75,15 +81,27 @@ public class PaymentConfirmationScene {
         return scene;
     }
 
-    public static ObservableList<ObservableList<Object>> initializePaymentData() {
+    public static ObservableList<ObservableList<Object>> initializePaymentData(ArrayList<String> paymentInfo) {
+        String fromAccount = paymentInfo.get(0);
+        String amount = paymentInfo.get(1);
+        String dueDate = paymentInfo.get(2);
+        String toAccount = paymentInfo.get(3);
+        String cid = paymentInfo.get(4);
+
         ObservableList<ObservableList<Object>> paymentData = FXCollections.observableArrayList();
-        paymentData.add(FXCollections.observableArrayList("From account:", new BigDecimal("12345678910")));
-        paymentData.add(FXCollections.observableArrayList("Amount:", new BigDecimal("50.00") + "kr"));
-        paymentData.add(FXCollections.observableArrayList("Due date:", "01.01.2019"));
-        paymentData.add(FXCollections.observableArrayList("To account:", new BigDecimal("10987654321")));
-        paymentData.add(FXCollections.observableArrayList("CID:", new BigDecimal("0123456789")));
+        paymentData.add(FXCollections.observableArrayList("From account:", new BigDecimal(fromAccount)));
+        paymentData.add(FXCollections.observableArrayList("Amount:", new BigDecimal(amount) + "kr"));
+        paymentData.add(FXCollections.observableArrayList("Due date:", dueDate));
+        paymentData.add(FXCollections.observableArrayList("To account:", new BigDecimal(toAccount)));
+        paymentData.add(FXCollections.observableArrayList("CID:", new BigDecimal(cid)));
         return paymentData;
     }
 
+    public static ArrayList<String> getPaymentInfo() {
+        return paymentInfo;
+    }
 
+    public static void setPaymentInfo(ArrayList<String> paymentInfo) {
+        PaymentConfirmationScene.paymentInfo = paymentInfo;
+    }
 }
