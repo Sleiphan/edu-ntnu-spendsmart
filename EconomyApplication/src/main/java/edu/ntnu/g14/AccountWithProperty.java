@@ -10,7 +10,6 @@ public class AccountWithProperty {
     private final StringProperty amount;
     private final StringProperty accountNumber;
     private final StringProperty accountName;
-    public static final String CSV_FIELD_DELIMITER = ";";
 
     public AccountWithProperty(String accountType, String amount, String accountName, String accountNumber) {
         this.accountType = new SimpleStringProperty(accountType);
@@ -59,35 +58,6 @@ public class AccountWithProperty {
         }
         setAccountName(newName);
         return true;
-    }
-
-    public boolean equals(Object o) {
-        if (!(o instanceof AccountWithProperty))
-            return false;
-
-        AccountWithProperty a = (AccountWithProperty) o;
-        return accountType.equals(a.accountType) &&
-                amount.equals(a.amount) &&
-                accountNumber.equals(a.accountNumber) &&
-                accountName.equals(a.accountName);
-    }
-
-    public String toCSVString() {
-
-        return accountType + CSV_FIELD_DELIMITER +
-                amount + CSV_FIELD_DELIMITER +
-                accountNumber + CSV_FIELD_DELIMITER +
-                accountName + CSV_FIELD_DELIMITER;
-    }
-
-    public static AccountWithProperty fromCSVString(String csvString) {
-        String[] fields = csvString.split(CSV_FIELD_DELIMITER);
-        AccountCategory accountType = AccountCategory.valueOf(fields[0]);
-        String amount               = fields[1];
-        String accountNumber        = fields[2];
-        String accountName          = fields[3];
-
-        return new AccountWithProperty(accountType.toString(), amount, accountNumber, accountName);
     }
 
     public StringProperty accountNumberProperty() {
