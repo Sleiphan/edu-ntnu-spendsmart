@@ -22,11 +22,19 @@ import java.util.stream.Stream;
 //TODO: create exceptions
 
 public class FileManagement {
-     
+
+    public static final String PATH_ACCOUNTS     = "EconomyApplication/saves/accounts.txt";
+    public static final String PATH_BUDGETS      = "EconomyApplication/saves/budgets.txt";
+    public static final String PATH_INVOICES     = "EconomyApplication/saves/invoices.txt";
+    public static final String PATH_TRANSACTIONS = "EconomyApplication/saves/transactions.txt";
+    public static final String PATH_USERS        = "EconomyApplication/saves/users.txt";
+
+    // public static void fileContentInsert(String pathToFile, long
+
     public static Login[] readUsers() throws IOException {
         
         List<String> lines = new ArrayList<>();
-        InputStream input = FileManagement.class.getResourceAsStream("/textfiles/users.txt");
+        InputStream input = FileManagement.class.getResourceAsStream(PATH_USERS);
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         reader.readLine();
         String line;
@@ -47,7 +55,7 @@ public class FileManagement {
 
 
     public static Transaction[] readAllTransactions(String userID) throws IOException {
-        InputStream input = FileManagement.class.getResourceAsStream("/textfiles/transactions.txt");
+        InputStream input = FileManagement.class.getResourceAsStream(PATH_TRANSACTIONS);
         assert input != null;
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         Stream<String> userTrans = reader.lines() 
@@ -71,7 +79,7 @@ public class FileManagement {
 
     public static User readUser(String userId) throws IOException {
         List<String> lines = new ArrayList<>();
-        InputStream input = FileManagement.class.getResourceAsStream("/textfiles/users.txt");
+        InputStream input = FileManagement.class.getResourceAsStream(PATH_USERS);
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         reader.readLine();
 
@@ -118,7 +126,7 @@ public class FileManagement {
             
         //write new user to user.txt
         try {
-            RandomAccessFile file = new RandomAccessFile("/textfiles/users.txt", "rw");
+            RandomAccessFile file = new RandomAccessFile(PATH_USERS, "rw");
             String line;
             boolean isFirstEmptyLineFound = false;
             long pos = 0;
@@ -144,7 +152,7 @@ public class FileManagement {
         
         //write new user to invoices
         try {
-            RandomAccessFile file = new RandomAccessFile("/textfiles/invoices.txt", "rw");
+            RandomAccessFile file = new RandomAccessFile(PATH_INVOICES, "rw");
             String line;
             boolean isFirstEmptyLineFound = false;
             long pos = 0;
@@ -170,7 +178,7 @@ public class FileManagement {
 
         //write new user to accounts
         try {
-            RandomAccessFile file = new RandomAccessFile("/textfiles/accounts.txt", "rw");
+            RandomAccessFile file = new RandomAccessFile(PATH_ACCOUNTS, "rw");
             String line;
             boolean isFirstEmptyLineFound = false;
             long pos = 0;
@@ -196,7 +204,7 @@ public class FileManagement {
 
         //write new user to budgets
         try {
-            RandomAccessFile file = new RandomAccessFile("/textfiles/budgets.txt", "rw");
+            RandomAccessFile file = new RandomAccessFile(PATH_BUDGETS, "rw");
             String line;
             boolean isFirstEmptyLineFound = false;
             long pos = 0;
@@ -222,7 +230,7 @@ public class FileManagement {
 
         //write new user to transactions
         try {
-            RandomAccessFile file = new RandomAccessFile("/textfiles/transactions.txt", "rw");
+            RandomAccessFile file = new RandomAccessFile(PATH_TRANSACTIONS, "rw");
             String line;
             boolean isFirstEmptyLineFound = false;
             long pos = 0;
@@ -249,7 +257,7 @@ public class FileManagement {
     }
 
     public static Account[] getAccountsForUser(String userId) throws IOException{
-        InputStream input = FileManagement.class.getResourceAsStream("/textfiles/accounts.txt");
+        InputStream input = FileManagement.class.getResourceAsStream(PATH_ACCOUNTS);
         assert input != null;
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         Stream<String> userTrans = reader.lines() 
@@ -277,7 +285,7 @@ public class FileManagement {
     }
 
     public static Invoice[] getInvoicesForUser(String userID) throws IOException {
-        InputStream input = FileManagement.class.getResourceAsStream("/textfiles/invoices.txt");
+        InputStream input = FileManagement.class.getResourceAsStream(PATH_INVOICES);
         assert input != null;
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         Stream<String> userTrans = reader.lines() 
@@ -293,14 +301,19 @@ public class FileManagement {
         return invoices;
     }
 
-    public static Budget getBudgetForUser(String userId){
+    public static Budget getBudgetForUser(String userID) {
+
         return null;
+    }
+
+    public static void writeBudgetForUser(String userID) {
+
     }
 
     public static void writeNewTransaction(String userId, Transaction transaction) throws IOException{
         String addonText = "" + transaction.getDateOfTransaction() + ";" + transaction.getAmount() + ";" +
         transaction.getToAccountId() + ";" + transaction.getFromAccountId() + ";" + transaction.getDescription() + ",";
-        RandomAccessFile file = new RandomAccessFile("textfiles/transactions.txt", "rw");
+        RandomAccessFile file = new RandomAccessFile(PATH_TRANSACTIONS, "rw");
         String line;
         long pos = 0;
         while ((line = file.readLine()) != null) {
@@ -317,7 +330,7 @@ public class FileManagement {
     public static void writeNewAccount(String userId, Account account) throws IOException{
         String addonText = "" + account.getAccountType() + "." + account.getAmount() + "." + account.getAccountNumber() + "." + 
         account.getAccountName() + ",";
-        RandomAccessFile file = new RandomAccessFile("textfiles/accounts.txt", "rw");
+        RandomAccessFile file = new RandomAccessFile(PATH_ACCOUNTS, "rw");
         String line;
         long pos = 0;
         while ((line = file.readLine()) != null) {
@@ -333,7 +346,7 @@ public class FileManagement {
 
     public static void writeNewInvoice(String userId, Invoice invoice) throws IOException{
         String addonText = "" + invoice.getDueDate() + "." + invoice.getAmount() + "." + invoice.getRecipientAccountNumber() + ",";
-        RandomAccessFile file = new RandomAccessFile("textfiles/invoices.txt", "rw");
+        RandomAccessFile file = new RandomAccessFile(PATH_INVOICES, "rw");
         String line;
         long pos = 0;
         while ((line = file.readLine()) != null) {
@@ -347,9 +360,9 @@ public class FileManagement {
         file.close();
     }
 
-    public static void writeNewBudget(String userId, Budget budget) throws IOException{
+    public static void writeNewBudget(String userId, Budget budget) throws IOException {
         String addonText = ""; //TODO: make in format of budget
-        RandomAccessFile file = new RandomAccessFile("textfiles/transactions.txt", "rw");
+        RandomAccessFile file = new RandomAccessFile(PATH_TRANSACTIONS, "rw");
         String line;
         long pos = 0;
         while ((line = file.readLine()) != null) {
@@ -381,7 +394,7 @@ public class FileManagement {
     }
 
     public static void main(String[] args) throws IOException {
-        
+        System.out.println("Hello World!");
     }
 
 }
