@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.util.WeakHashMap;
 
 import edu.ntnu.g14.User;
-import edu.ntnu.g14.UserManagement;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -34,7 +33,6 @@ public class DeleteUserScene {
 
     private static boolean cancelPressed = false;
 
-    private static UserManagement userManagement;
 
     static public Scene scene() throws FileNotFoundException {
         User currentUser = ApplicationFront.getLoggedInUser();
@@ -73,7 +71,7 @@ public class DeleteUserScene {
 
             timer.setOnFinished(e -> {
                 if (!cancelPressed) {
-                    userManagement.removeUser(currentUser.getLoginInfo().getUserId());
+                    //TODO: remove user
                     ApplicationObjects.alertBox("Deleted user", "You have deleted user", currentUser.getFullName() + " R.I.P");
                     confirm.setStyle("-fx-background-color: red");
                     confirm.setTextFill(Paint.valueOf("WHITE"));
