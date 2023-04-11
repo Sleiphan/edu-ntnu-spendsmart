@@ -11,8 +11,8 @@ public class TestBudget {
         Budget budget = new Budget((byte) 1, GenderCategory.MALE);
         budget.setSavings(new BigDecimal("2"));
         budget.setSalary(new BigDecimal("3"));
-        budget.addBudgetItem(new BudgetItem(new BigDecimal("4"), "Expense 1", ExpenditureCategory.LEISURE));
-        budget.addBudgetItem(new BudgetItem(new BigDecimal("5"), "Expense 2", ExpenditureCategory.TRAVEL));
+        budget.addBudgetItem(new BudgetItem(new BigDecimal("4"), "Expense 1", BudgetCategory.LEISURE));
+        budget.addBudgetItem(new BudgetItem(new BigDecimal("5"), "Expense 2", BudgetCategory.TRAVEL));
 
         String csv = budget.toCSV();
         Budget copy = Budget.fromCSV(csv);

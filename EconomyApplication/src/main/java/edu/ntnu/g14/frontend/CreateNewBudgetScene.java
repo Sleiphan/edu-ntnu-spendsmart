@@ -1,6 +1,7 @@
 package edu.ntnu.g14.frontend;
 
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
 
 import edu.ntnu.g14.*;
 import javafx.scene.Group;
@@ -30,8 +31,8 @@ public class CreateNewBudgetScene {
                         double inputAmount = Double.parseDouble(inputText);
 
                         // Create the BudgetItem object
-                        RevenueCategory selectedCategory = RevenueCategory.valueOf(selectedItem.replace(' ', '_')); //TODO: add RevenuCategory enum
-                        BudgetItem budgetItem = new BudgetItem(selectedCategory, inputAmount); //TODO: need new budgetItem constructor
+                        BudgetCategory selectedCategory = BudgetCategory.valueOf(selectedItem.replace(' ', '_')); //TODO: add RevenuCategory enum
+                        BudgetItem budgetItem = new BudgetItem(selectedCategory, BigDecimal.valueOf(inputAmount)); //TODO: need new budgetItem constructor
 
                         // Process the created BudgetItem object as needed
                         loggedInUser.getBudget().addBudgetItem(budgetItem);
@@ -53,7 +54,7 @@ public class CreateNewBudgetScene {
         expenditure.setPrefHeight(34);
         expenditure.getItems().add("Expenditure");
 
-        for (ExpenditureCategory category : ExpenditureCategory.values()) {
+        for (BudgetCategory category : BudgetCategory.values()) {
             expenditure.getItems().add(category.name().replace('_', ' '));
         }
         expenditure.setValue("Expenditure");
@@ -70,8 +71,8 @@ public class CreateNewBudgetScene {
                         double inputAmount = Double.parseDouble(inputText);
 
                         // Create the BudgetItem object
-                        ExpenditureCategory selectedCategory = ExpenditureCategory.valueOf(selectedItem.replace(' ', '_'));
-                        BudgetItem budgetItem = new BudgetItem(selectedCategory, inputAmount); //TODO: need new budgetItem constructor
+                        BudgetCategory selectedCategory = BudgetCategory.valueOf(selectedItem.replace(' ', '_'));
+                        BudgetItem budgetItem = new BudgetItem(selectedCategory, BigDecimal.valueOf(inputAmount)); //TODO: need new budgetItem constructor
 
                         // Process the created BudgetItem object as needed
                         loggedInUser.getBudget().addBudgetItem(budgetItem);
@@ -104,19 +105,18 @@ public class CreateNewBudgetScene {
                         switch (selectedItem) {
                             case "Age":
                                 int inputAge = Integer.parseInt(inputText);
-                                budgetItem = new BudgetItem("Age", inputAge);
+                                budgetItem = new BudgetItem(BudgetCategory.AGE, inputAge);
                                 break;
                             case "Gender":
-                                budgetItem = new BudgetItem("Gender", inputText);
+                                budgetItem = new BudgetItem(BudgetCategory.GENDER, GenderCategory.valueOf(inputText));
                                 break;
                             case "Household":
-                                budgetItem = new BudgetItem("Household", inputText);
+                                budgetItem = new BudgetItem(BudgetCategory.HOUSEHOLD, HouseholdCategory.valueOf(inputText));
                                 break;
                         }
 
                         if (budgetItem != null) {
-                            // Process the created BudgetItem object as needed
-                            // loggedInUser.getBudget().addBudgetItem(budgetItem);
+                            loggedInUser.getBudget().addBudgetItem(budgetItem);
                         }
 
                         // Clear the TextField after processing

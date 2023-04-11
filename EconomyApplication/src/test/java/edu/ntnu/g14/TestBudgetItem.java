@@ -8,9 +8,9 @@ public class TestBudgetItem {
 
     @Test
     public void equals_ok() {
-        BudgetItem item1 = new BudgetItem(new BigDecimal("99.75"), "Expense", ExpenditureCategory.OTHER);
-        BudgetItem item2 = new BudgetItem(new BigDecimal("99.75"), "Expense", ExpenditureCategory.OTHER);
-        BudgetItem unequal = new BudgetItem(new BigDecimal("50.2"), "Another expense", ExpenditureCategory.OTHER);
+        BudgetItem item1 = new BudgetItem(new BigDecimal("99.75"), "Expense", BudgetCategory.OTHER);
+        BudgetItem item2 = new BudgetItem(new BigDecimal("99.75"), "Expense", BudgetCategory.OTHER);
+        BudgetItem unequal = new BudgetItem(new BigDecimal("50.2"), "Another expense", BudgetCategory.OTHER);
 
         assert(item1.equals(item2));
         assert(item2.equals(item1));
@@ -22,7 +22,7 @@ public class TestBudgetItem {
 
     @Test
     public void csv_parsing_ok() {
-        BudgetItem item = new BudgetItem(new BigDecimal("99.75"), "Expense", ExpenditureCategory.OTHER);
+        BudgetItem item = new BudgetItem(new BigDecimal("99.75"), "Expense", BudgetCategory.OTHER);
         String csv = item.toCSV();
         BudgetItem copy = BudgetItem.fromCSV(csv);
 

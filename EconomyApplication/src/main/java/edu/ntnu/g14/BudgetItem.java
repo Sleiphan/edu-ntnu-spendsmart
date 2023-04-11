@@ -18,9 +18,15 @@ public class BudgetItem {
 
     private BigDecimal financialValue;
     private String description;
-    private ExpenditureCategory category;
+    private BudgetCategory category;
+
+    private HouseholdCategory householdCategory;
 
     private Budget budgetRef = null;
+
+    private int age;
+
+    private GenderCategory genderCategory;
 
 
 
@@ -28,7 +34,7 @@ public class BudgetItem {
      * Creates a new instance of BudgetItem, with the default values pre-defined in this class.
      */
     public BudgetItem() {
-        this(BigDecimal.ZERO, "", ExpenditureCategory.OTHER);
+        this(BigDecimal.ZERO, "", BudgetCategory.OTHER);
     }
 
     /**
@@ -38,7 +44,7 @@ public class BudgetItem {
      *                    describing e.g. the purpose of this transaction, where the money is coming from or going, etc.
      * @param category The category this budget item belongs.
      */
-    public BudgetItem(BigDecimal financialValue, String description, ExpenditureCategory category) {
+    public BudgetItem(BigDecimal financialValue, String description, BudgetCategory category) {
         if (financialValue == null)
             throw new IllegalArgumentException("The financial value in a budget item cannot be null");
         if (description == null)
@@ -49,6 +55,24 @@ public class BudgetItem {
         this.category = category;
     }
 
+    public BudgetItem(BudgetCategory category, BigDecimal financialValue){
+     this.category = category;
+     this.financialValue = financialValue;
+    }
+    public BudgetItem(BudgetCategory category, HouseholdCategory inputHouseHold){
+        this.category = category;
+        this.householdCategory = inputHouseHold;
+    }
+
+    public BudgetItem(BudgetCategory age, int inputAge) {
+        this.category = age;
+        this.age = inputAge;
+    }
+
+    public BudgetItem(BudgetCategory gender, GenderCategory inputText) {
+        this.category = gender;
+        this.genderCategory = inputText;
+    }
 
 
     /**
@@ -70,7 +94,7 @@ public class BudgetItem {
      * @return A new BudgetItem with a state defined by the data contained in the submitted JSONObject.
      */
     public static BudgetItem fromJSONObject(JSONObject o) {
-        return new BudgetItem(o.getBigDecimal(JSON_KEY_FINANCIAL_VALUE), o.getString(JSON_KEY_DESCRIPTION), ExpenditureCategory.valueOf(o.getString(JSON_KEY_CATEGORY)));
+        return new BudgetItem(o.getBigDecimal(JSON_KEY_FINANCIAL_VALUE), o.getString(JSON_KEY_DESCRIPTION), BudgetCategory.valueOf(o.getString(JSON_KEY_CATEGORY)));
     }
 
     public String toCSV() {
@@ -85,7 +109,7 @@ public class BudgetItem {
 
         BigDecimal financialValue = new BigDecimal(fields[0]);
         String description = fields[1];
-        ExpenditureCategory category = ExpenditureCategory.valueOf(fields[2]);
+        BudgetCategory category = BudgetCategory.valueOf(fields[2]);
 
         return new BudgetItem(financialValue, description, category);
     }
@@ -232,7 +256,7 @@ public class BudgetItem {
      * Sets the category of this budget item.
      * @param newCategory The new category of this budget item.
      */
-    public void setCategory(ExpenditureCategory newCategory) {
+    public void setCategory(BudgetCategory newCategory) {
         category = newCategory;
         updateBudgetCalculations();
     }
@@ -249,7 +273,7 @@ public class BudgetItem {
      * Returns the category of this budget item.
      * @return the category of this budget item.
      */
-    public ExpenditureCategory getCategory() {
+    public BudgetCategory getCategory() {
         return category;
     }
 }
