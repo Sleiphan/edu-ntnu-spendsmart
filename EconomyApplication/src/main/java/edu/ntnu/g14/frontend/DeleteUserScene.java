@@ -3,11 +3,19 @@ package edu.ntnu.g14.frontend;
 import java.io.FileNotFoundException;
 import java.util.WeakHashMap;
 
+import edu.ntnu.g14.User;
+import edu.ntnu.g14.UserManagement;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.util.Duration;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -24,9 +32,14 @@ public class DeleteUserScene {
     private StackPane stackPane;
     static Stage stage = ApplicationFront.getStage();
 
+    private static boolean cancelPressed = false;
+
+    private static UserManagement userManagement;
+
     static public Scene scene() throws FileNotFoundException {
-        Text loggedInUser = ApplicationObjects.newText("Walter Banks", 40, false, 0, 0);
-        Text loggedInUserEmail = ApplicationObjects.newText("walBa76@gmail.com", 20, false, 0, 0);
+        User currentUser = ApplicationFront.getLoggedInUser();
+        Text loggedInUser = ApplicationObjects.newText(currentUser.getFullName(), 40, false, 0, 0);
+        Text loggedInUserEmail = ApplicationObjects.newText(currentUser.getEmail(), 20, false, 0, 0);
 
 
         // Create a VBox to hold loggedInUser and loggedInUserEmail
@@ -41,29 +54,53 @@ public class DeleteUserScene {
                 "10 seconds left", 20, true, 0, 0);
         warningText.setTextAlignment(TextAlignment.CENTER);
         warningText.setVisible(false);
+        // Create a countdown timer using a Timeline
+        final int[] countdown = {10};
+        Timeline timer = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            if (countdown[0] > 0) {
+                countdown[0]--;
+                warningText.setText("Are you sure you want to delete this user?\n" +
+                        "This action cannot be undone\n" +
+                        countdown[0] + " seconds left");
+            }
+        }));
+        timer.setCycleCount(10);
         Button confirm = ApplicationObjects.newButton("Delete", 0, 0,"white", "red", 157,25,16);
         confirm.setTextFill(Paint.valueOf("WHITE"));
-        confirm.setOnMousePressed(event -> {warningText.setVisible(true);
-            ApplicationObjects.alertBox("Deleted user", "You have deleted user", "Walter Banks R.I.P");    confirm.setStyle("-fx-background-color: red");
-            confirm.setTextFill(Paint.valueOf("WHITE"));
+        confirm.setOnMousePressed(event -> {
+            warningText.setVisible(true);
+            timer.play();
+
+            timer.setOnFinished(e -> {
+                if (!cancelPressed) {
+                    userManagement.removeUser(currentUser.getLoginInfo().getUserId());
+                    ApplicationObjects.alertBox("Deleted user", "You have deleted user", currentUser.getFullName() + " R.I.P");
+                    confirm.setStyle("-fx-background-color: red");
+                    confirm.setTextFill(Paint.valueOf("WHITE"));
+                }
+            });
         });
 
         Button cancel = ApplicationObjects.newButton("Cancel", 0, 0,"white", "grey", 157,25,16);
         cancel.setOnAction(event -> {
+            cancelPressed = true;
+            timer.stop();
             try {
                 stage.setScene(UserManagementScene.scene());
             } catch (FileNotFoundException e) {
-                
                 e.printStackTrace();
             }
         });
+
+
+
         // Create an VBox to hold warningText, confirm and cancel
         VBox deleteUserBox = new VBox(5, warningText, confirm, cancel);
         deleteUserBox.setAlignment(Pos.CENTER);
         deleteUserBox.setLayoutX(180); // Set the VBox's layoutX and layoutY to position it on the screen
         deleteUserBox.setLayoutY(350);
 
-        
+
         ImageView homeButton = ApplicationObjects.newImage("home.png", 10, 10, 20, 20);
         homeButton.setOnMouseClicked(e -> {
             try {
@@ -81,8 +118,8 @@ public class DeleteUserScene {
         });
 
         Scene scene = new Scene(root, 728, 567, Color.WHITE);
-        
-      
+
+
         Group userButtons = ApplicationObjects.userMenu();
         manageUserButton.setOnMouseEntered(e -> {
             root.getChildren().add(userButtons);
