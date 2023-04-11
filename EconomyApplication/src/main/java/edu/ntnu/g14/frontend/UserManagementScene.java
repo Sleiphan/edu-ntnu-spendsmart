@@ -3,6 +3,7 @@ package edu.ntnu.g14.frontend;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import edu.ntnu.g14.User;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -20,8 +21,9 @@ public class UserManagementScene {
     static Stage stage = ApplicationFront.getStage();
 
     static public Scene scene() throws FileNotFoundException {
-        Text loggedInUser = ApplicationObjects.newText("Walter Banks", 40, false, 0, 0);
-        Text loggedInUserEmail = ApplicationObjects.newText("walBa76@gmail.com", 20, false, 0, 0);
+        User currentUser = ApplicationFront.getLoggedInUser();
+        Text loggedInUser = ApplicationObjects.newText(currentUser.getFullName(), 40, false, 0, 0);
+        Text loggedInUserEmail = ApplicationObjects.newText(currentUser.getEmail(), 20, false, 0, 0);
 
         // Create a VBox to hold loggedInUser and loggedInUserEmail
         VBox userInfoBox = new VBox(5, loggedInUser, loggedInUserEmail);
