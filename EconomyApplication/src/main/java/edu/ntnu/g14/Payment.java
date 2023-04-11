@@ -1,5 +1,6 @@
 package edu.ntnu.g14;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -7,8 +8,8 @@ public class Payment extends Transaction{
     private String CID;
     private LocalDate dueDate;
 
-  public Payment(String fromAccountId, String toAccountId, short amount, String description,
-      LocalDate dateOfTransaction, String CID, LocalDate dueDate) {
+  public Payment(String fromAccountId, String toAccountId, BigDecimal amount, String description,
+                 LocalDate dateOfTransaction, String CID, LocalDate dueDate) {
     super(fromAccountId, toAccountId, amount, description, dateOfTransaction);
 
     if (CID == null)
