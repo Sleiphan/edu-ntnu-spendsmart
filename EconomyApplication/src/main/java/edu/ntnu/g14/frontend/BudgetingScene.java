@@ -2,6 +2,11 @@ package edu.ntnu.g14.frontend;
 
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
+import java.util.Map;
+
+import edu.ntnu.g14.Budget;
+import edu.ntnu.g14.BudgetItem;
+import edu.ntnu.g14.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
@@ -14,6 +19,7 @@ import javafx.stage.Stage;
 
 public class BudgetingScene {
     static Stage stage = ApplicationFront.getStage();
+    private static User loggedInUser = ApplicationFront.getLoggedInUser();
 
     static public Scene scene() throws FileNotFoundException {
         TableView<ObservableList<Object>> revenues = ApplicationObjects.newTableView(new String[]{"Revenues", "Amount"}, 40, 70, 380, 120);
@@ -38,7 +44,7 @@ public class BudgetingScene {
         Text MonthlyBudget = ApplicationObjects.newText("Monthly Budget", 30, false, 40, 60);
         MonthlyBudget.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
-        Text savings = ApplicationObjects.newText("Savings: 3000", 30, false, 40, 480);
+        Text savings = ApplicationObjects.newText(loggedInUser.getBudget().getSavings().toString(), 30, false, 40, 480);
         savings.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
 
         Button createNewBudget = ApplicationObjects.newButton("Create new budget", 470, 180, "black", "white", 157, 25, 16);
@@ -94,27 +100,33 @@ public class BudgetingScene {
         return scene;
     }
 
-
     public static ObservableList<ObservableList<Object>> initializeRevenuesData() {
         ObservableList<ObservableList<Object>> revenuesData = FXCollections.observableArrayList();
-        revenuesData.add(FXCollections.observableArrayList("Sales", new BigDecimal("1000.00")));
-        revenuesData.add(FXCollections.observableArrayList("Rent", new BigDecimal("500.00")));
-        revenuesData.add(FXCollections.observableArrayList("Salaries", new BigDecimal("2000.00")));
+        Budget budget = loggedInUser.getBudget();
+        // Fetch revenues from budget and add them to revenuesData
+        if (budget != null) {
+            for (BudgetItem entry : budget.getEntries()) {
+                // need to update budgetitem to contain getRevenues category
+                revenuesData.add(FXCollections.observableArrayList(entry.getCategory() , entry.getFinancialValue()));
+            }
+        }
+
         return revenuesData;
     }
 
     public static ObservableList<ObservableList<Object>> initializeExpenditureData() {
         ObservableList<ObservableList<Object>> expenditureData = FXCollections.observableArrayList();
-        expenditureData.add(
-            FXCollections.observableArrayList("Food and Drink", new BigDecimal("200.00")));
-        expenditureData.add(FXCollections.observableArrayList("Travel", new BigDecimal("300.00")));
-        expenditureData.add(FXCollections.observableArrayList("Other", new BigDecimal("2000.00")));
-        expenditureData.add(FXCollections.observableArrayList("Clothes and Shoes", new BigDecimal("2500.00")));
-        expenditureData.add(FXCollections.observableArrayList("Personal Care", new BigDecimal("1000.00")));
-        expenditureData.add(FXCollections.observableArrayList("Leisure", new BigDecimal("500.00")));
-        expenditureData.add(FXCollections.observableArrayList("Alcohol and tobacco", new BigDecimal("200.00")));
+        Budget budget = loggedInUser.getBudget();
+        // Fetch expenditures from budget and add them to expenditureData
+        if (budget != null) {
+            for (BudgetItem entry : budget.getEntries()) {
+                expenditureData.add(FXCollections.observableArrayList(entry.getCategory(), entry.getFinancialValue()));
+            }
+        }
+
         return expenditureData;
     }
-  
+
+
 
 }
