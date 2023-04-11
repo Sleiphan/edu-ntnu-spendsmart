@@ -2,7 +2,6 @@ package edu.ntnu.g14.frontend;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.math.BigDecimal;
 
 import edu.ntnu.g14.Account;
 import edu.ntnu.g14.FileManagement;
@@ -135,7 +134,7 @@ public class MainPageScene {
         Transaction[] transactions = FileManagement.readLatestTransactions(ApplicationFront.getLoggedInUser().getLoginInfo().getUserId(), length);
         ObservableList<ObservableList<Object>> latestActivitiesData = FXCollections.observableArrayList();
         for(int i = 0; i < length; i++){
-            latestActivitiesData.add(FXCollections.observableArrayList(transactions[i].getToAccountId(), new BigDecimal(transactions[i].getAmount())));
+            latestActivitiesData.add(FXCollections.observableArrayList(transactions[i].getToAccountNumber(), transactions[i].getAmount()));
         }
         
         return  latestActivitiesData;

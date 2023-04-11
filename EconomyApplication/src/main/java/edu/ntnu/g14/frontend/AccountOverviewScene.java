@@ -2,64 +2,78 @@ package edu.ntnu.g14.frontend;
 
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import edu.ntnu.g14.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import edu.ntnu.g14.AccountWithProperty;
-import edu.ntnu.g14.Transaction;
 
 public class AccountOverviewScene {
     static Stage stage = ApplicationFront.getStage();
-
+    private static Account currentAccount;
 
     static public Scene scene() throws FileNotFoundException {
         //TODO: Choices should get the different accounts a user has. Example: "user.getAccounts().asArray()"
-        String [] columnTitlesTransactionsTable = {"Transaction", "Date", "Amount"};
-        String [] choices = {"Spendings Account", "Savings Account"};
-        ChoiceBox<String> accountChoiceBox = ApplicationObjects.newChoiceBox(choices, "black", "white", 364, 30, 30, 364-(364/2), 30);
-        accountChoiceBox.setValue("Spendings Account");
-        //TODO: Take the first element of the Array and make it the default label of the choice box when account overview is opened
+        Account[] accounts = ApplicationFront.loggedInUser.getAllAccounts();
+        String[] accountNames = Arrays.stream(ApplicationFront.loggedInUser.getAllAccounts()).map(Account::getAccountName).toArray(String[]::new);
+        String[] columnTitlesTransactionsTable = {"Transaction", "Date", "Amount"};
+        ChoiceBox<String> accountChoiceBox = ApplicationObjects.newChoiceBox(accountNames, "black", "white", 364, 30, 30, 364-(364/2), 30);
+        accountChoiceBox.setValue(accounts[0].getAccountName());
+        Text accountNumberText = ApplicationObjects.newText(accounts[0].getAccountNumber(), 14, false, 325, 130);
 
-        Text accountNumberText = ApplicationObjects.newText("9293 11 39239", 14, false, 325, 130);
-        Text amountText = ApplicationObjects.newText("Amount: 23 340 kr", 20, false, 290, 160);
+        Text amountText = ApplicationObjects.newText("Amount: " + accounts[0].getAmount() + "kr", 20, false, 290, 160);
         Button addTransaction = ApplicationObjects.newButton("Add Transaction", 20, 30, "black", "white", 120, 20, 14);
         Button addAccount = ApplicationObjects.newButton("Add Account", 20, 60, "black", "white", 120, 20, 14);
         Text lastTransactionsText = ApplicationObjects.newText("Last Transactions:", 24, false, 20, 200);
-        TableView lastTransactionsTable = ApplicationObjects.newTableView(columnTitlesTransactionsTable, 20, 230, 688, 300);
-        ObservableList<ObservableList<Object>> lastTransactionsData = initializeLastTransactionsData();
-        lastTransactionsTable.setItems(lastTransactionsData);
+        TableView<ObservableList<Object>> lastTransactionsTable = ApplicationObjects.newTableView(columnTitlesTransactionsTable, 20, 230, 688, 300);
+        setCurrentAccount(accounts, accountChoiceBox);
+        ObservableList<ObservableList<Object>> lastTransactionsData = initializeLastTransactionsData(currentAccount);
+        lastTransactionsTable.setItems(FXCollections.observableList(lastTransactionsData));
         lastTransactionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        addAccount.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                Dialog<AccountWithProperty> accountWithPropertyDialog = new ApplicationObjects.AccountWithPropertyDialog(new AccountWithProperty(null, null, null, null));
-                Optional<AccountWithProperty> result = accountWithPropertyDialog.showAndWait();
-                if (result.isPresent()) {
-                    AccountWithProperty account = result.get();
-                    //TODO: Add the account to the users list of accounts
-                }
+
+        accountChoiceBox.setOnAction(actionEvent -> {
+            setCurrentAccount(accounts, accountChoiceBox);
+
+            accountNumberText.setText(currentAccount.getAccountNumber());
+            amountText.setText("Amount: " + currentAccount.getAmount().toString() + "kr");
+            lastTransactionsTable.setItems(initializeLastTransactionsData(currentAccount));
+        });
+        addAccount.setOnAction(actionEvent -> {
+            Dialog<AccountWithProperty> accountWithPropertyDialog = new ApplicationObjects.AccountWithPropertyDialog(new AccountWithProperty(null, null, null, null));
+            Optional<AccountWithProperty> result = accountWithPropertyDialog.showAndWait();
+            if (result.isPresent()) {
+
+                AccountWithProperty accountWithProperty = result.get();
+                Account account = new Account(AccountCategory.valueOf(accountWithProperty.getAccountType()),
+                        new BigDecimal(accountWithProperty.getAmount()),
+                        accountWithProperty.getAccountNumber(), accountWithProperty.getAccountName());
+                Arrays.stream(ApplicationFront.loggedInUser.getAllAccounts()).collect(Collectors.toList()).add(account);
+
+                //TODO: Add the account to the users list of accounts
             }
         });
-        addTransaction.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                Dialog<Transaction> transactionDialog = new ApplicationObjects.TransactionDialog(new Transaction("9293.11.39233", "9293.11.39234", (short) 32121, "Hope it is enough", LocalDate.now()));
-                Optional<Transaction> result = transactionDialog.showAndWait();
-                if (result.isPresent()) {
-                    Transaction transaction = result.get();
-                    //TODO: ---
-                }
+        addTransaction.setOnAction(actionEvent -> {
+            Dialog<TransactionWithProperty> transactionWithPropertyDialog =
+                    new ApplicationObjects.TransactionWithPropertyDialog(
+                            new TransactionWithProperty(null,
+                                    null, null,
+                                    null, null, null));
+            Optional<TransactionWithProperty> result = transactionWithPropertyDialog.showAndWait();
+            if (result.isPresent()) {
+                TransactionWithProperty transactionWithProperty = result.get();
+                Transaction transaction = new Transaction(transactionWithProperty.getFromAccountId(),
+                        transactionWithProperty.getToAccountId(), new BigDecimal(transactionWithProperty.getAmount()),
+                        transactionWithProperty.getDescription(), transactionWithProperty.getDateOfTransaction());
             }
         });
         Button back_bt = ApplicationObjects.newButton("Back", 20, 90, "black", "white", 120, 20, 14);
@@ -108,14 +122,21 @@ public class AccountOverviewScene {
         return scene;
     }
 
+    private static void setCurrentAccount(Account[] accounts, ChoiceBox<String> accountChoiceBox) {
+        currentAccount = Arrays.stream(accounts).filter(account -> account
+                .getAccountName()
+                .equals(accountChoiceBox.getValue()))
+                .findFirst().orElseThrow(() -> new IllegalStateException("Account could not be found."));
+    }
+    private static ObservableList<ObservableList<Object>> initializeLastTransactionsData(Account account) {
 
-    public static ObservableList<ObservableList<Object>> initializeLastTransactionsData() {
+        List<Transaction> transactionsOfAccount = Arrays.stream(ApplicationFront.loggedInUser.getTransactions())
+                .filter(transaction -> transaction.getToAccountNumber().equals(account.getAccountNumber())
+                        || transaction.getFromAccountNumber().equals(account.getAccountNumber()))
+                .collect(Collectors.toList());
         ObservableList<ObservableList<Object>> lastTransactionsData = FXCollections.observableArrayList();
-        lastTransactionsData.add(FXCollections.observableArrayList("Elkjøp (Reserved)", "10.02.2022", new BigDecimal("10000.00")));
-        lastTransactionsData.add(FXCollections.observableArrayList("Harampolet", "10.02.2022", new BigDecimal("5000.00")));
-        lastTransactionsData.add(FXCollections.observableArrayList("Kiwi Groceries","09.02.2022", new BigDecimal("458.00")));
-        lastTransactionsData.add(FXCollections.observableArrayList("Steampowered","03.02.2022", new BigDecimal("900.00")));
-        lastTransactionsData.add(FXCollections.observableArrayList("Harambet","29.01.2022", new BigDecimal("1700.00")));
+        transactionsOfAccount.forEach(transaction -> lastTransactionsData.
+                add(FXCollections.observableArrayList(transaction)));
         return lastTransactionsData;
     }
 
