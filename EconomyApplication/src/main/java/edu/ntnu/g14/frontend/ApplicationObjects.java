@@ -4,8 +4,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.regex.Pattern;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+
+import edu.ntnu.g14.TransactionWithProperty;
+import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -22,8 +25,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import edu.ntnu.g14.AccountWithProperty;
-import edu.ntnu.g14.Transaction;
-import edu.ntnu.g14.Overview.OverviewMonthly;
+import javafx.util.Callback;
 
 
 public class ApplicationObjects {
@@ -50,8 +52,7 @@ public class ApplicationObjects {
                 e1.printStackTrace();
             }
         });
-        Group group = new Group(rectangle, logOut, manageUser);
-        return group;
+        return new Group(rectangle, logOut, manageUser);
     }
 
     public static Group dropDownMenu() {
@@ -107,8 +108,7 @@ public class ApplicationObjects {
                 e1.printStackTrace();
             }
         });
-        Group group = new Group(rectangle, invoice, transfer, payment, accounts, overview, budgetting);
-        return group;
+        return new Group(rectangle, invoice, transfer, payment, accounts, overview, budgetting);
     }
 
     public static Button newButton(String text, int x, int y, String borderColor,
@@ -147,7 +147,7 @@ public class ApplicationObjects {
     public static ImageView newImage(String imagename,
      int x, int y, int width, int height) throws FileNotFoundException{
         ImageView imageview = new ImageView();
-        Image image = new Image(new FileInputStream("EconomyApplication/src/main/resources/images/" + imagename));
+        Image image = new Image(new FileInputStream("src/main/resources/images/" + imagename));
         imageview.setImage(image);
         imageview.setX(x);
         imageview.setY(y);
@@ -213,7 +213,7 @@ public class ApplicationObjects {
 
     public static ChoiceBox<String> newChoiceBox(String[] choices, String borderColor,
         String backgroundColor, int width, int height, int fontSize, int x, int y) {
-        ChoiceBox<String> choiceBox = new ChoiceBox();
+        ChoiceBox<String> choiceBox = new ChoiceBox<>();
         choiceBox.getItems().addAll(choices);
         choiceBox.setStyle(setStyleString(borderColor, backgroundColor, width, height, fontSize));
         choiceBox.setLayoutX(x);
@@ -239,7 +239,7 @@ public class ApplicationObjects {
     }
     
     public static class AccountWithPropertyDialog extends Dialog<AccountWithProperty> {
-        private AccountWithProperty account;
+        private final AccountWithProperty account;
         private ChoiceBox<String> accountTypeField;
         private TextField amountField;
         private TextField accountNumberField;
@@ -263,14 +263,11 @@ public class ApplicationObjects {
         }
 
         private void setResultConverter() {
-            javafx.util.Callback<ButtonType, AccountWithProperty> accountResultConverter = new javafx.util.Callback<ButtonType, AccountWithProperty>() {
-                @Override
-                public AccountWithProperty call(ButtonType param) {
-                    if (param == ButtonType.APPLY) {
-                        return account;
-                    } else {
-                        return null;
-                    }
+            javafx.util.Callback<ButtonType, AccountWithProperty> accountResultConverter = param -> {
+                if (param == ButtonType.APPLY) {
+                    return account;
+                } else {
+                    return null;
                 }
             };
             setResultConverter(accountResultConverter);
@@ -281,7 +278,7 @@ public class ApplicationObjects {
             getDialogPane().setContent(pane);
             getDialogPane().getButtonTypes().addAll(ButtonType.APPLY, ButtonType.CANCEL);
             Button applyButton = (Button) getDialogPane().lookupButton(ButtonType.APPLY);
-            applyButton.addEventFilter(ActionEvent.ACTION, new EventHandler<ActionEvent>() {
+            applyButton.addEventFilter(ActionEvent.ACTION, new EventHandler<>() {
                 @Override
                 public void handle(ActionEvent event) {
                     if (!validateDialog()) {
@@ -315,7 +312,7 @@ public class ApplicationObjects {
             Label accountNumberLabel = new Label("Enter the account number:");
             Label amountLabel = new Label("Enter the balance of your account:");
             Label accountNameLabel = new Label("Choose a name for your account:");
-            this.accountTypeField = new ChoiceBox<String>();
+            this.accountTypeField = new ChoiceBox<>();
             this.accountNumberField = new TextField();
             this.amountField = new TextField();
             this.accountNameField = new TextField();
@@ -341,14 +338,14 @@ public class ApplicationObjects {
         }
     }
     
-    static class TransactionDialog extends Dialog<Transaction> {
-        Transaction transaction;
+    static class TransactionWithPropertyDialog extends Dialog<TransactionWithProperty> {
+        private final TransactionWithProperty transaction;
         private ChoiceBox<String> fromAccountNumberField;
         private TextField toAccountNumberField;
         private TextField amountField;
         private TextField descriptionField;
         private DatePicker dateOfTransactionField;
-        public TransactionDialog(Transaction transaction) {
+        public TransactionWithPropertyDialog(TransactionWithProperty transaction) {
             super();
             this.setTitle("Add Transaction");
             this.transaction = transaction;
@@ -357,17 +354,18 @@ public class ApplicationObjects {
             setResultConverter();
         }
         private void setPropertyBindings() {
-            // TODO: Implement String Properties to Account class
+            fromAccountNumberField.valueProperty().bindBidirectional(transaction.getFromAccountIdProperty());
+            toAccountNumberField.textProperty().bindBidirectional(transaction.getToAccountIdProperty());
+            amountField.textProperty().bindBidirectional(transaction.getAmountProperty());
+            descriptionField.textProperty().bindBidirectional(transaction.getDescriptionProperty());
+            dateOfTransactionField.valueProperty().bindBidirectional(transaction.getDateOfTransactionProperty());
         }
         private void setResultConverter() {
-            javafx.util.Callback<ButtonType, Transaction> transactionResultConverter = new javafx.util.Callback<ButtonType, Transaction>() {
-                @Override
-                public Transaction call(ButtonType param) {
-                    if (param == ButtonType.APPLY) {
-                        return transaction;
-                    } else {
-                        return null;
-                    }
+            javafx.util.Callback<ButtonType, TransactionWithProperty> transactionResultConverter = param -> {
+                if (param == ButtonType.APPLY) {
+                    return transaction;
+                } else {
+                    return null;
                 }
             };
             setResultConverter(transactionResultConverter);
@@ -377,7 +375,7 @@ public class ApplicationObjects {
             getDialogPane().setContent(pane);
             getDialogPane().getButtonTypes().addAll(ButtonType.APPLY, ButtonType.CANCEL);
             Button applyButton = (Button) getDialogPane().lookupButton(ButtonType.APPLY);
-            applyButton.addEventFilter(ActionEvent.ACTION, new EventHandler<ActionEvent>() {
+            applyButton.addEventFilter(ActionEvent.ACTION, new EventHandler<>() {
                 @Override
                 public void handle(ActionEvent event) {
                     if (!validateDialog()) {
@@ -386,11 +384,12 @@ public class ApplicationObjects {
                     }
                 }
                 private boolean validateDialog() {
-                    if (toAccountNumberField.getText().isBlank() || amountField.getText().isBlank()
-                            || descriptionField.getText().isBlank()) {
-                        return false;
-                    }
-                    return true;
+                    String regexAccountNumber = "[0-9]{4}+\\.[0-9]{2}+\\.[0-9]{5}";
+
+                    return !toAccountNumberField.getText().isBlank()
+                            && !amountField.getText().isBlank()
+                            && !descriptionField.getText().isBlank()
+                            && Pattern.matches(regexAccountNumber, toAccountNumberField.getText());
                 }
             });
         }
@@ -407,6 +406,7 @@ public class ApplicationObjects {
             this.amountField = new TextField();
             this.descriptionField = new TextField();
             this.dateOfTransactionField = new DatePicker();
+            restrictDatePicker(dateOfTransactionField, LocalDate.now());
             //TODO: Change format
             this.fromAccountNumberField.getItems().addAll("Spendings Account", "Savings Account", "Pensions Account");
             //TODO: Make it retrieve a users accounts which are not savings or pensions
@@ -431,6 +431,24 @@ public class ApplicationObjects {
 
             content.getChildren().add(grid);
             return content;
+        }
+        public void restrictDatePicker(DatePicker datePicker, LocalDate minDate) {
+            final Callback<DatePicker, DateCell> dayCellFactory = new Callback<>() {
+                @Override
+                public DateCell call(final DatePicker datePicker) {
+                    return new DateCell() {
+                        @Override
+                        public void updateItem(LocalDate item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (item.isBefore(minDate)) {
+                                setDisable(true);
+                                setStyle("-fx-background-color: #ffc0cb;");
+                            }
+                        }
+                    };
+                }
+            };
+            datePicker.setDayCellFactory(dayCellFactory);
         }
     }
 
