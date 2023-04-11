@@ -1,14 +1,7 @@
 package edu.ntnu.g14;
 
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -36,8 +29,7 @@ public class FileManagement {
     public static Login[] readUsers() throws IOException {
         
         List<String> lines = new ArrayList<>();
-        InputStream input = FileManagement.class.getResourceAsStream(PATH_USERS);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+        BufferedReader reader = new BufferedReader(new FileReader(PATH_USERS));
         reader.readLine();
         String line;
         while ((line = reader.readLine()) != null) {
@@ -57,9 +49,7 @@ public class FileManagement {
 
 
     public static Transaction[] readAllTransactions(String userID) throws IOException {
-        InputStream input = FileManagement.class.getResourceAsStream(PATH_TRANSACTIONS);
-        assert input != null;
-        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+        BufferedReader reader = new BufferedReader(new FileReader(PATH_TRANSACTIONS));
         Stream<String> userTrans = reader.lines() 
                 .filter(line -> line.startsWith(userID + ","));
         
@@ -81,8 +71,7 @@ public class FileManagement {
 
     public static User readUser(String userId) throws IOException {
         List<String> lines = new ArrayList<>();
-        InputStream input = FileManagement.class.getResourceAsStream(PATH_USERS);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+        BufferedReader reader = new BufferedReader(new FileReader(PATH_USERS));
         reader.readLine();
 
         String line;
@@ -247,9 +236,7 @@ public class FileManagement {
     }
 
     public static Account[] getAccountsForUser(String userId) throws IOException{
-        InputStream input = FileManagement.class.getResourceAsStream(PATH_ACCOUNTS);
-        assert input != null;
-        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+        BufferedReader reader = new BufferedReader(new FileReader(PATH_ACCOUNTS));
         Stream<String> userTrans = reader.lines() 
                 .filter(line -> line.startsWith(userId + ","));
         System.out.println(userTrans);
@@ -275,9 +262,7 @@ public class FileManagement {
     }
 
     public static Invoice[] getInvoicesForUser(String userID) throws IOException {
-        InputStream input = FileManagement.class.getResourceAsStream(PATH_INVOICES);
-        assert input != null;
-        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+        BufferedReader reader = new BufferedReader(new FileReader(PATH_INVOICES));
         Stream<String> userTrans = reader.lines() 
                 .filter(line -> line.startsWith(userID + ","));
         System.out.println(userTrans);
