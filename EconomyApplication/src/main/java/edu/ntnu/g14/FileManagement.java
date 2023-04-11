@@ -2,7 +2,11 @@ package edu.ntnu.g14;
 
 
 import java.io.*;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,11 +19,11 @@ import edu.ntnu.g14.dao.BudgetDAO;
 
 public class FileManagement {
 
-    public static final String PATH_ACCOUNTS     = "saves/accounts.txt";
-    public static final String PATH_BUDGETS      = "saves/budgets.txt";
-    public static final String PATH_INVOICES     = "saves/invoices.txt";
-    public static final String PATH_TRANSACTIONS = "saves/transactions.txt";
-    public static final String PATH_USERS        = "saves/users.txt";
+    public static final String PATH_ACCOUNTS     = "EconomyApplication/saves/accounts.txt";
+    public static final String PATH_BUDGETS      = "EconomyApplication/saves/budgets.txt";
+    public static final String PATH_INVOICES     = "EconomyApplication/saves/invoices.txt";
+    public static final String PATH_TRANSACTIONS = "EconomyApplication/saves/transactions.txt";
+    public static final String PATH_USERS        = "EconomyApplication/saves/users.txt";
 
     // public static void fileContentInsert(String pathToFile, long
 
@@ -282,7 +286,7 @@ public class FileManagement {
             long pos = 0;
             while ((line = file.readLine()) != null) {
                 if (line.startsWith(userId + ",")) {
-                    pos = file.getFilePointer() + line.length() - 1;
+                    pos = file.getFilePointer() - line.length() - 1;
                     file.seek(pos + line.getBytes().length + 1);
                     file.write("kake".getBytes());
                     file.close();
@@ -362,8 +366,14 @@ public class FileManagement {
     }
 
     public static void main(String[] args) throws IOException {
-        System.out.println("Hello World!");
+        Account testAccount = new Account(AccountCategory.SAVINGS_ACCOUNT, BigDecimal.valueOf(100000), "1256.65.56605", "kortkonto");
+        Invoice testInvoice = new Invoice(LocalDate.of(2023, 12, 4), BigDecimal.valueOf(100000), "1256.65.56605");
+        Transaction testTransaction = new Transaction("1256.65.56605", "1256.65.56605", BigDecimal.valueOf(1000), "brukte penger", LocalDate.of(2023, 12, 4));
+        Budget testBudget = new Budget(Byte.parseByte("90"), GenderCategory.FEMALE);
+        Login loginInfo = new Login("test", "test", "Test#1");
+        User testUser = new User(null, null, loginInfo, null, null, null, null, testBudget);
+
+        writeNewTransaction("olav#1", testTransaction);
     }
 
 }
-
