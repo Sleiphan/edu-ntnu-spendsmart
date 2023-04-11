@@ -2,10 +2,7 @@ package edu.ntnu.g14;
 
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,11 +15,11 @@ import edu.ntnu.g14.dao.BudgetDAO;
 
 public class FileManagement {
 
-    public static final String PATH_ACCOUNTS     = "EconomyApplication/saves/accounts.txt";
-    public static final String PATH_BUDGETS      = "EconomyApplication/saves/budgets.txt";
-    public static final String PATH_INVOICES     = "EconomyApplication/saves/invoices.txt";
-    public static final String PATH_TRANSACTIONS = "EconomyApplication/saves/transactions.txt";
-    public static final String PATH_USERS        = "EconomyApplication/saves/users.txt";
+    public static final String PATH_ACCOUNTS     = "saves/accounts.txt";
+    public static final String PATH_BUDGETS      = "saves/budgets.txt";
+    public static final String PATH_INVOICES     = "saves/invoices.txt";
+    public static final String PATH_TRANSACTIONS = "saves/transactions.txt";
+    public static final String PATH_USERS        = "saves/users.txt";
 
     // public static void fileContentInsert(String pathToFile, long
 
@@ -279,7 +276,7 @@ public class FileManagement {
 
     public static void writeNewTransaction(String userId, Transaction transaction) throws IOException{
         String addonText = "" + transaction.getDateOfTransaction() + ";" + transaction.getAmount() + ";" +
-        transaction.getToAccountId() + ";" + transaction.getFromAccountId() + ";" + transaction.getDescription() + ",";
+        transaction.getToAccountNumber() + ";" + transaction.getFromAccountNumber() + ";" + transaction.getDescription() + ",";
         try (RandomAccessFile file = new RandomAccessFile(PATH_TRANSACTIONS, "rw")) {
             String line;
             long pos = 0;
@@ -349,7 +346,7 @@ public class FileManagement {
 
     public static Transaction[] findTransactionsOfUserAndAccountNumber(String userId, String accountNumber) throws IOException {
         return (Transaction[]) Arrays.stream(readAllTransactions(userId)) 
-                .filter(transaction -> transaction.getFromAccountId().equals(accountNumber) || transaction.getToAccountId().equals(accountNumber))
+                .filter(transaction -> transaction.getFromAccountNumber().equals(accountNumber) || transaction.getToAccountNumber().equals(accountNumber))
                 .toArray();
     }
 
