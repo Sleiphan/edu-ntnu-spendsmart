@@ -1,8 +1,11 @@
 package edu.ntnu.g14.frontend;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import edu.ntnu.g14.FileManagement;
+import edu.ntnu.g14.Login;
+import edu.ntnu.g14.User;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -23,7 +26,18 @@ public class LoginForgotPasswordSecondScene {
         Button confirmButton = ApplicationObjects.newButton("Confirm", 175, 150, "black", "white", 150, 20, 15);
         confirmButton.setOnAction(e -> {
             if(newPassword.getText().equals(retypeNewPassword.getText()) && !newPassword.getText().equals("")){
-                //TODO: lagre passord under bruker
+                Login newLogin = new Login(ApplicationFront.getLoggedInUser().getLoginInfo().getUserName(), newPassword.getText(), ApplicationFront.getLoggedInUser().getLoginInfo().getUserId());
+                User newPasswordUser = new User(ApplicationFront.getLoggedInUser().getAllAccounts(), ApplicationFront.getLoggedInUser().getAllInvoices(),
+                newLogin, ApplicationFront.getLoggedInUser().getEmail(), ApplicationFront.getLoggedInUser().getLastName(),
+                ApplicationFront.getLoggedInUser().getFirstName(), ApplicationFront.getLoggedInUser().getTransactions(), ApplicationFront.getLoggedInUser().getBudget());
+
+                try {
+                    FileManagement.editUser(newPasswordUser, ApplicationFront.getLoggedInUser().getLoginInfo().getUserId());
+                } catch (FileNotFoundException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
                 try {
                     stage.setScene(LoginChooseUserScene.scene());
                 } catch (IOException e1) {

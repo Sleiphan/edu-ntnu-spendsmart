@@ -1,7 +1,7 @@
 ##userid,date,amount,to,from,description
 olav#1,13/03/2023;200;kiwi;olav1;brukte penger pa ting,13/02/2023;200;elkjop;olav1;brukte penger pa ting,                                                                                                           
 per#1,13/03/2023;344;1256.65.56605;1256.65.56605;brukte penger,                                                                                                                    
-                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                       
                                                                                                                                                                                                                                                                                                                                                                        
                                                                                                          
                                                                                                          

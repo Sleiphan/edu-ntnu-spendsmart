@@ -134,7 +134,7 @@ public class FileManagement {
             long pos = 0;
             while ((line = file.readLine()) != null) {
                 if (line.startsWith(userId + ",")) {
-                    pos = file.getFilePointer() - line.length();
+                    pos = file.getFilePointer() - line.length() - 2;
                     file.seek(pos);
                     file.write(addonText.getBytes());
                     file.close();
@@ -153,7 +153,7 @@ public class FileManagement {
             String line;
             while ((line = file.readLine()) != null) {
                 if (line.startsWith(" ")) {
-                    file.seek(file.getFilePointer() - line.length());
+                    file.seek(file.getFilePointer() - line.length() - 2);
                     file.write(userInfo.getBytes());
                     file.close();
                     break;
@@ -166,7 +166,7 @@ public class FileManagement {
             String line;
             while ((line = file.readLine()) != null) {
                 if (line.startsWith(" ")) {
-                    file.seek(file.getFilePointer() - line.length());
+                    file.seek(file.getFilePointer() - line.length() - 2);
                     file.write(addonTextInvoice.getBytes());
                     file.close();
                     break;
@@ -179,7 +179,7 @@ public class FileManagement {
             String line;
             while ((line = file.readLine()) != null) {
                 if (line.startsWith(" ")) {
-                    file.seek(file.getFilePointer() - line.length());
+                    file.seek(file.getFilePointer() - line.length() - 2);
                     file.write(addonTextAccount.getBytes());
                     file.close();
                     break;
@@ -193,7 +193,7 @@ public class FileManagement {
             String line;
             while ((line = file.readLine()) != null) {
                 if (line.startsWith(" ")) {
-                    file.seek(file.getFilePointer() - line.length());
+                    file.seek(file.getFilePointer() - line.length() - 2);
                     file.write(addonTextTransactions.getBytes());
                     file.close();
                     break;
