@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
 import edu.ntnu.g14.TransactionWithProperty;
@@ -30,6 +31,9 @@ import javafx.util.Callback;
 
 public class ApplicationObjects {
     static Stage stage = ApplicationFront.getStage();
+
+    public static final DateTimeFormatter dateFormatter =
+        DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public static Group userMenu() {
         Rectangle rectangle = newRectangle(553, 10, 145, 110);
