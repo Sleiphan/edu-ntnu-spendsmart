@@ -22,9 +22,9 @@ public class MainPageScene {
         String [] columnTitlesLatestActivitiesTable = {"Transaction", "Amount"};
         String [] columnTitlesDuePaymentsTable = {"Date", "Recipient", "Amount"};
 
-        String [] accountsList = new String [ApplicationFront.getLoggedInUser().getAccounts().length];
-        Account[] accounts = ApplicationFront.getLoggedInUser().getAccounts();
-        for (int i = 0; i < ApplicationFront.getLoggedInUser().getAccounts().length; i++){
+        String [] accountsList = new String [ApplicationFront.loggedInUser.getAccounts().length];
+        Account[] accounts = ApplicationFront.loggedInUser.getAccounts();
+        for (int i = 0; i < ApplicationFront.loggedInUser.getAccounts().length; i++){
             accountsList[i] = accounts[i].getAccountName();
         }
 
@@ -127,11 +127,11 @@ public class MainPageScene {
     }
 
     static public ObservableList<ObservableList<Object>> initializeLatestActivitiesData() throws IOException {
-        int length = ApplicationFront.getLoggedInUser().getTransactions().length;
+        int length = ApplicationFront.loggedInUser.getTransactions().length;
         if (length > 10){
             length = 10;
         }
-        Transaction[] transactions = FileManagement.readLatestTransactions(ApplicationFront.getLoggedInUser().getLoginInfo().getUserId(), length);
+        Transaction[] transactions = FileManagement.readLatestTransactions(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), length);
         ObservableList<ObservableList<Object>> latestActivitiesData = FXCollections.observableArrayList();
         for(int i = 0; i < length; i++){
             latestActivitiesData.add(FXCollections.observableArrayList(transactions[i].getToAccountNumber(), transactions[i].getAmount()));

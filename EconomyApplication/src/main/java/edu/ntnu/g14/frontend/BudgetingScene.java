@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 
 public class BudgetingScene {
     static Stage stage = ApplicationFront.getStage();
-    private static User loggedInUser = ApplicationFront.getLoggedInUser();
+    private static User loggedInUser = ApplicationFront.loggedInUser;
 
     static public Scene scene() throws FileNotFoundException {
         TableView<ObservableList<Object>> revenues = ApplicationObjects.newTableView(new String[]{"Revenues", "Amount"}, 40, 70, 380, 120);
@@ -59,7 +59,7 @@ public class BudgetingScene {
             try {
                 stage.setScene(BudgetSuggestionsScene.scene());
             } catch (FileNotFoundException e1) {
-                
+
                 e1.printStackTrace();
             }
         });

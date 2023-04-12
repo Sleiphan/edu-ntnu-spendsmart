@@ -28,7 +28,7 @@ public class LoginForgotPasswordFirstScene {
 
         Group root = new Group(
             ApplicationObjects.newText("An email with a code-key has been sent to:", 15, false, 130, 40),
-                ApplicationObjects.newText(ApplicationFront.getLoggedInUser().getEmail(), 15, false, 170, 60),
+                ApplicationObjects.newText(ApplicationFront.loggedInUser.getEmail(), 15, false, 170, 60),
                 goBack, keyField, loginButton);
         root.getStylesheets().add("StyleSheet.css"); 
         Scene scene = new Scene(root, 500, 300, ApplicationObjects.getSceneColor());

@@ -29,7 +29,7 @@ public class DeleteUserScene {
 
 
     static public Scene scene() throws FileNotFoundException {
-        User currentUser = ApplicationFront.getLoggedInUser();
+        User currentUser = ApplicationFront.loggedInUser;
         Text loggedInUser = ApplicationObjects.newText(currentUser.getFullName(), 40, false, 0, 0);
         Text loggedInUserEmail = ApplicationObjects.newText(currentUser.getEmail(), 20, false, 0, 0);
 

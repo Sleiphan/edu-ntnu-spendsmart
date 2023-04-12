@@ -21,9 +21,9 @@ public class InvoiceScene {
     static Stage stage = ApplicationFront.getStage();
 
     static public Scene scene() throws FileNotFoundException {
-        Invoice[] invoicesUser = ApplicationFront.getLoggedInUser().getAllInvoices();
+        Invoice[] invoicesUser = ApplicationFront.loggedInUser.getAllInvoices();
         List<Invoice> invoices = new ArrayList<Invoice>();
-        for(int i = 0; i < ApplicationFront.getLoggedInUser().getAllInvoices().length; i++){
+        for(int i = 0; i < ApplicationFront.loggedInUser.getAllInvoices().length; i++){
                 invoices.add(invoicesUser[i]);
         }
         
@@ -90,7 +90,7 @@ public class InvoiceScene {
                     accountNum_tf.getText());
             invoices.add(newInvoice);
             try {
-                FileManagement.writeNewInvoice(ApplicationFront.getLoggedInUser().getLoginInfo().getUserId(), newInvoice);
+                FileManagement.writeNewInvoice(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), newInvoice);
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -109,7 +109,7 @@ public class InvoiceScene {
         payNow_bt.setOnAction(e -> {
             invoices.remove(invoices_lv.getSelectionModel().getSelectedItem());
             try {
-                FileManagement.deleteInvoice(invoices_lv.getSelectionModel().getSelectedItem(), ApplicationFront.getLoggedInUser().getLoginInfo().getUserId());
+                FileManagement.deleteInvoice(invoices_lv.getSelectionModel().getSelectedItem(), ApplicationFront.loggedInUser.getLoginInfo().getUserId());
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -117,7 +117,7 @@ public class InvoiceScene {
         delete_bt.setOnAction(e -> {
             invoices.remove(invoices_lv.getSelectionModel().getSelectedItem());
             try {
-                FileManagement.deleteInvoice(invoices_lv.getSelectionModel().getSelectedItem(), ApplicationFront.getLoggedInUser().getLoginInfo().getUserId());
+                FileManagement.deleteInvoice(invoices_lv.getSelectionModel().getSelectedItem(), ApplicationFront.loggedInUser.getLoginInfo().getUserId());
             } catch (IOException e1) {
                 e1.printStackTrace();
             }

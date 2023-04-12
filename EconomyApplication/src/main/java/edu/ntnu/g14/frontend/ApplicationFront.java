@@ -36,10 +36,6 @@ public class ApplicationFront extends Application {
         return stage;
     }
 
-    public static User getLoggedInUser(){
-        return loggedInUser;
-    }
-
     public static void setLoggedInUser(User user){
         loggedInUser = user;
     }

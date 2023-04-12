@@ -16,7 +16,7 @@ public class CreateNewBudgetScene {
     static Stage stage = ApplicationFront.getStage();
 
     static public Scene scene() throws FileNotFoundException {
-        User loggedInUser = ApplicationFront.getLoggedInUser();
+        User loggedInUser = ApplicationFront.loggedInUser;
         String[] revenues = {"Revenues", "Salary", "Income"};
         ChoiceBox<String> revenue = ApplicationObjects.newChoiceBox(revenues, 150, 34, 15, 50, 100);
         revenue.setValue("Revenues");

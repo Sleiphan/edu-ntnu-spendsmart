@@ -26,7 +26,7 @@ public class LoginUserScene {
 
         Text forgotPassword = ApplicationObjects.newText("Forgot password", 10, true, 400, 260);
         forgotPassword.setOnMouseClicked(e -> {
-            String key = EmailVertification.sendVertificationKey(ApplicationFront.getLoggedInUser().getEmail());
+            String key = EmailVertification.sendVertificationKey(ApplicationFront.loggedInUser.getEmail());
             stage.setScene(LoginForgotPasswordFirstScene.scene(key));
         });
         PasswordField passwordField = new PasswordField();
@@ -38,19 +38,19 @@ public class LoginUserScene {
         Button loginButton = ApplicationObjects.newButton("Login", 185, 130, 100, 30, 25);
         passwordField.setOnKeyPressed(keyEvent -> {
             KeyCode key = keyEvent.getCode();
-            if (key == KeyCode.ENTER && passwordField.getText().equals(ApplicationFront.getLoggedInUser().getLoginInfo().getPassword())) {
+            if (key == KeyCode.ENTER && passwordField.getText().equals(ApplicationFront.loggedInUser.getLoginInfo().getPassword())) {
                 try {
                     stage.setScene(MainPageScene.scene());
                 } catch (FileNotFoundException e1) {
                     
                     e1.printStackTrace();
                 }
-            } else if(key == KeyCode.ENTER && !passwordField.getText().equals(ApplicationFront.getLoggedInUser().getLoginInfo().getPassword())) {
+            } else if(key == KeyCode.ENTER && !passwordField.getText().equals(ApplicationFront.loggedInUser.getLoginInfo().getPassword())) {
                 ApplicationObjects.alertBox("ERROR", "Wrong password", "Please insert the right password");
             }
         });
         loginButton.setOnAction(e -> {
-            if (passwordField.getText().equals(ApplicationFront.getLoggedInUser().getLoginInfo().getPassword())) {
+            if (passwordField.getText().equals(ApplicationFront.loggedInUser.getLoginInfo().getPassword())) {
                 try {
                     stage.setScene(MainPageScene.scene());
                 } catch (FileNotFoundException e1) {
@@ -64,7 +64,7 @@ public class LoginUserScene {
         
         
 
-        Group root = new Group(ApplicationObjects.newText("Welcome back " + ApplicationFront.getLoggedInUser().getLoginInfo().getUserName(), 25, false, 120, 40),
+        Group root = new Group(ApplicationObjects.newText("Welcome back " + ApplicationFront.loggedInUser.getLoginInfo().getUserName(), 25, false, 120, 40),
                 notYou, forgotPassword, passwordField, loginButton);
         root.getStylesheets().add("StyleSheet.css"); 
         Scene scene = new Scene(root, 500, 300, ApplicationObjects.getSceneColor());
