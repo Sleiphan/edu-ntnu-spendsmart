@@ -56,9 +56,10 @@ public class FileManagement {
         BufferedReader reader = new BufferedReader(new FileReader(PATH_TRANSACTIONS));
         Stream<String> userTrans = reader.lines() 
                 .filter(line -> line.startsWith(userID + ","));
-        reader.close();
-        return userTrans.flatMap(s -> Stream.of(s.split(","))
+        Transaction[] transactions = userTrans.flatMap(s -> Stream.of(s.split(","))
                 .skip(1).map(Transaction::fromCSVString)).toArray(Transaction[]::new);
+        reader.close();
+        return transactions;
     }
 
     public static Transaction[] findTransactionsToFromDate(LocalDate from, LocalDate to, String userId) throws IOException {
