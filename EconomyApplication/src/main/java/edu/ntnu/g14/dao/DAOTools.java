@@ -10,14 +10,14 @@ public class DAOTools {
         FileChannel fileChannel = file.getChannel();
         FileChannel tempChannel = tempFile.getChannel();
 
-        fileChannel.transferTo(offset, fileChannel.size() - offset, tempChannel);
+        long transferCount = fileChannel.size() - offset;
+
+        tempChannel.position(0);
+        fileChannel.transferTo(offset, transferCount, tempChannel);
         file.seek(offset);
         file.write(data);
         tempChannel.position(0);
-        fileChannel.transferFrom(tempChannel, fileChannel.size(), tempChannel.size());
-
-        fileChannel.close();
-        tempChannel.close();
+        fileChannel.transferFrom(tempChannel, fileChannel.size(), transferCount);
     }
 
     public static void replace(byte[] data, long start, long count, RandomAccessFile file, RandomAccessFile tempFile) throws IOException {
@@ -26,16 +26,13 @@ public class DAOTools {
 
         long transferCount = fileChannel.size() - (start + count);
 
+        tempChannel.position(0);
         fileChannel.transferTo(start + count, transferCount, tempChannel);
-        tempChannel.truncate(transferCount);
         file.seek(start);
         file.write(data);
-        fileChannel.truncate(start + data.length);
         tempChannel.position(0);
-        fileChannel.transferFrom(tempChannel, fileChannel.size(), tempChannel.size());
-
-        fileChannel.close();
-        tempChannel.close();
+        fileChannel.transferFrom(tempChannel, fileChannel.size(), transferCount);
+        fileChannel.truncate(start + data.length + transferCount);
     }
 
     public static void appendToFile(byte[] data, RandomAccessFile fileStream) throws IOException {
