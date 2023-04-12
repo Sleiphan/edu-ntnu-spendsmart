@@ -78,13 +78,12 @@ public class Transaction {
 
     public static final String CSV_FIELD_DELIMITER = ";";
     public String toCSVString() {
-        String sb =
-                dateOfTransaction.format(ApplicationObjects.dateFormatter) +
+        return dateOfTransaction.format(ApplicationObjects.dateFormatter)
+                + CSV_FIELD_DELIMITER +
                 amount + CSV_FIELD_DELIMITER +
                         toAccountNumber + CSV_FIELD_DELIMITER +
                         fromAccountNumber + CSV_FIELD_DELIMITER +
                 description + CSV_FIELD_DELIMITER;
-        return sb;
     }
 
     public static Transaction fromCSVString(String csvString) {

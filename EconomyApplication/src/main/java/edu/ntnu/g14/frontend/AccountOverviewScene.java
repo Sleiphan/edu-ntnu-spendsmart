@@ -60,11 +60,7 @@ public class AccountOverviewScene {
                 Account account = new Account(AccountCategory.valueOf(accountWithProperty.getAccountType()),
                         new BigDecimal(accountWithProperty.getAmount()),
                         accountWithProperty.getAccountNumber(), accountWithProperty.getAccountName());
-                try {
-                    FileManagement.writeNewAccount(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), account);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                FileManagement.writeAccount(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), account);
                 accountNames.add(account.getAccountName());
                 ApplicationFront.loggedInUser.addAccount(account);
             }
@@ -82,11 +78,7 @@ public class AccountOverviewScene {
                         transactionWithProperty.getToAccountId(), new BigDecimal(transactionWithProperty.getAmount()),
                         transactionWithProperty.getDescription(), transactionWithProperty.getDateOfTransaction());
 
-                try {
-                    FileManagement.writeNewTransaction(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), transaction);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                FileManagement.writeTransaction(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), transaction);
                 ApplicationFront.loggedInUser.getTransactionsAsList().add(transaction);
                 addTransaction(transaction);
             }
