@@ -1,13 +1,13 @@
 package edu.ntnu.g14;
 
+import edu.ntnu.g14.frontend.ApplicationObjects;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Transaction {
-    private static final DateTimeFormatter dateFormatter = 
-    DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final String fromAccountNumber;
     private final String toAccountNumber;
     private final BigDecimal amount;
@@ -56,7 +56,7 @@ public class Transaction {
     //This method needs a better string representation of the transaction
     @Override
     public String toString() {
-        return "Transaction{" + "fromAccountId=" + fromAccountNumber + ", toAccountId=" + toAccountNumber + ", amount=" + amount + ", description=" + description + ", dateOfTransaction=" + dateOfTransaction + '}';
+        return "Transaction{" + "fromAccountNumber=" + fromAccountNumber + ", toAccountNumber=" + toAccountNumber + ", amount=" + amount + ", description=" + description + ", dateOfTransaction=" + dateOfTransaction + '}';
     }
 
     @Override
@@ -79,7 +79,7 @@ public class Transaction {
     public static final String CSV_FIELD_DELIMITER = ";";
     public String toCSVString() {
         String sb =
-                dateOfTransaction.format(dateFormatter) +
+                dateOfTransaction.format(ApplicationObjects.dateFormatter) +
                 amount + CSV_FIELD_DELIMITER +
                         toAccountNumber + CSV_FIELD_DELIMITER +
                         fromAccountNumber + CSV_FIELD_DELIMITER +
@@ -89,12 +89,12 @@ public class Transaction {
 
     public static Transaction fromCSVString(String csvString) {
         String[] fields = csvString.split(CSV_FIELD_DELIMITER);
-        String fromAccountId   = fields[3];
-        String toAccountId     = fields[2];
+        String fromAccountNumber   = fields[3];
+        String toAccountNumber     = fields[2];
         BigDecimal amount      = new BigDecimal(fields[1]);
         String description     = fields[4];
-        LocalDate dateOfTransaction = LocalDate.parse(fields[0], dateFormatter);
+        LocalDate dateOfTransaction = LocalDate.parse(fields[0], ApplicationObjects.dateFormatter);
 
-        return new Transaction(fromAccountId, toAccountId, amount, description, dateOfTransaction);
+        return new Transaction(fromAccountNumber, toAccountNumber, amount, description, dateOfTransaction);
     }
 }
