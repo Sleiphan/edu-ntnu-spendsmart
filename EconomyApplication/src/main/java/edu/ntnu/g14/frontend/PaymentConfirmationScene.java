@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import edu.ntnu.g14.User;
@@ -25,6 +26,12 @@ public class PaymentConfirmationScene {
     static Stage stage = ApplicationFront.getStage();
     private static ArrayList<String> paymentInfo;
 
+    private static final DateTimeFormatter formatter =
+            DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+    public static final DateTimeFormatter dateFormatter =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
     static public Scene scene() throws FileNotFoundException {
         TableView<ObservableList<Object>> payment = ApplicationObjects.newTableView(new String[]{"Payment", "Information"}, 100, 150, 602, 150);
         ObservableList<ObservableList<Object>> paymentData = initializePaymentData(getPaymentInfo());
@@ -40,9 +47,12 @@ public class PaymentConfirmationScene {
         confirm.setOnAction(e -> {
             try {
                 User loggedInUser = ApplicationFront.getLoggedInUser();
-                LocalDate dueDate = LocalDate.parse(getPaymentInfo().get(3));
+                LocalDate dueDate = LocalDate.parse(getPaymentInfo().get(3), formatter);
+                dueDate = LocalDate.parse(dueDate.format(dateFormatter), dateFormatter);
+
                 LocalDate dateOfTransaction = LocalDate.now();
-                Payment paymentObject = new Payment(getPaymentInfo().get(0), new BigDecimal(getPaymentInfo().get(1)), getPaymentInfo().get(2), getPaymentInfo().get(3), dueDate, getPaymentInfo().get(5), dateOfTransaction);
+                Payment paymentObject = new Payment(getPaymentInfo().get(0), new BigDecimal(getPaymentInfo().get(1)), getPaymentInfo().get(2), getPaymentInfo().get(4), dueDate, getPaymentInfo().get(5), dateOfTransaction);
+                System.out.println(paymentObject.toString());
 
                 try {
                     writeNewTransaction(loggedInUser.getLoginInfo().getUserId(), paymentObject);
