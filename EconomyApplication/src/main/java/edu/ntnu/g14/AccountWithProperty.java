@@ -88,7 +88,18 @@ public class AccountWithProperty {
         return accountType;
     }
     public String getAccountType() {
-        return accountType.get();
+        switch (this.accountType.get()) {
+            case "Savings Account":
+                return AccountCategory.SAVINGS_ACCOUNT.toString();
+            case "Spendings Account":
+                return AccountCategory.SPENDING_ACCOUNT.toString();
+            case "Pensions account":
+                return AccountCategory.PENSION_ACCOUNT.toString();
+            case "Other":
+                return AccountCategory.OTHER.toString();
+            default:
+                return null;
+        }
     }
 
     public void setAccountType(String accountType) {
