@@ -31,7 +31,7 @@ public class UserManagementScene {
         userInfoBox.setLayoutX(220); // Set the VBox's layoutX and layoutY to position it on the screen
         userInfoBox.setLayoutY(75);
 
-        Button password = ApplicationObjects.newButton("Password", 0, 0 ,"white", "grey", 157,60,16);
+        Button password = ApplicationObjects.newButton("Password", 0, 0 , 157,60,16);
         password.setOnAction(event -> {
            try {
                stage.setScene(ManageUserChangePasswordScene.scene());
@@ -39,8 +39,8 @@ public class UserManagementScene {
                throw new RuntimeException(e);
            }
         });
-        Button switchUser = ApplicationObjects.newButton("Switch User", 0, 0,"white", "grey", 157,60,16);
-        Button logOut = ApplicationObjects.newButton("Log out", 0, 0,"white", "grey", 157,50,16);
+        Button switchUser = ApplicationObjects.newButton("Switch User", 0, 0, 157,60,16);
+        Button logOut = ApplicationObjects.newButton("Log out", 0, 0,157,50,16);
         logOut.setVisible(false);
 
         switchUser.setOnAction(event -> {
@@ -64,8 +64,8 @@ public class UserManagementScene {
         });
         HBox switchUserBox = new HBox(5, switchUser, logOut);
 
-        Button edit = ApplicationObjects.newButton("Edit", 0, 0,"white", "grey", 157,60,16);
-        Button confirm = ApplicationObjects.newButton("confirm", 0, 0,"white", "grey", 157,50,16);
+        Button edit = ApplicationObjects.newButton("Edit", 0, 0, 157,60,16);
+        Button confirm = ApplicationObjects.newButton("confirm", 0, 0, 157,50,16);
         confirm.setVisible(false);
         edit.setOnAction(event -> {
             if (edit.getText().equals("Edit")) {
@@ -88,7 +88,7 @@ public class UserManagementScene {
         HBox editBox = new HBox(5, edit, confirm);
 
 
-        Button delete = ApplicationObjects.newButton("Delete", 0, 0,"white", "grey", 157,60,16);
+        Button delete = ApplicationObjects.newButton("Delete", 0, 0, 157,60,16);
         delete.setOnAction(event -> {
             try {
                 stage.setScene(DeleteUserScene.scene());
@@ -128,7 +128,7 @@ public class UserManagementScene {
                 e1.printStackTrace();
             }
         });
-        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, "black", "white", 10, 10, 10);
+        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
         Group root = new Group(userInfoBox, buttonGrid,  dropDownButton, homeButton, manageUserButton);
@@ -136,7 +136,7 @@ public class UserManagementScene {
             root.getChildren().add(dropDown);
         });
 
-        Scene scene = new Scene(root, 728, 567, Color.WHITE);
+        Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
         
     
         Group userButtons = ApplicationObjects.userMenu();
@@ -147,6 +147,7 @@ public class UserManagementScene {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
         });
+        scene.setFill(ApplicationObjects.getStageColor());
         return scene;
     }
     

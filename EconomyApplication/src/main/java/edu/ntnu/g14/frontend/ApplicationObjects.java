@@ -32,13 +32,30 @@ import javafx.util.StringConverter;
 
 
 public class ApplicationObjects {
+
+    public static String borderColor = "#071E22";
+    public static String backgroundColor = "#1D7874";
+    public static Color sceneColor = Color.valueOf("#F4C095");
+    public static Color stageColor = Color.valueOf("#071E22");
+
     static Stage stage = ApplicationFront.getStage();
+
     public static final DateTimeFormatter dateFormatter =
             DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+
+    public static Color getSceneColor(){
+        return sceneColor;
+    }
+
+    public static Color getStageColor(){
+        return stageColor;
+    }
+    
     public static Group userMenu() {
         Rectangle rectangle = newRectangle(553, 10, 145, 110);
         
-        Button logOut = newButton("overview", 563, 15, "black", "white", 130, 40, 15);
+        Button logOut = newButton("overview", 563, 15, 130, 40, 15);
         logOut.setOnAction(e -> {
             try {
                 stage.setScene(LoginChooseUserScene.scene());
@@ -47,7 +64,7 @@ public class ApplicationObjects {
                 e1.printStackTrace();
             }
         });
-        Button manageUser = newButton("manage user", 563, 70, "black", "white", 130, 40, 15);
+        Button manageUser = newButton("manage user", 563, 70, 130, 40, 15);
         manageUser.setOnAction(e -> {
             try {
                 stage.setScene(UserManagementScene.scene());
@@ -61,7 +78,7 @@ public class ApplicationObjects {
 
     public static Group dropDownMenu() {
         Rectangle rectangle = newRectangle(553, 10, 145, 340);
-        Button invoice = newButton("invoice", 563, 15, "black", "white", 130, 40, 20);
+        Button invoice = newButton("invoice", 563, 15, 130, 40, 20);
         invoice.setOnAction(e -> {
             try {
                 stage.setScene(InvoiceScene.scene());
@@ -69,7 +86,7 @@ public class ApplicationObjects {
                 e1.printStackTrace();
             }
         });
-        Button transfer = newButton("transfer", 563, 70, "black", "white", 130, 40, 20);
+        Button transfer = newButton("transfer", 563, 70, 130, 40, 20);
         transfer.setOnAction(e -> {
             try {
                 stage.setScene(TransferScene.scene());
@@ -77,7 +94,7 @@ public class ApplicationObjects {
                 e1.printStackTrace();
             }
         });
-        Button payment = newButton("payment", 563, 125, "black", "white", 130, 40, 20);
+        Button payment = newButton("payment", 563, 125, 130, 40, 20);
         payment.setOnAction(e -> {
             try {
                 stage.setScene(PaymentScene.scene());
@@ -85,7 +102,7 @@ public class ApplicationObjects {
                 e1.printStackTrace();
             }
         });
-        Button accounts = newButton("accounts", 563, 180, "black", "white", 130, 40, 20);
+        Button accounts = newButton("accounts", 563, 180, 130, 40, 20);
         accounts.setOnAction(e -> {
             try {
                 stage.setScene(AccountOverviewScene.scene());
@@ -94,7 +111,7 @@ public class ApplicationObjects {
                 e1.printStackTrace();
             }
         });
-        Button overview = newButton("overview", 563, 235, "black", "white", 130, 40, 20);
+        Button overview = newButton("overview", 563, 235, 130, 40, 20);
         overview.setOnAction(e -> {
             try {
                 stage.setScene(GeneralOverviewScene.scene());
@@ -103,7 +120,7 @@ public class ApplicationObjects {
                 e1.printStackTrace();
             }
         });
-        Button budgetting = newButton("budgetting", 563, 290, "black", "white", 130, 40, 20);
+        Button budgetting = newButton("budgetting", 563, 290, 130, 40, 20);
         budgetting.setOnAction(e -> {
             try {
                 stage.setScene(BudgetingScene.scene());
@@ -115,8 +132,7 @@ public class ApplicationObjects {
         return new Group(rectangle, invoice, transfer, payment, accounts, overview, budgetting);
     }
 
-    public static Button newButton(String text, int x, int y, String borderColor,
-        String backgroundColor, int width, int height, int fontSize) {
+    public static Button newButton(String text, int x, int y, int width, int height, int fontSize) {
         Button button = new Button(text);
         button.setLayoutX(x);
         button.setLayoutY(y);
@@ -128,7 +144,7 @@ public class ApplicationObjects {
         return button;
     }
     
-    public static ToggleButton newToggleButton(String text, int x, int y, String borderColor, String backgroundColor, int width, int height, int fontSize) {
+    public static ToggleButton newToggleButton(String text, int x, int y, int width, int height, int fontSize) {
         ToggleButton toggleButton = new ToggleButton(text);
         toggleButton.setLayoutX(x);
         toggleButton.setLayoutY(y);
@@ -138,8 +154,7 @@ public class ApplicationObjects {
         return toggleButton;
     }
 
-    public static TextField newTextField(String promptText, int x, int y, String borderColor,
-        String backgroundColor, int width, int height, int fontSize) {
+    public static TextField newTextField(String promptText, int x, int y, int width, int height, int fontSize) {
         TextField textField = new TextField();
         textField.setPromptText(promptText);
         textField.setLayoutX(x);
@@ -215,8 +230,7 @@ public class ApplicationObjects {
         return rectangle;
     }
 
-    public static ChoiceBox<String> newChoiceBox(String[] choices, String borderColor,
-        String backgroundColor, int width, int height, int fontSize, int x, int y) {
+    public static ChoiceBox<String> newChoiceBox(String[] choices, int width, int height, int fontSize, int x, int y) {
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
         choiceBox.getItems().addAll(choices);
         choiceBox.setStyle(setStyleString(borderColor, backgroundColor, width, height, fontSize));

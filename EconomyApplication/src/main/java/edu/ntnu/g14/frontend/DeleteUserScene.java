@@ -1,7 +1,6 @@
 package edu.ntnu.g14.frontend;
 
 import java.io.FileNotFoundException;
-import java.util.WeakHashMap;
 
 import edu.ntnu.g14.User;
 import javafx.geometry.Pos;
@@ -10,12 +9,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.util.Duration;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -63,7 +58,7 @@ public class DeleteUserScene {
             }
         }));
         timer.setCycleCount(10);
-        Button confirm = ApplicationObjects.newButton("Delete", 0, 0,"white", "red", 157,25,16);
+        Button confirm = ApplicationObjects.newButton("Delete", 0, 0, 157,25,16);
         confirm.setTextFill(Paint.valueOf("WHITE"));
         confirm.setOnMousePressed(event -> {
             warningText.setVisible(true);
@@ -79,7 +74,7 @@ public class DeleteUserScene {
             });
         });
 
-        Button cancel = ApplicationObjects.newButton("Cancel", 0, 0,"white", "grey", 157,25,16);
+        Button cancel = ApplicationObjects.newButton("Cancel", 0, 0, 157,25,16);
         cancel.setOnAction(event -> {
             cancelPressed = true;
             timer.stop();
@@ -107,7 +102,7 @@ public class DeleteUserScene {
                 e1.printStackTrace();
             }
         });
-        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, "black", "white", 10, 10, 10);
+        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
         Group root = new Group(userInfoBox, deleteUserBox, dropDownButton, homeButton, manageUserButton);
@@ -115,7 +110,7 @@ public class DeleteUserScene {
             root.getChildren().add(dropDown);
         });
 
-        Scene scene = new Scene(root, 728, 567, Color.WHITE);
+        Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
 
 
         Group userButtons = ApplicationObjects.userMenu();
@@ -126,6 +121,7 @@ public class DeleteUserScene {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
         });
+        scene.setFill(ApplicationObjects.getStageColor());
         return scene;
     }
 

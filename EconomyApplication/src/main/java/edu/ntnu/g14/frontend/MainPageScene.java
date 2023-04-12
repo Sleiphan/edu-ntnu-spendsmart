@@ -30,7 +30,7 @@ public class MainPageScene {
         }
 
         Text actionsText = ApplicationObjects.newText("Actions", 20, false, 160, 30);
-        Button transfer = ApplicationObjects.newButton("Transfer", 30, 50, "black", "white", 157, 25, 16);
+        Button transfer = ApplicationObjects.newButton("Transfer", 30, 50, 157, 25, 16);
         transfer.setOnMouseClicked(e -> {
             try {
                 stage.setScene(TransferScene.scene());
@@ -39,7 +39,7 @@ public class MainPageScene {
                 e1.printStackTrace();
             }
         });
-        Button invoice = ApplicationObjects.newButton("Invoice", 192, 50,"black", "white", 157,25,16);
+        Button invoice = ApplicationObjects.newButton("Invoice", 192, 50, 157,25,16);
         invoice.setOnMouseClicked(e -> {
             try {
                 stage.setScene(InvoiceScene.scene());
@@ -48,7 +48,7 @@ public class MainPageScene {
                 e1.printStackTrace();
             }
         });
-        Button payment = ApplicationObjects.newButton("Payment", 30, 90, "black", "white", 157, 25, 16);
+        Button payment = ApplicationObjects.newButton("Payment", 30, 90, 157, 25, 16);
         payment.setOnMouseClicked(e -> {
             try {
                 stage.setScene(PaymentScene.scene());
@@ -57,7 +57,7 @@ public class MainPageScene {
                 e1.printStackTrace();
             }
         });
-        Button overview = ApplicationObjects.newButton("Overview", 192,90, "black", "white", 157,25,16);
+        Button overview = ApplicationObjects.newButton("Overview", 192,90, 157,25,16);
         overview.setOnMouseClicked(e -> {
             try {
                 stage.setScene(GeneralOverviewScene.scene());
@@ -66,7 +66,7 @@ public class MainPageScene {
                 e1.printStackTrace();
             }
         });
-        Button accountsButton = ApplicationObjects.newButton("Accounts", 30,130, "black", "white", 157, 25, 16);
+        Button accountsButton = ApplicationObjects.newButton("Accounts", 30,130, 157, 25, 16);
         accountsButton.setOnMouseClicked(e -> {
             try {
                 stage.setScene(AccountOverviewScene.scene());
@@ -75,7 +75,7 @@ public class MainPageScene {
                 e1.printStackTrace();
             }
         });
-        Button budgeting = ApplicationObjects.newButton("Budgeting", 192, 130, "black", "white", 157, 25,16);
+        Button budgeting = ApplicationObjects.newButton("Budgeting", 192, 130, 157, 25,16);
         budgeting.setOnMouseClicked(e -> {
             try {
                 stage.setScene(BudgetingScene.scene());
@@ -102,7 +102,7 @@ public class MainPageScene {
         
         ImageView homeButton = ApplicationObjects.newImage("home.png", 10, 10, 20, 20);
         
-        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, "black", "white", 10, 10, 10);
+        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
         Group root = new Group(actionsText, transfer, invoice, payment, 
@@ -112,7 +112,7 @@ public class MainPageScene {
             root.getChildren().add(dropDown);
         });
 
-        Scene scene = new Scene(root, 728, 567, Color.WHITE);
+        Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
     
         
         Group userButtons = ApplicationObjects.userMenu();
@@ -123,6 +123,7 @@ public class MainPageScene {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
         });
+        scene.setFill(ApplicationObjects.getStageColor());
         return scene;
     }
 

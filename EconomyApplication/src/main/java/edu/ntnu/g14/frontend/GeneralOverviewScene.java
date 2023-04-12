@@ -23,7 +23,7 @@ public class GeneralOverviewScene {
         Text totalExpensesText = ApplicationObjects.newText("Expenses all account: 10 320 kr", 20, false, (728/2 + 40), 150);
         ToggleGroup intervalToggles = new ToggleGroup();
 
-        Button back_bt = ApplicationObjects.newButton("Back", 40, 30, "black", "white", 60, 20, 14);
+        Button back_bt = ApplicationObjects.newButton("Back", 40, 30, 60, 20, 14);
         back_bt.setOnAction(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
@@ -32,9 +32,9 @@ public class GeneralOverviewScene {
                 e1.printStackTrace();
             }
         });
-        ToggleButton yearlyToggle = ApplicationObjects.newToggleButton("Yearly", 40, 190, "black", "white", 80,20, 16);
+        ToggleButton yearlyToggle = ApplicationObjects.newToggleButton("Yearly", 40, 190, 80,20, 16);
         yearlyToggle.setToggleGroup(intervalToggles);
-        ToggleButton monthlyToggle = ApplicationObjects.newToggleButton("Monthly", 120, 190, "black", "white", 80,20, 16);
+        ToggleButton monthlyToggle = ApplicationObjects.newToggleButton("Monthly", 120, 190, 80,20, 16);
         monthlyToggle.setToggleGroup(intervalToggles);
         TableView<ObservableList<Object>> transactionsTables = ApplicationObjects.newTableView(columnTitlesTransactionsTable, 40, 230, 658, 300);
         transactionsTables.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -48,7 +48,7 @@ public class GeneralOverviewScene {
                 e1.printStackTrace();
             }
         });
-        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, "black", "white", 10, 10, 10);
+        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
         Group root = new Group(back_bt, totalOfAllAccountsCombinedText, bigSumText,
@@ -57,7 +57,7 @@ public class GeneralOverviewScene {
             root.getChildren().add(dropDown);
         });
 
-        Scene scene = new Scene(root, 728, 567, Color.WHITE);
+        Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
         
         
         Group userButtons = ApplicationObjects.userMenu();
@@ -68,6 +68,7 @@ public class GeneralOverviewScene {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
         });
+        scene.setFill(ApplicationObjects.getStageColor());
         return scene;
     }
     

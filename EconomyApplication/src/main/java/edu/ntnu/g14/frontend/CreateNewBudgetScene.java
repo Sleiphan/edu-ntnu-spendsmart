@@ -19,9 +19,9 @@ public class CreateNewBudgetScene {
     static public Scene scene() throws FileNotFoundException {
         User loggedInUser = ApplicationFront.getLoggedInUser();
         String[] revenues = {"Revenues", "Salary", "Income"};
-        ChoiceBox<String> revenue = ApplicationObjects.newChoiceBox(revenues, "black", "white", 150, 34, 15, 50, 100);
+        ChoiceBox<String> revenue = ApplicationObjects.newChoiceBox(revenues, 150, 34, 15, 50, 100);
         revenue.setValue("Revenues");
-        TextField revenueInput = ApplicationObjects.newTextField("", 210, 100, "black", "white", 130, 30, 15);
+        TextField revenueInput = ApplicationObjects.newTextField("", 210, 100, 130, 30, 15);
         revenueInput.setOnKeyPressed((KeyEvent keyEvent) -> {
             if (keyEvent.getCode() == KeyCode.ENTER) {
                 String selectedItem = revenue.getValue();
@@ -59,7 +59,7 @@ public class CreateNewBudgetScene {
         }
         expenditure.setValue("Expenditure");
 
-        TextField expenditureInput = ApplicationObjects.newTextField("", 560, 100, "black", "white", 130, 30, 15);
+        TextField expenditureInput = ApplicationObjects.newTextField("", 560, 100, 130, 30, 15);
 
 // Event handler for TextField
         expenditureInput.setOnKeyPressed((KeyEvent keyEvent) -> {
@@ -88,9 +88,9 @@ public class CreateNewBudgetScene {
 
 
         String[] personals = {"Personal", "Age", "Gender", "Household"};
-        ChoiceBox<String> personal = ApplicationObjects.newChoiceBox(personals, "black", "white", 150, 34, 15, 50, 300);
+        ChoiceBox<String> personal = ApplicationObjects.newChoiceBox(personals, 150, 34, 15, 50, 300);
         personal.setValue("Personal");
-        TextField personalInput = ApplicationObjects.newTextField("", 210, 300, "black", "white", 130, 30, 15);
+        TextField personalInput = ApplicationObjects.newTextField("", 210, 300, 130, 30, 15);
 
 // Event handler for TextField
         personalInput.setOnKeyPressed((KeyEvent keyEvent) -> {
@@ -129,7 +129,7 @@ public class CreateNewBudgetScene {
         });
 
 
-        Button cancelBtn= ApplicationObjects.newButton("Cancel", 200, 480, "black", "white", 157, 25, 16);
+        Button cancelBtn= ApplicationObjects.newButton("Cancel", 200, 480, 157, 25, 16);
         cancelBtn.setOnAction(e -> {
             try {
                 stage.setScene(EmptyBudgetScene.scene());
@@ -139,7 +139,7 @@ public class CreateNewBudgetScene {
             }
         });
 
-        Button createBtn= ApplicationObjects.newButton("Create", 380, 480, "black", "white", 157, 25, 16);
+        Button createBtn= ApplicationObjects.newButton("Create", 380, 480, 157, 25, 16);
         createBtn.setOnAction(e -> {
             try {
                 stage.setScene(BudgetingScene.scene());
@@ -158,7 +158,7 @@ public class CreateNewBudgetScene {
                 e1.printStackTrace();
             }
         });
-        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, "black", "white", 10, 10, 10);
+        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
         Group root = new Group(revenue, revenueInput, expenditure, expenditureInput,
@@ -167,7 +167,7 @@ public class CreateNewBudgetScene {
             root.getChildren().add(dropDown);
         });
 
-        Scene scene = new Scene(root, 728, 567, Color.WHITE);
+        Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
         
         
         Group userButtons = ApplicationObjects.userMenu();
@@ -178,6 +178,7 @@ public class CreateNewBudgetScene {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
         });
+        scene.setFill(ApplicationObjects.getStageColor());
         return scene;
     }
 

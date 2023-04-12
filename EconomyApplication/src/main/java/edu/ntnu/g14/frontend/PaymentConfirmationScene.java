@@ -2,7 +2,6 @@ package edu.ntnu.g14.frontend;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -40,8 +39,8 @@ public class PaymentConfirmationScene {
         payment.getColumns().forEach(column -> column.setSortable(false));
 
 
-        Button confirm = ApplicationObjects.newButton("Confirm", 250, 350, "black", "white", 100, 20, 15);
-        Button cancel = ApplicationObjects.newButton("Cancel", 400, 350, "black", "white", 100, 20, 15);
+        Button confirm = ApplicationObjects.newButton("Confirm", 250, 350, 100, 20, 15);
+        Button cancel = ApplicationObjects.newButton("Cancel", 400, 350, 100, 20, 15);
 
 
         confirm.setOnAction(e -> {
@@ -85,7 +84,7 @@ public class PaymentConfirmationScene {
                 e1.printStackTrace();
             }
         });
-        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, "black", "white", 10, 10, 10);
+        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
         Group root = new Group(payment, confirm, cancel, dropDownButton, homeButton, manageUserButton);
@@ -93,7 +92,7 @@ public class PaymentConfirmationScene {
             root.getChildren().add(dropDown);
         });
 
-        Scene scene = new Scene(root, 728, 567, Color.WHITE);
+        Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
         
         
         Group userButtons = ApplicationObjects.userMenu();
@@ -104,6 +103,7 @@ public class PaymentConfirmationScene {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
         });
+        scene.setFill(ApplicationObjects.getStageColor());
         return scene;
     }
 

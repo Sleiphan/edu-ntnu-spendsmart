@@ -18,12 +18,12 @@ public class TransferScene {
         int n = 85;
         int m = n - 5;
 
-        TextField fromAccount = ApplicationObjects.newTextField("12345678910", x, y, "black", "white", 200, 20, 15);
-        TextField amount = ApplicationObjects.newTextField("50kr", x, y + n, "black", "white", 100, 20, 15);
-        TextField toAccount = ApplicationObjects.newTextField("10987654321", x, y + 2 * n, "black", "white", 100, 20, 15);
+        TextField fromAccount = ApplicationObjects.newTextField("12345678910", x, y, 200, 20, 15);
+        TextField amount = ApplicationObjects.newTextField("50kr", x, y + n, 100, 20, 15);
+        TextField toAccount = ApplicationObjects.newTextField("10987654321", x, y + 2 * n, 100, 20, 15);
 
-        Button transfer = ApplicationObjects.newButton("Pay", 200, 255, "black", "white", 100, 20, 15);
-        Button cancel = ApplicationObjects.newButton("Cancel", 350, 255, "black", "white", 100, 20, 15);
+        Button transfer = ApplicationObjects.newButton("Pay", 200, 255, 100, 20, 15);
+        Button cancel = ApplicationObjects.newButton("Cancel", 350, 255, 100, 20, 15);
         transfer.setOnAction(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
@@ -49,7 +49,7 @@ public class TransferScene {
                 e1.printStackTrace();
             }
         });
-        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, "black", "white", 10, 10, 10);
+        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
         Group root = new Group(fromAccount, amount, toAccount,
@@ -61,7 +61,7 @@ public class TransferScene {
             root.getChildren().add(dropDown);
         });
 
-        Scene scene = new Scene(root, 728, 567, Color.WHITE);
+        Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
         
         
         Group userButtons = ApplicationObjects.userMenu();
@@ -72,6 +72,7 @@ public class TransferScene {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
         });
+        scene.setFill(ApplicationObjects.getStageColor());
         return scene;
     }
     

@@ -36,7 +36,7 @@ public class LoginUserScene {
         passwordField.setLayoutX(120);
         passwordField.setLayoutY(60);
         passwordField.setFocusTraversable(false);
-        Button loginButton = ApplicationObjects.newButton("Login", 185, 130, "black", "white", 100, 30, 25);
+        Button loginButton = ApplicationObjects.newButton("Login", 185, 130, 100, 30, 25);
         passwordField.setOnKeyPressed(keyEvent -> {
             KeyCode key = keyEvent.getCode();
             if (key == KeyCode.ENTER && passwordField.getText().equals(ApplicationFront.getLoggedInUser().getLoginInfo().getPassword())) {
@@ -67,7 +67,8 @@ public class LoginUserScene {
 
         Group root = new Group(ApplicationObjects.newText("Welcome back " + ApplicationFront.getLoggedInUser().getLoginInfo().getUserName(), 25, false, 120, 40),
                 notYou, forgotPassword, passwordField, loginButton);
-        Scene scene = new Scene(root, 500, 300, Color.WHITE);
+        Scene scene = new Scene(root, 500, 300, ApplicationObjects.getSceneColor());
+        scene.setFill(ApplicationObjects.getStageColor());
         return scene;
     }
 

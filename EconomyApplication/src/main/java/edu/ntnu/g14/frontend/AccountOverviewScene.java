@@ -31,13 +31,13 @@ public class AccountOverviewScene {
         String[] columnTitlesTransactionsTable = {"Transaction", "Date", "Amount"};
 
 
-        ChoiceBox<String> accountChoiceBox = ApplicationObjects.newChoiceBox(columnTitlesTransactionsTable, "black", "white", 364, 30, 30, 364-(364/2), 30);
+        ChoiceBox<String> accountChoiceBox = ApplicationObjects.newChoiceBox(columnTitlesTransactionsTable, 364, 30, 30, 364-(364/2), 30);
         accountChoiceBox.setItems(accountNames);
         accountChoiceBox.setValue(accounts.get(0).getAccountName());
         Text accountNumberText = ApplicationObjects.newText(accounts.get(0).getAccountNumber(), 14, false, 325, 130);
         Text amountText = ApplicationObjects.newText("Amount: " + accounts.get(0).getAmount() + "kr", 20, false, 290, 160);
-        Button addTransaction = ApplicationObjects.newButton("Add Transaction", 20, 30, "black", "white", 120, 20, 14);
-        Button addAccount = ApplicationObjects.newButton("Add Account", 20, 60, "black", "white", 120, 20, 14);
+        Button addTransaction = ApplicationObjects.newButton("Add Transaction", 20, 30, 120, 20, 14);
+        Button addAccount = ApplicationObjects.newButton("Add Account", 20, 60, 120, 20, 14);
         Text lastTransactionsText = ApplicationObjects.newText("Last Transactions:", 24, false, 20, 200);
         lastTransactionsTable = ApplicationObjects.newTableView(columnTitlesTransactionsTable, 20, 230, 688, 300);
         lastTransactionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
@@ -91,7 +91,7 @@ public class AccountOverviewScene {
                 addTransaction(transaction);
             }
         });
-        Button back_bt = ApplicationObjects.newButton("Back", 20, 90, "black", "white", 120, 20, 14);
+        Button back_bt = ApplicationObjects.newButton("Back", 20, 90, 120, 20, 14);
         back_bt.setOnAction(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
@@ -112,14 +112,14 @@ public class AccountOverviewScene {
             }
         });
         
-        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, "black", "white", 10, 10, 10);
+        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
         Group root = new Group(accountChoiceBox, accountNumberText, amountText, addTransaction, addAccount, lastTransactionsText, lastTransactionsTable, back_bt, dropDownButton, homeButton, manageUserButton);
         dropDownButton.setOnAction(e -> root.getChildren().add(dropDown));
 
 
-        Scene scene = new Scene(root, 728, 567, Color.WHITE);
+        Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
         
 
         
@@ -129,7 +129,7 @@ public class AccountOverviewScene {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
         });
-
+        scene.setFill(ApplicationObjects.getStageColor());
         return scene;
     }
 
