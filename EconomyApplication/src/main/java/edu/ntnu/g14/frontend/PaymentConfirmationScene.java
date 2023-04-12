@@ -106,12 +106,12 @@ public class PaymentConfirmationScene {
         String cid = paymentInfo.get(5);
 
         ObservableList<ObservableList<Object>> paymentData = FXCollections.observableArrayList();
-        paymentData.add(FXCollections.observableArrayList("From account:", new BigDecimal(fromAccount)));
+        paymentData.add(FXCollections.observableArrayList("From account:", fromAccount));
         paymentData.add(FXCollections.observableArrayList("Amount:", new BigDecimal(amount) + "kr"));
         paymentData.add(FXCollections.observableArrayList("Description:", description));
         paymentData.add(FXCollections.observableArrayList("Due date:", dueDate));
-        paymentData.add(FXCollections.observableArrayList("To account:", new BigDecimal(toAccount)));
-        paymentData.add(FXCollections.observableArrayList("CID:", new BigDecimal(cid)));
+        paymentData.add(FXCollections.observableArrayList("To account:", toAccount));
+        paymentData.add(FXCollections.observableArrayList("CID:", cid));
         return paymentData;
     }
 
