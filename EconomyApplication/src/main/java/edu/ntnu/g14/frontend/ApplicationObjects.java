@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
+import edu.ntnu.g14.Account;
 import edu.ntnu.g14.TransactionWithProperty;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
@@ -27,14 +28,13 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import edu.ntnu.g14.AccountWithProperty;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 
 
 public class ApplicationObjects {
     static Stage stage = ApplicationFront.getStage();
-
     public static final DateTimeFormatter dateFormatter =
-        DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
+            DateTimeFormatter.ofPattern("dd/MM/yyyy");
     public static Group userMenu() {
         Rectangle rectangle = newRectangle(553, 10, 145, 110);
         
@@ -336,7 +336,7 @@ public class ApplicationObjects {
             GridPane.setHgrow(this.amountField,Priority.ALWAYS);
             grid.add(accountNameField,1,3);
             GridPane.setHgrow(this.accountNameField,Priority.ALWAYS);
-
+            accountTypeField.setMaxWidth(160);
             content.getChildren().add(grid);
             return content;
         }
@@ -344,7 +344,7 @@ public class ApplicationObjects {
     
     static class TransactionWithPropertyDialog extends Dialog<TransactionWithProperty> {
         private final TransactionWithProperty transaction;
-        private ChoiceBox<String> fromAccountNumberField;
+        private TextField fromAccountNumberField;
         private TextField toAccountNumberField;
         private TextField amountField;
         private TextField descriptionField;
@@ -358,7 +358,7 @@ public class ApplicationObjects {
             setResultConverter();
         }
         private void setPropertyBindings() {
-            fromAccountNumberField.valueProperty().bindBidirectional(transaction.getFromAccountIdProperty());
+            fromAccountNumberField.textProperty().bindBidirectional(transaction.getFromAccountIdProperty());
             toAccountNumberField.textProperty().bindBidirectional(transaction.getToAccountIdProperty());
             amountField.textProperty().bindBidirectional(transaction.getAmountProperty());
             descriptionField.textProperty().bindBidirectional(transaction.getDescriptionProperty());
@@ -393,26 +393,42 @@ public class ApplicationObjects {
                     return !toAccountNumberField.getText().isBlank()
                             && !amountField.getText().isBlank()
                             && !descriptionField.getText().isBlank()
-                            && Pattern.matches(regexAccountNumber, toAccountNumberField.getText());
+                            && !toAccountNumberField.getText().isBlank()
+                            && (ApplicationFront.loggedInUser.getAccountsAsList().stream().map(Account::getAccountNumber).anyMatch(accountNumber -> accountNumber.equals(toAccountNumberField.getText())) || ApplicationFront.loggedInUser.getAccountsAsList().stream().map(Account::getAccountNumber).anyMatch(accountNumber -> accountNumber.equals(fromAccountNumberField.getText()))
+                            && Pattern.matches(regexAccountNumber, toAccountNumberField.getText()));
                 }
             });
         }
         public Pane createGridPane() {
             VBox content = new VBox(10);
-            Label fromAccountLabel = new Label("Select the account you want to send from:");
-            Label toAccountLabel = new Label("Enter the recipient account number:");
+            Label fromAccountLabel = new Label("Enter the sender's account:");
+            Label toAccountLabel = new Label("Enter the recipient's account number:");
             Label amountLabel = new Label("Enter the amount you want to send:");
             Label descriptionLabel = new Label("Enter the description of the transaction:");
             Label dateOfTransactionLabel = new Label("Choose the date of the transaction:")   ;
 
-            this.fromAccountNumberField = new ChoiceBox<>();
+            this.fromAccountNumberField = new TextField();
             this.toAccountNumberField = new TextField();
             this.amountField = new TextField();
             this.descriptionField = new TextField();
             this.dateOfTransactionField = new DatePicker();
+            dateOfTransactionField.setConverter(new StringConverter<LocalDate>() {
+                @Override
+                public String toString(LocalDate localDate) {
+                    if (localDate != null) {
+                        return dateFormatter.format(localDate);
+                    }
+                    return null;
+                }
+
+                @Override
+                public LocalDate fromString(String string) {
+                    if (string != null && !string.isBlank())
+                        return LocalDate.parse(string, dateFormatter);
+                    return null;
+                }
+            });
             restrictDatePicker(dateOfTransactionField, LocalDate.now());
-            //TODO: Change format
-            this.fromAccountNumberField.getItems().addAll("Spendings Account", "Savings Account", "Pensions Account");
             //TODO: Make it retrieve a users accounts which are not savings or pensions
             GridPane grid = new GridPane();
             grid.setHgap(10);
@@ -432,7 +448,6 @@ public class ApplicationObjects {
             GridPane.setHgrow(this.descriptionField,Priority.ALWAYS);
             grid.add(dateOfTransactionField,1,4);
             GridPane.setHgrow(this.dateOfTransactionField,Priority.ALWAYS);
-
             content.getChildren().add(grid);
             return content;
         }
