@@ -23,9 +23,9 @@ public class MainPageScene {
         String [] columnTitlesLatestActivitiesTable = {"Transaction", "Amount"};
         String [] columnTitlesDuePaymentsTable = {"Date", "Recipient", "Amount"};
 
-        String [] accountsList = new String [ApplicationFront.getLoggedInUser().getAllAccounts().length];
-        Account[] accounts = ApplicationFront.getLoggedInUser().getAllAccounts();
-        for (int i = 0; i < ApplicationFront.getLoggedInUser().getAllAccounts().length; i++){
+        String [] accountsList = new String [ApplicationFront.getLoggedInUser().getAccounts().length];
+        Account[] accounts = ApplicationFront.getLoggedInUser().getAccounts();
+        for (int i = 0; i < ApplicationFront.getLoggedInUser().getAccounts().length; i++){
             accountsList[i] = accounts[i].getAccountName();
         }
 
