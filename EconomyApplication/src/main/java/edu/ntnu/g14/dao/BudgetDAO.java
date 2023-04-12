@@ -31,12 +31,6 @@ public class BudgetDAO {
         tempFile.deleteOnExit();
     }
 
-    // BigDecimal salary = BigDecimal.ZERO;
-    // BigDecimal savings = BigDecimal.ZERO;
-    // byte age;
-    // GenderCategory gender;
-    // final List<BudgetItem> entries = new ArrayList<>();
-
     public void setBudget(String userID, Budget budget) throws IOException {
         openStreams();
 
@@ -73,6 +67,8 @@ public class BudgetDAO {
         String line = "";
         while (line != null && !line.startsWith(prefix))
             line = fileStream.readLine();
+
+        closeStreams();
 
         if (line == null || line.isEmpty())
             return null;
