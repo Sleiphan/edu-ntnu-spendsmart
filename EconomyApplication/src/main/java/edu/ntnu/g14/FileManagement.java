@@ -124,13 +124,29 @@ public class FileManagement {
         
     }
 
-    public static void editUser(User newUser){
+    public static void editUser(User newUser, String userId) throws FileNotFoundException, IOException{
+        String addonText = "" + newUser.getLoginInfo().getUserId() + "," + newUser.getLoginInfo().getUserName() + "," + 
+            newUser.getEmail() + "," + newUser.getLoginInfo().getPassword() + "," + newUser.getFirstName() + "," + newUser.getLastName() + ",                                     ";
 
+
+        try (RandomAccessFile file = new RandomAccessFile(PATH_USERS, "rw")) {
+            String line;
+            long pos = 0;
+            while ((line = file.readLine()) != null) {
+                if (line.startsWith(userId + ",")) {
+                    pos = file.getFilePointer() - line.length();
+                    file.seek(pos);
+                    file.write(addonText.getBytes());
+                    file.close();
+                    break;
+                }
+            }
+        }
     }
 
     public static void writeNewUser(User newUser) throws IOException{
         String userInfo = "" + newUser.getLoginInfo().getUserId() + "," + newUser.getLoginInfo().getUserName() + "," + 
-            newUser.getEmail() + "," + newUser.getLoginInfo().getPassword() + "," + newUser.getFirstName() + "," + newUser.getLastName();
+            newUser.getEmail() + "," + newUser.getLoginInfo().getPassword() + "," + newUser.getFirstName() + "," + newUser.getLastName() + ",";
             
            
         try (RandomAccessFile file = new RandomAccessFile(PATH_USERS, "rw")) {
@@ -259,6 +275,7 @@ public class FileManagement {
     public static void writeNewTransaction(String userId, Transaction transaction) throws IOException{
         String addonText = "" + transaction.getDateOfTransaction() + ";" + transaction.getAmount() + ";" +
         transaction.getToAccountNumber() + ";" + transaction.getFromAccountNumber() + ";" + transaction.getDescription() + ",";
+        line = file.readLine()
         try (RandomAccessFile file = new RandomAccessFile(PATH_TRANSACTIONS, "rw")) {
             String line;
             long pos = 0;
@@ -282,7 +299,7 @@ public class FileManagement {
             long pos = 0;
             while ((line = file.readLine()) != null) {
                 if (line.startsWith(userId + ",")) {
-                    pos = file.getFilePointer() - line.length() + line.indexOf("   ") - 3;
+                    pos = file.getFilePointer() - line.length() + line.indexOf("   ") - 1;
                     file.seek(pos);
                     file.write(addonText.getBytes());
                     file.close();
