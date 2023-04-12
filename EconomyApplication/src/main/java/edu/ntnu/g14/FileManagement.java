@@ -161,20 +161,6 @@ public class FileManagement {
         }
 
         
-        String addonTextBudget = newUser.getLoginInfo().getUserId();
-        try (RandomAccessFile file = new RandomAccessFile(PATH_BUDGETS, "rw")) {
-            String line;
-            while ((line = file.readLine()) != null) {
-                if (line.startsWith(" ")) {
-                    file.seek(file.getFilePointer() - line.length());
-                    file.write(addonTextBudget.getBytes());
-                    file.close();
-                    break;
-                }
-            }
-        }
-
-        
         String addonTextTransactions = newUser.getLoginInfo().getUserId();
         try (RandomAccessFile file = new RandomAccessFile(PATH_TRANSACTIONS, "rw")) {
             String line;
