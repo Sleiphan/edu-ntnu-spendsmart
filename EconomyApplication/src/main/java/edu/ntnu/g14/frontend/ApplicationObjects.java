@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import edu.ntnu.g14.Account;
 import edu.ntnu.g14.TransactionWithProperty;
+import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -36,7 +37,7 @@ public class ApplicationObjects {
     public static String borderColor = "#071E22";
     public static String backgroundColor = "#1D7874";
     public static Color sceneColor = Color.valueOf("#F4C095");
-    public static Color stageColor = Color.valueOf("#071E22");
+    
 
     static Stage stage = ApplicationFront.getStage();
 
@@ -48,9 +49,6 @@ public class ApplicationObjects {
         return sceneColor;
     }
 
-    public static Color getStageColor(){
-        return stageColor;
-    }
     
     public static Group userMenu() {
         Rectangle rectangle = newRectangle(553, 10, 145, 110);

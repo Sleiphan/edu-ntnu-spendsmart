@@ -45,7 +45,7 @@ public class ManageUserChangePasswordScene {
         dropDownButton.setOnAction(e -> {
             root.getChildren().add(dropDown);
         });
-
+        root.getStylesheets().add("StyleSheet.css"); 
         Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
        
         
@@ -57,7 +57,7 @@ public class ManageUserChangePasswordScene {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
         });
-        scene.setFill(ApplicationObjects.getStageColor());
+        
         return scene;
     }
 	

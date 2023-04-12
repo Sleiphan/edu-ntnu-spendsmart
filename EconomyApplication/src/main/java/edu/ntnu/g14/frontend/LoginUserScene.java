@@ -67,8 +67,9 @@ public class LoginUserScene {
 
         Group root = new Group(ApplicationObjects.newText("Welcome back " + ApplicationFront.getLoggedInUser().getLoginInfo().getUserName(), 25, false, 120, 40),
                 notYou, forgotPassword, passwordField, loginButton);
+        root.getStylesheets().add("StyleSheet.css"); 
         Scene scene = new Scene(root, 500, 300, ApplicationObjects.getSceneColor());
-        scene.setFill(ApplicationObjects.getStageColor());
+       
         return scene;
     }
 

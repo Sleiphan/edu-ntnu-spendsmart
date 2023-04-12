@@ -50,8 +50,9 @@ public class LoginForgotPasswordSecondScene {
         Text goBack = ApplicationObjects.newText("Go back", 10, true, 400, 260);
     
         Group root = new Group(goBack, newPassword, retypeNewPassword, confirmButton);
+        root.getStylesheets().add("StyleSheet.css"); 
         Scene scene = new Scene(root, 500, 300, ApplicationObjects.getSceneColor());
-        scene.setFill(ApplicationObjects.getStageColor());
+        
         return scene;
     }
     

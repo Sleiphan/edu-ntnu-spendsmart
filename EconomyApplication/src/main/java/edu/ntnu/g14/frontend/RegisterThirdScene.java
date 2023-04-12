@@ -33,8 +33,9 @@ public class RegisterThirdScene {
         Group root = new Group(yes, skip,
         ApplicationObjects.newText("Would you like to add", 25, false, 130, 40),
         ApplicationObjects.newText("account information", 25, false, 130, 80));
+        root.getStylesheets().add("StyleSheet.css"); 
         Scene scene = new Scene(root, 500, 300, ApplicationObjects.getSceneColor());
-        scene.setFill(ApplicationObjects.getStageColor());
+        
         return scene;
     }
 

@@ -33,8 +33,9 @@ public class RegisterSecondScene {
                 ApplicationObjects.newText("has been sent to", 25, false, 140, 50),
                 ApplicationObjects.newText(email, 25, false, 140, 75),
                 ApplicationObjects.newText("Code:", 30, false, 20, 225));
+        root.getStylesheets().add("StyleSheet.css");         
         Scene scene = new Scene(root, 500, 300, ApplicationObjects.getSceneColor());
-        scene.setFill(ApplicationObjects.getStageColor());
+        
         return scene;
     }
 

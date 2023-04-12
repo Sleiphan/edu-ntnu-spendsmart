@@ -44,8 +44,9 @@ public class RegisterFirstScene {
                 ApplicationObjects.newText("Email", 30, false, 10, 225),
                 ApplicationObjects.newText("Password", 30, false, 260, 25),
                 ApplicationObjects.newText("Confirm password", 30, false, 260, 125));
+        root.getStylesheets().add("StyleSheet.css"); 
         Scene scene = new Scene(root, 500, 300, ApplicationObjects.getSceneColor());
-        scene.setFill(ApplicationObjects.getStageColor());
+        
         return scene;
     }
 

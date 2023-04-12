@@ -110,7 +110,7 @@ public class AccountOverviewScene {
         Group root = new Group(accountChoiceBox, accountNumberText, amountText, addTransaction, addAccount, lastTransactionsText, lastTransactionsTable, back_bt, dropDownButton, homeButton, manageUserButton);
         dropDownButton.setOnAction(e -> root.getChildren().add(dropDown));
 
-
+        root.getStylesheets().add("StyleSheet.css"); 
         Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
         
 
@@ -121,7 +121,7 @@ public class AccountOverviewScene {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
         });
-        scene.setFill(ApplicationObjects.getStageColor());
+        
         return scene;
     }
 

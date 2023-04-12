@@ -49,8 +49,9 @@ public class LoginChooseUserScene {
     
         
         Group root = new Group(chooseUser, registerNew, user, confirm);
+        root.getStylesheets().add("StyleSheet.css"); 
         Scene scene = new Scene(root, 500, 300, ApplicationObjects.getSceneColor());
-        scene.setFill(ApplicationObjects.getStageColor());
+       
         return scene;
     }
     
