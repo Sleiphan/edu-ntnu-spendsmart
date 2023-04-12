@@ -93,7 +93,7 @@ public class AccountWithProperty {
                 return AccountCategory.SAVINGS_ACCOUNT.toString();
             case "Spendings Account":
                 return AccountCategory.SPENDING_ACCOUNT.toString();
-            case "Pensions account":
+            case "Pensions Account":
                 return AccountCategory.PENSION_ACCOUNT.toString();
             case "Other":
                 return AccountCategory.OTHER.toString();
