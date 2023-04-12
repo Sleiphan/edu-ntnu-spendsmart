@@ -17,7 +17,7 @@ import edu.ntnu.g14.frontend.ApplicationObjects;
 
 public class FileManagement {
 
-    public static final String PATH_ACCOUNTS     = "saves/accounts.txt";
+    public static final String filePath     = "saves/accounts.txt";
     public static final String PATH_BUDGETS      = "saves/budgets.txt";
     public static final String PATH_INVOICES     = "saves/invoices.txt";
     public static final String PATH_TRANSACTIONS = "saves/transactions.txt";
@@ -153,7 +153,7 @@ public class FileManagement {
         }
 
         String addonTextAccount = newUser.getLoginInfo().getUserId() + ",";
-        try (RandomAccessFile file = new RandomAccessFile(PATH_ACCOUNTS, "rw")) {
+        try (RandomAccessFile file = new RandomAccessFile(filePath, "rw")) {
             String line;
             while ((line = file.readLine()) != null) {
                 if (line.startsWith(" ")) {
@@ -182,7 +182,7 @@ public class FileManagement {
     }
 
     public static Account[] readAccounts(String userId) throws IOException{
-        BufferedReader reader = new BufferedReader(new FileReader(PATH_ACCOUNTS));
+        BufferedReader reader = new BufferedReader(new FileReader(filePath));
         Stream<String> userTrans = reader.lines() 
                 .filter(line -> line.startsWith(userId + ","));
         Account[] accounts = userTrans.flatMap(s -> Stream.of(s.split(","))
@@ -252,7 +252,7 @@ public class FileManagement {
     public static void writeNewAccount(String userId, Account account) throws IOException{
         String addonText = "" + account.getAccountType() + ";" + account.getAmount() + ";" + account.getAccountNumber() + ";" + 
         account.getAccountName() + ",";
-        try (RandomAccessFile file = new RandomAccessFile(PATH_ACCOUNTS, "rw")) {
+        try (RandomAccessFile file = new RandomAccessFile(filePath, "rw")) {
             String line;
             long pos = 0;
             while ((line = file.readLine()) != null) {
@@ -267,61 +267,53 @@ public class FileManagement {
         }
     }
     public static void writeAccount(String userId, Account account) {
-        String addOnText = account.toCSVString();
-        String tempFile = "temp.text";
-        File oldFile = new File(PATH_ACCOUNTS);
-        File newFile = new File(tempFile);
-        try{
-            FileWriter fileWriter = new FileWriter(tempFile, true);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            PrintWriter printWriter = new PrintWriter(bufferedWriter);
-            BufferedReader bufferedReader = new BufferedReader(Files.newBufferedReader(oldFile.toPath()));
-            String currentLine;
-            while ((currentLine = bufferedReader.readLine()) != null ) {
-                if (currentLine.startsWith(userId)) {
-                    printWriter.println(currentLine + addOnText);
-                }
-                else {
-                    printWriter.println(currentLine);
-                }
-            }
-            bufferedReader.close();
-            printWriter.flush();
-            printWriter.close();
-            oldFile.delete();
-            File dump = new File(PATH_ACCOUNTS);
-            newFile.renameTo(dump);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        writeTransactionOrAccount(userId, account.toCSVString(), filePath);
     }
     public static void writeTransaction(String userId, Transaction transaction) {
-        String addOnText = transaction.toCSVString();
+        writeTransactionOrAccount(userId, transaction.toCSVString(), PATH_TRANSACTIONS);
+    }
+
+    private static void writeTransactionOrAccount(String userId, String toCSVString, String filePath) {
         String tempFile = "temp.text";
-        File oldFile = new File(PATH_TRANSACTIONS);
-        File newFile = new File(tempFile);
-        try{
-            FileWriter fileWriter = new FileWriter(tempFile, true);
+        File oldFile    = new File(filePath);
+        File newFile    = new File(tempFile);
+        try {
+            FileWriter fileWriter         = new FileWriter(tempFile, true);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            PrintWriter printWriter = new PrintWriter(bufferedWriter);
-            BufferedReader bufferedReader = new BufferedReader(Files.newBufferedReader(oldFile.toPath()));
+            PrintWriter printWriter       = new PrintWriter(bufferedWriter);
+
+            FileInputStream inputStream   = new FileInputStream(oldFile);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+            int lines = (int) bufferedReader.lines().count();
+            inputStream.getChannel().position(0);
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             String currentLine;
-            while ((currentLine = bufferedReader.readLine()) != null ) {
+            for (int i = 1; i < lines; i++) {
+                currentLine = bufferedReader.readLine();
                 if (currentLine.startsWith(userId)) {
-                    printWriter.println(currentLine + addOnText);
+                    printWriter.println(currentLine + toCSVString);
                 }
                 else {
                     printWriter.println(currentLine);
                 }
             }
+            currentLine = bufferedReader.readLine();
+            if (currentLine.startsWith(userId)) {
+                printWriter.print(currentLine + toCSVString);
+            }
+            else {
+                printWriter.print(currentLine);
+            }
+
+            inputStream.close();
             bufferedReader.close();
             printWriter.flush();
             printWriter.close();
             oldFile.delete();
-            File dump = new File(PATH_TRANSACTIONS);
+            File dump = new File(filePath);
             newFile.renameTo(dump);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
