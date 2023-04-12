@@ -31,6 +31,12 @@ public class BudgetDAO {
         tempFile.deleteOnExit();
     }
 
+    /**
+     *
+     * @param userID
+     * @param budget
+     * @throws IOException
+     */
     public void setBudget(String userID, Budget budget) throws IOException {
         openStreams();
 
@@ -74,7 +80,14 @@ public class BudgetDAO {
             return null;
 
         line = line.substring(prefix.length());
-        return Budget.fromCSV(line);
+
+        Budget budget = null;
+        try {
+            budget = Budget.fromCSV(line); // If parsing somehow fails...
+        } catch (Exception e) {
+            return null; // ... tell the caller that we could not find any budget for the specified user.
+        }
+        return budget;
     }
 
     private boolean isFileEmpty() throws IOException {
@@ -119,40 +132,11 @@ public class BudgetDAO {
         tempChannel = null;
     }
 
-    private void insertIntoFile(byte[] data, int offset) throws IOException {
-        tempBuffer.clear();
-        if (tempBuffer.remaining() < data.length)
-            tempBuffer = ByteBuffer.allocateDirect(data.length);
-
-        tempBuffer.put(data);
-        tempBuffer.flip();
-
-        fileChannel.transferTo(offset, fileChannel.size() - offset, tempChannel);
-        fileChannel.write(tempBuffer, offset);
-        tempChannel.position(0);
-        fileChannel.transferFrom(tempChannel, fileChannel.size(), tempChannel.size());
-    }
-
     private void replace(byte[] data, long start, long count) throws IOException {
-        tempBuffer.clear();
-        if (tempBuffer.remaining() < data.length)
-            tempBuffer = ByteBuffer.allocateDirect(data.length);
-
-        tempBuffer.put(data);
-        tempBuffer.flip();
-
-        long transferCount = fileChannel.size() - (start + count);
-
-        fileChannel.transferTo(start + count, transferCount, tempChannel);
-        tempChannel.truncate(transferCount);
-        fileChannel.write(tempBuffer, start);
-        fileChannel.truncate(start + data.length);
-        tempChannel.position(0);
-        fileChannel.transferFrom(tempChannel, fileChannel.size(), tempChannel.size());
+        DAOTools.replace(data, start, count, fileStream, tempStream);
     }
 
     private void appendToFile(byte[] data) throws IOException {
-        fileStream.seek(fileStream.length());
-        fileStream.write(data);
+        DAOTools.appendToFile(data, fileStream);
     }
 }
