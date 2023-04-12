@@ -20,6 +20,7 @@ class TestFileManagement {
         FileManagement.writeNewAccount("olav#1", testAccount);
         FileManagement.writeNewInvoice("olav#1", testInvoice);
         FileManagement.writeNewBudget("olav#1", testBudget);
+        
 
         System.out.println(FileManagement.readAllTransactions("olav#1").toString());
         System.out.println(FileManagement.readLatestTransactions("olav#1", 1).toString());

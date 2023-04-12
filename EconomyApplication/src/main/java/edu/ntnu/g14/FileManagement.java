@@ -19,11 +19,11 @@ import edu.ntnu.g14.dao.BudgetDAO;
 
 public class FileManagement {
 
-    public static final String PATH_ACCOUNTS     = "EconomyApplication/saves/accounts.txt";
-    public static final String PATH_BUDGETS      = "EconomyApplication/saves/budgets.txt";
-    public static final String PATH_INVOICES     = "EconomyApplication/saves/invoices.txt";
-    public static final String PATH_TRANSACTIONS = "EconomyApplication/saves/transactions.txt";
-    public static final String PATH_USERS        = "EconomyApplication/saves/users.txt";
+    public static final String PATH_ACCOUNTS     = "saves/accounts.txt";
+    public static final String PATH_BUDGETS      = "saves/budgets.txt";
+    public static final String PATH_INVOICES     = "saves/invoices.txt";
+    public static final String PATH_TRANSACTIONS = "saves/transactions.txt";
+    public static final String PATH_USERS        = "saves/users.txt";
 
     // public static void fileContentInsert(String pathToFile, long
 
@@ -31,16 +31,21 @@ public class FileManagement {
         
         List<String> lines = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new FileReader(PATH_USERS));
+        int count = 0;
         reader.readLine();
         String line;
         while ((line = reader.readLine()) != null) {
             lines.add(line);
+            if (!line.startsWith("  ")) {
+                count++;
+            } 
         }
         String[] linesArray = lines.toArray(new String[0]);
+        
+        
 
-
-        Login[] logins = new Login[linesArray.length];
-        for(int i = 0; i < linesArray.length; i++){
+        Login[] logins = new Login[count];
+        for(int i = 0; i < count; i++){
             String[] user = linesArray[i].split(",");
             logins[i] = new Login(user[1], user[3], user[0]);
         }
