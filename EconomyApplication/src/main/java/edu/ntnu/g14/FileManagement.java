@@ -357,6 +357,27 @@ public class FileManagement {
         }
     }
 
+    public static void deleteInvoice(Invoice invoice, String userId) throws IOException{
+        
+        try (RandomAccessFile file = new RandomAccessFile(PATH_INVOICES, "rw")) {
+            String line;
+            long pos = 0;
+            while ((line = file.readLine()) != null) {
+                if (line.startsWith(userId + ",")) {
+                    String addonText = "";
+                    for(int i = 0; i < line.length(); i++){
+                        addonText = addonText + " ";
+                    }
+                    pos = file.getFilePointer() - line.length() - 2;
+                    file.seek(pos);
+                    file.write(addonText.getBytes());
+                    file.close();
+                    break;
+                }
+            }
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         Account testAccount = new Account(AccountCategory.SAVINGS_ACCOUNT, BigDecimal.valueOf(100000), "1256.65.56605", "kortkonto");
         Invoice testInvoice = new Invoice(LocalDate.of(2023, 12, 4), BigDecimal.valueOf(100000), "1256.65.56605");
