@@ -53,7 +53,6 @@ public class FileManagement {
         return logins;
     }
 
-
     public static Transaction[] readAllTransactions(String userID) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(PATH_TRANSACTIONS));
         Stream<String> userTrans = reader.lines() 
@@ -83,7 +82,6 @@ public class FileManagement {
         return transactions;
     }
 
-   
     public static Transaction[] findTransactionsToFromDate(LocalDate from, LocalDate to, String userId) throws IOException {
         return (Transaction[]) Arrays.stream(readAllTransactions(userId)) //TODO: Bytt med parameter med readAllTransactions(userId), slett foregående linje
                 .filter(transaction -> transaction.getDateOfTransaction().isAfter(from) && transaction.getDateOfTransaction().isBefore(to))
@@ -271,7 +269,6 @@ public class FileManagement {
         return invoices;
     }
 
-
     public static void writeNewTransaction(String userId, Transaction transaction) throws IOException{
         String addonText = "" + transaction.getDateOfTransaction() + ";" + transaction.getAmount() + ";" +
         transaction.getToAccountNumber() + ";" + transaction.getFromAccountNumber() + ";" + transaction.getDescription() + ",";
@@ -349,7 +346,6 @@ public class FileManagement {
                 .filter(transaction -> transaction.getFromAccountNumber().equals(accountNumber) || transaction.getToAccountNumber().equals(accountNumber))
                 .toArray();
     }
-
 
     public static Transaction[] readLatestTransactions(String userId, int amount) throws IOException{
         Transaction[] allTransactions = readAllTransactions(userId);
