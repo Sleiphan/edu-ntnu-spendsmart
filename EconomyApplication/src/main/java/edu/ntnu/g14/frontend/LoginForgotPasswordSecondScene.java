@@ -27,7 +27,7 @@ public class LoginForgotPasswordSecondScene {
         confirmButton.setOnAction(e -> {
             if(newPassword.getText().equals(retypeNewPassword.getText()) && !newPassword.getText().equals("")){
                 Login newLogin = new Login(ApplicationFront.getLoggedInUser().getLoginInfo().getUserName(), newPassword.getText(), ApplicationFront.getLoggedInUser().getLoginInfo().getUserId());
-                User newPasswordUser = new User(ApplicationFront.getLoggedInUser().getAllAccounts(), ApplicationFront.getLoggedInUser().getAllInvoices(),
+                User newPasswordUser = new User(ApplicationFront.getLoggedInUser().getAccounts(), ApplicationFront.getLoggedInUser().getAllInvoices(),
                 newLogin, ApplicationFront.getLoggedInUser().getEmail(), ApplicationFront.getLoggedInUser().getLastName(),
                 ApplicationFront.getLoggedInUser().getFirstName(), ApplicationFront.getLoggedInUser().getTransactions(), ApplicationFront.getLoggedInUser().getBudget());
 
