@@ -83,7 +83,7 @@ public class Transaction {
                 amount + CSV_FIELD_DELIMITER +
                         toAccountNumber + CSV_FIELD_DELIMITER +
                         fromAccountNumber + CSV_FIELD_DELIMITER +
-                description + CSV_FIELD_DELIMITER;
+                description + ",";
     }
 
     public static Transaction fromCSVString(String csvString) {

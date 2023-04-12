@@ -1,8 +1,6 @@
 package edu.ntnu.g14.frontend;
 
 import java.io.FileNotFoundException;
-import java.math.BigDecimal;
-import java.util.Map;
 
 import edu.ntnu.g14.Budget;
 import edu.ntnu.g14.BudgetItem;
@@ -13,7 +11,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -97,7 +94,7 @@ public class BudgetingScene {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
         });
-        scene.setFill(ApplicationObjects.getStageColor());
+        scene.setFill(ApplicationObjects.getSceneColor());
         return scene;
     }
 

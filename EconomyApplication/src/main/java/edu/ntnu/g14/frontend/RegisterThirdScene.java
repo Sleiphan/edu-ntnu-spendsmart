@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class RegisterThirdScene {

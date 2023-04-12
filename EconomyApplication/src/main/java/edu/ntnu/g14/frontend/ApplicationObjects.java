@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 
 import edu.ntnu.g14.Account;
 import edu.ntnu.g14.TransactionWithProperty;
-import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -310,14 +309,17 @@ public class ApplicationObjects {
                     } catch (NumberFormatException | NullPointerException e) {
                         return false;
                     }
-                    return !accountNumberField.getText().isBlank()
-                            && accountNumberField.getText() != null
-                            && !accountNameField.getText().isBlank()
-                            && !accountNameField.getText().isBlank()
+                    return accountNumberField.getText() != null
                             && accountNameField.getText() != null
                             && !accountTypeField.getValue().isBlank()
                             && !(amountBigDecimal.floatValue() < 0)
-                            && Pattern.matches(regexAccountNumber, accountNumberField.getText());
+                            && Pattern.matches(regexAccountNumber, accountNumberField.getText())
+                            && ApplicationFront.loggedInUser.getAccountsAsList().stream()
+                            .map(Account::getAccountName)
+                            .noneMatch(accountName -> accountNameField.getText().equalsIgnoreCase(accountName))
+                            && ApplicationFront.loggedInUser.getAccountsAsList().stream()
+                            .map(Account::getAccountNumber)
+                            .noneMatch(accountNumber -> accountNumberField.getText().equals(accountNumber));
                 }
             });
         }

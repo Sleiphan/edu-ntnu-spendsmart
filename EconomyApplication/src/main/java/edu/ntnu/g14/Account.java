@@ -131,7 +131,7 @@ public class Account {
         String sb = accountType + CSV_FIELD_DELIMITER +
                 amount.toString() + CSV_FIELD_DELIMITER +
                 accountNumber + CSV_FIELD_DELIMITER +
-                accountName + CSV_FIELD_DELIMITER;
+                accountName + ",";
 
         return sb;
     }

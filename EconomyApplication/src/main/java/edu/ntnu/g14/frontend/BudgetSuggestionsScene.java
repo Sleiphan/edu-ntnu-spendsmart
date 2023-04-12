@@ -6,7 +6,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class BudgetSuggestionsScene {
@@ -43,7 +42,7 @@ public class BudgetSuggestionsScene {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
         });
-        scene.setFill(ApplicationObjects.getStageColor());
+        scene.setFill(ApplicationObjects.getSceneColor());
         return scene;
     }
 

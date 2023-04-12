@@ -6,7 +6,6 @@ import edu.ntnu.g14.*;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class RegisterFirstScene {

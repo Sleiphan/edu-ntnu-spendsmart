@@ -10,7 +10,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class CreateNewBudgetScene {
@@ -178,7 +177,7 @@ public class CreateNewBudgetScene {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
         });
-        scene.setFill(ApplicationObjects.getStageColor());
+        scene.setFill(ApplicationObjects.getSceneColor());
         return scene;
     }
 
