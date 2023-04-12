@@ -3,16 +3,14 @@ package edu.ntnu.g14;
 
 import java.io.*;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
 import edu.ntnu.g14.dao.BudgetDAO;
+import edu.ntnu.g14.frontend.ApplicationObjects;
 
 
 //TODO: create exceptions
@@ -270,7 +268,7 @@ public class FileManagement {
     }
 
     public static void writeNewTransaction(String userId, Transaction transaction) throws IOException{
-        String addonText = "" + transaction.getDateOfTransaction() + ";" + transaction.getAmount() + ";" +
+        String addonText = "" + transaction.getDateOfTransaction().format(ApplicationObjects.dateFormatter) + ";" + transaction.getAmount() + ";" +
         transaction.getToAccountNumber() + ";" + transaction.getFromAccountNumber() + ";" + transaction.getDescription() + ",";
         
         try (RandomAccessFile file = new RandomAccessFile(PATH_TRANSACTIONS, "rw")) {
