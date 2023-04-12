@@ -109,11 +109,19 @@ public class InvoiceScene {
         });
         payNow_bt.setOnAction(e -> {
             invoices.remove(invoices_lv.getSelectionModel().getSelectedItem());
-            FileManagement.deleteInvoice(invoices_lv.getSelectionModel().getSelectedItem(), ApplicationFront.getLoggedInUser().getLoginInfo().getUserId());
+            try {
+                FileManagement.deleteInvoice(invoices_lv.getSelectionModel().getSelectedItem(), ApplicationFront.getLoggedInUser().getLoginInfo().getUserId());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         });
         delete_bt.setOnAction(e -> {
             invoices.remove(invoices_lv.getSelectionModel().getSelectedItem());
-            FileManagement.deleteInvoice(invoices_lv.getSelectionModel().getSelectedItem(), ApplicationFront.getLoggedInUser().getLoginInfo().getUserId());
+            try {
+                FileManagement.deleteInvoice(invoices_lv.getSelectionModel().getSelectedItem(), ApplicationFront.getLoggedInUser().getLoginInfo().getUserId());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         });
 
         ImageView homeButton = ApplicationObjects.newImage("home.png", 10, 10, 20, 20);
