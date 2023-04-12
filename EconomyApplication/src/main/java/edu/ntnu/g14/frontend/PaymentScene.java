@@ -65,7 +65,7 @@ public class PaymentScene {
         Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, "black", "white", 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
-        Group root = new Group(fromAccount, amount, dueDate, toAccount, cid,
+        Group root = new Group(fromAccount, amount, description, dueDate, toAccount, cid,
                 ApplicationObjects.newText("From account", 30, false, x, y - 5),
                 ApplicationObjects.newText("Amount:", 30, false, x, y + m),
                 ApplicationObjects.newText("Description:", 30, false, x, y + 2 * m),
