@@ -1,5 +1,5 @@
 ##userid,account type. amount. number. name
-olav#1,SAVINGS_ACCOUNT;25000;1256.65.56605;BSU,SAVINGS_ACCOUNT;200000;1256.65.55660;sparekonto,                                                               
+olav#1,SAVINGS_ACCOUNT;25000;1256.65.56605;BSU,SAVINGS_ACCOUNT;200000;1256.65.55660;sparekonto,SPENDING_ACCOUNT;8585;4343.43.43434;Yasinskonto,               
                                                                                                              
                                                                                                          
                                                                                                          
