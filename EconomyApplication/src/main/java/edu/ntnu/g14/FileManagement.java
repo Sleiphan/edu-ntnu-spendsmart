@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import edu.ntnu.g14.dao.BudgetDAO;
@@ -55,29 +56,9 @@ public class FileManagement {
         BufferedReader reader = new BufferedReader(new FileReader(PATH_TRANSACTIONS));
         Stream<String> userTrans = reader.lines() 
                 .filter(line -> line.startsWith(userID + ","));
-
-        
-        String[] userTransArray = userTrans.toArray(String[]::new);
-        List<Transaction> transactionList = new ArrayList<>();
-        for (String s : userTransArray) {
-            String[] placeHolder = s.split(",");
-            String[] transactionArray = new String[placeHolder.length - 1];
-            for(int i =  0; i < placeHolder.length - 1; i++){
-                transactionArray[i] = placeHolder[i];
-            }
-            
-            for (int i = 1; i < transactionArray.length; i++) {
-                Transaction transaction = Transaction.fromCSVString(transactionArray[i]);
-                transactionList.add(transaction);
-            }
-        }
-        Transaction[] transactions = transactionList.toArray(Transaction[]::new);
-
-
-
-
         reader.close();
-        return transactions;
+        return userTrans.flatMap(s -> Stream.of(s.split(","))
+                .skip(1).map(Transaction::fromCSVString)).toArray(Transaction[]::new);
     }
 
     public static Transaction[] findTransactionsToFromDate(LocalDate from, LocalDate to, String userId) throws IOException {
