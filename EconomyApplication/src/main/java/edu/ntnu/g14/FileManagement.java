@@ -2,12 +2,10 @@ package edu.ntnu.g14;
 
 
 import java.io.*;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import edu.ntnu.g14.dao.BudgetDAO;
@@ -54,7 +52,7 @@ public class FileManagement {
 
     public static Transaction[] readAllTransactions(String userID) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(PATH_TRANSACTIONS));
-        Stream<String> userTrans = reader.lines() 
+        Stream<String> userTrans = reader.lines()
                 .filter(line -> line.startsWith(userID + ","));
         Transaction[] transactions = userTrans.flatMap(s -> Stream.of(s.split(","))
                 .skip(1).map(Transaction::fromCSVString)).toArray(Transaction[]::new);
@@ -91,7 +89,7 @@ public class FileManagement {
         String lastName = userInfoArray[5];
 
             
-        Account[] accounts = getAccountsForUser(userId);
+        Account[] accounts = readAccounts(userId);
         Invoice[] invoices = getInvoicesForUser(userId);
         Budget budget = new BudgetDAO(PATH_BUDGETS).getBudget(userId);
 
@@ -181,36 +179,17 @@ public class FileManagement {
 
     }
 
-    public static Account[] getAccountsForUser(String userId) throws IOException{
+    public static Account[] readAccounts(String userId) throws IOException{
         BufferedReader reader = new BufferedReader(new FileReader(PATH_ACCOUNTS));
         Stream<String> userTrans = reader.lines() 
                 .filter(line -> line.startsWith(userId + ","));
-        System.out.println(userTrans);
-
-        String[] userTransArray = userTrans.toArray(String[]::new);
-        List<Account> accountList = new ArrayList<>();
-        for (String s : userTransArray) {
-            String[] placeHolder = s.split(",");
-            String[] transactionArray = new String[placeHolder.length - 1];
-            for(int i =  0; i < placeHolder.length - 1; i++){
-                transactionArray[i] = placeHolder[i];
-            }
-            
-            for (int i = 1; i < transactionArray.length; i++) {
-                Account account = Account.fromCSVString(transactionArray[i]);
-                accountList.add(account);
-            }
-        }
-        Account[] accounts = accountList.toArray(Account[]::new);
-
-
-
+        Account[] accounts = userTrans.flatMap(s -> Stream.of(s.split(","))
+                .skip(1).map(Account::fromCSVString)).toArray(Account[]::new);
         reader.close();
         return accounts;
     }
-
     public static Account getAccountForUser(String userId, String accountNumber) throws IOException{
-        Account[] accounts = getAccountsForUser(userId);
+        Account[] accounts = readAccounts(userId);
         Account account = null;
         for(int i = 0; i < accounts.length; i++){
             if(accounts[i].getAccountNumber().equals(accountNumber)){
