@@ -2,6 +2,7 @@ package edu.ntnu.g14;
 
 
 import java.io.*;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +22,7 @@ public class FileManagement {
     public static final String PATH_INVOICES     = "saves/invoices.txt";
     public static final String PATH_TRANSACTIONS = "saves/transactions.txt";
     public static final String PATH_USERS        = "saves/users.txt";
+    private static final String PATH_TEMPFILE    = "saves/temp_file.txt";
 
     // public static void fileContentInsert(String pathToFile, long
 
@@ -255,13 +257,73 @@ public class FileManagement {
             long pos = 0;
             while ((line = file.readLine()) != null) {
                 if (line.startsWith(userId + ",")) {
-                    pos = file.getFilePointer() - line.length() + line.lastIndexOf(',');
+                    pos = file.getFilePointer() - line.length() + line.indexOf("   ") - 1;
                     file.seek(pos);
                     file.write(addonText.getBytes());
                     file.close();
                     break;
                 }
             }
+        }
+    }
+    public static void writeAccount(String userId, Account account) {
+        String addOnText = account.toCSVString();
+        String tempFile = "temp.text";
+        File oldFile = new File(PATH_ACCOUNTS);
+        File newFile = new File(tempFile);
+        try{
+            FileWriter fileWriter = new FileWriter(tempFile, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            PrintWriter printWriter = new PrintWriter(bufferedWriter);
+            BufferedReader bufferedReader = new BufferedReader(Files.newBufferedReader(oldFile.toPath()));
+            String currentLine;
+            while ((currentLine = bufferedReader.readLine()) != null ) {
+                if (currentLine.startsWith(userId)) {
+                    printWriter.println(currentLine + addOnText);
+                }
+                else {
+                    printWriter.println(currentLine);
+                }
+            }
+            bufferedReader.close();
+            printWriter.flush();
+            printWriter.close();
+            oldFile.delete();
+            File dump = new File(PATH_ACCOUNTS);
+            newFile.renameTo(dump);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+    public static void writeTransaction(String userId, Transaction transaction) {
+        String addOnText = transaction.toCSVString();
+        String tempFile = "temp.text";
+        File oldFile = new File(PATH_TRANSACTIONS);
+        File newFile = new File(tempFile);
+        try{
+            FileWriter fileWriter = new FileWriter(tempFile, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            PrintWriter printWriter = new PrintWriter(bufferedWriter);
+            BufferedReader bufferedReader = new BufferedReader(Files.newBufferedReader(oldFile.toPath()));
+            String currentLine;
+            while ((currentLine = bufferedReader.readLine()) != null ) {
+                if (currentLine.startsWith(userId)) {
+                    printWriter.println(currentLine + addOnText);
+                }
+                else {
+                    printWriter.println(currentLine);
+                }
+            }
+            bufferedReader.close();
+            printWriter.flush();
+            printWriter.close();
+            oldFile.delete();
+            File dump = new File(PATH_TRANSACTIONS);
+            newFile.renameTo(dump);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
