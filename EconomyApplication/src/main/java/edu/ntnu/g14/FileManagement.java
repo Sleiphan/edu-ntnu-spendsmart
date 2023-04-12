@@ -275,9 +275,10 @@ public class FileManagement {
     public static void writeNewTransaction(String userId, Transaction transaction) throws IOException{
         String addonText = "" + transaction.getDateOfTransaction() + ";" + transaction.getAmount() + ";" +
         transaction.getToAccountNumber() + ";" + transaction.getFromAccountNumber() + ";" + transaction.getDescription() + ",";
-        line = file.readLine()
+        
         try (RandomAccessFile file = new RandomAccessFile(PATH_TRANSACTIONS, "rw")) {
             String line;
+            line = file.readLine();
             long pos = 0;
             while ((line = file.readLine()) != null) {
                 if (line.startsWith(userId + ",")) {
@@ -292,7 +293,7 @@ public class FileManagement {
     }
 
     public static void writeNewAccount(String userId, Account account) throws IOException{
-        String addonText = "" + account.getAccountType() + "." + account.getAmount() + "." + account.getAccountNumber() + "." + 
+        String addonText = "" + account.getAccountType() + ";" + account.getAmount() + ";" + account.getAccountNumber() + ";" + 
         account.getAccountName() + ",";
         try (RandomAccessFile file = new RandomAccessFile(PATH_ACCOUNTS, "rw")) {
             String line;
