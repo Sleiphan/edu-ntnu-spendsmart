@@ -1,25 +1,2 @@
 ##userid,account type. amount. number. name
-olav#1,SAVINGS_ACCOUNT;25000;1256.65.56605;BSU,SAVINGS_ACCOUNT;200000;1256.65.55660;sparekonto,SPENDING_ACCOUNT;8585;4343.43.43434;Yasinskonto,SPENDING_ACCOUNT;2121;2123.32.21212;hei,SAVINGS_ACCOUNT;321312;2123.32.21212;fsfasf,SAVINGS_ACCOUNT;54324;2123.32.21534;YASSINFIKSER,
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
+olav#1,SAVINGS_ACCOUNT;25000;1256.65.56605;BSU,SAVINGS_ACCOUNT;200000;1256.65.55660;sparekonto,SPENDING_ACCOUNT;8585;4343.43.43434;Yasinskonto,SPENDING_ACCOUNT;2121;2123.32.21212;hei,SAVINGS_ACCOUNT;321312;2123.32.21212;fsfasf,SAVINGS_ACCOUNT;54324;2123.32.21534;YASSINFIKSER,SAVINGS_ACCOUNT;321312;3123.32.59493;HEI,SPENDING_ACCOUNT;323;3123.32.59493;du er god,PENSION_ACCOUNT;311232;3213.54.65454;fasfdsf,SAVINGS_ACCOUNT;312321;3434.43.54543;dasds,SAVINGS_ACCOUNT;312321;2121.32.43434;HEI,SAVINGS_ACCOUNT;31231;3123.32.32232;Yasinfix;
