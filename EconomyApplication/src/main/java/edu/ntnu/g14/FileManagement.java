@@ -282,7 +282,7 @@ public class FileManagement {
             long pos = 0;
             while ((line = file.readLine()) != null) {
                 if (line.startsWith(userId + ",")) {
-                    pos = file.getFilePointer() - line.length() + line.indexOf("   ") - 3;
+                    pos = file.getFilePointer() - line.length() + line.indexOf("   ") - 1;
                     file.seek(pos);
                     file.write(addonText.getBytes());
                     file.close();
@@ -317,7 +317,7 @@ public class FileManagement {
             long pos = 0;
             while ((line = file.readLine()) != null) {
                 if (line.startsWith(userId + ",")) {
-                    pos = file.getFilePointer() - line.length() + line.indexOf("   ") - 3;
+                    pos = file.getFilePointer() - line.length() + line.indexOf("   ") - 1;
                     file.seek(pos);
                     file.write(addonText.getBytes());
                     file.close();
@@ -334,7 +334,7 @@ public class FileManagement {
             long pos = 0;
             while ((line = file.readLine()) != null) {
                 if (line.startsWith(userId + ",")) {
-                    pos = file.getFilePointer() - line.length() + line.indexOf("   ") - 3;
+                    pos = file.getFilePointer() - line.length() + line.indexOf("   ") - 1;
                     file.seek(pos);
                     file.write(addonText.getBytes());
                     file.close();
