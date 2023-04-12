@@ -1,7 +1,6 @@
 package edu.ntnu.g14.frontend;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +14,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -28,13 +26,25 @@ public class AccountOverviewScene {
         List<Account> accounts = ApplicationFront.loggedInUser.getAccountsAsList();
         ObservableList<String> accountNames = FXCollections.observableArrayList(getAccountsNames());
 
+        if (accounts.isEmpty()) {
+            Dialog<AccountWithProperty> accountWithPropertyDialog = new ApplicationObjects.AccountWithPropertyDialog(new AccountWithProperty(null, null, null, null));
+            Optional<AccountWithProperty> result = accountWithPropertyDialog.showAndWait();
+            if (result.isPresent()) {
+
+                createAccountDialog(accountNames, result);
+            }
+            else {
+                return MainPageScene.scene();
+            }
+        }
+
         String[] columnTitlesTransactionsTable = {"Transaction", "Date", "Amount"};
 
 
         ChoiceBox<String> accountChoiceBox = ApplicationObjects.newChoiceBox(columnTitlesTransactionsTable, 364, 30, 30, 364-(364/2), 30);
         accountChoiceBox.setItems(accountNames);
         accountChoiceBox.setValue(accounts.get(0).getAccountName());
-        Text accountNumberText = ApplicationObjects.newText(accounts.get(0).getAccountNumber(), 14, false, 325, 130);
+        Text accountNumberText = ApplicationObjects.newText("Account Number: " + accounts.get(0).getAccountNumber(), 14, false, 266, 130);
         Text amountText = ApplicationObjects.newText("Amount: " + accounts.get(0).getAmount() + "kr", 20, false, 290, 160);
         Button addTransaction = ApplicationObjects.newButton("Add Transaction", 20, 30, 120, 20, 14);
         Button addAccount = ApplicationObjects.newButton("Add Account", 20, 60, 120, 20, 14);
@@ -48,7 +58,8 @@ public class AccountOverviewScene {
         accountChoiceBox.setOnAction(actionEvent -> {
             setCurrentAccount(accounts, accountChoiceBox);
 
-            accountNumberText.setText(currentAccount.getAccountNumber());
+
+            accountNumberText.setText("Account Number: " + currentAccount.getAccountNumber());
             amountText.setText("Amount: " + currentAccount.getAmount().toString() + "kr");
         });
         addAccount.setOnAction(actionEvent -> {
@@ -56,13 +67,7 @@ public class AccountOverviewScene {
             Optional<AccountWithProperty> result = accountWithPropertyDialog.showAndWait();
             if (result.isPresent()) {
 
-                AccountWithProperty accountWithProperty = result.get();
-                Account account = new Account(AccountCategory.valueOf(accountWithProperty.getAccountType()),
-                        new BigDecimal(accountWithProperty.getAmount()),
-                        accountWithProperty.getAccountNumber(), accountWithProperty.getAccountName());
-                FileManagement.writeAccount(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), account);
-                accountNames.add(account.getAccountName());
-                ApplicationFront.loggedInUser.addAccount(account);
+                createAccountDialog(accountNames, result);
             }
         });
         addTransaction.setOnAction(actionEvent -> {
@@ -110,7 +115,7 @@ public class AccountOverviewScene {
         Group root = new Group(accountChoiceBox, accountNumberText, amountText, addTransaction, addAccount, lastTransactionsText, lastTransactionsTable, back_bt, dropDownButton, homeButton, manageUserButton);
         dropDownButton.setOnAction(e -> root.getChildren().add(dropDown));
 
-        root.getStylesheets().add("StyleSheet.css"); 
+        root.getStylesheets().add("StyleSheet.css");
         Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
         
 
@@ -121,8 +126,18 @@ public class AccountOverviewScene {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
         });
-        
+
         return scene;
+    }
+
+    private static void createAccountDialog(ObservableList<String> accountNames, Optional<AccountWithProperty> result) {
+        AccountWithProperty accountWithProperty = result.get();
+        Account account = new Account(AccountCategory.valueOf(accountWithProperty.getAccountType()),
+                new BigDecimal(accountWithProperty.getAmount()),
+                accountWithProperty.getAccountNumber(), accountWithProperty.getAccountName());
+        FileManagement.writeAccount(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), account);
+        accountNames.add(account.getAccountName());
+        ApplicationFront.loggedInUser.addAccount(account);
     }
 
     private static void setCurrentAccount(List<Account> accounts, ChoiceBox<String> accountChoiceBox) {
