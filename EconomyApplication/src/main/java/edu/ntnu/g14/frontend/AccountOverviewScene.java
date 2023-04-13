@@ -1,6 +1,7 @@
 package edu.ntnu.g14.frontend;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +25,7 @@ public class AccountOverviewScene {
     private static Account currentAccount;
     private static TableView<ObservableList<Object>> lastTransactionsTable;
     private static ObservableList<ObservableList<Object>> lastTransactionsData;
-    static public Scene scene() throws FileNotFoundException {
+    static public Scene scene() throws IOException {
         List<Account> accounts = ApplicationFront.loggedInUser.getAccountsAsList();
         ObservableList<String> accountNames = FXCollections.observableArrayList(getAccountsNames());
 
@@ -94,7 +95,7 @@ public class AccountOverviewScene {
         back_bt.setOnAction(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
@@ -106,7 +107,7 @@ public class AccountOverviewScene {
         homeButton.setOnMouseClicked(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         });

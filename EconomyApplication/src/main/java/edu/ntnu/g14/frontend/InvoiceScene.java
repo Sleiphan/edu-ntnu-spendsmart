@@ -104,7 +104,7 @@ public class InvoiceScene {
         back_bt.setOnAction(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                
                 e1.printStackTrace();
             }
@@ -130,7 +130,7 @@ public class InvoiceScene {
         homeButton.setOnMouseClicked(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         });

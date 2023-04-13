@@ -105,7 +105,7 @@ public class ApplicationObjects {
         accounts.setOnAction(e -> {
             try {
                 stage.setScene(AccountOverviewScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 
                 e1.printStackTrace();
             }

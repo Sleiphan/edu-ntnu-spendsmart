@@ -1,6 +1,7 @@
 package edu.ntnu.g14.frontend;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import edu.ntnu.g14.User;
 import javafx.geometry.Pos;
@@ -99,7 +100,7 @@ public class DeleteUserScene {
         homeButton.setOnMouseClicked(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         });

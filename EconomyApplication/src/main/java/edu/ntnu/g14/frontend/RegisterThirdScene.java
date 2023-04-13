@@ -1,7 +1,7 @@
 package edu.ntnu.g14.frontend;
 
 import java.io.FileNotFoundException;
-
+import java.io.IOException;
 
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -16,7 +16,7 @@ public class RegisterThirdScene {
         yes.setOnAction(e -> {
             try {
                 stage.setScene(AccountOverviewScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         });
@@ -24,7 +24,7 @@ public class RegisterThirdScene {
         skip.setOnAction(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         });

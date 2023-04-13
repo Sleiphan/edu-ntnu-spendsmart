@@ -41,7 +41,7 @@ public class LoginUserScene {
             if (key == KeyCode.ENTER && passwordField.getText().equals(ApplicationFront.loggedInUser.getLoginInfo().getPassword())) {
                 try {
                     stage.setScene(MainPageScene.scene());
-                } catch (FileNotFoundException e1) {
+                } catch (IOException e1) {
                     
                     e1.printStackTrace();
                 }
@@ -53,7 +53,7 @@ public class LoginUserScene {
             if (passwordField.getText().equals(ApplicationFront.loggedInUser.getLoginInfo().getPassword())) {
                 try {
                     stage.setScene(MainPageScene.scene());
-                } catch (FileNotFoundException e1) {
+                } catch (IOException e1) {
                    
                     e1.printStackTrace();
                 }
