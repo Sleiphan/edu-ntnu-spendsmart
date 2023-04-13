@@ -15,10 +15,12 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -129,7 +131,7 @@ public class ApplicationObjects {
         return new Group(rectangle, invoice, transfer, payment, accounts, overview, budgetting);
     }
 
-    public static Button newButton(String text, int x, int y, int width, int height, int fontSize) {
+    public static Button newButton(String text, int x, int y, int width, int height, int fontSize){
         Button button = new Button(text);
         button.setLayoutX(x);
         button.setLayoutY(y);
@@ -138,7 +140,33 @@ public class ApplicationObjects {
             e -> button.setStyle(setStyleString(borderColor, "grey", width, height, fontSize)));
         button.setOnMouseExited(e -> button.setStyle(
             setStyleString(borderColor, backgroundColor, width, height, fontSize)));
+
         return button;
+    }
+
+    public static Group newButtonWithIcon(String text, int x, int y, int width, int height, int fontSize, String iconname, Scene scene) throws FileNotFoundException {
+        Button button = new Button(text);
+        button.setLayoutX(x);
+        button.setLayoutY(y);
+        button.setStyle(setStyleString(borderColor, backgroundColor, width, height, fontSize));
+        button.setOnMouseEntered(
+            e -> button.setStyle(setStyleString(borderColor, "grey", width, height, fontSize)));
+        button.setOnMouseExited(e -> button.setStyle(
+            setStyleString(borderColor, backgroundColor, width, height, fontSize)));
+
+        ImageView icon = newImage(iconname, x + 10, y + 5, height - 2, height - 2);
+        icon.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event){
+                stage.setScene(scene);
+                event.consume();
+            }
+        }); 
+        button.setOnAction(e -> {
+            stage.setScene(scene);
+        });
+        Group group = new Group(button, icon);
+        return group;
     }
     
     public static ToggleButton newToggleButton(String text, int x, int y, int width, int height, int fontSize) {

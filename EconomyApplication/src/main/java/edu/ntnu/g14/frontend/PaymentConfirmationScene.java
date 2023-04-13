@@ -10,10 +10,12 @@ import java.util.ArrayList;
 import edu.ntnu.g14.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import edu.ntnu.g14.FileManagement;
 import edu.ntnu.g14.Payment;
@@ -90,9 +92,13 @@ public class PaymentConfirmationScene {
         
         
         Group userButtons = ApplicationObjects.userMenu();
-        manageUserButton.setOnMouseEntered(e -> {
-            root.getChildren().add(userButtons);
-        });
+        manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event){
+                root.getChildren().add(userButtons);
+                event.consume();
+            }
+        }); 
         scene.setOnMouseClicked(e -> {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);

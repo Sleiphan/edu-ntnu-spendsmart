@@ -4,11 +4,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import edu.ntnu.g14.User;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -139,9 +141,13 @@ public class UserManagementScene {
         
     
         Group userButtons = ApplicationObjects.userMenu();
-        manageUserButton.setOnMouseEntered(e -> {
-            root.getChildren().add(userButtons);
-        });
+        manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event){
+                root.getChildren().add(userButtons);
+                event.consume();
+            }
+        }); 
         scene.setOnMouseClicked(e -> {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);

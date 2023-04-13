@@ -8,8 +8,10 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.event.EventHandler;
 import javafx.util.Duration;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -113,9 +115,13 @@ public class DeleteUserScene {
 
 
         Group userButtons = ApplicationObjects.userMenu();
-        manageUserButton.setOnMouseEntered(e -> {
-            root.getChildren().add(userButtons);
-        });
+        manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event){
+                root.getChildren().add(userButtons);
+                event.consume();
+            }
+        }); 
         scene.setOnMouseClicked(e -> {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
