@@ -67,6 +67,19 @@ public class User extends Personalia {
     public String incomeLast30Days() {
         return incomeOrExpensesAllAccountsLast30Days(true);
     }
+    public boolean checkIfAccountNameIsOccupied(String accountName) {
+        return this.accounts.stream()
+                .filter(account -> account.getAccountName()
+                        .equals(accountName))
+                .findAny().isEmpty();
+    }
+    public Account getAccountWithAccountName(String accountName) {
+        return this.accounts.stream()
+                .filter(account -> account.getAccountName()
+                        .equals(accountName))
+                .findFirst()
+                .orElseThrow();
+    }
     private String incomeOrExpensesAllAccountsLast30Days(Boolean incomeOrExpenses) {
         Supplier<Stream<String>> accountNumbers = () -> accounts
                 .stream()
