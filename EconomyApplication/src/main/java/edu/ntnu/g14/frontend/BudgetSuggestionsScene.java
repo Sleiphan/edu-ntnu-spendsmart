@@ -1,17 +1,20 @@
 package edu.ntnu.g14.frontend;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 public class BudgetSuggestionsScene {
     static Stage stage = ApplicationFront.getStage();
 
-    static public Scene scene() throws FileNotFoundException {
+    static public Scene scene() throws FileNotFoundException, IOException {
         // TODO: create a scene for budgetSuggestions
         
         
@@ -19,7 +22,7 @@ public class BudgetSuggestionsScene {
         homeButton.setOnMouseClicked(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         });
@@ -35,8 +38,12 @@ public class BudgetSuggestionsScene {
         
         
         Group userButtons = ApplicationObjects.userMenu();
-        manageUserButton.setOnMouseEntered(e -> {
-            root.getChildren().add(userButtons);
+        manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event){
+                root.getChildren().add(userButtons);
+                event.consume();
+            }
         });
         scene.setOnMouseClicked(e -> {
             root.getChildren().remove(userButtons);

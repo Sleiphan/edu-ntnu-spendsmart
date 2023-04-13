@@ -1,5 +1,6 @@
 package edu.ntnu.g14.frontend;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import edu.ntnu.g14.*;
@@ -12,7 +13,7 @@ public class RegisterFirstScene {
     static Stage stage = ApplicationFront.getStage();
 
 
-    static public Scene scene() {
+    static public Scene scene() throws FileNotFoundException, IOException{
         TextField firstName = ApplicationObjects.newTextField("", 10, 35, 100, 20, 15);
         TextField lastName = ApplicationObjects.newTextField("", 10, 135, 100, 20, 15);
         TextField email = ApplicationObjects.newTextField("", 10, 235, 100, 20, 15);
@@ -30,7 +31,11 @@ public class RegisterFirstScene {
                     e1.printStackTrace();
                 }
                 String key = EmailVertification.sendVertificationKey(email.getText().replace(" ", ""));
-                stage.setScene(RegisterSecondScene.scene(key, email.getText(), firstName.getText() + lastName.getText() + "#1"));
+                try {
+                    stage.setScene(RegisterSecondScene.scene(key, email.getText(), firstName.getText() + lastName.getText() + "#1"));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             } else {
                 ApplicationObjects.alertBox("ERROR", "Missing information or password dont match", "Pleace fill out all required information");
             }

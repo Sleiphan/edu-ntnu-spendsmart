@@ -1,6 +1,7 @@
 package edu.ntnu.g14.frontend;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -13,7 +14,7 @@ import javafx.stage.Stage;
 public class TransferScene {
     static Stage stage = ApplicationFront.getStage();
 
-    static public Scene scene() throws FileNotFoundException {
+    static public Scene scene() throws IOException {
         int x = 300;
         int y = 35;
         int n = 85;
@@ -28,7 +29,7 @@ public class TransferScene {
         transfer.setOnAction(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 
                 e1.printStackTrace();
             }
@@ -36,7 +37,7 @@ public class TransferScene {
         cancel.setOnAction(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 
                 e1.printStackTrace();
             }
@@ -46,7 +47,7 @@ public class TransferScene {
         homeButton.setOnMouseClicked(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         });

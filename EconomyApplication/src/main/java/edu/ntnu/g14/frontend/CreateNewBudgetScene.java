@@ -29,7 +29,7 @@ public class CreateNewBudgetScene {
     static Group revenueComponents;
     static Group expenditureComponents;
 
-    static public Scene scene() throws FileNotFoundException {
+    static public Scene scene() throws FileNotFoundException, IOException {
 
         try {
             budgetDAO = new BudgetDAO("budgets.txt");

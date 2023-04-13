@@ -24,7 +24,7 @@ import org.apache.commons.validator.routines.BigDecimalValidator;
 public class InvoiceScene {
     static Stage stage = ApplicationFront.getStage();
 
-    static public Scene scene() throws FileNotFoundException {
+    static public Scene scene() throws FileNotFoundException, IOException {
         Invoice[] invoicesUser = ApplicationFront.loggedInUser.getAllInvoices();
         List<Invoice> invoices = new ArrayList<Invoice>();
         for(int i = 0; i < ApplicationFront.loggedInUser.getAllInvoices().length; i++){

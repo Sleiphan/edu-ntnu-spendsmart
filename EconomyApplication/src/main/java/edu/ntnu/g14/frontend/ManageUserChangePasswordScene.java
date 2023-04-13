@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 public class ManageUserChangePasswordScene {
     static Stage stage = ApplicationFront.getStage();
 
-    static public Scene scene() throws FileNotFoundException{
+    static public Scene scene() throws FileNotFoundException, IOException{
         String email = "xxputinxx@gmail.com";
         String name = "vladimir putin";
         Text nameText = ApplicationObjects.newText(name, 40, false, 563-329, 234-136);

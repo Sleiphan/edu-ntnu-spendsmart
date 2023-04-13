@@ -17,7 +17,7 @@ public class LoginForgotPasswordSecondScene {
 
 
     
-    static public Scene scene() {
+    static public Scene scene() throws IOException{
         TextField newPassword = ApplicationObjects.newTextField("New password", 125, 70, 250, 20, 15);
         TextField retypeNewPassword = ApplicationObjects.newTextField("Retype new password", 125, 110,
                 250, 20, 15);

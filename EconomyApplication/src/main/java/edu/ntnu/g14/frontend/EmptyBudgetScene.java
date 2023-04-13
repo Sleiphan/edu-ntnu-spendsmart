@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 public class EmptyBudgetScene {
     static Stage stage = ApplicationFront.getStage();
 
-    static public Scene scene() throws FileNotFoundException {
+    static public Scene scene() throws FileNotFoundException, IOException {
         TableView<ObservableList<Object>> revenues = ApplicationObjects.newTableView(new String[]{"Revenues", "Amount"}, 40, 70, 380, 120);
         revenues.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         revenues.setFixedCellSize(50);
@@ -44,7 +44,7 @@ public class EmptyBudgetScene {
         createNewBudget.setOnAction(e -> {
             try {
                 stage.setScene(CreateNewBudgetScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
 
                 e1.printStackTrace();
             }
@@ -52,7 +52,7 @@ public class EmptyBudgetScene {
         budgetSuggestions.setOnAction(e -> {
             try {
                 stage.setScene(BudgetSuggestionsScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
 
                 e1.printStackTrace();
             }

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class PaymentScene {
     static Stage stage = ApplicationFront.getStage();
 
-    static public Scene scene() throws FileNotFoundException {
+    static public Scene scene() throws FileNotFoundException, IOException {
         int x = 300;
         int y = 35;
         int n = 85;

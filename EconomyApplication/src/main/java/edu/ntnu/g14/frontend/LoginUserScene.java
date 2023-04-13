@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 public class LoginUserScene {
     static Stage stage = ApplicationFront.getStage();
 
-    static public Scene scene() {
+    static public Scene scene() throws IOException{
         Text notYou = ApplicationObjects.newText("Is this not you?", 10, true, 400, 280);
         notYou.setOnMouseClicked(e -> {
             try {
@@ -27,7 +27,11 @@ public class LoginUserScene {
         Text forgotPassword = ApplicationObjects.newText("Forgot password", 10, true, 400, 260);
         forgotPassword.setOnMouseClicked(e -> {
             String key = EmailVertification.sendVertificationKey(ApplicationFront.loggedInUser.getEmail());
-            stage.setScene(LoginForgotPasswordFirstScene.scene(key));
+            try {
+                stage.setScene(LoginForgotPasswordFirstScene.scene(key));
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         });
         PasswordField passwordField = new PasswordField();
         passwordField.setPromptText("Password");

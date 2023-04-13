@@ -67,7 +67,7 @@ public class ApplicationObjects {
         manageUser.setOnAction(e -> {
             try {
                 stage.setScene(UserManagementScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 
                 e1.printStackTrace();
             }
@@ -81,7 +81,7 @@ public class ApplicationObjects {
         invoice.setOnAction(e -> {
             try {
                 stage.setScene(InvoiceScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         });
@@ -89,7 +89,7 @@ public class ApplicationObjects {
         transfer.setOnAction(e -> {
             try {
                 stage.setScene(TransferScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         });
@@ -97,7 +97,7 @@ public class ApplicationObjects {
         payment.setOnAction(e -> {
             try {
                 stage.setScene(PaymentScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         });
@@ -114,7 +114,7 @@ public class ApplicationObjects {
         overview.setOnAction(e -> {
             try {
                 stage.setScene(GeneralOverviewScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 
                 e1.printStackTrace();
             }

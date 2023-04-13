@@ -21,7 +21,7 @@ import javafx.stage.Stage;
 public class UserManagementScene {
     static Stage stage = ApplicationFront.getStage();
 
-    static public Scene scene() throws FileNotFoundException {
+    static public Scene scene() throws IOException {
         User currentUser = ApplicationFront.loggedInUser;
         Text loggedInUser = ApplicationObjects.newText(currentUser.getFullName(), 40, false, 0, 0);
         Text loggedInUserEmail = ApplicationObjects.newText(currentUser.getEmail(), 20, false, 0, 0);
@@ -36,8 +36,8 @@ public class UserManagementScene {
         password.setOnAction(event -> {
            try {
                stage.setScene(ManageUserChangePasswordScene.scene());
-           } catch (FileNotFoundException e) {
-               throw new RuntimeException(e);
+           } catch (IOException e1) {
+               throw new RuntimeException();
            }
         });
         Button switchUser = ApplicationObjects.newButton("Switch User", 0, 0, 157,60,16);
@@ -93,9 +93,8 @@ public class UserManagementScene {
         delete.setOnAction(event -> {
             try {
                 stage.setScene(DeleteUserScene.scene());
-            } catch (FileNotFoundException e) {
-                
-                e.printStackTrace();
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
         });
 
@@ -125,7 +124,7 @@ public class UserManagementScene {
         homeButton.setOnMouseClicked(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         });

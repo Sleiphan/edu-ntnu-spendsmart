@@ -31,7 +31,7 @@ public class DeleteUserScene {
     private static boolean cancelPressed = false;
 
 
-    static public Scene scene() throws FileNotFoundException {
+    static public Scene scene() throws FileNotFoundException, IOException {
         User currentUser = ApplicationFront.loggedInUser;
         Text loggedInUser = ApplicationObjects.newText(currentUser.getFullName(), 40, false, 0, 0);
         Text loggedInUserEmail = ApplicationObjects.newText(currentUser.getEmail(), 20, false, 0, 0);
@@ -82,8 +82,8 @@ public class DeleteUserScene {
             timer.stop();
             try {
                 stage.setScene(UserManagementScene.scene());
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
         });
 

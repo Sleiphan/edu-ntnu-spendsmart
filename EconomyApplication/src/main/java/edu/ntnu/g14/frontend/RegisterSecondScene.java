@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 public class RegisterSecondScene {
     static Stage stage = ApplicationFront.getStage();
 
-    static public Scene scene(String key, String email, String usersID) {
+    static public Scene scene(String key, String email, String usersID) throws IOException{
         TextField keyInput = ApplicationObjects.newTextField("", 120, 195, 100, 20, 15);
         Button next = ApplicationObjects.newButton("Next", 240, 195, 100, 20, 15);
         next.setOnAction(e -> {
@@ -21,7 +21,11 @@ public class RegisterSecondScene {
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-                stage.setScene(RegisterThirdScene.scene());
+                try {
+                    stage.setScene(RegisterThirdScene.scene());
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             } else {
                 ApplicationObjects.alertBox("ERROR", "Wrong key", "The wrong key has been input");
             }

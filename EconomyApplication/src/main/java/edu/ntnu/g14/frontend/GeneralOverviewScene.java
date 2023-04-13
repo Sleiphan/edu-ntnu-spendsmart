@@ -24,7 +24,7 @@ import javafx.stage.Stage;
 public class GeneralOverviewScene {
     static Stage stage = ApplicationFront.getStage();
     private static final User loggedInUser = ApplicationFront.loggedInUser;
-    static public Scene scene() throws FileNotFoundException {
+    static public Scene scene() throws FileNotFoundException, IOException{
 
         String [] columnTitlesTransactionsTable = {"Date", "Transaction", "Amount", "Account"};
         Text totalOfAllAccountsCombinedText = ApplicationObjects.newText("Total of all Accounts Combined (excl. Pension)", 16, false, 200, 30);

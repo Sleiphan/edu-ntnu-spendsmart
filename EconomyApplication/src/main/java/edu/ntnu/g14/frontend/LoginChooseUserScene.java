@@ -1,6 +1,8 @@
 package edu.ntnu.g14.frontend;
 
 import edu.ntnu.g14.*;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -16,7 +18,13 @@ public class LoginChooseUserScene {
         Text chooseUser = ApplicationObjects.newText("Choose user", 30, false, 170, 40);
         Text registerNew = ApplicationObjects.newText("Register new account", 10, true, 400, 280);
         registerNew.setOnMouseClicked(e -> {
-            stage.setScene(RegisterFirstScene.scene());
+            try {
+                stage.setScene(RegisterFirstScene.scene());
+            } catch (FileNotFoundException e1) {
+                e1.printStackTrace();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         });
     
         String[] usernames = new String[FileManagement.readUsers().length];

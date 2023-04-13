@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 public class RegisterThirdScene {
     static Stage stage = ApplicationFront.getStage();
 
-    static public Scene scene() {
+    static public Scene scene()throws IOException {
         Button yes = ApplicationObjects.newButton("Yes", 200, 120, 50, 20, 15);
         yes.setOnAction(e -> {
             try {

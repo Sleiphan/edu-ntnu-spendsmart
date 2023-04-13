@@ -1,5 +1,7 @@
 package edu.ntnu.g14.frontend;
 
+import java.io.IOException;
+
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -10,17 +12,25 @@ public class LoginForgotPasswordFirstScene {
     static Stage stage = ApplicationFront.getStage();
 
 
-    static public Scene scene(String key) {
+    static public Scene scene(String key) throws IOException{
         Text goBack = ApplicationObjects.newText("Go back?", 10, true, 400, 260);
         goBack.setOnMouseClicked(e -> {
-            stage.setScene(LoginUserScene.scene());
+            try {
+                stage.setScene(LoginUserScene.scene());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         });
 
         TextField keyField = ApplicationObjects.newTextField("Code-key", 120, 70, 250, 30, 25);
         Button loginButton = ApplicationObjects.newButton("Make new password", 120, 140, 250, 20, 15);
         loginButton.setOnAction(e -> {
             if (keyField.getText().replace(" ", "").equals(key.replace(" ", ""))) {
-                stage.setScene(LoginForgotPasswordSecondScene.scene());
+                try {
+                    stage.setScene(LoginForgotPasswordSecondScene.scene());
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             } else {
                 ApplicationObjects.alertBox("ERROR", "Wrong key", "The wrong key has been input");
             }

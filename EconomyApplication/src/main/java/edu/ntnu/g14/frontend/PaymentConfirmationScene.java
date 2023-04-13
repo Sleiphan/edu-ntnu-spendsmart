@@ -64,7 +64,7 @@ public class PaymentConfirmationScene {
         cancel.setOnAction(e -> {
             try {
                 stage.setScene(PaymentScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 
                 e1.printStackTrace();
             }
