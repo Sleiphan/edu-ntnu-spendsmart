@@ -2,7 +2,7 @@ package edu.ntnu.g14;
 
 
 import java.io.*;
-import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,11 +17,12 @@ import edu.ntnu.g14.frontend.ApplicationObjects;
 
 public class FileManagement {
 
-    public static final String PATH_ACCOUNTS     = "saves/accounts.txt";
+    public static final String filePath     = "saves/accounts.txt";
     public static final String PATH_BUDGETS      = "saves/budgets.txt";
     public static final String PATH_INVOICES     = "saves/invoices.txt";
     public static final String PATH_TRANSACTIONS = "saves/transactions.txt";
     public static final String PATH_USERS        = "saves/users.txt";
+    private static final String PATH_TEMPFILE    = "saves/temp_file.txt";
 
     // public static void fileContentInsert(String pathToFile, long
 
@@ -53,29 +54,10 @@ public class FileManagement {
 
     public static Transaction[] readAllTransactions(String userID) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(PATH_TRANSACTIONS));
-        Stream<String> userTrans = reader.lines() 
+        Stream<String> userTrans = reader.lines()
                 .filter(line -> line.startsWith(userID + ","));
-
-        
-        String[] userTransArray = userTrans.toArray(String[]::new);
-        List<Transaction> transactionList = new ArrayList<>();
-        for (String s : userTransArray) {
-            String[] placeHolder = s.split(",");
-            String[] transactionArray = new String[placeHolder.length - 1];
-            for(int i =  0; i < placeHolder.length - 1; i++){
-                transactionArray[i] = placeHolder[i];
-            }
-            
-            for (int i = 1; i < transactionArray.length; i++) {
-                Transaction transaction = Transaction.fromCSVString(transactionArray[i]);
-                transactionList.add(transaction);
-            }
-        }
-        Transaction[] transactions = transactionList.toArray(Transaction[]::new);
-
-
-
-
+        Transaction[] transactions = userTrans.flatMap(s -> Stream.of(s.split(","))
+                .skip(1).map(Transaction::fromCSVString)).toArray(Transaction[]::new);
         reader.close();
         return transactions;
     }
@@ -109,7 +91,7 @@ public class FileManagement {
         String lastName = userInfoArray[5];
 
             
-        Account[] accounts = getAccountsForUser(userId);
+        Account[] accounts = readAccounts(userId);
         Invoice[] invoices = getInvoicesForUser(userId);
         Budget budget = new BudgetDAO(PATH_BUDGETS).getBudget(userId);
 
@@ -171,7 +153,7 @@ public class FileManagement {
         }
 
         String addonTextAccount = newUser.getLoginInfo().getUserId() + ",";
-        try (RandomAccessFile file = new RandomAccessFile(PATH_ACCOUNTS, "rw")) {
+        try (RandomAccessFile file = new RandomAccessFile(filePath, "rw")) {
             String line;
             while ((line = file.readLine()) != null) {
                 if (line.startsWith(" ")) {
@@ -199,36 +181,17 @@ public class FileManagement {
 
     }
 
-    public static Account[] getAccountsForUser(String userId) throws IOException{
-        BufferedReader reader = new BufferedReader(new FileReader(PATH_ACCOUNTS));
+    public static Account[] readAccounts(String userId) throws IOException{
+        BufferedReader reader = new BufferedReader(new FileReader(filePath));
         Stream<String> userTrans = reader.lines() 
                 .filter(line -> line.startsWith(userId + ","));
-        System.out.println(userTrans);
-
-        String[] userTransArray = userTrans.toArray(String[]::new);
-        List<Account> accountList = new ArrayList<>();
-        for (String s : userTransArray) {
-            String[] placeHolder = s.split(",");
-            String[] transactionArray = new String[placeHolder.length - 1];
-            for(int i =  0; i < placeHolder.length - 1; i++){
-                transactionArray[i] = placeHolder[i];
-            }
-            
-            for (int i = 1; i < transactionArray.length; i++) {
-                Account account = Account.fromCSVString(transactionArray[i]);
-                accountList.add(account);
-            }
-        }
-        Account[] accounts = accountList.toArray(Account[]::new);
-
-
-
+        Account[] accounts = userTrans.flatMap(s -> Stream.of(s.split(","))
+                .skip(1).map(Account::fromCSVString)).toArray(Account[]::new);
         reader.close();
         return accounts;
     }
-
     public static Account getAccountForUser(String userId, String accountNumber) throws IOException{
-        Account[] accounts = getAccountsForUser(userId);
+        Account[] accounts = readAccounts(userId);
         Account account = null;
         for(int i = 0; i < accounts.length; i++){
             if(accounts[i].getAccountNumber().equals(accountNumber)){
@@ -267,40 +230,57 @@ public class FileManagement {
         return invoices;
     }
 
-    public static void writeNewTransaction(String userId, Transaction transaction) throws IOException{
-        String addonText = "" + transaction.getDateOfTransaction().format(ApplicationObjects.dateFormatter) + ";" + transaction.getAmount() + ";" +
-        transaction.getToAccountNumber() + ";" + transaction.getFromAccountNumber() + ";" + transaction.getDescription() + ",";
-        
-        try (RandomAccessFile file = new RandomAccessFile(PATH_TRANSACTIONS, "rw")) {
-            String line;
-            long pos = 0;
-            while ((line = file.readLine()) != null) {
-                if (line.startsWith(userId + ",")) {
-                    pos = file.getFilePointer() - line.length() + line.indexOf("   ") - 1;
-                    file.seek(pos);
-                    file.write(addonText.getBytes());
-                    file.close();
-                    break;
-                }
-            }
-        }
+    
+    public static void writeAccount(String userId, Account account) {
+        writeTransactionOrAccount(userId, account.toCSVString(), filePath);
+    }
+    public static void writeTransaction(String userId, Transaction transaction) {
+        writeTransactionOrAccount(userId, transaction.toCSVString(), PATH_TRANSACTIONS);
     }
 
-    public static void writeNewAccount(String userId, Account account) throws IOException{
-        String addonText = "" + account.getAccountType() + ";" + account.getAmount() + ";" + account.getAccountNumber() + ";" + 
-        account.getAccountName() + ",";
-        try (RandomAccessFile file = new RandomAccessFile(PATH_ACCOUNTS, "rw")) {
-            String line;
-            long pos = 0;
-            while ((line = file.readLine()) != null) {
-                if (line.startsWith(userId + ",")) {
-                    pos = file.getFilePointer() - line.length() + line.indexOf("   ") - 1;
-                    file.seek(pos);
-                    file.write(addonText.getBytes());
-                    file.close();
-                    break;
+    private static void writeTransactionOrAccount(String userId, String toCSVString, String filePath) {
+        String tempFile = "temp.text";
+        File oldFile    = new File(filePath);
+        File newFile    = new File(tempFile);
+        try {
+            FileWriter fileWriter         = new FileWriter(tempFile, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            PrintWriter printWriter       = new PrintWriter(bufferedWriter);
+
+            FileInputStream inputStream   = new FileInputStream(oldFile);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+            int lines = (int) bufferedReader.lines().count();
+            inputStream.getChannel().position(0);
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            String currentLine;
+            for (int i = 1; i < lines; i++) {
+                currentLine = bufferedReader.readLine();
+                if (currentLine.startsWith(userId)) {
+                    printWriter.println(currentLine + toCSVString);
+                }
+                else {
+                    printWriter.println(currentLine);
                 }
             }
+            currentLine = bufferedReader.readLine();
+            if (currentLine.startsWith(userId)) {
+                printWriter.print(currentLine + toCSVString);
+            }
+            else {
+                printWriter.print(currentLine);
+            }
+
+            inputStream.close();
+            bufferedReader.close();
+            printWriter.flush();
+            printWriter.close();
+            oldFile.delete();
+            File dump = new File(filePath);
+            newFile.renameTo(dump);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

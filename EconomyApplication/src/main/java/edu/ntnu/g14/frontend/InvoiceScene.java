@@ -13,7 +13,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.apache.commons.validator.routines.BigDecimalValidator;
@@ -22,9 +21,9 @@ public class InvoiceScene {
     static Stage stage = ApplicationFront.getStage();
 
     static public Scene scene() throws FileNotFoundException {
-        Invoice[] invoicesUser = ApplicationFront.getLoggedInUser().getAllInvoices();
+        Invoice[] invoicesUser = ApplicationFront.loggedInUser.getAllInvoices();
         List<Invoice> invoices = new ArrayList<Invoice>();
-        for(int i = 0; i < ApplicationFront.getLoggedInUser().getAllInvoices().length; i++){
+        for(int i = 0; i < ApplicationFront.loggedInUser.getAllInvoices().length; i++){
                 invoices.add(invoicesUser[i]);
         }
         
@@ -33,11 +32,11 @@ public class InvoiceScene {
         Text accountNum_t = ApplicationObjects.newText("Account number:", 17, false, 11, 376 - 186);
         Text cidComment_t = ApplicationObjects.newText("CID / Comment:", 17, false, 11, 407 - 186);
         Text dueDate_t = ApplicationObjects.newText("Due date:", 17, false, 11, 438 - 186);
-        TextField amount_tf = ApplicationObjects.newTextField("Amount (kr)", 198, 322 - 186, "black", "white", 206, 20,
+        TextField amount_tf = ApplicationObjects.newTextField("Amount (kr)", 198, 322 - 186, 206, 20,
                 14);
-        TextField accountNum_tf = ApplicationObjects.newTextField("Account number", 198, 353 - 186, "black", "white", 206,
+        TextField accountNum_tf = ApplicationObjects.newTextField("Account number", 198, 353 - 186, 206,
                 20, 14);
-        TextField cidComment_tf = ApplicationObjects.newTextField("CID / Comment", 198, 384 - 186, "black", "white", 206,
+        TextField cidComment_tf = ApplicationObjects.newTextField("CID / Comment", 198, 384 - 186, 206,
                 20, 14);
 
         DatePicker due_dp = new DatePicker();
@@ -50,11 +49,11 @@ public class InvoiceScene {
         invoices_lv.getItems().setAll(invoices);
         invoices_lv.setEditable(false);
 
-        Button clear_bt = ApplicationObjects.newButton("Clear", 358 - 329, 570 - 186, "black", "white", 159, 61, 16);
-        Button register_bt = ApplicationObjects.newButton("Register", 549 - 329, 570 - 186, "black", "white", 159, 61, 16);
-        Button back_bt = ApplicationObjects.newButton("Back", 358 - 329, 637 - 186, "black", "white", 159, 35, 16);
-        Button payNow_bt = ApplicationObjects.newButton("Pay now", 817 - 329, 493 - 186, "black", "white", 159, 61, 16);
-        Button delete_bt = ApplicationObjects.newButton("Delete", 817 - 329, 570 - 186, "black", "white", 159, 61, 16);
+        Button clear_bt = ApplicationObjects.newButton("Clear", 358 - 329, 570 - 186, 159, 61, 16);
+        Button register_bt = ApplicationObjects.newButton("Register", 549 - 329, 570 - 186, 159, 61, 16);
+        Button back_bt = ApplicationObjects.newButton("Back", 358 - 329, 637 - 186, 159, 35, 16);
+        Button payNow_bt = ApplicationObjects.newButton("Pay now", 817 - 329, 493 - 186, 159, 61, 16);
+        Button delete_bt = ApplicationObjects.newButton("Delete", 817 - 329, 570 - 186, 159, 61, 16);
 
         clear_bt.setOnAction(e -> {
             amount_tf.clear();
@@ -91,7 +90,7 @@ public class InvoiceScene {
                     accountNum_tf.getText());
             invoices.add(newInvoice);
             try {
-                FileManagement.writeNewInvoice(ApplicationFront.getLoggedInUser().getLoginInfo().getUserId(), newInvoice);
+                FileManagement.writeNewInvoice(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), newInvoice);
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -110,7 +109,7 @@ public class InvoiceScene {
         payNow_bt.setOnAction(e -> {
             invoices.remove(invoices_lv.getSelectionModel().getSelectedItem());
             try {
-                FileManagement.deleteInvoice(invoices_lv.getSelectionModel().getSelectedItem(), ApplicationFront.getLoggedInUser().getLoginInfo().getUserId());
+                FileManagement.deleteInvoice(invoices_lv.getSelectionModel().getSelectedItem(), ApplicationFront.loggedInUser.getLoginInfo().getUserId());
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -118,7 +117,7 @@ public class InvoiceScene {
         delete_bt.setOnAction(e -> {
             invoices.remove(invoices_lv.getSelectionModel().getSelectedItem());
             try {
-                FileManagement.deleteInvoice(invoices_lv.getSelectionModel().getSelectedItem(), ApplicationFront.getLoggedInUser().getLoginInfo().getUserId());
+                FileManagement.deleteInvoice(invoices_lv.getSelectionModel().getSelectedItem(), ApplicationFront.loggedInUser.getLoginInfo().getUserId());
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -132,7 +131,7 @@ public class InvoiceScene {
                 e1.printStackTrace();
             }
         });
-        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, "black", "white", 10, 10, 10);
+        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
         Group root = new Group(amount_t, accountNum_t, cidComment_t, dueDate_t,
@@ -142,8 +141,8 @@ public class InvoiceScene {
         dropDownButton.setOnAction(e -> {
             root.getChildren().add(dropDown);
         });
-
-        Scene scene = new Scene(root, 728, 567, Color.WHITE);
+        root.getStylesheets().add("StyleSheet.css"); 
+        Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
         
         
         Group userButtons = ApplicationObjects.userMenu();
@@ -154,6 +153,7 @@ public class InvoiceScene {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
         });
+        
         return scene;
     }
 

@@ -3,9 +3,18 @@
 
 package edu.ntnu.g14.frontend;
 
+
+import java.io.FileInputStream;
 import java.io.IOException;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import edu.ntnu.g14.User;
 
 public class ApplicationFront extends Application {
@@ -16,8 +25,10 @@ public class ApplicationFront extends Application {
     @Override
     public void start(Stage stage) throws IOException, InterruptedException {
         this.stage = stage;
+        stage.setTitle("Bank Application");
         stage.setResizable(false);
         stage.setScene(LoginChooseUserScene.scene());
+        stage.getIcons().add(new Image(new FileInputStream("src/main/resources/images/icon.png")));
         stage.show();
     }
 
@@ -25,14 +36,12 @@ public class ApplicationFront extends Application {
         return stage;
     }
 
-    public static User getLoggedInUser(){
-        return loggedInUser;
-    }
-
     public static void setLoggedInUser(User user){
         loggedInUser = user;
     }
     
+
+
     public static void main(String[] args) {
         launch();
     }

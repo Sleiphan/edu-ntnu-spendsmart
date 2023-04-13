@@ -7,7 +7,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -36,8 +35,8 @@ public class EmptyBudgetScene {
         Text savings = ApplicationObjects.newText("Savings: ", 30, false, 40, 480);
         savings.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
 
-        Button createNewBudget = ApplicationObjects.newButton("Create new budget", 470, 180, "black", "white", 157, 25, 16);
-        Button budgetSuggestions = ApplicationObjects.newButton("Budget suggestion", 470, 270, "black", "white", 157, 25, 16);
+        Button createNewBudget = ApplicationObjects.newButton("Create new budget", 470, 180, 157, 25, 16);
+        Button budgetSuggestions = ApplicationObjects.newButton("Budget suggestion", 470, 270, 157, 25, 16);
 
         createNewBudget.setOnAction(e -> {
             try {
@@ -66,7 +65,7 @@ public class EmptyBudgetScene {
                 e1.printStackTrace();
             }
         });
-        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, "black", "white", 10, 10, 10);
+        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
         Group root = new Group(backgroundLabel, revenues, expenditures, createNewBudget,
@@ -74,8 +73,8 @@ public class EmptyBudgetScene {
         dropDownButton.setOnAction(e -> {
             root.getChildren().add(dropDown);
         });
-
-        Scene scene = new Scene(root, 728, 567, Color.WHITE);
+        root.getStylesheets().add("StyleSheet.css"); 
+        Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
 
 
         Group userButtons = ApplicationObjects.userMenu();
@@ -86,6 +85,7 @@ public class EmptyBudgetScene {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
         });
+        
         return scene;
     }
 }

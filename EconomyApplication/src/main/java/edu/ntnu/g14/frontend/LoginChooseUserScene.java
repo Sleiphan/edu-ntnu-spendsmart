@@ -5,7 +5,6 @@ import java.io.IOException;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -27,9 +26,9 @@ public class LoginChooseUserScene {
         }
         
     
-        ChoiceBox<String> user = ApplicationObjects.newChoiceBox(usernames, "black", "white", 250, 20, 15, 125, 70);
+        ChoiceBox<String> user = ApplicationObjects.newChoiceBox(usernames, 250, 20, 15, 125, 70);
     
-        Button confirm = ApplicationObjects.newButton("Confirm", 175, 110, "black", "white", 150, 20, 15);
+        Button confirm = ApplicationObjects.newButton("Confirm", 175, 110, 150, 20, 15);
         confirm.setOnAction(e -> {
             if(user.getValue() != null){
                 try {
@@ -49,8 +48,9 @@ public class LoginChooseUserScene {
     
         
         Group root = new Group(chooseUser, registerNew, user, confirm);
-        Scene scene = new Scene(root, 500, 300, Color.WHITE);
-        
+        root.getStylesheets().add("StyleSheet.css"); 
+        Scene scene = new Scene(root, 500, 300, ApplicationObjects.getSceneColor());
+       
         return scene;
     }
     

@@ -1,0 +1,12 @@
+.menu-bar {
+    -fx-background-color: black ;
+    -fx-opacity: 0.5;
+    -fx-border-width: 2.0;
+}
+.menu-bar .label {
+    -fx-font-size: 14.0 pt;
+    -fx-font-family: "Bookman Old Style";
+    -fx-text-fill: black;
+    -fx-font-weight: bold; 
+    -fx-padding: 10.0px;
+}

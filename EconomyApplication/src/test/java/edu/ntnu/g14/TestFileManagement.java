@@ -15,9 +15,9 @@ class TestFileManagement {
 
     @Test
     void write() throws IOException{
-        FileManagement.writeNewTransaction("olav#1", testTransaction);
+        FileManagement.writeTransaction("olav#1", testTransaction);
         FileManagement.writeNewUser(testUser);
-        FileManagement.writeNewAccount("olav#1", testAccount);
+        FileManagement.writeAccount("olav#1", testAccount);
         FileManagement.writeNewInvoice("olav#1", testInvoice);
         FileManagement.writeNewBudget("olav#1", testBudget);
         

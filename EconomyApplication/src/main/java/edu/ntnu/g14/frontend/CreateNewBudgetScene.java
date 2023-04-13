@@ -22,7 +22,7 @@ public class CreateNewBudgetScene {
 
     static Budget userBudget;
 
-    static User loggedInUser = ApplicationFront.getLoggedInUser();
+    static User loggedInUser = ApplicationFront.loggedInUser;
 
     static Group revenueComponents;
     static Group expenditureComponents;
@@ -44,8 +44,32 @@ public class CreateNewBudgetScene {
         revenueComponents.setVisible(false);
         expenditureComponents.setVisible(false);
 
-        Group root = new Group(selectTypeComponents, revenueComponents, expenditureComponents);
-        Scene scene = new Scene(root, 728, 567, Color.WHITE);
+        ImageView homeButton = ApplicationObjects.newImage("home.png", 10, 10, 20, 20);
+        homeButton.setOnMouseClicked(e -> {
+            try {
+                stage.setScene(MainPageScene.scene());
+            } catch (FileNotFoundException e1) {
+                e1.printStackTrace();
+            }
+        });
+        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
+        Group dropDown = ApplicationObjects.dropDownMenu();
+        ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
+        Group root = new Group(selectTypeComponents, revenueComponents, expenditureComponents, dropDownButton, homeButton, manageUserButton);
+        dropDownButton.setOnAction(e -> {
+            root.getChildren().add(dropDown);
+        });
+
+        Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
+        Group userButtons = ApplicationObjects.userMenu();
+        manageUserButton.setOnMouseEntered(e -> {
+            root.getChildren().add(userButtons);
+        });
+        scene.setOnMouseClicked(e -> {
+            root.getChildren().remove(userButtons);
+            root.getChildren().remove(dropDown);
+        });
+        scene.setFill(ApplicationObjects.getSceneColor());
 
         return scene;
     }
@@ -57,7 +81,7 @@ public class CreateNewBudgetScene {
         // Add a listener to the personal choice box
         String[] personals = {"Select Type", "Age & Gender", "Household"};
         Text Age = ApplicationObjects.newText("Age", 20, false, 50, 300);
-        ChoiceBox<String> personal = ApplicationObjects.newChoiceBox(personals, "black", "white", 150, 34, 15, 50, 300);
+        ChoiceBox<String> personal = ApplicationObjects.newChoiceBox(personals, 150, 34, 15, 50, 300);
         personal.setValue("Select Type");
         ToggleGroup genderToggleGroup = new ToggleGroup();
         RadioButton maleRadioButton = new RadioButton("Male");
@@ -99,7 +123,7 @@ public class CreateNewBudgetScene {
         });
 
 // When the 'Create' button is clicked
-        Button createBtn = ApplicationObjects.newButton("Create", 380, 480, "black", "white", 157, 25, 16);
+        Button createBtn= ApplicationObjects.newButton("Create", 380, 480, 157, 25, 16);
         createBtn.setOnAction(e -> {
             // Get the input values for Age, Gender, and Household
             String inputAge = AgeInput.getText();
@@ -126,13 +150,10 @@ public class CreateNewBudgetScene {
         ChoiceBox<String> revenue = new ChoiceBox<>();
         revenue.getItems().addAll("Revenues", "Salary", "Business", "Investments");
         revenue.setValue("Revenues");
+        TextField revenueInput = ApplicationObjects.newTextField("", 210, 100, 130, 30, 15);
         revenue.setLayoutX(50);
         revenue.setLayoutY(150);
 
-        TextField revenueInput = new TextField();
-        revenueInput.setPromptText("Enter amount");
-        revenueInput.setLayoutX(200);
-        revenueInput.setLayoutY(150);
 
         // Add an event handler for the revenue TextField
         revenueInput.setOnKeyPressed((KeyEvent keyEvent) -> {
@@ -157,12 +178,10 @@ public class CreateNewBudgetScene {
         expenditure.setLayoutX(50);
         expenditure.setLayoutY(200);
 
-        TextField expenditureInput = new TextField();
-        expenditureInput.setPromptText("Enter amount");
-        expenditureInput.setLayoutX(200);
-        expenditureInput.setLayoutY(200);
-
         // Add an event handler for the expenditure TextField
+        TextField expenditureInput = ApplicationObjects.newTextField("Enter amount", 560, 100, 130, 30, 15);
+
+// Event handler for TextField
         expenditureInput.setOnKeyPressed((KeyEvent keyEvent) -> {
             if (keyEvent.getCode() == KeyCode.ENTER) {
                 String selectedItem = expenditure.getValue();

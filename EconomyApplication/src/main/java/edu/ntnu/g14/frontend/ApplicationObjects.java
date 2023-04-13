@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
+import edu.ntnu.g14.Account;
 import edu.ntnu.g14.TransactionWithProperty;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
@@ -27,18 +28,31 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import edu.ntnu.g14.AccountWithProperty;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 
 
 public class ApplicationObjects {
+
+    public static String borderColor = "#071E22";
+    public static String backgroundColor = "#dba87d";
+    public static Color sceneColor = Color.valueOf("#F4C095");
+    
+
     static Stage stage = ApplicationFront.getStage();
 
     public static final DateTimeFormatter dateFormatter =
-        DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+
+    public static Color getSceneColor(){
+        return sceneColor;
+    }
+
+    
     public static Group userMenu() {
         Rectangle rectangle = newRectangle(553, 10, 145, 110);
         
-        Button logOut = newButton("overview", 563, 15, "black", "white", 130, 40, 15);
+        Button logOut = newButton("overview", 563, 15, 130, 40, 15);
         logOut.setOnAction(e -> {
             try {
                 stage.setScene(LoginChooseUserScene.scene());
@@ -47,7 +61,7 @@ public class ApplicationObjects {
                 e1.printStackTrace();
             }
         });
-        Button manageUser = newButton("manage user", 563, 70, "black", "white", 130, 40, 15);
+        Button manageUser = newButton("manage user", 563, 70, 130, 40, 15);
         manageUser.setOnAction(e -> {
             try {
                 stage.setScene(UserManagementScene.scene());
@@ -61,7 +75,7 @@ public class ApplicationObjects {
 
     public static Group dropDownMenu() {
         Rectangle rectangle = newRectangle(553, 10, 145, 340);
-        Button invoice = newButton("invoice", 563, 15, "black", "white", 130, 40, 20);
+        Button invoice = newButton("invoice", 563, 15, 130, 40, 20);
         invoice.setOnAction(e -> {
             try {
                 stage.setScene(InvoiceScene.scene());
@@ -69,7 +83,7 @@ public class ApplicationObjects {
                 e1.printStackTrace();
             }
         });
-        Button transfer = newButton("transfer", 563, 70, "black", "white", 130, 40, 20);
+        Button transfer = newButton("transfer", 563, 70, 130, 40, 20);
         transfer.setOnAction(e -> {
             try {
                 stage.setScene(TransferScene.scene());
@@ -77,7 +91,7 @@ public class ApplicationObjects {
                 e1.printStackTrace();
             }
         });
-        Button payment = newButton("payment", 563, 125, "black", "white", 130, 40, 20);
+        Button payment = newButton("payment", 563, 125, 130, 40, 20);
         payment.setOnAction(e -> {
             try {
                 stage.setScene(PaymentScene.scene());
@@ -85,7 +99,7 @@ public class ApplicationObjects {
                 e1.printStackTrace();
             }
         });
-        Button accounts = newButton("accounts", 563, 180, "black", "white", 130, 40, 20);
+        Button accounts = newButton("accounts", 563, 180, 130, 40, 20);
         accounts.setOnAction(e -> {
             try {
                 stage.setScene(AccountOverviewScene.scene());
@@ -94,7 +108,7 @@ public class ApplicationObjects {
                 e1.printStackTrace();
             }
         });
-        Button overview = newButton("overview", 563, 235, "black", "white", 130, 40, 20);
+        Button overview = newButton("overview", 563, 235, 130, 40, 20);
         overview.setOnAction(e -> {
             try {
                 stage.setScene(GeneralOverviewScene.scene());
@@ -103,7 +117,7 @@ public class ApplicationObjects {
                 e1.printStackTrace();
             }
         });
-        Button budgetting = newButton("budgetting", 563, 290, "black", "white", 130, 40, 20);
+        Button budgetting = newButton("budgetting", 563, 290, 130, 40, 20);
         budgetting.setOnAction(e -> {
             try {
                 stage.setScene(BudgetingScene.scene());
@@ -115,8 +129,7 @@ public class ApplicationObjects {
         return new Group(rectangle, invoice, transfer, payment, accounts, overview, budgetting);
     }
 
-    public static Button newButton(String text, int x, int y, String borderColor,
-        String backgroundColor, int width, int height, int fontSize) {
+    public static Button newButton(String text, int x, int y, int width, int height, int fontSize) {
         Button button = new Button(text);
         button.setLayoutX(x);
         button.setLayoutY(y);
@@ -128,7 +141,7 @@ public class ApplicationObjects {
         return button;
     }
     
-    public static ToggleButton newToggleButton(String text, int x, int y, String borderColor, String backgroundColor, int width, int height, int fontSize) {
+    public static ToggleButton newToggleButton(String text, int x, int y, int width, int height, int fontSize) {
         ToggleButton toggleButton = new ToggleButton(text);
         toggleButton.setLayoutX(x);
         toggleButton.setLayoutY(y);
@@ -138,8 +151,7 @@ public class ApplicationObjects {
         return toggleButton;
     }
 
-    public static TextField newTextField(String promptText, int x, int y, String borderColor,
-        String backgroundColor, int width, int height, int fontSize) {
+    public static TextField newTextField(String promptText, int x, int y, int width, int height, int fontSize) {
         TextField textField = new TextField();
         textField.setPromptText(promptText);
         textField.setLayoutX(x);
@@ -215,8 +227,7 @@ public class ApplicationObjects {
         return rectangle;
     }
 
-    public static ChoiceBox<String> newChoiceBox(String[] choices, String borderColor,
-        String backgroundColor, int width, int height, int fontSize, int x, int y) {
+    public static ChoiceBox<String> newChoiceBox(String[] choices, int width, int height, int fontSize, int x, int y) {
         ChoiceBox<String> choiceBox = new ChoiceBox<>();
         choiceBox.getItems().addAll(choices);
         choiceBox.setStyle(setStyleString(borderColor, backgroundColor, width, height, fontSize));
@@ -298,14 +309,17 @@ public class ApplicationObjects {
                     } catch (NumberFormatException | NullPointerException e) {
                         return false;
                     }
-                    return !accountNumberField.getText().isBlank()
-                            && accountNumberField.getText() != null
-                            && !accountNameField.getText().isBlank()
-                            && !accountNameField.getText().isBlank()
+                    return accountNumberField.getText() != null
                             && accountNameField.getText() != null
                             && !accountTypeField.getValue().isBlank()
                             && !(amountBigDecimal.floatValue() < 0)
-                            && Pattern.matches(regexAccountNumber, accountNumberField.getText());
+                            && Pattern.matches(regexAccountNumber, accountNumberField.getText())
+                            && ApplicationFront.loggedInUser.getAccountsAsList().stream()
+                            .map(Account::getAccountName)
+                            .noneMatch(accountName -> accountNameField.getText().equalsIgnoreCase(accountName))
+                            && ApplicationFront.loggedInUser.getAccountsAsList().stream()
+                            .map(Account::getAccountNumber)
+                            .noneMatch(accountNumber -> accountNumberField.getText().equals(accountNumber));
                 }
             });
         }
@@ -336,7 +350,7 @@ public class ApplicationObjects {
             GridPane.setHgrow(this.amountField,Priority.ALWAYS);
             grid.add(accountNameField,1,3);
             GridPane.setHgrow(this.accountNameField,Priority.ALWAYS);
-
+            accountTypeField.setMaxWidth(160);
             content.getChildren().add(grid);
             return content;
         }
@@ -344,7 +358,7 @@ public class ApplicationObjects {
     
     static class TransactionWithPropertyDialog extends Dialog<TransactionWithProperty> {
         private final TransactionWithProperty transaction;
-        private ChoiceBox<String> fromAccountNumberField;
+        private TextField fromAccountNumberField;
         private TextField toAccountNumberField;
         private TextField amountField;
         private TextField descriptionField;
@@ -358,7 +372,7 @@ public class ApplicationObjects {
             setResultConverter();
         }
         private void setPropertyBindings() {
-            fromAccountNumberField.valueProperty().bindBidirectional(transaction.getFromAccountIdProperty());
+            fromAccountNumberField.textProperty().bindBidirectional(transaction.getFromAccountIdProperty());
             toAccountNumberField.textProperty().bindBidirectional(transaction.getToAccountIdProperty());
             amountField.textProperty().bindBidirectional(transaction.getAmountProperty());
             descriptionField.textProperty().bindBidirectional(transaction.getDescriptionProperty());
@@ -393,26 +407,42 @@ public class ApplicationObjects {
                     return !toAccountNumberField.getText().isBlank()
                             && !amountField.getText().isBlank()
                             && !descriptionField.getText().isBlank()
-                            && Pattern.matches(regexAccountNumber, toAccountNumberField.getText());
+                            && !toAccountNumberField.getText().isBlank()
+                            && (ApplicationFront.loggedInUser.getAccountsAsList().stream().map(Account::getAccountNumber).anyMatch(accountNumber -> accountNumber.equals(toAccountNumberField.getText())) || ApplicationFront.loggedInUser.getAccountsAsList().stream().map(Account::getAccountNumber).anyMatch(accountNumber -> accountNumber.equals(fromAccountNumberField.getText()))
+                            && Pattern.matches(regexAccountNumber, toAccountNumberField.getText()));
                 }
             });
         }
         public Pane createGridPane() {
             VBox content = new VBox(10);
-            Label fromAccountLabel = new Label("Select the account you want to send from:");
-            Label toAccountLabel = new Label("Enter the recipient account number:");
+            Label fromAccountLabel = new Label("Enter the sender's account:");
+            Label toAccountLabel = new Label("Enter the recipient's account number:");
             Label amountLabel = new Label("Enter the amount you want to send:");
             Label descriptionLabel = new Label("Enter the description of the transaction:");
             Label dateOfTransactionLabel = new Label("Choose the date of the transaction:")   ;
 
-            this.fromAccountNumberField = new ChoiceBox<>();
+            this.fromAccountNumberField = new TextField();
             this.toAccountNumberField = new TextField();
             this.amountField = new TextField();
             this.descriptionField = new TextField();
             this.dateOfTransactionField = new DatePicker();
+            dateOfTransactionField.setConverter(new StringConverter<LocalDate>() {
+                @Override
+                public String toString(LocalDate localDate) {
+                    if (localDate != null) {
+                        return dateFormatter.format(localDate);
+                    }
+                    return null;
+                }
+
+                @Override
+                public LocalDate fromString(String string) {
+                    if (string != null && !string.isBlank())
+                        return LocalDate.parse(string, dateFormatter);
+                    return null;
+                }
+            });
             restrictDatePicker(dateOfTransactionField, LocalDate.now());
-            //TODO: Change format
-            this.fromAccountNumberField.getItems().addAll("Spendings Account", "Savings Account", "Pensions Account");
             //TODO: Make it retrieve a users accounts which are not savings or pensions
             GridPane grid = new GridPane();
             grid.setHgap(10);
@@ -432,7 +462,6 @@ public class ApplicationObjects {
             GridPane.setHgrow(this.descriptionField,Priority.ALWAYS);
             grid.add(dateOfTransactionField,1,4);
             GridPane.setHgrow(this.dateOfTransactionField,Priority.ALWAYS);
-
             content.getChildren().add(grid);
             return content;
         }

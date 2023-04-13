@@ -6,15 +6,14 @@ import edu.ntnu.g14.FileManagement;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class RegisterSecondScene {
     static Stage stage = ApplicationFront.getStage();
 
     static public Scene scene(String key, String email, String usersID) {
-        TextField keyInput = ApplicationObjects.newTextField("", 120, 195, "black", "white", 100, 20, 15);
-        Button next = ApplicationObjects.newButton("Next", 240, 195, "black", "white", 100, 20, 15);
+        TextField keyInput = ApplicationObjects.newTextField("", 120, 195, 100, 20, 15);
+        Button next = ApplicationObjects.newButton("Next", 240, 195, 100, 20, 15);
         next.setOnAction(e -> {
             if (keyInput.getText().replace(" ", "").equals(key.replace(" ", ""))) {
                 try {
@@ -33,7 +32,9 @@ public class RegisterSecondScene {
                 ApplicationObjects.newText("has been sent to", 25, false, 140, 50),
                 ApplicationObjects.newText(email, 25, false, 140, 75),
                 ApplicationObjects.newText("Code:", 30, false, 20, 225));
-        Scene scene = new Scene(root, 500, 300, Color.WHITE);
+        root.getStylesheets().add("StyleSheet.css");         
+        Scene scene = new Scene(root, 500, 300, ApplicationObjects.getSceneColor());
+        
         return scene;
     }
 

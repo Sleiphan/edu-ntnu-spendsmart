@@ -2,7 +2,6 @@ package edu.ntnu.g14.frontend;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -15,12 +14,10 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-
+import edu.ntnu.g14.FileManagement;
 import edu.ntnu.g14.Payment;
 
-import static edu.ntnu.g14.FileManagement.writeNewTransaction;
 
 public class PaymentConfirmationScene {
     static Stage stage = ApplicationFront.getStage();
@@ -32,7 +29,7 @@ public class PaymentConfirmationScene {
     public static final DateTimeFormatter dateFormatter =
             DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    static public Scene scene() throws FileNotFoundException {
+    static public Scene scene() throws FileNotFoundException, IOException {
         TableView<ObservableList<Object>> payment = ApplicationObjects.newTableView(new String[]{"Payment", "Information"}, 100, 150, 602, 150);
         ObservableList<ObservableList<Object>> paymentData = initializePaymentData(getPaymentInfo());
         payment.setItems(paymentData);
@@ -40,13 +37,13 @@ public class PaymentConfirmationScene {
         payment.getColumns().forEach(column -> column.setSortable(false));
 
 
-        Button confirm = ApplicationObjects.newButton("Confirm", 250, 350, "black", "white", 100, 20, 15);
-        Button cancel = ApplicationObjects.newButton("Cancel", 400, 350, "black", "white", 100, 20, 15);
+        Button confirm = ApplicationObjects.newButton("Confirm", 250, 350, 100, 20, 15);
+        Button cancel = ApplicationObjects.newButton("Cancel", 400, 350, 100, 20, 15);
 
 
         confirm.setOnAction(e -> {
             try {
-                User loggedInUser = ApplicationFront.getLoggedInUser();
+                User loggedInUser = ApplicationFront.loggedInUser;
                 LocalDate dueDate = LocalDate.parse(getPaymentInfo().get(3), formatter); //Funker ikke!!! TODO: FIIIIIX
                 dueDate = LocalDate.parse(dueDate.format(dateFormatter), dateFormatter);
 
@@ -54,15 +51,11 @@ public class PaymentConfirmationScene {
                 Payment paymentObject = new Payment(getPaymentInfo().get(0), new BigDecimal(getPaymentInfo().get(1)), getPaymentInfo().get(2), getPaymentInfo().get(4), dueDate, getPaymentInfo().get(5), dateOfTransaction);
                 System.out.println(paymentObject.toString());
 
-                try {
-                    writeNewTransaction(loggedInUser.getLoginInfo().getUserId(), paymentObject);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
+                FileManagement.writeTransaction(loggedInUser.getLoginInfo().getUserId(), paymentObject);
 
                 stage.setScene(MainPageScene.scene());
             } catch (FileNotFoundException e1) {
-                
+
                 e1.printStackTrace();
             }
         });
@@ -85,15 +78,15 @@ public class PaymentConfirmationScene {
                 e1.printStackTrace();
             }
         });
-        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, "black", "white", 10, 10, 10);
+        Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
         Group root = new Group(payment, confirm, cancel, dropDownButton, homeButton, manageUserButton);
         dropDownButton.setOnAction(e -> {
             root.getChildren().add(dropDown);
         });
-
-        Scene scene = new Scene(root, 728, 567, Color.WHITE);
+        root.getStylesheets().add("StyleSheet.css"); 
+        Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
         
         
         Group userButtons = ApplicationObjects.userMenu();
@@ -104,6 +97,7 @@ public class PaymentConfirmationScene {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
         });
+        
         return scene;
     }
 
