@@ -86,4 +86,41 @@ public class User extends Personalia {
                 .reduce(BigDecimal.valueOf(0), BigDecimal::add).toString();
     }
 
+    public double getAmountSpentOnCategoryLast30Days(String category) {
+        return getTransactionsAsList().stream()
+                .filter(transaction -> getAccountsAsList().stream()
+                        .map(Account::getAccountNumber)
+                        .anyMatch(accountNumber -> accountNumber.equals(transaction.getFromAccountNumber())))
+                .filter(transaction ->
+                        transaction.getDateOfTransaction().isAfter(LocalDate.now().minusDays(30))
+                                && transaction.getDateOfTransaction().isBefore(LocalDate.now().plusDays(1)))
+                .filter(transaction -> transaction.getCategory()
+                .equals(BudgetCategory.valueOf(category
+                        .replaceAll(" ", "_")
+                        .toUpperCase())))
+                .map(Transaction::getAmount).reduce(new BigDecimal(0), BigDecimal::add).doubleValue();
+    }
+
+    public double getAmountSpentOnCategoryLastYear(String category) {
+        LocalDate startOfLastYear = LocalDate.ofYearDay(LocalDate.now().getYear() - 1, 1);
+        LocalDate endOfLastYear = LocalDate.ofYearDay(LocalDate.now().getYear() - 1, 365);
+
+        if (startOfLastYear.isLeapYear()) {
+            endOfLastYear = LocalDate.ofYearDay(LocalDate.now().getYear() - 1, 366);
+        }
+        LocalDate finalEndOfLastYear = endOfLastYear;
+
+        return getTransactionsAsList().stream()
+                .filter(transaction -> getAccountsAsList().stream()
+                        .map(Account::getAccountNumber)
+                        .anyMatch(accountNumber -> accountNumber.equals(transaction.getFromAccountNumber())))
+                .filter(transaction ->
+                        transaction.getDateOfTransaction().isAfter(startOfLastYear)
+                                && transaction.getDateOfTransaction().isBefore(finalEndOfLastYear))
+                .filter(transaction -> transaction.getCategory()
+                        .equals(BudgetCategory.valueOf(category
+                                .replaceAll(" ", "_")
+                                .toUpperCase())))
+                .map(Transaction::getAmount).reduce(new BigDecimal(0), BigDecimal::add).doubleValue();
+    }
 }
