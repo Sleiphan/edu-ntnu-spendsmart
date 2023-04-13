@@ -29,7 +29,7 @@ public class PaymentScene {
         TextField toAccount = ApplicationObjects.newTextField("10987654321", x, y + 4 * n, 100, 20, 15);
         TextField cid = ApplicationObjects.newTextField("0123456789", x, y + 5 * n, 100, 20, 15);
 
-        Button pay = ApplicationObjects.newButton("Pay", 200, 450, 100, 20, 15);
+        Button pay = ApplicationObjects.newButton("Pay", x + 150, y + 5 * n, 100, 20, 15);
         Button cancel = ApplicationObjects.newButton("Cancel", 350, 450, 100, 20, 15);
         pay.setOnAction(e -> {
             try {

@@ -24,7 +24,7 @@ public class TransferScene {
         TextField amount = ApplicationObjects.newTextField("50kr", x, y + n, 100, 20, 15);
         TextField toAccount = ApplicationObjects.newTextField("10987654321", x, y + 2 * n, 100, 20, 15);
 
-        Button transfer = ApplicationObjects.newButton("Pay", 200, 255, 100, 20, 15);
+        Button transfer = ApplicationObjects.newButton("Pay", x, y + 2 * n + 150, 100, 20, 15);
         Button cancel = ApplicationObjects.newButton("Cancel", 350, 255, 100, 20, 15);
         transfer.setOnAction(e -> {
             try {
