@@ -1,17 +1,13 @@
 package edu.ntnu.g14;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This class represents an account in the bank system and that a user has.
  */
 public class Account {
     // Type of account, as AccountCategory
-    private final AccountCategory accountType;
+    private AccountCategory accountType;
     // Funds in the account, as BigDecimal
     private BigDecimal amount;
     // Unique reference of account in the bank system, as String
@@ -47,6 +43,12 @@ public class Account {
             this.accountNumber = accountNumber;
         }
     }
+    private Account(AccountBuilder account) {
+        this.accountType = account.accountType;
+        this.accountNumber = account.accountNumber;
+        this.amount = account.amount;
+        this.accountName = account.accountName;
+    }
 
     /**
      * This method removes an amount from this account
@@ -79,16 +81,18 @@ public class Account {
 
     /**
      * This method changes the name of an account. The new name must be unique to a users accounts
+     *
      * @param newName
-     * @return true if name change is successful, false if not
      */
-    public boolean changeAccountName(String newName) {
-        // TODO: Check if accountName is already occupied
+    public void setAccountName(String newName) {
         if (newName.isBlank()) {
             throw new IllegalArgumentException("Account name cannot be left blank");
         }
         this.accountName = newName;
-        return true;
+    }
+
+    public void setAccountType(AccountCategory accountType) {
+        this.accountType = accountType;
     }
 
     /**
@@ -146,5 +150,41 @@ public class Account {
                 : accountName;
 
         return new Account(accountType, amount, accountNumber, finalAccountName);
+    }
+    public static class AccountBuilder {
+        public AccountCategory accountType;
+        // Funds in the account, as BigDecimal
+        public BigDecimal amount;
+        // Unique reference of account in the bank system, as String
+        public String accountNumber;
+        // Name of the account assigned by a user, as String
+        public String accountName;
+
+        public Account build() {
+            return new Account(this);
+        }
+        public AccountBuilder accountCategory(AccountCategory accountType) {
+            this.accountType = accountType;
+            return this;
+        }
+        public AccountBuilder amount(BigDecimal amount) {
+            if (amount.intValue() < 0) {
+                throw new IllegalArgumentException("Amount needs to be zero or positive");
+            }
+            this.amount = amount;
+            return this;
+        }
+        public AccountBuilder accountNumber(String accountNumber) {
+            this.accountNumber = accountNumber;
+            return this;
+        }
+        public AccountBuilder accountName(String accountName) {
+            if (accountName.isBlank()) {
+                this.accountName = accountType.toString();
+            } else {
+                this.accountName = accountName;
+            }
+            return this;
+        }
     }
 }
