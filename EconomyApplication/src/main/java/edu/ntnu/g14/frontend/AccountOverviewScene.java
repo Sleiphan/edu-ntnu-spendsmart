@@ -10,10 +10,12 @@ import java.util.stream.Collectors;
 import edu.ntnu.g14.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -121,11 +123,14 @@ public class AccountOverviewScene {
 
         
         Group userButtons = ApplicationObjects.userMenu();
-        manageUserButton.setOnMouseEntered(e -> root.getChildren().add(userButtons));
-        scene.setOnMouseClicked(e -> {
-            root.getChildren().remove(userButtons);
-            root.getChildren().remove(dropDown);
-        });
+        manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event){
+                root.getChildren().add(userButtons);
+                event.consume();
+            }
+        });  
+        
 
         return scene;
     }

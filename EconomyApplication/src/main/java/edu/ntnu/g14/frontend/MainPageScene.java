@@ -8,10 +8,12 @@ import edu.ntnu.g14.FileManagement;
 import edu.ntnu.g14.Transaction;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -29,60 +31,20 @@ public class MainPageScene {
         }
 
         Text actionsText = ApplicationObjects.newText("Actions", 20, false, 160, 30);
-        Button transfer = ApplicationObjects.newButton("Transfer", 30, 50, 157, 25, 16);
-        transfer.setOnMouseClicked(e -> {
-            try {
-                stage.setScene(TransferScene.scene());
-            } catch (FileNotFoundException e1) {
-                
-                e1.printStackTrace();
-            }
-        });
-        Button invoice = ApplicationObjects.newButton("Invoice", 192, 50, 157,25,16);
-        invoice.setOnMouseClicked(e -> {
-            try {
-                stage.setScene(InvoiceScene.scene());
-            } catch (FileNotFoundException e1) {
-                
-                e1.printStackTrace();
-            }
-        });
-        Button payment = ApplicationObjects.newButton("Payment", 30, 90, 157, 25, 16);
-        payment.setOnMouseClicked(e -> {
-            try {
-                stage.setScene(PaymentScene.scene());
-            } catch (FileNotFoundException e1) {
-                
-                e1.printStackTrace();
-            }
-        });
-        Button overview = ApplicationObjects.newButton("Overview", 192,90, 157,25,16);
-        overview.setOnMouseClicked(e -> {
-            try {
-                stage.setScene(GeneralOverviewScene.scene());
-            } catch (FileNotFoundException e1) {
-                
-                e1.printStackTrace();
-            }
-        });
-        Button accountsButton = ApplicationObjects.newButton("Accounts", 30,130, 157, 25, 16);
-        accountsButton.setOnMouseClicked(e -> {
-            try {
-                stage.setScene(AccountOverviewScene.scene());
-            } catch (FileNotFoundException e1) {
-                
-                e1.printStackTrace();
-            }
-        });
-        Button budgeting = ApplicationObjects.newButton("Budgeting", 192, 130, 157, 25,16);
-        budgeting.setOnMouseClicked(e -> {
-            try {
-                stage.setScene(BudgetingScene.scene());
-            } catch (FileNotFoundException e1) {
-                
-                e1.printStackTrace();
-            }
-        });
+        Group transfer = ApplicationObjects.newButtonWithIcon("Transfer", 30, 50, 157, 25, 16, "budget.png", TransferScene.scene());
+        
+        Group invoice = ApplicationObjects.newButtonWithIcon("Invoice", 192, 50, 157,25,16, "invoice.png", InvoiceScene.scene());
+        
+        Group payment = ApplicationObjects.newButtonWithIcon("Payment", 30, 90, 157, 25, 16, "payment.png", PaymentScene.scene());
+        
+        Group overview = ApplicationObjects.newButtonWithIcon("Overview", 192,90, 157,25,16, "overview.png", GeneralOverviewScene.scene());
+        
+        Group accountsButton = ApplicationObjects.newButtonWithIcon("Accounts", 30,130, 157, 25, 16, "account.png", AccountOverviewScene.scene());
+        
+        Group budgeting = ApplicationObjects.newButtonWithIcon("Budgeting", 192, 130, 157, 25,16, "budget.png", BudgetingScene.scene());
+        
+        
+
         Text latestActivitiesText = ApplicationObjects.newText("Latest Activities", 20, false,130, 210);
         TableView latestActivitiesTable = ApplicationObjects.newTableView(columnTitlesLatestActivitiesTable, 30, 230, 324, 300);
         ObservableList<ObservableList<Object>> latestActivitiesData;
@@ -115,9 +77,13 @@ public class MainPageScene {
     
         
         Group userButtons = ApplicationObjects.userMenu();
-        manageUserButton.setOnMouseEntered(e -> {
-            root.getChildren().add(userButtons);
-        });
+        manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event){
+                root.getChildren().add(userButtons);
+                event.consume();
+            }
+        }); 
         scene.setOnMouseClicked(e -> {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
