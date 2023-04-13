@@ -54,7 +54,7 @@ public class ApplicationObjects {
     public static Group userMenu() {
         Rectangle rectangle = newRectangle(553, 10, 145, 110);
         
-        Button logOut = newButton("overview", 563, 15, 130, 40, 15);
+        Button logOut = newButton("log out", 563, 15, 130, 40, 15);
         logOut.setOnAction(e -> {
             try {
                 stage.setScene(LoginChooseUserScene.scene());

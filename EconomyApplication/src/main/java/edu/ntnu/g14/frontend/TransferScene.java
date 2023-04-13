@@ -58,7 +58,7 @@ public class TransferScene {
         ApplicationObjects.newText("From account", 30, false, x, y - 5),
         ApplicationObjects.newText("Amount:", 30, false, x, y + m),
         ApplicationObjects.newText("To account:", 30, false, x, y + 2 * m),
-            transfer, cancel, dropDownButton, homeButton, manageUserButton);
+            transfer, dropDownButton, homeButton, manageUserButton);
         dropDownButton.setOnAction(e -> {
             root.getChildren().add(dropDown);
         });

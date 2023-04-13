@@ -142,7 +142,7 @@ public class InvoiceScene {
         Group root = new Group(amount_t, accountNum_t, cidComment_t, dueDate_t,
         amount_tf, accountNum_tf, cidComment_tf,
         invoices_lv, due_dp,
-        clear_bt, register_bt, back_bt, payNow_bt, delete_bt, dropDownButton, homeButton, manageUserButton);
+        clear_bt, register_bt, payNow_bt, delete_bt, dropDownButton, homeButton, manageUserButton);
         dropDownButton.setOnAction(e -> {
             root.getChildren().add(dropDown);
         });

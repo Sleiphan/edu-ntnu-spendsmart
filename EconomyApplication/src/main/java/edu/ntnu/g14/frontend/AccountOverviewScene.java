@@ -115,7 +115,7 @@ public class AccountOverviewScene {
         Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
-        Group root = new Group(accountChoiceBox, accountNumberText, amountText, addTransaction, addAccount, lastTransactionsText, lastTransactionsTable, back_bt, dropDownButton, homeButton, manageUserButton);
+        Group root = new Group(accountChoiceBox, accountNumberText, amountText, addTransaction, addAccount, lastTransactionsText, lastTransactionsTable, dropDownButton, homeButton, manageUserButton);
         dropDownButton.setOnAction(e -> root.getChildren().add(dropDown));
 
         root.getStylesheets().add("StyleSheet.css");

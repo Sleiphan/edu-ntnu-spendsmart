@@ -61,7 +61,7 @@ public class GeneralOverviewScene {
         Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
-        Group root = new Group(back_bt, totalOfAllAccountsCombinedText, bigSumText,
+        Group root = new Group( totalOfAllAccountsCombinedText, bigSumText,
          totalIncomeText, totalExpensesText, yearlyToggle, monthlyToggle, transactionsTables, dropDownButton, homeButton, manageUserButton);
         dropDownButton.setOnAction(e -> {
             root.getChildren().add(dropDown);

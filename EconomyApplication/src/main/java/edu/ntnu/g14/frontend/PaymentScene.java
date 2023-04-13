@@ -74,7 +74,7 @@ public class PaymentScene {
                 ApplicationObjects.newText("Due date:", 30, false, x, y + 3 * m),
                 ApplicationObjects.newText("To account:", 30, false, x, y + 4 * m),
                 ApplicationObjects.newText("CID:", 30, false, x, y + 5 * m),
-                pay, cancel, dropDownButton, homeButton, manageUserButton);
+                pay, dropDownButton, homeButton, manageUserButton);
         dropDownButton.setOnAction(e -> {
             root.getChildren().add(dropDown);
         });
