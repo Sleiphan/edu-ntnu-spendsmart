@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class PaymentScene {
@@ -39,7 +40,7 @@ public class PaymentScene {
                 paymentInfo.add(cid.getText());
                 PaymentConfirmationScene.setPaymentInfo(paymentInfo);
                 stage.setScene(PaymentConfirmationScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
 
                 e1.printStackTrace();
             }

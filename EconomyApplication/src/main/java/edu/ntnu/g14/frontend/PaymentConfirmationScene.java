@@ -15,10 +15,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-
+import edu.ntnu.g14.FileManagement;
 import edu.ntnu.g14.Payment;
 
-import static edu.ntnu.g14.FileManagement.writeNewTransaction;
 
 public class PaymentConfirmationScene {
     static Stage stage = ApplicationFront.getStage();
@@ -30,7 +29,7 @@ public class PaymentConfirmationScene {
     public static final DateTimeFormatter dateFormatter =
             DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    static public Scene scene() throws FileNotFoundException {
+    static public Scene scene() throws FileNotFoundException, IOException {
         TableView<ObservableList<Object>> payment = ApplicationObjects.newTableView(new String[]{"Payment", "Information"}, 100, 150, 602, 150);
         ObservableList<ObservableList<Object>> paymentData = initializePaymentData(getPaymentInfo());
         payment.setItems(paymentData);
@@ -52,15 +51,11 @@ public class PaymentConfirmationScene {
                 Payment paymentObject = new Payment(getPaymentInfo().get(0), new BigDecimal(getPaymentInfo().get(1)), getPaymentInfo().get(2), getPaymentInfo().get(4), dueDate, getPaymentInfo().get(5), dateOfTransaction);
                 System.out.println(paymentObject.toString());
 
-                try {
-                    writeNewTransaction(loggedInUser.getLoginInfo().getUserId(), paymentObject);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
+                FileManagement.writeTransaction(loggedInUser.getLoginInfo().getUserId(), paymentObject);
 
                 stage.setScene(MainPageScene.scene());
             } catch (FileNotFoundException e1) {
-                
+
                 e1.printStackTrace();
             }
         });

@@ -230,42 +230,7 @@ public class FileManagement {
         return invoices;
     }
 
-    public static void writeNewTransaction(String userId, Transaction transaction) throws IOException{
-        String addonText = "" + transaction.getDateOfTransaction().format(ApplicationObjects.dateFormatter) + ";" + transaction.getAmount() + ";" +
-        transaction.getToAccountNumber() + ";" + transaction.getFromAccountNumber() + ";" + transaction.getDescription() + ",";
-        
-        try (RandomAccessFile file = new RandomAccessFile(PATH_TRANSACTIONS, "rw")) {
-            String line;
-            long pos = 0;
-            while ((line = file.readLine()) != null) {
-                if (line.startsWith(userId + ",")) {
-                    pos = file.getFilePointer() - line.length() + line.indexOf("   ") - 1;
-                    file.seek(pos);
-                    file.write(addonText.getBytes());
-                    file.close();
-                    break;
-                }
-            }
-        }
-    }
-
-    public static void writeNewAccount(String userId, Account account) throws IOException{
-        String addonText = "" + account.getAccountType() + ";" + account.getAmount() + ";" + account.getAccountNumber() + ";" + 
-        account.getAccountName() + ",";
-        try (RandomAccessFile file = new RandomAccessFile(filePath, "rw")) {
-            String line;
-            long pos = 0;
-            while ((line = file.readLine()) != null) {
-                if (line.startsWith(userId + ",")) {
-                    pos = file.getFilePointer() - line.length() + line.indexOf("   ") - 1;
-                    file.seek(pos);
-                    file.write(addonText.getBytes());
-                    file.close();
-                    break;
-                }
-            }
-        }
-    }
+    
     public static void writeAccount(String userId, Account account) {
         writeTransactionOrAccount(userId, account.toCSVString(), filePath);
     }
