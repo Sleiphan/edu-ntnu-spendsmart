@@ -7,8 +7,9 @@ public enum BudgetCategory {
     TRAVEL,
     ALCOHOL_AND_TOBACCO,
     OTHER,
-    AGE,
-    HOUSEHOLD,
-    GENDER
+    SALARY,
+    PAYMENT,
+    INCOME,
+    BUSINESS
 
 }
