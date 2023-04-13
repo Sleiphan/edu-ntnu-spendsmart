@@ -1,25 +1,2 @@
-##userid, budget 
-olav#1,                                             
-                                                                                                                                                                            
-                                                                                                                                                                                                                                        
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                         
-                                                                                                                                                                                                                  
-                                                                                                         
+olav#1:670000,1051738,1,MALE,250;"Candy every saturday";LEISURE,300.7;"Bus";TRAVEL
+kari#1:357000,200000,1,FEMALE,250;"Chocolates";LEISURE,300.7;"Bus";TRAVEL
