@@ -291,7 +291,7 @@ public class ApplicationObjects {
     
     public static class AccountWithPropertyDialog extends Dialog<AccountWithProperty> {
         private final AccountWithProperty account;
-        private ChoiceBox<String> accountTypeField;
+        private ComboBox<String> accountTypeField;
         private TextField amountField;
         private TextField accountNumberField;
         private TextField accountNameField;
@@ -346,7 +346,7 @@ public class ApplicationObjects {
                     }
                     return accountNumberField.getText() != null
                             && accountNameField.getText() != null
-                            && !accountTypeField.getValue().isBlank()
+                            && accountTypeField.getValue() != null
                             && !(amountBigDecimal.floatValue() < 0)
                             && Pattern.matches(regexAccountNumber, accountNumberField.getText())
                             && ApplicationFront.loggedInUser.getAccountsAsList().stream()
@@ -360,17 +360,21 @@ public class ApplicationObjects {
         }
 
         public Pane createGridPane() {
-            VBox content = new VBox(10);
-            Label accountTypeLabel = new Label("Choose the type of account:");
+            VBox content             = new VBox(10);
+            Label accountTypeLabel   = new Label("Choose the type of account:");
             Label accountNumberLabel = new Label("Enter the account number:");
-            Label amountLabel = new Label("Enter the balance of your account:");
-            Label accountNameLabel = new Label("Choose a name for your account:");
-            this.accountTypeField = new ChoiceBox<>();
-            this.accountNumberField = new TextField();
-            this.amountField = new TextField();
-            this.accountNameField = new TextField();
+            Label amountLabel        = new Label("Enter the balance of your account:");
+            Label accountNameLabel   = new Label("Choose a name for your account:");
+            this.accountTypeField    = new ComboBox<>();
+            this.accountNumberField  = new TextField();
+            this.amountField         = new TextField();
+            this.accountNameField    = new TextField();
+
             this.accountTypeField.getItems().addAll("Spendings Account", "Savings Account", "Pensions Account", "Other");
+            this.accountTypeField.setPromptText("Account Type");
+
             GridPane grid = new GridPane();
+
             grid.setHgap(10);
             grid.setVgap(5);
             grid.add(accountTypeLabel,0,0);
@@ -398,7 +402,7 @@ public class ApplicationObjects {
         private TextField amountField;
         private TextField descriptionField;
         private DatePicker dateOfTransactionField;
-        private ChoiceBox<String> categoryField;
+        private ComboBox<String> categoryField;
         public TransactionWithPropertyDialog(TransactionWithProperty transaction) {
             super();
             this.setTitle("Add Transaction");
@@ -440,11 +444,11 @@ public class ApplicationObjects {
                 }
                 private boolean validateDialog() {
                     String regexAccountNumber = "[0-9]{4}+\\.[0-9]{2}+\\.[0-9]{5}";
-
-                    return !toAccountNumberField.getText().isBlank()
-                            && !amountField.getText().isBlank()
-                            && !descriptionField.getText().isBlank()
-                            && !toAccountNumberField.getText().isBlank()
+                    return toAccountNumberField.getText() != null
+                            && amountField.getText() != null
+                            && descriptionField.getText() != null
+                            && toAccountNumberField.getText() != null
+                            && categoryField.getValue() != null
                             && (ApplicationFront.loggedInUser.getAccountsAsList().stream().map(Account::getAccountNumber).anyMatch(accountNumber -> accountNumber.equals(toAccountNumberField.getText())) || ApplicationFront.loggedInUser.getAccountsAsList().stream().map(Account::getAccountNumber).anyMatch(accountNumber -> accountNumber.equals(fromAccountNumberField.getText()))
                             && Pattern.matches(regexAccountNumber, toAccountNumberField.getText()));
                 }
@@ -464,9 +468,10 @@ public class ApplicationObjects {
             this.amountField = new TextField();
             this.descriptionField = new TextField();
             this.dateOfTransactionField = new DatePicker();
-            this.categoryField = new ChoiceBox<>();
+            this.categoryField = new ComboBox<>();
             this.categoryField.getItems().addAll("Food and Drink", "Clothes and Shoes", "Personal Care", "Leisure", "Travel", "Alcohol and Tobacco", "Other", "Salary", "Payment", "Income", "Business");
-            this.categoryField.setMaxWidth(160);
+            categoryField.setPromptText("Category of Transaction");
+            this.categoryField.setMaxWidth(200);
             dateOfTransactionField.setConverter(new StringConverter<LocalDate>() {
                 @Override
                 public String toString(LocalDate localDate) {
