@@ -70,7 +70,7 @@ public class TransactionWithProperty {
     }
 
     public String getCategory() {
-        return category.get();
+        return category.get().replaceAll(" ", "_").toUpperCase();
     }
 
     public void setFromAccountId(String fromAccountId) {
