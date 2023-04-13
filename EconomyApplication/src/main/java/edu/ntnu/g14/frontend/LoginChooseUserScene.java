@@ -34,8 +34,8 @@ public class LoginChooseUserScene {
         }
         
     
-        ChoiceBox<String> user = ApplicationObjects.newChoiceBox(usernames, 250, 20, 15, 125, 70);
-    
+        ComboBox<String> user = ApplicationObjects.newComboBox(usernames, 250, 20, 15, 125, 70);
+        user.setPromptText("Choose Your User");
         Button confirm = ApplicationObjects.newButton("Confirm", 175, 110, 150, 20, 15);
         confirm.setOnAction(e -> {
             if(user.getValue() != null){

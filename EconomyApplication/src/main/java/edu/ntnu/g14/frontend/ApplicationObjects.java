@@ -280,6 +280,18 @@ public class ApplicationObjects {
         alert.showAndWait();
     }
 
+    public static String[] getBudgetCategories() {
+        return new String[] {"Food and Drink", "Clothes and Shoes", "Personal Care", "Leisure", "Travel"
+                , "Alcohol and Tobacco", "Other", "Salary", "Payment", "Income", "Business"};
+
+    }
+    public static String[] getBudgetExpenditureCategories() {
+        return new String[] {"Food and Drink", "Clothes and Shoes", "Personal Care", "Leisure", "Travel"
+                , "Alcohol and Tobacco", "Other"};
+    }
+    public static String[] getBudgetIncomeCategories() {
+        return new String[] {"Salary", "Payment", "Income", "Business"};
+    }
     public static String setStyleString(String borderColor,
         String backgroundColor, int width, int height, int fontSize) {
         return "-fx-border-color: " + borderColor + ";" +
@@ -472,6 +484,7 @@ public class ApplicationObjects {
             this.categoryField.getItems().addAll("Food and Drink", "Clothes and Shoes", "Personal Care", "Leisure", "Travel", "Alcohol and Tobacco", "Other", "Salary", "Payment", "Income", "Business");
             categoryField.setPromptText("Category of Transaction");
             this.categoryField.setMaxWidth(200);
+            restrictDatePicker(dateOfTransactionField);
             dateOfTransactionField.setConverter(new StringConverter<LocalDate>() {
                 @Override
                 public String toString(LocalDate localDate) {
@@ -488,6 +501,7 @@ public class ApplicationObjects {
                     return null;
                 }
             });
+
             //TODO: Make it retrieve a users accounts which are not savings or pensions
             GridPane grid = new GridPane();
             grid.setHgap(10);
@@ -513,6 +527,24 @@ public class ApplicationObjects {
 
             content.getChildren().add(grid);
             return content;
+        }
+        public static void restrictDatePicker(DatePicker datePicker) {
+            final Callback<DatePicker, DateCell> dayCellFactory = new Callback<>() {
+                @Override
+                public DateCell call(final DatePicker datePicker) {
+                    return new DateCell() {
+                        @Override
+                        public void updateItem(LocalDate item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (item.isAfter(LocalDate.now().minusDays(1))) {
+                                setDisable(true);
+                                setStyle("-fx-background-color: #ffc0cb;");
+                            }
+                        }
+                    };
+                }
+            };
+            datePicker.setDayCellFactory(dayCellFactory);
         }
     }
 
