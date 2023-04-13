@@ -1,6 +1,7 @@
 package edu.ntnu.g14.frontend;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
@@ -26,7 +27,7 @@ public class GeneralOverviewScene {
         back_bt.setOnAction(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 
                 e1.printStackTrace();
             }
@@ -43,7 +44,7 @@ public class GeneralOverviewScene {
         homeButton.setOnMouseClicked(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         });

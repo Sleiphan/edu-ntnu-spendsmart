@@ -50,7 +50,7 @@ public class PaymentScene {
         cancel.setOnAction(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
 
                 e1.printStackTrace();
             }
@@ -60,7 +60,7 @@ public class PaymentScene {
         homeButton.setOnMouseClicked(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         });

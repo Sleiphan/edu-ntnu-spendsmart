@@ -56,7 +56,7 @@ public class PaymentConfirmationScene {
                 FileManagement.writeTransaction(loggedInUser.getLoginInfo().getUserId(), paymentObject);
 
                 stage.setScene(MainPageScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
 
                 e1.printStackTrace();
             }
@@ -76,7 +76,7 @@ public class PaymentConfirmationScene {
         homeButton.setOnMouseClicked(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         });

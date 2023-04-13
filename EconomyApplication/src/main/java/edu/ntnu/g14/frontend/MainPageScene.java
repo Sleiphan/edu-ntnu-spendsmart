@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 public class MainPageScene {
     static Stage stage = ApplicationFront.getStage();
 
-    static public Scene scene() throws FileNotFoundException {
+    static public Scene scene() throws IOException {
         String [] columnTitlesLatestActivitiesTable = {"Transaction", "Amount"};
         String [] columnTitlesDuePaymentsTable = {"Date", "Recipient", "Amount"};
 

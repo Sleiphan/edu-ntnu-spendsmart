@@ -123,7 +123,7 @@ public class ApplicationObjects {
         budgetting.setOnAction(e -> {
             try {
                 stage.setScene(BudgetingScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 
                 e1.printStackTrace();
             }

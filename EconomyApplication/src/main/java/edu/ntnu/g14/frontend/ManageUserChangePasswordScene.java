@@ -1,6 +1,7 @@
 package edu.ntnu.g14.frontend;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -33,7 +34,7 @@ public class ManageUserChangePasswordScene {
         homeButton.setOnMouseClicked(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         });

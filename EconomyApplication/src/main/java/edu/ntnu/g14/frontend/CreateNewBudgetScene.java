@@ -6,12 +6,14 @@ import java.io.IOException;
 
 import edu.ntnu.g14.*;
 import edu.ntnu.g14.dao.BudgetDAO;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -48,7 +50,7 @@ public class CreateNewBudgetScene {
         homeButton.setOnMouseClicked(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
-            } catch (FileNotFoundException e1) {
+            } catch (IOException e1) {
                 e1.printStackTrace();
             }
         });
@@ -62,8 +64,12 @@ public class CreateNewBudgetScene {
 
         Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
         Group userButtons = ApplicationObjects.userMenu();
-        manageUserButton.setOnMouseEntered(e -> {
-            root.getChildren().add(userButtons);
+        manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event){
+                root.getChildren().add(userButtons);
+                event.consume();
+            }
         });
         scene.setOnMouseClicked(e -> {
             root.getChildren().remove(userButtons);
