@@ -13,6 +13,8 @@ public class Budget {
     private BigDecimal savings = BigDecimal.ZERO;
     private byte age;
     private GenderCategory gender;
+
+    private HouseholdCategory household;
     private final List<BudgetItem> entries = new ArrayList<>();
 
 
@@ -25,6 +27,10 @@ public class Budget {
     public Budget(byte i, GenderCategory ownerGender) {
         this.age = i;
         this.gender = ownerGender;
+    }
+
+    public Budget(HouseholdCategory householdSize) {
+        this.household = householdSize;
     }
 
 
