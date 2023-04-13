@@ -14,6 +14,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -29,22 +30,25 @@ public class CreateNewBudgetScene {
     static Group revenueComponents;
     static Group expenditureComponents;
 
+    static Button createBudgetBtn;
+
     static public Scene scene() throws FileNotFoundException, IOException {
 
         try {
-            budgetDAO = new BudgetDAO("budgets.txt");
+            budgetDAO = new BudgetDAO("saves/budgets.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         // Create components
         Group selectTypeComponents = createSelectTypeComponents();
-        Group revenueComponents = createRevenueComponents();
-        Group expenditureComponents = createExpenditureComponents();
+        revenueComponents = createRevenueComponents();
+        expenditureComponents = createExpenditureComponents();
 
-        // Hide revenue and expenditure components initially
+        // Hide revenue, expenditure and createBudgetBtn components initially
         revenueComponents.setVisible(false);
         expenditureComponents.setVisible(false);
+        createBudgetBtn.setVisible(false);
 
         ImageView homeButton = ApplicationObjects.newImage("home.png", 10, 10, 20, 20);
         homeButton.setOnMouseClicked(e -> {
@@ -64,12 +68,9 @@ public class CreateNewBudgetScene {
 
         Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
         Group userButtons = ApplicationObjects.userMenu();
-        manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event){
-                root.getChildren().add(userButtons);
-                event.consume();
-            }
+        manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            root.getChildren().add(userButtons);
+            event.consume();
         });
         scene.setOnMouseClicked(e -> {
             root.getChildren().remove(userButtons);
@@ -86,26 +87,27 @@ public class CreateNewBudgetScene {
 
         // Add a listener to the personal choice box
         String[] personals = {"Select Type", "Age & Gender", "Household"};
-        Text Age = ApplicationObjects.newText("Age", 20, false, 50, 300);
-        ChoiceBox<String> personal = ApplicationObjects.newChoiceBox(personals, 150, 34, 15, 50, 300);
+        ChoiceBox<String> personal = ApplicationObjects.newChoiceBox(personals, 150, 34, 15, 50, 100);
         personal.setValue("Select Type");
         ToggleGroup genderToggleGroup = new ToggleGroup();
         RadioButton maleRadioButton = new RadioButton("Male");
         maleRadioButton.setToggleGroup(genderToggleGroup);
+        maleRadioButton.setUserData("MALE");
         maleRadioButton.setLayoutX(350);
-        maleRadioButton.setLayoutY(300);
+        maleRadioButton.setLayoutY(100);
 
         RadioButton femaleRadioButton = new RadioButton("Female");
         femaleRadioButton.setToggleGroup(genderToggleGroup);
+        femaleRadioButton.setUserData("FEMALE");
         femaleRadioButton.setLayoutX(350);
-        femaleRadioButton.setLayoutY(330);
+        femaleRadioButton.setLayoutY(120);
 
 // Hide gender RadioButtons by default
         maleRadioButton.setVisible(false);
         femaleRadioButton.setVisible(false);
 
-        TextField AgeInput = ApplicationObjects.newTextField("Age", 210, 300, 130, 30, 15);
-        TextField HouseholdInput = ApplicationObjects.newTextField("Household", 490, 300, 130, 30, 15);
+        TextField AgeInput = ApplicationObjects.newTextField("Enter Age", 210, 100, 130, 30, 15);
+        TextField HouseholdInput = ApplicationObjects.newTextField("Household", 210, 100, 130, 30, 15);
         HouseholdInput.setVisible(false);
         AgeInput.setVisible(false);
 
@@ -130,8 +132,8 @@ public class CreateNewBudgetScene {
         });
 
 // When the 'Create' button is clicked
-        Button createBtn= ApplicationObjects.newButton("Create", 380, 480, 157, 25, 16);
-        createBtn.setOnAction(e -> {
+        Button continueBtn = ApplicationObjects.newButton("Continue", 500, 480, 157, 25, 16);
+        continueBtn.setOnAction(e -> {
             // Get the input values for Age, Gender, and Household
             String inputAge = AgeInput.getText();
             String inputGender = genderToggleGroup.getSelectedToggle() != null ? genderToggleGroup.getSelectedToggle().getUserData().toString() : "";
@@ -144,85 +146,101 @@ public class CreateNewBudgetScene {
             processSelectTypeInput(selectedValue, inputAge, inputGender, inputHousehold, budgetDAO, loggedInUser);
 
             // Show the revenue and expenditure components
-            revenueComponents.setVisible(true);
-            expenditureComponents.setVisible(true);
+            showRevenueComponents();
+            showExpenditureComponents();
+            continueBtn.setVisible(false);
+            createBudgetBtn.setVisible(true);
+        });
+        createBudgetBtn =  ApplicationObjects.newButton("Create Budget", 500, 480, 157, 25, 16);
+        createBudgetBtn.setOnAction(e -> {
+            try {
+                budgetDAO.setBudget(loggedInUser.getLoginInfo().getUserId(), userBudget);
+                // Navigate to the main page or another desired page after saving the budget
+                stage.setScene(BudgetingScene.scene());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         });
 
-        Group selectTypeGroup = new Group(personal, Age, AgeInput, maleRadioButton, femaleRadioButton, HouseholdInput, createBtn);
+        Group selectTypeGroup = new Group(personal, AgeInput, maleRadioButton, femaleRadioButton, HouseholdInput, continueBtn, createBudgetBtn);
         return selectTypeGroup;
     }
 
     private static Group createRevenueComponents() {
         // Create components for selecting and inputting revenues
-        ChoiceBox<String> revenue = new ChoiceBox<>();
-        revenue.getItems().addAll("Revenues", "Salary", "Business", "Investments");
-        revenue.setValue("Revenues");
-        TextField revenueInput = ApplicationObjects.newTextField("", 210, 100, 130, 30, 15);
-        revenue.setLayoutX(50);
-        revenue.setLayoutY(150);
-
-
-        // Add an event handler for the revenue TextField
-        revenueInput.setOnKeyPressed((KeyEvent keyEvent) -> {
-            if (keyEvent.getCode() == KeyCode.ENTER) {
-                String selectedItem = revenue.getValue();
-                if (!selectedItem.equals("Revenues")) {
-                    String inputText = revenueInput.getText();
-                    addRevenueToBudget(selectedItem, inputText, budgetDAO);
-                }
+        ChoiceBox<BudgetCategory> revenue = new ChoiceBox<>();
+        for (BudgetCategory category : BudgetCategory.values()) {
+            if (category.getType().equals("r")) {
+                revenue.getItems().add(category);
             }
+        }
+        revenue.setValue(BudgetCategory.SALARY);
+
+        TextField revenueInput = ApplicationObjects.newTextField("Enter Amount", 0, 0, 130, 30, 15);
+        Button addRevenueItemBtn = ApplicationObjects.newButton("Add revenue to budget", 0, 0, 157, 25, 16);
+        addRevenueItemBtn.setOnAction(e -> {
+            BudgetCategory selectedItem = revenue.getValue();
+            String inputText = revenueInput.getText();
+            addRevenueToBudget(selectedItem, inputText, budgetDAO);
         });
 
-        Group revenueGroup = new Group(revenue, revenueInput);
+        VBox revenueBox = new VBox();
+        revenueBox.setLayoutX(50);
+        revenueBox.setLayoutY(150);
+        revenueBox.setSpacing(10);
+        revenueBox.getChildren().addAll(revenue, revenueInput, addRevenueItemBtn);
+
+        Group revenueGroup = new Group(revenueBox);
         return revenueGroup;
     }
 
     private static Group createExpenditureComponents() {
         // Create components for selecting and inputting expenditures
-        ChoiceBox<String> expenditure = new ChoiceBox<>();
-        expenditure.getItems().addAll("Expenditures", "Rent", "Groceries", "Utilities");
-        expenditure.setValue("Expenditures");
-        expenditure.setLayoutX(50);
-        expenditure.setLayoutY(200);
-
-        // Add an event handler for the expenditure TextField
-        TextField expenditureInput = ApplicationObjects.newTextField("Enter amount", 560, 100, 130, 30, 15);
-
-// Event handler for TextField
-        expenditureInput.setOnKeyPressed((KeyEvent keyEvent) -> {
-            if (keyEvent.getCode() == KeyCode.ENTER) {
-                String selectedItem = expenditure.getValue();
-                if (!selectedItem.equals("Expenditures")) {
-                    String inputText = expenditureInput.getText();
-                    addExpenditureToBudget(selectedItem, inputText, budgetDAO);
-                }
+        ChoiceBox<BudgetCategory> expenditure = new ChoiceBox<>();
+        for (BudgetCategory category : BudgetCategory.values()) {
+            if (category.getType().equals("e")) {
+                expenditure.getItems().add(category);
             }
-        });
+        }
+        expenditure.setValue(BudgetCategory.FOOD_AND_DRINK);
 
-        Group expenditureGroup = new Group(expenditure, expenditureInput);
+        TextField expenditureInput = ApplicationObjects.newTextField("Enter Amount", 0, 0, 130, 30, 15);
+        Button addExpenditureItemBtn = ApplicationObjects.newButton("Add expenditure to Budget", 0, 0, 157, 25, 16);;
+        addExpenditureItemBtn.setOnAction(e -> {
+            BudgetCategory selectedItem = expenditure.getValue();
+            String inputText = expenditureInput.getText();
+            addExpenditureToBudget(selectedItem, inputText, budgetDAO);
+        });
+        VBox expenditureBox = new VBox();
+        expenditureBox.setLayoutX(50);
+        expenditureBox.setLayoutY(300);
+        expenditureBox.setSpacing(10);
+        expenditureBox.getChildren().addAll(expenditure, expenditureInput, addExpenditureItemBtn);
+
+        Group expenditureGroup = new Group(expenditureBox);
         return expenditureGroup;
     }
-    private static void addRevenueToBudget(String selectedItem, String inputText, BudgetDAO budgetDAO) {
+    private static void addRevenueToBudget(BudgetCategory selectedItem, String inputText, BudgetDAO budgetDAO) {
         BigDecimal amount = new BigDecimal(inputText);
 
-        BudgetItem budgetItem = new BudgetItem();//selectedItem, amount, BudgetCategory.OTHER);
+        BudgetItem budgetItem = new BudgetItem(selectedItem, amount);
         userBudget.addBudgetItem(budgetItem);
 
         try {
-            budgetDAO.setBudget(loggedInUser.getLoginInfo().getUserId(),userBudget);
+            budgetDAO.setBudget(loggedInUser.getLoginInfo().getUserId(), userBudget);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static void addExpenditureToBudget(String selectedItem, String inputText, BudgetDAO budgetDAO) {
+    private static void addExpenditureToBudget(BudgetCategory selectedItem, String inputText, BudgetDAO budgetDAO) {
         BigDecimal amount = new BigDecimal(inputText);
-        selectedItem.toUpperCase();
-        BudgetItem budgetItem = new BudgetItem();//amount, selectedItem);
+
+        BudgetItem budgetItem = new BudgetItem(selectedItem, amount);
         userBudget.addBudgetItem(budgetItem);
 
         try {
-            budgetDAO.setBudget(loggedInUser.getLoginInfo().getUserId(),userBudget);
+            budgetDAO.setBudget(loggedInUser.getLoginInfo().getUserId(), userBudget);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -238,6 +256,14 @@ public class CreateNewBudgetScene {
             userBudget = new Budget(householdSize);
         }
     }
+    private static void showRevenueComponents() {
+        revenueComponents.setVisible(true);
+    }
+
+    private static void showExpenditureComponents() {
+        expenditureComponents.setVisible(true);
+    }
+
 
 
 }
