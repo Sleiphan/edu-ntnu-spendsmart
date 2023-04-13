@@ -1,12 +1,14 @@
 package edu.ntnu.g14.frontend;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Map;
 
 import edu.ntnu.g14.Budget;
 import edu.ntnu.g14.BudgetItem;
 import edu.ntnu.g14.User;
+import edu.ntnu.g14.dao.BudgetDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
@@ -21,7 +23,14 @@ public class BudgetingScene {
     static Stage stage = ApplicationFront.getStage();
     private static User loggedInUser = ApplicationFront.getLoggedInUser();
 
-    static public Scene scene() throws FileNotFoundException {
+    static BudgetDAO budgetDAO;
+
+    static public Scene scene() throws IOException {
+        try {
+            budgetDAO = new BudgetDAO("budgets.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         TableView<ObservableList<Object>> revenues = ApplicationObjects.newTableView(new String[]{"Revenues", "Amount"}, 40, 70, 380, 120);
         ObservableList<ObservableList<Object>> revenuesData = initializeRevenuesData();
         revenues.setItems(revenuesData);
@@ -44,7 +53,7 @@ public class BudgetingScene {
         Text MonthlyBudget = ApplicationObjects.newText("Monthly Budget", 30, false, 40, 60);
         MonthlyBudget.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
-        Text savings = ApplicationObjects.newText(loggedInUser.getBudget().getSavings().toString(), 30, false, 40, 480);
+        Text savings = ApplicationObjects.newText("Savings: 3000", 30, false, 40, 480);
         savings.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
 
         Button createNewBudget = ApplicationObjects.newButton("Create new budget", 470, 180, "black", "white", 157, 25, 16);
@@ -100,9 +109,9 @@ public class BudgetingScene {
         return scene;
     }
 
-    public static ObservableList<ObservableList<Object>> initializeRevenuesData() {
+    public static ObservableList<ObservableList<Object>> initializeRevenuesData() throws IOException {
         ObservableList<ObservableList<Object>> revenuesData = FXCollections.observableArrayList();
-        Budget budget = loggedInUser.getBudget();
+        Budget budget = budgetDAO.getBudget(loggedInUser.getLoginInfo().getUserId());
         // Fetch revenues from budget and add them to revenuesData
         if (budget != null) {
             for (BudgetItem entry : budget.getEntries()) {
