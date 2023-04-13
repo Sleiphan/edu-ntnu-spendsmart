@@ -98,9 +98,10 @@ public class CreateNewBudgetScene {
         maleRadioButton.setVisible(false);
         femaleRadioButton.setVisible(false);
 
-        TextField AgeInput = ApplicationObjects.newTextField("Age", 210, 300, "black", "white", 130, 30, 15);
-        TextField HouseholdInput = ApplicationObjects.newTextField("Household", 490, 300, "black", "white", 130, 30, 15);
+        TextField AgeInput = ApplicationObjects.newTextField("Age", 210, 300, 130, 30, 15);
+        TextField HouseholdInput = ApplicationObjects.newTextField("Household", 490, 300, 130, 30, 15);
         HouseholdInput.setVisible(false);
+        AgeInput.setVisible(false);
 
         // Add a listener to the personal choice box
         personal.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, selectedValue) -> {
