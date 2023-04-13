@@ -15,7 +15,7 @@ public class TestUser {
     Invoice testInvoice = new Invoice(LocalDate.of(2023, 12, 4), BigDecimal.valueOf(100000), "1256.65.56605");
     Invoice[] invoices = new Invoice[1];
     invoices[0] = testInvoice;
-    Transaction testTransaction = new Transaction("1256.65.56605", "1256.65.56605", BigDecimal.valueOf(1000), "brukte penger", LocalDate.of(2023, 12, 4));
+    Transaction testTransaction = new Transaction("1256.65.56605", "1256.65.56605", BigDecimal.valueOf(1000), "brukte penger", LocalDate.of(2023, 12, 4), BudgetCategory.ALCOHOL_AND_TOBACCO);
     Transaction[] transactions = new Transaction[1];
     transactions[0] = testTransaction;
     Budget testBudget = new Budget(Byte.parseByte("90"), GenderCategory.FEMALE);

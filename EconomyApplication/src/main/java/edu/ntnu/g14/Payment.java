@@ -7,8 +7,8 @@ public class Payment extends Transaction {
     private String CID;
     private LocalDate dueDate;
 
-    public Payment(String fromAccountId, BigDecimal amount, String description, String toAccountId, LocalDate dueDate, String CID, LocalDate dateOfTransaction) {
-        super(fromAccountId, toAccountId, amount, description, dateOfTransaction);
+    public Payment(String fromAccountId, BigDecimal amount, String description, String toAccountId, LocalDate dueDate, String CID, LocalDate dateOfTransaction, BudgetCategory category) {
+        super(fromAccountId, toAccountId, amount, description, dateOfTransaction, category);
 
         if (CID == null)
             throw new IllegalArgumentException("Customer ID cannot be null");

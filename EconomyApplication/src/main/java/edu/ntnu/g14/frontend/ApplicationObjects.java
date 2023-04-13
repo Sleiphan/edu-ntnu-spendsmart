@@ -302,7 +302,6 @@ public class ApplicationObjects {
             accountNumberField.textProperty().bindBidirectional(account.accountNumberProperty());
             accountNameField.textProperty().bindBidirectional(account.accountNameProperty());
             accountTypeField.valueProperty().bindBidirectional(account.accountTypeProperty());
-            // TODO: Implement String Properties to Account class
         }
 
         private void setResultConverter() {
@@ -391,6 +390,7 @@ public class ApplicationObjects {
         private TextField amountField;
         private TextField descriptionField;
         private DatePicker dateOfTransactionField;
+        private ChoiceBox<String> categoryField;
         public TransactionWithPropertyDialog(TransactionWithProperty transaction) {
             super();
             this.setTitle("Add Transaction");
@@ -405,6 +405,7 @@ public class ApplicationObjects {
             amountField.textProperty().bindBidirectional(transaction.getAmountProperty());
             descriptionField.textProperty().bindBidirectional(transaction.getDescriptionProperty());
             dateOfTransactionField.valueProperty().bindBidirectional(transaction.getDateOfTransactionProperty());
+            categoryField.valueProperty().bindBidirectional(transaction.getCategoryProperty());
         }
         private void setResultConverter() {
             javafx.util.Callback<ButtonType, TransactionWithProperty> transactionResultConverter = param -> {
@@ -447,13 +448,17 @@ public class ApplicationObjects {
             Label toAccountLabel = new Label("Enter the recipient's account number:");
             Label amountLabel = new Label("Enter the amount you want to send:");
             Label descriptionLabel = new Label("Enter the description of the transaction:");
-            Label dateOfTransactionLabel = new Label("Choose the date of the transaction:")   ;
+            Label dateOfTransactionLabel = new Label("Choose the date of the transaction:");
+            Label categoryLabel = new Label("Select the category of the transaction:");
 
             this.fromAccountNumberField = new TextField();
             this.toAccountNumberField = new TextField();
             this.amountField = new TextField();
             this.descriptionField = new TextField();
             this.dateOfTransactionField = new DatePicker();
+            this.categoryField = new ChoiceBox<>();
+            this.categoryField.getItems().addAll("Food and Drink", "Clothes and Shoes", "Personal Care", "Leisure", "Travel", "Alcohol and Tobacco", "Other", "Salary", "Payment", "Income", "Business");
+            this.categoryField.setMaxWidth(160);
             dateOfTransactionField.setConverter(new StringConverter<LocalDate>() {
                 @Override
                 public String toString(LocalDate localDate) {
@@ -479,6 +484,7 @@ public class ApplicationObjects {
             grid.add(amountLabel,0,2);
             grid.add(descriptionLabel,0,3);
             grid.add(dateOfTransactionLabel,0,4);
+            grid.add(categoryLabel,0,5);
             GridPane.setHgrow(this.fromAccountNumberField, Priority.ALWAYS);
             grid.add(fromAccountNumberField, 1,0);
             GridPane.setHgrow(this.toAccountNumberField,Priority.ALWAYS);
@@ -489,6 +495,9 @@ public class ApplicationObjects {
             GridPane.setHgrow(this.descriptionField,Priority.ALWAYS);
             grid.add(dateOfTransactionField,1,4);
             GridPane.setHgrow(this.dateOfTransactionField,Priority.ALWAYS);
+            grid.add(this.categoryField, 1,5);
+            GridPane.setHgrow(this.categoryField,Priority.ALWAYS);
+
             content.getChildren().add(grid);
             return content;
         }

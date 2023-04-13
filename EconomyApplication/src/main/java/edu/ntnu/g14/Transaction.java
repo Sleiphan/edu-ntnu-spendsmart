@@ -13,8 +13,10 @@ public class Transaction {
     private final BigDecimal amount;
     private final String description;
     private final LocalDate dateOfTransaction;
+    private final BudgetCategory category;
 
-    public Transaction(String fromAccountNumber, String toAccountNumber, BigDecimal amount, String description, LocalDate dateOfTransaction) {
+    public Transaction(String fromAccountNumber, String toAccountNumber, BigDecimal amount, String description,
+                       LocalDate dateOfTransaction, BudgetCategory category) {
         if (fromAccountNumber.isEmpty())
             throw new IllegalArgumentException("From account ID cannot be empty");
         if (toAccountNumber.isEmpty())
@@ -23,7 +25,7 @@ public class Transaction {
             throw new IllegalArgumentException("Description cannot be null");
         if (dateOfTransaction == null)
             throw new IllegalArgumentException("Date of transaction cannot be null");
-
+        this.category = category;
         this.fromAccountNumber = fromAccountNumber;
         this.toAccountNumber = toAccountNumber;
         this.amount = amount;
@@ -51,11 +53,14 @@ public class Transaction {
         return dateOfTransaction;
     }
 
+    public BudgetCategory getCategory() {
+        return category;
+    }
 
     //This method needs a better string representation of the transaction
     @Override
     public String toString() {
-        return "Transaction{" + "fromAccountNumber=" + fromAccountNumber + ", toAccountNumber=" + toAccountNumber + ", amount=" + amount + ", description=" + description + ", dateOfTransaction=" + dateOfTransaction + '}';
+        return "Transaction{" + "fromAccountNumber=" + fromAccountNumber + ", toAccountNumber=" + toAccountNumber + ", amount=" + amount + ", description=" + description + ", dateOfTransaction=" + dateOfTransaction + ", category=" + category + '}';
     }
 
     @Override
@@ -72,6 +77,8 @@ public class Transaction {
             return false;
         if (!description.equals(t.description))
             return false;
+        if (!category.equals(t.category))
+            return false;
         return dateOfTransaction.equals(t.dateOfTransaction);
     }
 
@@ -82,7 +89,7 @@ public class Transaction {
                 amount + CSV_FIELD_DELIMITER +
                         toAccountNumber + CSV_FIELD_DELIMITER +
                         fromAccountNumber + CSV_FIELD_DELIMITER +
-                description + ",";
+                description + CSV_FIELD_DELIMITER + category + ",";
     }
 
     public static Transaction fromCSVString(String csvString) {
@@ -92,7 +99,11 @@ public class Transaction {
         BigDecimal amount      = new BigDecimal(fields[1]);
         String description     = fields[4];
         LocalDate dateOfTransaction = LocalDate.parse(fields[0], ApplicationObjects.dateFormatter);
+        String category = fields[5];
+        BudgetCategory budgetCategory = category.endsWith(",") ?
+                BudgetCategory.valueOf(category.substring(0, category.length() - 1))
+                : BudgetCategory.valueOf(category);
 
-        return new Transaction(fromAccountNumber, toAccountNumber, amount, description, dateOfTransaction);
+        return new Transaction(fromAccountNumber, toAccountNumber, amount, description, dateOfTransaction, budgetCategory);
     }
 }

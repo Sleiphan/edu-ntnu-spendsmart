@@ -4,6 +4,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -28,6 +29,8 @@ public class PaymentScene {
         TextField dueDate = ApplicationObjects.newTextField("dd.mm.yy", x, y + 3 * n, 100, 20, 15);
         TextField toAccount = ApplicationObjects.newTextField("10987654321", x, y + 4 * n, 100, 20, 15);
         TextField cid = ApplicationObjects.newTextField("0123456789", x, y + 5 * n, 100, 20, 15);
+        ChoiceBox<String> category = new ChoiceBox<>();
+        category.getItems().addAll("Food and Drink", "Clothes and Shoes", "Personal Care", "Leisure", "Travel", "Alcohol and Tobacco", "Other", "Payment", "Business");
 
         Button pay = ApplicationObjects.newButton("Pay", x + 150, y + 5 * n, 100, 20, 15);
         Button cancel = ApplicationObjects.newButton("Cancel", 350, 450, 100, 20, 15);
@@ -40,6 +43,7 @@ public class PaymentScene {
                 paymentInfo.add(dueDate.getText());
                 paymentInfo.add(toAccount.getText());
                 paymentInfo.add(cid.getText());
+                paymentInfo.add(category.getValue());
                 PaymentConfirmationScene.setPaymentInfo(paymentInfo);
                 stage.setScene(PaymentConfirmationScene.scene());
             } catch (IOException e1) {

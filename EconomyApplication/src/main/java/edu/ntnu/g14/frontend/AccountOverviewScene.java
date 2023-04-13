@@ -84,7 +84,8 @@ public class AccountOverviewScene {
                 TransactionWithProperty transactionWithProperty = result.get();
                 Transaction transaction = new Transaction(transactionWithProperty.getFromAccountId(),
                         transactionWithProperty.getToAccountId(), new BigDecimal(transactionWithProperty.getAmount()),
-                        transactionWithProperty.getDescription(), transactionWithProperty.getDateOfTransaction());
+                        transactionWithProperty.getDescription(), transactionWithProperty.getDateOfTransaction(),
+                        BudgetCategory.valueOf(transactionWithProperty.getCategory()));
 
                 FileManagement.writeTransaction(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), transaction);
                 ApplicationFront.loggedInUser.getTransactionsAsList().add(transaction);

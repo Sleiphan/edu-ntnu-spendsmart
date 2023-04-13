@@ -13,16 +13,18 @@ public class TransactionWithProperty {
     private final StringProperty toAccountId;
     private final StringProperty amount;
     private final StringProperty description;
+    private final StringProperty category;
 
     private final ObjectProperty<LocalDate> dateOfTransaction = new SimpleObjectProperty<>();
 
-    public TransactionWithProperty(String fromAccountId, String toAccountId, String amount, String description, LocalDate dateOfTransaction, ObjectProperty<LocalDate> dateOfTransaction1) {
+    public TransactionWithProperty(String fromAccountId, String toAccountId, String amount, String description, LocalDate dateOfTransaction, String category) {
         this.fromAccountId = new SimpleStringProperty(fromAccountId);
         this.toAccountId = new SimpleStringProperty(toAccountId);
         this.amount = new SimpleStringProperty(amount);
         this.description = new SimpleStringProperty(description);
-        this.dateOfTransaction.set(dateOfTransaction); {
-        };
+        this.dateOfTransaction.set(dateOfTransaction);
+        this.category = new SimpleStringProperty(category);
+
     }
 
     public StringProperty getFromAccountIdProperty() {
@@ -52,6 +54,9 @@ public class TransactionWithProperty {
         return description;
     }
 
+    public StringProperty getCategoryProperty() {
+        return category;
+    }
     public String getDescription() {
         return description.get();
     }
@@ -62,6 +67,10 @@ public class TransactionWithProperty {
 
     public LocalDate getDateOfTransaction() {
         return dateOfTransaction.get();
+    }
+
+    public String getCategory() {
+        return category.get();
     }
 
     public void setFromAccountId(String fromAccountId) {

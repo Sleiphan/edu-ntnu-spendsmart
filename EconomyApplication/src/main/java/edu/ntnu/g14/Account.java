@@ -141,8 +141,10 @@ public class Account {
         AccountCategory accountType = AccountCategory.valueOf(fields[0]);
         BigDecimal amount           = new BigDecimal(fields[1]);
         String accountNumber        = fields[2];
-        String accountName          = fields[3];
+        String accountName = fields[3];
+        String finalAccountName          = accountName.endsWith(",") ? accountName.substring(0, fields[3].length() - 1)
+                : accountName;
 
-        return new Account(accountType, amount, accountNumber, accountName);
+        return new Account(accountType, amount, accountNumber, finalAccountName);
     }
 }
