@@ -18,6 +18,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import org.apache.commons.validator.routines.BigDecimalValidator;
 
 public class InvoiceScene {
@@ -45,6 +46,7 @@ public class InvoiceScene {
         DatePicker due_dp = new DatePicker();
         due_dp.setLayoutX(527 - 329);
         due_dp.setLayoutY(422 - 186);
+        restrictDatePicker(due_dp, LocalDate.now());
 
         ListView<Invoice> invoices_lv = new ListView<>();
         invoices_lv.setLayoutX(782 - 329);
@@ -162,6 +164,24 @@ public class InvoiceScene {
         });
         
         return scene;
+    }
+    public static void restrictDatePicker(DatePicker datePicker, LocalDate minDate) {
+        final Callback<DatePicker, DateCell> dayCellFactory = new Callback<>() {
+            @Override
+            public DateCell call(final DatePicker datePicker) {
+                return new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item.isBefore(minDate)) {
+                            setDisable(true);
+                            setStyle("-fx-background-color: #ffc0cb;");
+                        }
+                    }
+                };
+            }
+        };
+        datePicker.setDayCellFactory(dayCellFactory);
     }
 
 }

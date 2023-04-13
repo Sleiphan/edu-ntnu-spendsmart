@@ -470,7 +470,6 @@ public class ApplicationObjects {
                     return null;
                 }
             });
-            restrictDatePicker(dateOfTransactionField, LocalDate.now());
             //TODO: Make it retrieve a users accounts which are not savings or pensions
             GridPane grid = new GridPane();
             grid.setHgap(10);
@@ -492,24 +491,6 @@ public class ApplicationObjects {
             GridPane.setHgrow(this.dateOfTransactionField,Priority.ALWAYS);
             content.getChildren().add(grid);
             return content;
-        }
-        public void restrictDatePicker(DatePicker datePicker, LocalDate minDate) {
-            final Callback<DatePicker, DateCell> dayCellFactory = new Callback<>() {
-                @Override
-                public DateCell call(final DatePicker datePicker) {
-                    return new DateCell() {
-                        @Override
-                        public void updateItem(LocalDate item, boolean empty) {
-                            super.updateItem(item, empty);
-                            if (item.isBefore(minDate)) {
-                                setDisable(true);
-                                setStyle("-fx-background-color: #ffc0cb;");
-                            }
-                        }
-                    };
-                }
-            };
-            datePicker.setDayCellFactory(dayCellFactory);
         }
     }
 
