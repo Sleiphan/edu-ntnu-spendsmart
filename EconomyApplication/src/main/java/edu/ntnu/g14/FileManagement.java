@@ -239,11 +239,10 @@ public class FileManagement {
     }
 
     private static void writeTransactionOrAccount(String userId, String toCSVString, String filePath) {
-        String tempFile = "temp.text";
         File oldFile    = new File(filePath);
-        File newFile    = new File(tempFile);
+        File newFile    = new File(PATH_TEMPFILE);
         try {
-            FileWriter fileWriter         = new FileWriter(tempFile, true);
+            FileWriter fileWriter         = new FileWriter(PATH_TEMPFILE, true);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             PrintWriter printWriter       = new PrintWriter(bufferedWriter);
 

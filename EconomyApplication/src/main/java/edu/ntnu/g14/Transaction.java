@@ -12,7 +12,6 @@ public class Transaction {
     private final String toAccountNumber;
     private final BigDecimal amount;
     private final String description;
-
     private final LocalDate dateOfTransaction;
 
     public Transaction(String fromAccountNumber, String toAccountNumber, BigDecimal amount, String description, LocalDate dateOfTransaction) {
