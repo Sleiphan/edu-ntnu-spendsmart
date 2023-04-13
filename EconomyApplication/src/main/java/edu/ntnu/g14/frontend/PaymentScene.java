@@ -5,6 +5,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -29,9 +30,9 @@ public class PaymentScene {
         TextField dueDate = ApplicationObjects.newTextField("dd.mm.yy", x, y + 3 * n, 100, 20, 15);
         TextField toAccount = ApplicationObjects.newTextField("10987654321", x, y + 4 * n, 100, 20, 15);
         TextField cid = ApplicationObjects.newTextField("0123456789", x, y + 5 * n, 100, 20, 15);
-        ChoiceBox<String> category = new ChoiceBox<>();
-        category.getItems().addAll("Food and Drink", "Clothes and Shoes", "Personal Care", "Leisure", "Travel", "Alcohol and Tobacco", "Other", "Payment", "Business");
-
+        String[] categoryChoices = {"Food and Drink", "Clothes and Shoes", "Personal Care", "Leisure", "Travel", "Alcohol and Tobacco", "Other", "Payment", "Business"};
+        ComboBox<String> category = ApplicationObjects.newComboBox(categoryChoices, 100, 20, 15,x - 100, y + 6 * n);
+        category.setPromptText("Category of Payment");
         Button pay = ApplicationObjects.newButton("Pay", x + 150, y + 5 * n, 100, 20, 15);
         Button cancel = ApplicationObjects.newButton("Cancel", 350, 450, 100, 20, 15);
         pay.setOnAction(e -> {
@@ -78,7 +79,7 @@ public class PaymentScene {
                 ApplicationObjects.newText("Due date:", 30, false, x, y + 3 * m),
                 ApplicationObjects.newText("To account:", 30, false, x, y + 4 * m),
                 ApplicationObjects.newText("CID:", 30, false, x, y + 5 * m),
-                pay, dropDownButton, homeButton, manageUserButton);
+                pay, dropDownButton, homeButton, manageUserButton, category);
         dropDownButton.setOnAction(e -> {
             root.getChildren().add(dropDown);
         });

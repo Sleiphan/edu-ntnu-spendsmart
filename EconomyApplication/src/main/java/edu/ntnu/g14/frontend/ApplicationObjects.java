@@ -263,6 +263,14 @@ public class ApplicationObjects {
         choiceBox.setLayoutY(y);
         return choiceBox;
     }
+    public static ComboBox<String> newComboBox(String[] choices, int width, int height, int fontSize, int x, int y) {
+        ComboBox<String> comboBox = new ComboBox<>();
+        comboBox.getItems().addAll(choices);
+        comboBox.setStyle(setStyleString(borderColor, backgroundColor, width, height, fontSize));
+        comboBox.setLayoutX(x);
+        comboBox.setLayoutY(y);
+        return comboBox;
+    }
 
     public static void alertBox(String title, String header, String content) {
         Alert alert = new Alert(AlertType.ERROR);
