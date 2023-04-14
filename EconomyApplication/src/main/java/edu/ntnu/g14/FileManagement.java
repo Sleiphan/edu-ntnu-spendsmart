@@ -238,19 +238,18 @@ public class FileManagement {
         String userId = loggedInUser.getLoginInfo().getUserId();
 
         String newLine = userId + "," + accountStrings;
-        editAccountOrUser(newLine, userId);
+        editAccountOrUser(newLine, userId, PATH_ACCOUNTS);
     }
     public static void newEditUser(User loggedInUser) {
-        String CSVString = loggedInUser.toCSVString();
 
         String userId = loggedInUser.getLoginInfo().getUserId();
 
-        String newLine = userId + "," + CSVString;
-        editAccountOrUser(newLine, userId);
+        String newLine = loggedInUser.toCSVString();
+        editAccountOrUser(newLine, userId, PATH_USERS);
 
     }
-    private static void editAccountOrUser(String newLine, String userId) {
-        File oldFile    = new File(PATH_ACCOUNTS);
+    private static void editAccountOrUser(String newLine, String userId, String filePath) {
+        File oldFile    = new File(filePath);
         File newFile    = new File(PATH_TEMPFILE);
         try {
             FileWriter fileWriter         = new FileWriter(PATH_TEMPFILE, true);
@@ -287,7 +286,7 @@ public class FileManagement {
             printWriter.flush();
             printWriter.close();
             oldFile.delete();
-            File dump = new File(PATH_ACCOUNTS);
+            File dump = new File(filePath);
             newFile.renameTo(dump);
 
         } catch (IOException e) {
