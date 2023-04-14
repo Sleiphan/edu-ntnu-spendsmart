@@ -2,7 +2,6 @@ package edu.ntnu.g14;
 
 
 import java.io.*;
-import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +10,6 @@ import java.util.stream.Stream;
 
 import edu.ntnu.g14.dao.BudgetDAO;
 import edu.ntnu.g14.dao.InvoiceDAO;
-import edu.ntnu.g14.frontend.ApplicationObjects;
 
 
 //TODO: create exceptions
@@ -237,6 +235,56 @@ public class FileManagement {
     }
     public static void writeTransaction(String userId, Transaction transaction) {
         writeTransactionOrAccount(userId, transaction.toCSVString(), PATH_TRANSACTIONS);
+    }
+    public static void deleteOrEditAccount(User loggedInUser) {
+        File oldFile    = new File(filePath);
+        File newFile    = new File(PATH_TEMPFILE);
+        try {
+            FileWriter fileWriter         = new FileWriter(PATH_TEMPFILE, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            PrintWriter printWriter       = new PrintWriter(bufferedWriter);
+
+            FileInputStream inputStream   = new FileInputStream(oldFile);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+            int lines = (int) bufferedReader.lines().count();
+            inputStream.getChannel().position(0);
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            String accountStrings = loggedInUser.getAccountsAsList().stream()
+                    .map(Account::toCSVString).reduce("", String::concat);
+            String userId = loggedInUser.getLoginInfo().getUserId();
+
+            String newLine = userId + "," + accountStrings;
+
+            String currentLine;
+            for (int i = 1; i < lines; i++) {
+                currentLine = bufferedReader.readLine();
+                if (currentLine.startsWith(userId)) {
+                    printWriter.println(newLine);
+                }
+                else {
+                    printWriter.println(currentLine);
+                }
+            }
+            currentLine = bufferedReader.readLine();
+            if (currentLine.startsWith(userId)) {
+                printWriter.print(newLine);
+            }
+            else {
+                printWriter.print(currentLine);
+            }
+
+            inputStream.close();
+            bufferedReader.close();
+            printWriter.flush();
+            printWriter.close();
+            oldFile.delete();
+            File dump = new File(filePath);
+            newFile.renameTo(dump);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static void writeTransactionOrAccount(String userId, String toCSVString, String filePath) {

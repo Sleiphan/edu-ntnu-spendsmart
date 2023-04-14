@@ -1,10 +1,10 @@
 package edu.ntnu.g14.frontend;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -58,16 +58,20 @@ public class AccountOverviewScene {
         accountNumberText.setLayoutX((double) 728/2 - accountNumberText.getLayoutBounds().getWidth()/2);
         lastTransactionsTable = ApplicationObjects.newTableView(columnTitlesTransactionsTable, 20, 230, 688, 300);
         lastTransactionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        setCurrentAccount(accountComboBox.getValue());
+        if (accountComboBox.getValue() != null) {
+            setCurrentAccount(accountComboBox.getValue());
+        }
         ObservableList<ObservableList<Object>> lastTransactionsData = initializeLastTransactionsData(currentAccount);
         lastTransactionsTable.setItems(lastTransactionsData);
 
         accountComboBox.setOnAction(actionEvent -> {
-            setCurrentAccount(accountComboBox.getValue());
+            if (accountComboBox.getValue() != null) {
+                setCurrentAccount(accountComboBox.getValue());
 
+                accountNumberText.setText("Account Number: " + currentAccount.getAccountNumber());
+                amountText.setText("Amount: " + currentAccount.getAmount().toString() + "kr");
 
-            accountNumberText.setText("Account Number: " + currentAccount.getAccountNumber());
-            amountText.setText("Amount: " + currentAccount.getAmount().toString() + "kr");
+            }
         });
         addAccount.setOnAction(actionEvent -> {
             Dialog<AccountWithProperty> accountWithPropertyDialog = new ApplicationObjects.AccountWithPropertyDialog(new AccountWithProperty(null, null, null, null));
@@ -81,9 +85,15 @@ public class AccountOverviewScene {
             Dialog<Account> accountDialog = new ApplicationObjects.EditAccountDialog(currentAccount);
             Optional<Account> result = accountDialog.showAndWait();
             if (result.isPresent()) {
-                Account account = result.get();
                 accountComboBox.setItems(FXCollections.observableArrayList(getAccountsNames()));
-
+                if (!ApplicationFront.loggedInUser.getAccountsAsList().contains(currentAccount)) {
+                    getAccountsNames().remove(currentAccount.getAccountName());
+                    accountComboBox.setItems(FXCollections.observableArrayList(getAccountsNames()));
+                    accountComboBox.setValue(getAccountsNames().get(0));
+                } else {
+                    accountComboBox.setValue(currentAccount.getAccountName());
+                }
+                FileManagement.deleteOrEditAccount(ApplicationFront.loggedInUser);
             }
         });
 
@@ -141,7 +151,13 @@ public class AccountOverviewScene {
     }
 
     private static void setCurrentAccount(String accountName) {
-        currentAccount = ApplicationFront.loggedInUser.getAccountWithAccountName(accountName);
+        try {
+            currentAccount = ApplicationFront.loggedInUser.getAccountWithAccountName(accountName);
+        } catch (NoSuchElementException e) {
+            Account accountWithOldAccountName = currentAccount;
+            currentAccount = ApplicationFront.loggedInUser.getAccountWithAccountNumber(accountWithOldAccountName
+                    .getAccountNumber());
+        }
         initializeLastTransactionsData(currentAccount);
         lastTransactionsTable.setItems(lastTransactionsData);
 
