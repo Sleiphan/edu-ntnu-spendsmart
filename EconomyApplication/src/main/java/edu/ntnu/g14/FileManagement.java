@@ -69,35 +69,30 @@ public class FileManagement {
 
     public static User readUser(String userId) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(PATH_USERS));
-        Stream<String> userTrans = reader.lines() 
+        Stream<String> userInfoLine = reader.lines()
                 .filter(line -> line.startsWith(userId + ","));
-        System.out.println(userTrans);
-        String[] userInfoArray = null;
-        String[] userTransArray = userTrans.toArray(String[]::new);
-        for (String s : userTransArray) {
-            String[] placeHolder = s.split(",");
-            userInfoArray = new String[placeHolder.length - 1];
-            for(int i =  0; i < placeHolder.length - 1; i++){
-                userInfoArray[i] = placeHolder[i];
-            }
-            
-        }
-        Transaction[] transactions = readAllTransactions(userId);
-        String username = userInfoArray[1];
-        String email = userInfoArray[2];
-        String password = userInfoArray[3];
-        String firstName = userInfoArray[4];
-        String lastName = userInfoArray[5];
 
-            
+        Transaction[] transactions = readAllTransactions(userId);
         Account[] accounts = readAccounts(userId);
         Invoice[] invoices = new InvoiceDAO(PATH_INVOICES).getAllInvoices(userId);
         Budget budget = new BudgetDAO(PATH_BUDGETS).getBudget(userId);
 
+        String[] userInfo = userInfoLine.flatMap(s -> Stream.of(s.split(","))
+                        .skip(1)
+                        .map(String::toString))
+                .toArray(String[]::new);
+
+        String username = userInfo[0];
+        String email = userInfo[1];
+        String password = userInfo[2];
+        String firstName = userInfo[3];
+        String lastName = userInfo[4];
+
+
+
         Login loginInfo = new Login(username,password, userId);
 
-        User user = new User(accounts, invoices, loginInfo, email, lastName, firstName, transactions, budget);
-        return user;
+        return new User(accounts, invoices, loginInfo, email, lastName, firstName, transactions, budget);
         
     }
 

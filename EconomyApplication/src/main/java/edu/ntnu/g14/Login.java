@@ -2,7 +2,7 @@ package edu.ntnu.g14;
 public class Login {
     private String userName;
     private String password;
-    private String userId;
+    private final String userId;
 
     public Login (String userName, String password, String userId){
         this.userName=userName;
