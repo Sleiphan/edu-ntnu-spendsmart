@@ -14,7 +14,6 @@ import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -39,8 +38,6 @@ public class ApplicationObjects {
     public static String borderColor = "#071E22";
     public static String backgroundColor = "#dba87d";
     public static Color sceneColor = Color.valueOf("#F4C095");
-
-    private static final User loggedInUser = ApplicationFront.loggedInUser;
 
     static Stage stage = ApplicationFront.getStage();
 
@@ -366,10 +363,10 @@ public class ApplicationObjects {
                             && accountTypeField.getValue() != null
                             && !(amountBigDecimal.floatValue() < 0)
                             && Pattern.matches(regexAccountNumber, accountNumberField.getText())
-                            && loggedInUser.getAccountsAsList().stream()
+                            && ApplicationFront.loggedInUser.getAccountsAsList().stream()
                             .map(Account::getAccountName)
                             .noneMatch(accountName -> accountNameField.getText().equalsIgnoreCase(accountName))
-                            && loggedInUser.getAccountsAsList().stream()
+                            && ApplicationFront.loggedInUser.getAccountsAsList().stream()
                             .map(Account::getAccountNumber)
                             .noneMatch(accountNumber -> accountNumberField.getText().equals(accountNumber));
                 }
@@ -555,7 +552,7 @@ public class ApplicationObjects {
             defineLabelsAndFields();
 
 
-            this.chooseAccountComboBox.getItems().addAll(loggedInUser
+            this.chooseAccountComboBox.getItems().addAll(ApplicationFront.loggedInUser
                     .getAccountsAsList()
                     .stream()
                     .map(Account::getAccountName)
@@ -573,7 +570,7 @@ public class ApplicationObjects {
 
             defineLabelsAndFields();
 
-            this.chooseAccountComboBox.getItems().addAll(loggedInUser
+            this.chooseAccountComboBox.getItems().addAll(ApplicationFront.loggedInUser
                     .getAccountsAsList()
                     .stream()
                             .filter(account -> account.getAccountType().equals(AccountCategory.SPENDING_ACCOUNT)
@@ -623,10 +620,12 @@ public class ApplicationObjects {
         }
     }
     public static class EditAccountDialog extends Dialog<Account> {
-        private Account account;
-
+        private final Account account;
+        Pane pane;
+        Button deleteAccountButton;
         TextField editAccountNameField;
         ComboBox<String> editAccountTypeBox;
+        ButtonType deleteButtonType;
 
         public EditAccountDialog(Account account) {
             super();
@@ -634,13 +633,16 @@ public class ApplicationObjects {
             this.account = account;
             buildUI();
             setResultConverter();
-            
         }
 
         private void setResultConverter() {
             Callback<ButtonType, Account> accountResultConverter = buttonType -> {
                 if (buttonType == ButtonType.OK) {
                     editAccount();
+                    return account;
+                }
+                if (buttonType == deleteButtonType) {
+                    ApplicationFront.loggedInUser.removeAccount(account);
                     return account;
                 }
                 else {
@@ -650,6 +652,7 @@ public class ApplicationObjects {
             setResultConverter(accountResultConverter);
         }
 
+
         private void editAccount() {
             account.setAccountType(AccountCategory.valueOf(editAccountTypeBox.getValue()
                     .replaceAll(" ", "_").toUpperCase()));
@@ -657,17 +660,19 @@ public class ApplicationObjects {
         }
 
         private void buildUI() {
-            Pane pane = createGridPane();
+            pane = createGridPane();
             getDialogPane().setContent(pane);
-
-            getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+            deleteButtonType = new ButtonType("Delete");
+            getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL, deleteButtonType);
 
             Button button = (Button) getDialogPane().lookupButton(ButtonType.OK);
+            Button deleteButton = (Button) getDialogPane().lookupButton(deleteButtonType);
             button.addEventFilter(ActionEvent.ACTION, actionEvent -> {
                 if (!validateDialog()) {
                     actionEvent.consume();
                 }
             });
+
         }
 
         private boolean validateDialog() {
@@ -680,7 +685,6 @@ public class ApplicationObjects {
             VBox content = new VBox(10);
             Label editAccountNameLabel = new Label("Enter new name for your account:");
             Label editAccountTypeLabel = new Label("Choose the new type of your account:");
-            Button deleteAccountButton = new Button("Delete Account");
             this.editAccountNameField  = new TextField();
             this.editAccountTypeBox    = new ComboBox<>();
 
@@ -688,13 +692,9 @@ public class ApplicationObjects {
             this.editAccountTypeBox.setPromptText("New account type");
             this.editAccountTypeBox.setMaxWidth(200);
             this.editAccountNameField.setPromptText("New account name:");
-            deleteAccountButton.setPrefWidth(200);
-            deleteAccountButton.setPrefHeight(20);
-
             GridPane pane = new GridPane();
             pane.setHgap(10);
             pane.setVgap(5);
-
             pane.add(editAccountNameLabel, 0, 0);
             pane.add(editAccountNameField, 1,  0);
             GridPane.setHgrow(editAccountNameField, Priority.ALWAYS);
@@ -703,13 +703,9 @@ public class ApplicationObjects {
             pane.add(editAccountTypeBox, 1, 1);
             GridPane.setHgrow(editAccountTypeBox, Priority.ALWAYS);
 
-            HBox deleteButton = new HBox(5);
 
-            deleteButton.getChildren().add(deleteAccountButton);
-            deleteButton.setAlignment(Pos.CENTER);
 
-            content.getChildren().addAll(pane, deleteButton);
-
+            content.getChildren().addAll(pane);
 
             return content;
         }

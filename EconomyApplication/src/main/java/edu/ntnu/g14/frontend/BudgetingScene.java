@@ -22,12 +22,14 @@ public class BudgetingScene {
     static Stage stage = ApplicationFront.getStage();
     private static User loggedInUser = ApplicationFront.loggedInUser;
     static BudgetDAO budgetDAO;
+    static TableView<ObservableList<Object>> revenues;
+    static TableView<ObservableList<Object>> expenditures;
 
     static public Scene scene() throws IOException {
         budgetDAO = getBudgetDAO();
 
-        TableView<ObservableList<Object>> revenues = createRevenuesTable();
-        TableView<ObservableList<Object>> expenditures = createExpendituresTable();
+        revenues = createRevenuesTable();
+        expenditures = createExpendituresTable();
 
         Label backgroundLabel = createBackgroundLabel();
         Text MonthlyBudget = createMonthlyBudgetText();
@@ -67,7 +69,7 @@ public class BudgetingScene {
     }
 
     private static TableView<ObservableList<Object>> createRevenuesTable() throws IOException {
-        TableView<ObservableList<Object>> revenues = ApplicationObjects.newTableView(new String[]{"Revenues", "Amount"}, 40, 70, 380, 120);
+        revenues = ApplicationObjects.newTableView(new String[]{"Revenues", "Amount"}, 40, 70, 380, 120);
         revenues.setItems(initializeRevenuesData());
         revenues.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         revenues.setFixedCellSize(50);
@@ -75,7 +77,7 @@ public class BudgetingScene {
     }
 
     private static TableView<ObservableList<Object>> createExpendituresTable() {
-        TableView<ObservableList<Object>> expenditures = ApplicationObjects.newTableView(new String[]{"Expenditures", "Budget"}, 40, 210, 380, 250);
+        expenditures = ApplicationObjects.newTableView(new String[]{"Expenditures", "Budget"}, 40, 210, 380, 250);
         expenditures.setItems(initializeExpenditureData());
         expenditures.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         expenditures.setFixedCellSize(50);
@@ -166,7 +168,8 @@ public class BudgetingScene {
             for (BudgetItem entry : budget.getEntries()) {
                 // need to update budgetitem to contain getRevenues category
                 if (entry.getCategory().getType().equals("r")) {
-                    revenuesData.add(FXCollections.observableArrayList(entry.getCategory(), entry.getFinancialValue()));
+                    revenuesData.add(FXCollections.observableArrayList(entry.getCategory().
+                            toString().toLowerCase().replaceAll("_", " "), entry.getFinancialValue()));
                 }
             }
         }
@@ -181,12 +184,25 @@ public class BudgetingScene {
         if (budget != null) {
             for (BudgetItem entry : budget.getEntries()) {
                 if (entry.getCategory().getType().equals("e")) {
-                    expenditureData.add(FXCollections.observableArrayList(entry.getCategory(), entry.getFinancialValue()));
+                    expenditureData.add(FXCollections.observableArrayList(entry.getCategory().
+                            toString().toLowerCase().replaceAll("_"," "), entry.getFinancialValue()));
                 }
             }
         }
         return expenditureData;
     }
+    public static void refreshData() {
+        try {
+            revenues.setItems(initializeRevenuesData());
+            expenditures.setItems(initializeExpenditureData());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void setLoggedInUser(User user) {
+        loggedInUser = user;
+    }
+
 
 }
 

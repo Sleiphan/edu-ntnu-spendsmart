@@ -32,7 +32,6 @@ public class User extends Personalia {
             this.accounts.addAll(List.of(accounts));
         }
     }
-
     public Account[] getAccounts() {
         return this.accounts.toArray(Account[]::new);
     }
@@ -86,6 +85,16 @@ public class User extends Personalia {
                         .equals(accountName))
                 .findFirst()
                 .orElseThrow();
+    }
+    public Account getAccountWithAccountNumber(String accountNumber) {
+        return this.accounts.stream()
+                .filter(account -> account.getAccountNumber()
+                        .equals(accountNumber))
+                .findFirst()
+                .orElseThrow();
+    }
+    public void removeAccount(Account account){
+        this.accounts.remove(account);
     }
     private String incomeOrExpensesAllAccountsLast30Days(Boolean incomeOrExpenses) {
         Supplier<Stream<String>> accountNumbers = () -> accounts
