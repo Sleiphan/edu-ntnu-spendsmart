@@ -1,5 +1,6 @@
 package edu.ntnu.g14.frontend;
 
+import edu.ntnu.g14.Transaction;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -9,7 +10,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import java.io.FileNotFoundException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+
+import static edu.ntnu.g14.FileManagement.writeNewTransaction;
+import static edu.ntnu.g14.frontend.ApplicationFront.loggedInUser;
 
 public class TransferScene {
     static Stage stage = ApplicationFront.getStage();
@@ -28,6 +38,13 @@ public class TransferScene {
         Button cancel = ApplicationObjects.newButton("Cancel", 350, 255, 100, 20, 15);
         transfer.setOnAction(e -> {
             try {
+                LocalDate dateOfTransaction = LocalDate.now();
+                Transaction transaction = new Transaction(fromAccount.getText(), toAccount.getText(), new BigDecimal(amount.getText()), description.getText(), dateOfTransaction);
+                try {
+                    writeNewTransaction(loggedInUser.getLoginInfo().getUserId(), transaction);
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
                 stage.setScene(MainPageScene.scene());
             } catch (IOException e1) {
                 
@@ -55,14 +72,15 @@ public class TransferScene {
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
         Group root = new Group(fromAccount, amount, toAccount,
-        ApplicationObjects.newText("From account", 30, false, x, y - 5),
-        ApplicationObjects.newText("Amount:", 30, false, x, y + m),
-        ApplicationObjects.newText("To account:", 30, false, x, y + 2 * m),
-            transfer, dropDownButton, homeButton, manageUserButton);
+                ApplicationObjects.newText("From account", 30, false, x, y - 5),
+                ApplicationObjects.newText("Amount:", 30, false, x, y + m),
+                ApplicationObjects.newText("Description:", 30, false, x, y + 2 * m),
+                ApplicationObjects.newText("To account:", 30, false, x, y + 3 * m),
+                transfer, cancel, dropDownButton, homeButton, manageUserButton);
         dropDownButton.setOnAction(e -> {
             root.getChildren().add(dropDown);
         });
-        root.getStylesheets().add("StyleSheet.css"); 
+        root.getStylesheets().add("StyleSheet.css");
         Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
         
         
@@ -73,12 +91,12 @@ public class TransferScene {
                 root.getChildren().add(userButtons);
                 event.consume();
             }
-        }); 
+        });
         scene.setOnMouseClicked(e -> {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
         });
-        
+
         return scene;
     }
     
