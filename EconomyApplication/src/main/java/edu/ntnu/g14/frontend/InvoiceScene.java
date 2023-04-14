@@ -8,8 +8,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import edu.ntnu.g14.dao.InvoiceDAO;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -24,13 +26,17 @@ import org.apache.commons.validator.routines.BigDecimalValidator;
 public class InvoiceScene {
     static Stage stage = ApplicationFront.getStage();
 
-    static public Scene scene() throws FileNotFoundException, IOException {
-        Invoice[] invoicesUser = ApplicationFront.loggedInUser.getAllInvoices();
-        List<Invoice> invoices = new ArrayList<Invoice>();
-        for(int i = 0; i < ApplicationFront.loggedInUser.getAllInvoices().length; i++){
-                invoices.add(invoicesUser[i]);
-        }
-        
+    private static final String INVOICE_PATH = FileManagement.PATH_INVOICES;
+    private static InvoiceDAO invoiceFile;
+
+    static public Scene scene() throws IOException {
+        final User user = ApplicationFront.loggedInUser;
+        invoiceFile = new InvoiceDAO(INVOICE_PATH);
+
+        List<Invoice> invoices = new ArrayList<>();
+        Invoice[] invoicesUser = user.getAllInvoices();
+        if (invoicesUser != null)
+            invoices.addAll(Arrays.asList(invoicesUser));
 
         Text amount_t = ApplicationObjects.newText("Amount (kr):", 17, false, 11, 345 - 186);
         Text accountNum_t = ApplicationObjects.newText("Account number:", 17, false, 11, 376 - 186);
@@ -92,16 +98,14 @@ public class InvoiceScene {
             Invoice newInvoice = new Invoice(
                     due.atStartOfDay(ZoneId.systemDefault()).toLocalDate(), 
                     amount,
-                    accountNum_tf.getText());
+                    accountNum_tf.getText(),
+                    cidComment_tf.getText());
             invoices.add(newInvoice);
-            try {
-                FileManagement.writeNewInvoice(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), newInvoice);
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+
+            if (!invoiceFile.addNewInvoice(user.getLoginInfo().getUserId(), newInvoice))
+                ApplicationObjects.alertBox("Internal error", "Failed to register invoice", "The save file could be corrupted.");
 
             clear_bt.getOnAction().handle(null);
-            throw new RuntimeException("Action not connected to backend.");
         });
         back_bt.setOnAction(e -> {
             try {
@@ -113,19 +117,11 @@ public class InvoiceScene {
         });
         payNow_bt.setOnAction(e -> {
             invoices.remove(invoices_lv.getSelectionModel().getSelectedItem());
-            try {
-                FileManagement.deleteInvoice(invoices_lv.getSelectionModel().getSelectedItem(), ApplicationFront.loggedInUser.getLoginInfo().getUserId());
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            invoiceFile.deleteInvoice(user.getLoginInfo().getUserId(), invoices_lv.getSelectionModel().getSelectedIndex());
         });
         delete_bt.setOnAction(e -> {
             invoices.remove(invoices_lv.getSelectionModel().getSelectedItem());
-            try {
-                FileManagement.deleteInvoice(invoices_lv.getSelectionModel().getSelectedItem(), ApplicationFront.loggedInUser.getLoginInfo().getUserId());
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
+            invoiceFile.deleteInvoice(user.getLoginInfo().getUserId(), invoices_lv.getSelectionModel().getSelectedIndex());
         });
 
         ImageView homeButton = ApplicationObjects.newImage("home.png", 10, 10, 20, 20);

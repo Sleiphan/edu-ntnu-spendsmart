@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import edu.ntnu.g14.dao.BudgetDAO;
+import edu.ntnu.g14.dao.InvoiceDAO;
 import edu.ntnu.g14.frontend.ApplicationObjects;
 
 
@@ -17,7 +18,7 @@ import edu.ntnu.g14.frontend.ApplicationObjects;
 
 public class FileManagement {
 
-    public static final String filePath     = "saves/accounts.txt";
+    public static final String filePath          = "saves/accounts.txt";
     public static final String PATH_BUDGETS      = "saves/budgets.txt";
     public static final String PATH_INVOICES     = "saves/invoices.txt";
     public static final String PATH_TRANSACTIONS = "saves/transactions.txt";
@@ -92,7 +93,7 @@ public class FileManagement {
 
             
         Account[] accounts = readAccounts(userId);
-        Invoice[] invoices = getInvoicesForUser(userId);
+        Invoice[] invoices = new InvoiceDAO(PATH_INVOICES).getAllInvoices(userId);
         Budget budget = new BudgetDAO(PATH_BUDGETS).getBudget(userId);
 
         Login loginInfo = new Login(username,password, userId);

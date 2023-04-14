@@ -150,6 +150,25 @@ public class DAOToolsTest {
         assert result.equals(expectedResult);
     }
 
+    @Test
+    public void delete_data() {
+        int start = 4;
+        int count = 2;
+        String expectedResult = initialTestData.substring(0, start) + initialTestData.substring(start + count);
+
+        String result = null;
+        try {
+            DAOTools.deleteData(start, count, testFile, tempFile);
+            testFile.seek(0);
+            result = testFile.readLine();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        assert result != null;
+        assert result.equals(expectedResult);
+    }
+
     @AfterAll
     public void close() {
         try {

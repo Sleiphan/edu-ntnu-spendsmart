@@ -6,29 +6,32 @@ import java.time.format.DateTimeFormatter;
 
 public class Invoice {
     private LocalDate dueDate;
-    private final String invoiceID;
     private BigDecimal amount;
     private String recipientAccountNumber;
+    private String comment;
     private static final DateTimeFormatter dateFormatter = 
     DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    public Invoice(final LocalDate dueDate, final BigDecimal amount, String recipientAccountNumber) {
-        if (amount.intValue() < 1) {
+    public Invoice(final LocalDate dueDate, final BigDecimal amount, String recipientAccountNumber, String comment) {
+        if (amount.intValue() < 1)
             throw new IllegalArgumentException("The invoice must have a value greater than 1");
-        }
-        if (recipientAccountNumber.isBlank()) {
+
+        if (recipientAccountNumber.isBlank())
             throw new IllegalArgumentException("The recipients account number must be entered!");
-        }
-        else if (recipientAccountNumber.length() != 13) {
+
+        else if (recipientAccountNumber.length() != 13)
             throw new IllegalArgumentException("The recipients account number must contain 11 digits, " +
                     "seperated by 2 dots");
-        }
-        if (dueDate.isBefore(LocalDate.now())) {
+
+        if (dueDate.isBefore(LocalDate.now()))
             throw new IllegalArgumentException("This date has already passed");
-        }
+
+        if (comment == null)
+            throw new IllegalArgumentException("CID/Comment cannot be null");
+
         this.dueDate = dueDate;
         this.amount = amount;
         this.recipientAccountNumber = recipientAccountNumber;
-        this.invoiceID = null; // TODO: Explore what an invoice ID should consist of and ultimately how it should be built
+        this.comment = comment;
     }
 
     public boolean changeRecipientAccountNumber(String newRecipientAccountNumber) {
@@ -68,26 +71,23 @@ public class Invoice {
         return dueDate;
     }
 
-    public String getInvoiceId() {
-        return invoiceID;
-    }
+    public String getComment() { return comment; }
 
     public static final String CSV_FIELD_DELIMITER = ";";
     public String toCSVString() {
-      String sb =
-              dueDate.format(dateFormatter) +
-              amount + CSV_FIELD_DELIMITER +
-              recipientAccountNumber + CSV_FIELD_DELIMITER;
-
-      return sb;
+        return dueDate.format(dateFormatter) + CSV_FIELD_DELIMITER +
+                        amount.toPlainString() + CSV_FIELD_DELIMITER +
+                        recipientAccountNumber + CSV_FIELD_DELIMITER +
+                        "\"" + comment + "\"";
     }
 
     public static Invoice fromCSVString(String csvString) {
-      String[] fields = csvString.split(CSV_FIELD_DELIMITER);
+      String[] fields = csvString.split(CSV_FIELD_DELIMITER + "(?!\\s)");
       String recipient   = fields[2];
-      BigDecimal amount           = BigDecimal.valueOf(Short.parseShort(fields[1]));
+      BigDecimal amount           = new BigDecimal(fields[1]);
       LocalDate dateOfTransaction = LocalDate.parse(fields[0], dateFormatter);
+      String comment = fields[3].substring(1, fields[3].length() - 1);
 
-      return new Invoice(dateOfTransaction, amount, recipient);
+      return new Invoice(dateOfTransaction, amount, recipient, comment);
     }
 }

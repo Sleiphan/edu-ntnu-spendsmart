@@ -12,7 +12,7 @@ public class TestUser {
     Account testAccount = new Account(AccountCategory.SAVINGS_ACCOUNT, BigDecimal.valueOf(100000), "1256.65.56605", "kortkonto");
     Account[] accounts = new Account[1];
     accounts[0] = testAccount;
-    Invoice testInvoice = new Invoice(LocalDate.of(2023, 12, 4), BigDecimal.valueOf(100000), "1256.65.56605");
+    Invoice testInvoice = new Invoice(LocalDate.of(2023, 12, 4), BigDecimal.valueOf(100000), "1256.65.56605", "Comment");
     Invoice[] invoices = new Invoice[1];
     invoices[0] = testInvoice;
     Transaction testTransaction = new Transaction("1256.65.56605", "1256.65.56605", BigDecimal.valueOf(1000), "brukte penger", LocalDate.of(2023, 12, 4), BudgetCategory.ALCOHOL_AND_TOBACCO);
