@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -76,6 +75,12 @@ public class User extends Personalia {
                 .toString();
     }
 
+    public String expensesLastYear() {
+        return incomeOrExpensesLastYear(false);
+    }
+    public String incomeLastYear() {
+        return incomeOrExpensesLastYear(true);
+    }
     public String expensesLast30Days() {
         return incomeOrExpensesAllAccountsLast30Days(false);
     }
@@ -123,12 +128,40 @@ public class User extends Personalia {
                 .map(Transaction::getAmount)
                 .reduce(BigDecimal.valueOf(0), BigDecimal::add).toString();
     }
+    private String incomeOrExpensesLastYear(Boolean incomeOrExpenses) {
+        LocalDate startOfLastYear = LocalDate.ofYearDay(LocalDate.now().getYear() - 1, 1);
+        LocalDate endOfLastYear = LocalDate.ofYearDay(LocalDate.now().getYear() - 1, 365);
+        Supplier<Stream<String>> accountNumbers = () -> accounts
+                .stream()
+                .filter(account -> !account.getAccountType().equals(AccountCategory.PENSION_ACCOUNT))
+                .map(Account::getAccountNumber);
 
-    public double getAmountSpentOnCategoryLast30Days(String category) {
+        return this.transactions
+                .stream()
+                .filter(transaction ->
+                        incomeOrExpenses ? accountNumbers.get()
+                                .anyMatch(accountNumber -> accountNumber.equals(transaction.getToAccountNumber()))
+                                : accountNumbers.get().anyMatch(accountNumber -> accountNumber.equals(transaction.getFromAccountNumber())))
+                .filter(transaction ->
+                        transaction.getDateOfTransaction().isAfter(startOfLastYear)
+                                && transaction.getDateOfTransaction().isBefore(endOfLastYear))
+                .map(Transaction::getAmount)
+                .reduce(BigDecimal.valueOf(0), BigDecimal::add).toString();
+
+    }
+    public double getTotalExpenseOfCategoryLast30Days(String category) {
+        return getTotalExpenseOrIncomeOfCategoryLast30Days(category,true);
+    }
+
+    public double getTotalIncomeOfCategoryLast30Days(String category) {
+        return getTotalExpenseOrIncomeOfCategoryLast30Days(category, false);
+    }
+    private double getTotalExpenseOrIncomeOfCategoryLast30Days(String category, Boolean expenseOrIncome) {
         return getTransactionsAsList().stream()
                 .filter(transaction -> getAccountsAsList().stream()
                         .map(Account::getAccountNumber)
-                        .anyMatch(accountNumber -> accountNumber.equals(transaction.getFromAccountNumber())))
+                        .anyMatch(accountNumber -> expenseOrIncome ? accountNumber.equals(transaction.getFromAccountNumber())
+                                : accountNumber.equals(transaction.getToAccountNumber())))
                 .filter(transaction ->
                         transaction.getDateOfTransaction().isAfter(LocalDate.now().minusDays(30))
                                 && transaction.getDateOfTransaction().isBefore(LocalDate.now().plusDays(1)))
@@ -139,7 +172,13 @@ public class User extends Personalia {
                 .map(Transaction::getAmount).reduce(new BigDecimal(0), BigDecimal::add).doubleValue();
     }
 
-    public double getAmountSpentOnCategoryLastYear(String category) {
+    public double getTotalExpenseOfCategoryLastYear(String category) {
+        return getTotalExpenseOrIncomeOfCategoryLastYear(category, true);
+    }
+    public double getTotalIncomeOfCategoryLastYear(String category) {
+        return getTotalExpenseOrIncomeOfCategoryLastYear(category, false);
+    }
+    private double getTotalExpenseOrIncomeOfCategoryLastYear(String category, Boolean expenseOrIncome) {
         LocalDate startOfLastYear = LocalDate.ofYearDay(LocalDate.now().getYear() - 1, 1);
         LocalDate endOfLastYear = LocalDate.ofYearDay(LocalDate.now().getYear() - 1, 365);
 
@@ -151,7 +190,8 @@ public class User extends Personalia {
         return getTransactionsAsList().stream()
                 .filter(transaction -> getAccountsAsList().stream()
                         .map(Account::getAccountNumber)
-                        .anyMatch(accountNumber -> accountNumber.equals(transaction.getFromAccountNumber())))
+                        .anyMatch(accountNumber -> expenseOrIncome ? accountNumber.equals(transaction.getFromAccountNumber())
+                                : accountNumber.equals(transaction.getToAccountNumber())))
                 .filter(transaction ->
                         transaction.getDateOfTransaction().isAfter(startOfLastYear)
                                 && transaction.getDateOfTransaction().isBefore(finalEndOfLastYear))
