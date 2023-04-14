@@ -59,6 +59,11 @@ public class Invoice {
         this.amount = newAmount;
         return true;
     }
+
+    public String toString() {
+        return "[" + dueDate + "] " + ":" + amount + "kr \"" + comment + "\"";
+    }
+
     public String getRecipientAccountNumber() {
         return recipientAccountNumber;
     }

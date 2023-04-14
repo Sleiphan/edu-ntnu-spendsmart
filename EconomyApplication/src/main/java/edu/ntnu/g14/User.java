@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class User extends Personalia {
@@ -21,7 +22,7 @@ public class User extends Personalia {
         super(loginInfo, email, lastName, firstName);
         this.transactions = new ArrayList<>();
 
-        this.invoices = invoices != null ? Arrays.asList(invoices) : new ArrayList<>();
+        this.invoices = invoices != null ? Arrays.stream(invoices).collect(Collectors.toList()) : new ArrayList<>();
         this.budget = budget;
         this.accounts = new ArrayList<>();
         if (transactions != null) {

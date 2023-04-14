@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -66,6 +67,7 @@ public class InvoiceScene {
             amount_tf.clear();
             accountNum_tf.clear();
             cidComment_tf.clear();
+            due_dp.setValue(null);
         });
         register_bt.setOnAction(e -> {
             if (amount_tf.getText().isBlank()) {
@@ -123,6 +125,14 @@ public class InvoiceScene {
             user.getAllInvoices().remove(index);
             invoiceFile.deleteInvoice(userID, index);
             invoices_lv.getItems().setAll(user.getAllInvoices());
+        });
+        invoices_lv.setOnMouseClicked(e -> {
+            Invoice selected = invoices_lv.getSelectionModel().getSelectedItem();
+
+            amount_tf.setText(selected.getAmount().toString());
+            accountNum_tf.setText(selected.getRecipientAccountNumber());
+            cidComment_tf.setText(selected.getComment());
+            due_dp.setValue(selected.getDueDate());
         });
 
         ImageView homeButton = ApplicationObjects.newImage("home.png", 10, 10, 20, 20);
