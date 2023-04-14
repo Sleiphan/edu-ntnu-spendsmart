@@ -49,11 +49,6 @@ public class TestBudgetDAO {
         }
     }
 
-    public static void main(String... a) {
-        new TestBudgetDAO().resetTestData();
-    }
-
-
     @Test
     public void whole_budget_read_and_write() {
         String userID = "Haakon F. Fjellanger";
