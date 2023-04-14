@@ -92,8 +92,7 @@ public class FileManagement {
 
         Login loginInfo = new Login(username,password, userId);
 
-        User user = new User(accounts, invoices, loginInfo, email, lastName, firstName, transactions, budget);
-        return user;
+        return new User(accounts, invoices, loginInfo, email, lastName, firstName, transactions, budget);
         
     }
 
