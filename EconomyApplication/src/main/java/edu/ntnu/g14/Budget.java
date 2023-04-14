@@ -99,6 +99,7 @@ public class Budget {
                 savings.toPlainString() + CSV_DELIMITER +
                 age                     + CSV_DELIMITER +
                 gender                  + CSV_DELIMITER +
+                household               + CSV_DELIMITER +
                 allEntries.toString();
     }
 
@@ -108,6 +109,7 @@ public class Budget {
         final BigDecimal savings = new BigDecimal(fields[1]);
         final byte age = Byte.parseByte(fields[2]);
         final GenderCategory gender = GenderCategory.valueOf(fields[3]);
+        final HouseholdCategory householdCategory = HouseholdCategory.valueOf(fields[4]);
         final List<BudgetItem> entries = new ArrayList<>();
 
         for (int i = 4; i < fields.length; i++) {
@@ -117,12 +119,19 @@ public class Budget {
         Budget budget = new Budget(age, gender);
         budget.setSalary(salary);
         budget.setSavings(savings);
+        budget.setSavings(savings);
+        budget.setHouseholdCategory(householdCategory);
+
         for (BudgetItem i : entries) {
             budget.addBudgetItem(i);
             i.setAssociatedBudget(budget);
         }
 
         return budget;
+    }
+
+    private void setHouseholdCategory(HouseholdCategory householdCategory) {
+        this.household = householdCategory;
     }
 
     /**
@@ -229,7 +238,13 @@ public class Budget {
         updateCalculations();
     }
 
+    public void setCategory(HouseholdCategory category) {
+        household = category;
+    }
 
+    public HouseholdCategory getCategory() {
+        return household;
+    }
 
     /**
      * Returns the salary registered with this budget.
@@ -261,6 +276,10 @@ public class Budget {
      */
     public GenderCategory getGender() {
         return gender;
+    }
+
+    public HouseholdCategory getHouseholdCategory() {
+        return household;
     }
 
     /**

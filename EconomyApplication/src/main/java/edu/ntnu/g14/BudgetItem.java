@@ -10,23 +10,13 @@ import java.math.BigDecimal;
  * @author Håkon F. Fjellanger
  */
 public class BudgetItem {
-
-    private static final String JSON_KEY_FINANCIAL_VALUE = "val";
-    private static final String JSON_KEY_DESCRIPTION = "desc";
-    private static final String JSON_KEY_CATEGORY = "cat";
     private static final char CSV_DELIMITER = ';';
 
     private BigDecimal financialValue;
-    private String description;
     private BudgetCategory category;
-
-    private HouseholdCategory householdCategory;
+    private String description;
 
     private Budget budgetRef = null;
-
-    private int age;
-
-    private GenderCategory genderCategory;
 
 
 
@@ -56,45 +46,7 @@ public class BudgetItem {
     }
 
     public BudgetItem(BudgetCategory category, BigDecimal financialValue){
-     this.category = category;
-     this.financialValue = financialValue;
-    }
-    public BudgetItem(BudgetCategory category, HouseholdCategory inputHouseHold){
-        this.category = category;
-        this.householdCategory = inputHouseHold;
-    }
-
-    public BudgetItem(BudgetCategory age, int inputAge) {
-        this.category = age;
-        this.age = inputAge;
-    }
-
-    public BudgetItem(BudgetCategory gender, GenderCategory inputText) {
-        this.category = gender;
-        this.genderCategory = inputText;
-    }
-
-
-    /**
-     * Creates a JSON object from the current state of this BudgetItem.
-     * @return a JSON object representing the current state of this BudgetItem.
-     */
-    public JSONObject toJSONObject() {
-        JSONObject o = new JSONObject();
-        o.put(JSON_KEY_FINANCIAL_VALUE, financialValue);
-        o.put(JSON_KEY_DESCRIPTION, description);
-        o.put(JSON_KEY_CATEGORY, category);
-        return o;
-    }
-
-    /**
-     * Creates a new BudgetItem from the data defined in the submitted JSONObject.
-     * The caller is expected to submit a JSONObject created by (or parsed from the result of) the method BudgetItem::toJSONObject() in this class.
-     * @param o The JSONObject containing the data required to create a new BudgetItem.
-     * @return A new BudgetItem with a state defined by the data contained in the submitted JSONObject.
-     */
-    public static BudgetItem fromJSONObject(JSONObject o) {
-        return new BudgetItem(o.getBigDecimal(JSON_KEY_FINANCIAL_VALUE), o.getString(JSON_KEY_DESCRIPTION), BudgetCategory.valueOf(o.getString(JSON_KEY_CATEGORY)));
+     this(financialValue, "", category);
     }
 
     public String toCSV() {
@@ -108,7 +60,7 @@ public class BudgetItem {
         fields[1] = fields[1].substring(1, fields[1].length() - 1);
 
         BigDecimal financialValue = new BigDecimal(fields[0]);
-        String description = fields[1];
+        String description = fields[1].substring(1, fields[1].length() - 1);
         BudgetCategory category = BudgetCategory.valueOf(fields[2]);
 
         return new BudgetItem(financialValue, description, category);
