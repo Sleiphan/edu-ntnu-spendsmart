@@ -72,12 +72,13 @@ public class IndexedDataFile {
             return false;
         }
 
-        // Seek to the start of the data
-        fileStream.seek(dataPos);
-        long dataEnd = skipLine() - 1;
+        fileStream.seek(dataPos); // Seek to the start of the data
+        long dataEnd = skipLine(); // Fine the end of the data
+        if (dataEnd != fileStream.length())
+            dataEnd--; // Make sure we do not remove the appended DATA_SEPARATOR
 
-        // We delete the prepending '\n'-character as well
-        dataPos--;
+
+        dataPos--; // We delete the prepending DATA_SEPARATOR
         long dataLength = dataEnd - dataPos;
 
         DAOTools.deleteData(dataPos, dataLength, fileStream, tempStream);
@@ -90,6 +91,8 @@ public class IndexedDataFile {
     public void addNewData(String identifier, byte[] data) throws IOException {
         if (identifier.contains(String.valueOf(IDENTIFIER_SEPARATOR)))
             throw new IllegalArgumentException("Identifier cannot contain " + IDENTIFIER_SEPARATOR + ". The submitted invalid identifier was '" + identifier + "'");
+        if (identifier.contains(String.valueOf(DATA_SEPARATOR)))
+            throw new IllegalArgumentException("Identifier cannot contain " + DATA_SEPARATOR + ". The submitted invalid identifier was '" + identifier + "'");
 
         data = convertToStorageFormat(data);
 
@@ -198,13 +201,11 @@ public class IndexedDataFile {
                 // Remove the entire entry
                 fileStream.seek(fileStream.getFilePointer() - 2);
                 byte b;
-                while ((b = fileStream.readByte()) != DATA_SEPARATOR) {
+                while ((b = fileStream.readByte()) != DATA_SEPARATOR) { // Move backwards until we find the beginning of the entry.
                     long newPos = fileStream.getFilePointer() - 2;
-                    if (newPos < 0) {
-                        fileStream.seek(0);
-                        break;
-                    }
                     fileStream.seek(newPos);
+                    if (newPos == 0)
+                        break;
                 }
                 dataPos = fileStream.getFilePointer();
                 dataEnd++;
@@ -284,9 +285,7 @@ public class IndexedDataFile {
         String text = identifier + IDENTIFIER_SEPARATOR;
         byte[] data = (text + '\n').getBytes(CHARSET);
 
-        long offset = dataStartPosition - 1;
-        if (dataStartPosition == -1)
-            offset = 0;
+        long offset = 0; // Add the new identifier entry to the beginning of the file.
         DAOTools.insertIntoFile(data, offset, fileStream, tempStream);
         updateStartPositionIndex();
         return offset + text.length() - 1;
@@ -328,7 +327,7 @@ public class IndexedDataFile {
 
     /**
      * Forwards the cursor of the fileStream past the next DATA_SEPARATOR delimiter.
-     * @return The data index pointing past the next line shift. -1 if end of file is reached.
+     * @return The data index pointing past the next line shift. If end of file was reached, returns the position at the end of the file.
      * @throws IOException
      */
     private long skipLine() throws IOException {
@@ -350,7 +349,7 @@ public class IndexedDataFile {
             while ((b = fileStream.readByte()) != newLine)
                 out.write(b);
         } catch (EOFException e) {
-            // Do nothing
+            // Ignore
         }
 
         return out.toByteArray();
@@ -469,7 +468,14 @@ public class IndexedDataFile {
             skipLine();
         }
 
-        return identifiers.toArray(String[]::new);
+        // As we are adding the identifiers in a backwards fashion, we need to flip the array before returning it.
+        String[] result = new String[identifiers.size()];
+        int i = 0;
+        int i2 = identifiers.size() - 1;
+        while (i < result.length)
+            result[i++] = identifiers.get(i2--);
+
+        return result;
     }
 
     private long[][] getAllIndices() throws IOException {
