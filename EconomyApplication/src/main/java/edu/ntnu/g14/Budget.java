@@ -85,7 +85,13 @@ public class Budget {
 
     @Override
     public int hashCode() {
-        return salary.hashCode() * savings.hashCode() * age * gender.hashCode() * household.hashCode() * entries.hashCode();
+        int hash = salary.hashCode() * savings.hashCode() * age * entries.hashCode();
+        if (gender != null)
+            hash *= gender.hashCode();
+        if (household != null)
+            hash *= household.hashCode();
+
+        return hash;
     }
 
     public String toCSV() {
@@ -109,8 +115,8 @@ public class Budget {
         final BigDecimal salary = new BigDecimal(fields[0]);
         final BigDecimal savings = new BigDecimal(fields[1]);
         final byte age = Byte.parseByte(fields[2]);
-        final GenderCategory gender = GenderCategory.valueOf(fields[3]);
-        final HouseholdCategory householdCategory = HouseholdCategory.valueOf(fields[4].equals("null") ? null : fields[4]);
+        final GenderCategory gender = fields[3].equals("null") ? null : GenderCategory.valueOf(fields[3]);
+        final HouseholdCategory householdCategory = fields[4].equals("null") ? null : HouseholdCategory.valueOf(fields[4]);
         final List<BudgetItem> entries = new ArrayList<>();
 
         for (int i = 5; i < fields.length; i++) {
@@ -188,10 +194,6 @@ public class Budget {
     public void setGender(GenderCategory gender) {
         this.gender = gender;
         updateCalculations();
-    }
-
-    public void setCategory(HouseholdCategory category) {
-        household = category;
     }
 
     public HouseholdCategory getCategory() {
