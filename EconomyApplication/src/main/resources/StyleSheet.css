@@ -10,3 +10,6 @@
     -fx-font-weight: bold; 
     -fx-padding: 10.0px;
 }
+.combo-box>.list-cell {
+    -fx-alignment: center;
+}

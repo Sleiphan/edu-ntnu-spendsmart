@@ -87,25 +87,33 @@ public class GeneralOverviewScene {
         transactionsTables.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         monthlyToggle.setOnMouseClicked(actionEvent -> {
             if (!expenditurePieChart.getTitle().equals(monthlyExpensesPieChartTitle)) {
+                expenditurePieChart.setVisible(true);
+                incomePieChart.setVisible(true);
                 setPiesDataLast30Days();
                 setTotalIncomeText(true);
                 setTotalExpensesText(true);
                 expenditurePieChart.setTitle(monthlyExpensesPieChartTitle);
                 expenditurePieChart.setData(expenditurePieData);
+                expenditurePieChart.setVisible(expenditurePieData.stream().anyMatch(pieData -> pieData.getPieValue() != 0));
                 incomePieChart.setTitle(monthlyIncomePieChartTitle);
                 incomePieChart.setData(incomePieData);
+                incomePieChart.setVisible(incomePieData.stream().anyMatch(pieData -> pieData.getPieValue() != 0));
 
             }
         });
         yearlyToggle.setOnMouseClicked(actionEvent -> {
             if (!expenditurePieChart.getTitle().equals(yearlyExpensesPieChartTitle)) {
+                expenditurePieChart.setVisible(true);
+                incomePieChart.setVisible(true);
                 setPiesDataLastYear();
                 setTotalIncomeText(false);
                 setTotalExpensesText(false);
                 expenditurePieChart.setData(expenditurePieData);
+                expenditurePieChart.setVisible(expenditurePieData.stream().anyMatch(pieData -> pieData.getPieValue() != 0));
                 expenditurePieChart.setTitle(yearlyExpensesPieChartTitle);
                 incomePieChart.setTitle(yearlyIncomePieChartTitle);
                 incomePieChart.setData(incomePieData);
+                incomePieChart.setVisible(incomePieData.stream().anyMatch(pieData -> pieData.getPieValue() != 0));
 
             }
         });

@@ -61,14 +61,13 @@ public class MainPageScene {
         Text accountsText = ApplicationObjects.newText("Accounts", 20, false, 500, 30);
         ListView accountsListView = ApplicationObjects.newListView(accountsList, 728-30-324, 50, 324, 115);
         
-        ImageView homeButton = ApplicationObjects.newImage("home.png", 10, 10, 20, 20);
-        
+
         Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
         Group root = new Group(actionsText, transfer, invoice, payment, 
         overview, accountsButton, budgeting, latestActivitiesText, latestActivitiesTable, 
-        duePaymentsTable, duePaymentsText, accountsListView, accountsText, dropDownButton, homeButton, manageUserButton);
+        duePaymentsTable, duePaymentsText, accountsListView, accountsText, dropDownButton, manageUserButton);
         dropDownButton.setOnAction(e -> {
             root.getChildren().add(dropDown);
         });

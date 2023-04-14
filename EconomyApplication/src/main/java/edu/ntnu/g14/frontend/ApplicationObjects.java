@@ -14,7 +14,6 @@ import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -271,12 +270,13 @@ public class ApplicationObjects {
         return comboBox;
     }
 
-    public static void alertBox(String title, String header, String content) {
+    public static Alert alertBox(String title, String header, String content) {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+        return alert;
     }
 
     public static String[] getAccountCategories() {
@@ -494,7 +494,6 @@ public class ApplicationObjects {
             });
         }
         private void defineLabelsAndFields() {
-            this.amountLabel = new Label("Enter the amount you want to send:");
             this.amountField = new TextField();
             this.descriptionLabel = new Label("Enter the description of the transaction:");
             this.descriptionField = new TextField();
@@ -549,6 +548,8 @@ public class ApplicationObjects {
             VBox content = new VBox(10);
             this.accountLabel1 = new Label("Choose your receiving account number:");
             this.accountLabel2 = new Label("Enter the sender's account:");
+            this.amountLabel = new Label("Enter the amount you received:");
+
             defineLabelsAndFields();
 
 
@@ -567,6 +568,8 @@ public class ApplicationObjects {
             VBox content = new VBox(10);
             this.accountLabel1 = new Label("Choose the sending account:");
             this.accountLabel2 = new Label("Enter the recipient's account:");
+            this.amountLabel = new Label("Enter the amount you received:");
+
 
             defineLabelsAndFields();
 
@@ -583,7 +586,7 @@ public class ApplicationObjects {
             return content;
         }
         private void setDatePickerConverter(DatePicker dateOfTransactionField) {
-            dateOfTransactionField.setConverter(new StringConverter<LocalDate>() {
+            dateOfTransactionField.setConverter(new StringConverter<>() {
                 @Override
                 public String toString(LocalDate localDate) {
                     if (localDate != null) {
@@ -622,7 +625,6 @@ public class ApplicationObjects {
     public static class EditAccountDialog extends Dialog<Account> {
         private final Account account;
         Pane pane;
-        Button deleteAccountButton;
         TextField editAccountNameField;
         ComboBox<String> editAccountTypeBox;
         ButtonType deleteButtonType;
@@ -642,6 +644,14 @@ public class ApplicationObjects {
                     return account;
                 }
                 if (buttonType == deleteButtonType) {
+                    Alert deleteAccountAlert = new Alert(AlertType.CONFIRMATION);
+                    deleteAccountAlert.setTitle("Are you sure you want to delete the account?");
+                    deleteAccountAlert.setContentText("Are you sure you want to delete: " + account.getAccountName() + "?");
+                    deleteAccountAlert.setHeaderText("Delete account");
+                    deleteAccountAlert.showAndWait();
+                    if (deleteAccountAlert.getResult() == ButtonType.CANCEL) {
+                        return null;
+                    }
                     ApplicationFront.loggedInUser.removeAccount(account);
                     return account;
                 }
@@ -666,7 +676,6 @@ public class ApplicationObjects {
             getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL, deleteButtonType);
 
             Button button = (Button) getDialogPane().lookupButton(ButtonType.OK);
-            Button deleteButton = (Button) getDialogPane().lookupButton(deleteButtonType);
             button.addEventFilter(ActionEvent.ACTION, actionEvent -> {
                 if (!validateDialog()) {
                     actionEvent.consume();
