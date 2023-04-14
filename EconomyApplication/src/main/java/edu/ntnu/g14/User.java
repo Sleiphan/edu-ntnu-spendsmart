@@ -3,13 +3,15 @@ package edu.ntnu.g14;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class User extends Personalia {
     private final List<Account> accounts;
-    private final Invoice[] invoices;
+    private final List<Invoice> invoices;
     private final List<Transaction> transactions;
     private final Budget budget;
 
@@ -19,7 +21,7 @@ public class User extends Personalia {
         super(loginInfo, email, lastName, firstName);
         this.transactions = new ArrayList<>();
 
-        this.invoices = invoices;
+        this.invoices = invoices != null ? Arrays.asList(invoices) : new ArrayList<>();
         this.budget = budget;
         this.accounts = new ArrayList<>();
         if (transactions != null) {
@@ -39,7 +41,7 @@ public class User extends Personalia {
     public void addAccount(Account account) {
         this.accounts.add(account);
     }
-    public Invoice[] getAllInvoices() {
+    public List<Invoice> getAllInvoices() {
         return invoices;
     }
     public Transaction[] getTransactions(){

@@ -31,12 +31,8 @@ public class InvoiceScene {
 
     static public Scene scene() throws IOException {
         final User user = ApplicationFront.loggedInUser;
+        final String userID = user.getLoginInfo().getUserId();
         invoiceFile = new InvoiceDAO(INVOICE_PATH);
-
-        List<Invoice> invoices = new ArrayList<>();
-        Invoice[] invoicesUser = user.getAllInvoices();
-        if (invoicesUser != null)
-            invoices.addAll(Arrays.asList(invoicesUser));
 
         Text amount_t = ApplicationObjects.newText("Amount (kr):", 17, false, 11, 345 - 186);
         Text accountNum_t = ApplicationObjects.newText("Account number:", 17, false, 11, 376 - 186);
@@ -57,7 +53,7 @@ public class InvoiceScene {
         ListView<Invoice> invoices_lv = new ListView<>();
         invoices_lv.setLayoutX(782 - 329);
         invoices_lv.setLayoutY(326 - 186);
-        invoices_lv.getItems().setAll(invoices);
+        invoices_lv.getItems().setAll(user.getAllInvoices());
         invoices_lv.setEditable(false);
 
         Button clear_bt = ApplicationObjects.newButton("Clear", 358 - 329, 570 - 186, 159, 61, 16);
@@ -100,12 +96,13 @@ public class InvoiceScene {
                     amount,
                     accountNum_tf.getText(),
                     cidComment_tf.getText());
-            invoices.add(newInvoice);
+            user.getAllInvoices().add(newInvoice);
 
             if (!invoiceFile.addNewInvoice(user.getLoginInfo().getUserId(), newInvoice))
                 ApplicationObjects.alertBox("Internal error", "Failed to register invoice", "The save file could be corrupted.");
 
             clear_bt.getOnAction().handle(null);
+            invoices_lv.getItems().setAll(user.getAllInvoices());
         });
         back_bt.setOnAction(e -> {
             try {
@@ -116,12 +113,16 @@ public class InvoiceScene {
             }
         });
         payNow_bt.setOnAction(e -> {
-            invoices.remove(invoices_lv.getSelectionModel().getSelectedItem());
-            invoiceFile.deleteInvoice(user.getLoginInfo().getUserId(), invoices_lv.getSelectionModel().getSelectedIndex());
+            int index = invoices_lv.getSelectionModel().getSelectedIndex();
+            user.getAllInvoices().remove(index);
+            invoiceFile.deleteInvoice(user.getLoginInfo().getUserId(), index);
+            invoices_lv.getItems().setAll(user.getAllInvoices());
         });
         delete_bt.setOnAction(e -> {
-            invoices.remove(invoices_lv.getSelectionModel().getSelectedItem());
-            invoiceFile.deleteInvoice(user.getLoginInfo().getUserId(), invoices_lv.getSelectionModel().getSelectedIndex());
+            int index = invoices_lv.getSelectionModel().getSelectedIndex();
+            user.getAllInvoices().remove(index);
+            invoiceFile.deleteInvoice(userID, index);
+            invoices_lv.getItems().setAll(user.getAllInvoices());
         });
 
         ImageView homeButton = ApplicationObjects.newImage("home.png", 10, 10, 20, 20);

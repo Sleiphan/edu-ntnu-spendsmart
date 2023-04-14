@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import edu.ntnu.g14.FileManagement;
+import edu.ntnu.g14.Invoice;
 import edu.ntnu.g14.Login;
 import edu.ntnu.g14.User;
 import javafx.scene.Group;
@@ -26,7 +27,7 @@ public class LoginForgotPasswordSecondScene {
         confirmButton.setOnAction(e -> {
             if(newPassword.getText().equals(retypeNewPassword.getText()) && !newPassword.getText().equals("")){
                 Login newLogin = new Login(ApplicationFront.loggedInUser.getLoginInfo().getUserName(), newPassword.getText(), ApplicationFront.loggedInUser.getLoginInfo().getUserId());
-                User newPasswordUser = new User(ApplicationFront.loggedInUser.getAccounts(), ApplicationFront.loggedInUser.getAllInvoices(),
+                User newPasswordUser = new User(ApplicationFront.loggedInUser.getAccounts(), ApplicationFront.loggedInUser.getAllInvoices().toArray(Invoice[]::new),
                 newLogin, ApplicationFront.loggedInUser.getEmail(), ApplicationFront.loggedInUser.getLastName(),
                 ApplicationFront.loggedInUser.getFirstName(), ApplicationFront.loggedInUser.getTransactions(), ApplicationFront.loggedInUser.getBudget());
 
