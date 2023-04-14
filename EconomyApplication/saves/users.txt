@@ -1,5 +1,5 @@
 ##user-id,username,mail,password,first-name,last-name,accounts,
-olav#1,Olavmannen,olavsie@hotmail.com,Passord123,olav,sie,                                                                                  
+olav#1,Olavmannen,olavsie@hotmail.com,1,olav,sie,
 haakon#1,Haakonmannen,olav@mail.no,Passord123,olav,sie,                                                                            
 yasin#1,Yasinmannen,olav@mail.no,Passord123,olav,sie,                                                                                          Test#1,test,null,test,null,null,                                                                     Test#1,test,null,test,null,null,                                                                          Test#1,test,null,test,null,null,                                                                          Test#1,test,null,test,null,null,                                                                          Test#1,test,null,test,null,null,                                                                          Test#1,test,null,test,null,null,                                                                          Test#1,test,null,test,null,null,                                                                          
                                                                                                          

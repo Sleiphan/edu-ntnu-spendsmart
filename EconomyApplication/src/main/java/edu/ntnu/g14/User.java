@@ -15,6 +15,7 @@ public class User extends Personalia {
     private final List<Invoice> invoices;
     private final List<Transaction> transactions;
     private Budget budget;
+    private static final String CSV_DELIMITER = ",";
 
     public User(Account[] accounts, Invoice[] invoices,
         Login loginInfo, String email, String lastName, String firstName,
@@ -54,6 +55,14 @@ public class User extends Personalia {
         return budget;
     }
 
+    public String toCSVString() {
+        return this.getLoginInfo().getUserId() +
+                CSV_DELIMITER + this.getLoginInfo().getUserName() +
+                CSV_DELIMITER + this.getEmail() +
+                CSV_DELIMITER + this.getLoginInfo().getPassword() +
+                CSV_DELIMITER + this.getFirstName() +
+                CSV_DELIMITER + this.getLastName();
+    }
     public void setBudget(Budget newBudget) {
         this.budget = newBudget;
     }

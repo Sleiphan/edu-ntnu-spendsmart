@@ -52,25 +52,24 @@ public class GeneralOverviewScene {
                 e1.printStackTrace();
             }
         });
-        ToggleButton yearlyToggle = ApplicationObjects.newToggleButton("Yearly", 40, 190, 100, 20, 16);
-        yearlyToggle.setToggleGroup(intervalToggles);
-        ToggleButton monthlyToggle = ApplicationObjects.newToggleButton("Monthly", 140, 190, 100, 20, 16);
-        monthlyToggle.setToggleGroup(intervalToggles);
+        Button yearlyToggle = ApplicationObjects.newButton("Yearly", 40, 190, 100, 20, 16);
+        Button monthlyToggle = ApplicationObjects.newButton("Monthly", 140, 190, 100, 20, 16);
         TableView<ObservableList<Object>> transactionsTables = ApplicationObjects.newTableView(columnTitlesTransactionsTable, 40, 230, 658, 300);
         transactionsTables.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        monthlyToggle.setOnAction(actionEvent -> {
+        monthlyToggle.setOnMousePressed(actionEvent -> {
             setPiesDataLast30Days();
             setBigSumText();
             setTotalIncomeText();
             setTotalExpensesText();
             expenditurePieChart.setData(expenditurePieData);
         });
-        yearlyToggle.setOnAction(actionEvent -> {
+        yearlyToggle.setOnMousePressed(actionEvent -> {
             setPiesDataThisYear();
             setBigSumText();
             setTotalIncomeText();
             setTotalExpensesText();
             expenditurePieChart.setData(expenditurePieData);
+            expenditurePieChart.setVisible(true);
         });
 
 

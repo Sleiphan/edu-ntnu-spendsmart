@@ -96,8 +96,9 @@ public class FileManagement {
         
     }
 
+
     public static void editUser(User newUser, String userId) throws FileNotFoundException, IOException{
-        String addonText = "" + newUser.getLoginInfo().getUserId() + "," + newUser.getLoginInfo().getUserName() + "," + 
+        String addonText = "" + newUser.getLoginInfo().getUserId() + "," + newUser.getLoginInfo().getUserName() + "," +
             newUser.getEmail() + "," + newUser.getLoginInfo().getPassword() + "," + newUser.getFirstName() + "," + newUser.getLastName() + ",                                     ";
 
 
@@ -117,10 +118,10 @@ public class FileManagement {
     }
 
     public static void writeNewUser(User newUser) throws IOException{
-        String userInfo = "" + newUser.getLoginInfo().getUserId() + "," + newUser.getLoginInfo().getUserName() + "," + 
+        String userInfo = "" + newUser.getLoginInfo().getUserId() + "," + newUser.getLoginInfo().getUserName() + "," +
             newUser.getEmail() + "," + newUser.getLoginInfo().getPassword() + "," + newUser.getFirstName() + "," + newUser.getLastName() + ",";
-            
-           
+
+
         try (RandomAccessFile file = new RandomAccessFile(PATH_USERS, "rw")) {
             String line;
             while ((line = file.readLine()) != null) {
@@ -132,7 +133,7 @@ public class FileManagement {
                 }
             }
         }
-        
+
         String addonTextInvoice = newUser.getLoginInfo().getUserId() + ",";
         try (RandomAccessFile file = new RandomAccessFile(PATH_INVOICES, "rw")) {
             String line;
@@ -159,7 +160,7 @@ public class FileManagement {
             }
         }
 
-        
+
         String addonTextTransactions = newUser.getLoginInfo().getUserId() + ",";
         try (RandomAccessFile file = new RandomAccessFile(PATH_TRANSACTIONS, "rw")) {
             String line;
@@ -177,7 +178,7 @@ public class FileManagement {
 
     public static Account[] readAccounts(String userId) throws IOException{
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
-        Stream<String> userTrans = reader.lines() 
+        Stream<String> userTrans = reader.lines()
                 .filter(line -> line.startsWith(userId + ","));
         Account[] accounts = userTrans.flatMap(s -> Stream.of(s.split(","))
                 .skip(1).map(Account::fromCSVString)).toArray(Account[]::new);
@@ -197,7 +198,7 @@ public class FileManagement {
 
     public static Invoice[] getInvoicesForUser(String userID) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(PATH_INVOICES));
-        Stream<String> userTrans = reader.lines() 
+        Stream<String> userTrans = reader.lines()
                 .filter(line -> line.startsWith(userID + ","));
         System.out.println(userTrans);
 
@@ -209,7 +210,7 @@ public class FileManagement {
             for(int i =  0; i < placeHolder.length - 1; i++){
                 transactionArray[i] = placeHolder[i];
             }
-            
+
             for (int i = 1; i < transactionArray.length; i++) {
                 Invoice transaction = Invoice.fromCSVString(transactionArray[i]);
                 transactionList.add(transaction);
@@ -224,7 +225,7 @@ public class FileManagement {
         return invoices;
     }
 
-    
+
     public static void writeAccount(String userId, Account account) {
         writeTransactionOrAccount(userId, account.toCSVString(), filePath);
     }
@@ -250,6 +251,55 @@ public class FileManagement {
             String userId = loggedInUser.getLoginInfo().getUserId();
 
             String newLine = userId + "," + accountStrings;
+
+            String currentLine;
+            for (int i = 1; i < lines; i++) {
+                currentLine = bufferedReader.readLine();
+                if (currentLine.startsWith(userId)) {
+                    printWriter.println(newLine);
+                }
+                else {
+                    printWriter.println(currentLine);
+                }
+            }
+            currentLine = bufferedReader.readLine();
+            if (currentLine.startsWith(userId)) {
+                printWriter.print(newLine);
+            }
+            else {
+                printWriter.print(currentLine);
+            }
+
+            inputStream.close();
+            bufferedReader.close();
+            printWriter.flush();
+            printWriter.close();
+            oldFile.delete();
+            File dump = new File(filePath);
+            newFile.renameTo(dump);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void newEditUser(User loggedInUser) {
+        String CSVString = loggedInUser.toCSVString();
+        File oldFile    = new File(filePath);
+        File newFile    = new File(PATH_TEMPFILE);
+        try {
+            FileWriter fileWriter         = new FileWriter(PATH_TEMPFILE, true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            PrintWriter printWriter       = new PrintWriter(bufferedWriter);
+
+            FileInputStream inputStream   = new FileInputStream(oldFile);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+            int lines = (int) bufferedReader.lines().count();
+            inputStream.getChannel().position(0);
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            String userId = loggedInUser.getLoginInfo().getUserId();
+
+            String newLine = userId + "," + CSVString;
 
             String currentLine;
             for (int i = 1; i < lines; i++) {
