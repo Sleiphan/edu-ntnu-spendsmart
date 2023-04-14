@@ -1,7 +1,8 @@
 package edu.ntnu.g14.frontend;
 
+import edu.ntnu.g14.BudgetCategory;
 import edu.ntnu.g14.Transaction;
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
 
 import javafx.event.EventHandler;
@@ -10,15 +11,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
+
 import javafx.stage.Stage;
 
-import java.io.FileNotFoundException;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 
-import static edu.ntnu.g14.FileManagement.writeNewTransaction;
+
+import static edu.ntnu.g14.FileManagement.writeTransaction;
 import static edu.ntnu.g14.frontend.ApplicationFront.loggedInUser;
 
 public class TransferScene {
@@ -32,16 +33,21 @@ public class TransferScene {
 
         TextField fromAccount = ApplicationObjects.newTextField("12345678910", x, y, 200, 20, 15);
         TextField amount = ApplicationObjects.newTextField("50kr", x, y + n, 100, 20, 15);
-        TextField toAccount = ApplicationObjects.newTextField("10987654321", x, y + 2 * n, 100, 20, 15);
+        TextField description = ApplicationObjects.newTextField("Description", x, y + 2 * n, 200, 20, 15);
+        TextField toAccount = ApplicationObjects.newTextField("10987654321", x, y + 3 * n, 100, 20, 15);
+
+        String[] categoryChoices = {"Food and Drink", "Clothes and Shoes", "Personal Care", "Leisure", "Travel", "Alcohol and Tobacco", "Other", "Payment", "Business"};
+        ComboBox<String> category = ApplicationObjects.newComboBox(categoryChoices, 100, 20, 15,x - 100, y + 4 * n);
+        category.setPromptText("Category of Payment");
 
         Button transfer = ApplicationObjects.newButton("Pay", x, y + 2 * n + 150, 100, 20, 15);
         Button cancel = ApplicationObjects.newButton("Cancel", 350, 255, 100, 20, 15);
         transfer.setOnAction(e -> {
             try {
                 LocalDate dateOfTransaction = LocalDate.now();
-                Transaction transaction = new Transaction(fromAccount.getText(), toAccount.getText(), new BigDecimal(amount.getText()), description.getText(), dateOfTransaction);
+                Transaction transaction = new Transaction(fromAccount.getText(), toAccount.getText(), new BigDecimal(amount.getText()), description.getText(), dateOfTransaction, BudgetCategory.valueOf(category.getValue().replaceAll(" ", "_").toUpperCase()));
                 try {
-                    writeNewTransaction(loggedInUser.getLoginInfo().getUserId(), transaction);
+                    writeTransaction(loggedInUser.getLoginInfo().getUserId(), transaction);
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
