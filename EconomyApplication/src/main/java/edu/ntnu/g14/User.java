@@ -13,7 +13,7 @@ public class User extends Personalia {
     private final List<Account> accounts;
     private final List<Invoice> invoices;
     private final List<Transaction> transactions;
-    private final Budget budget;
+    private Budget budget;
 
     public User(Account[] accounts, Invoice[] invoices,
         Login loginInfo, String email, String lastName, String firstName,
@@ -52,6 +52,10 @@ public class User extends Personalia {
     }
     public Budget getBudget(){
         return budget;
+    }
+
+    public void setBudget(Budget newBudget) {
+        this.budget = newBudget;
     }
 
     public String amountAllAccounts() {
