@@ -60,7 +60,7 @@ public class BudgetItem {
         fields[1] = fields[1].substring(1, fields[1].length() - 1);
 
         BigDecimal financialValue = new BigDecimal(fields[0]);
-        String description = fields[1].substring(1, fields[1].length() - 1);
+        String description = fields[1];
         BudgetCategory category = BudgetCategory.valueOf(fields[2]);
 
         return new BudgetItem(financialValue, description, category);
