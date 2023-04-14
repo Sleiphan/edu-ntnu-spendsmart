@@ -39,8 +39,6 @@ public class ApplicationObjects {
     public static String backgroundColor = "#dba87d";
     public static Color sceneColor = Color.valueOf("#F4C095");
 
-    private static final User loggedInUser = ApplicationFront.loggedInUser;
-
     static Stage stage = ApplicationFront.getStage();
 
     public static final DateTimeFormatter dateFormatter =
@@ -365,10 +363,10 @@ public class ApplicationObjects {
                             && accountTypeField.getValue() != null
                             && !(amountBigDecimal.floatValue() < 0)
                             && Pattern.matches(regexAccountNumber, accountNumberField.getText())
-                            && loggedInUser.getAccountsAsList().stream()
+                            && ApplicationFront.loggedInUser.getAccountsAsList().stream()
                             .map(Account::getAccountName)
                             .noneMatch(accountName -> accountNameField.getText().equalsIgnoreCase(accountName))
-                            && loggedInUser.getAccountsAsList().stream()
+                            && ApplicationFront.loggedInUser.getAccountsAsList().stream()
                             .map(Account::getAccountNumber)
                             .noneMatch(accountNumber -> accountNumberField.getText().equals(accountNumber));
                 }
@@ -554,7 +552,7 @@ public class ApplicationObjects {
             defineLabelsAndFields();
 
 
-            this.chooseAccountComboBox.getItems().addAll(loggedInUser
+            this.chooseAccountComboBox.getItems().addAll(ApplicationFront.loggedInUser
                     .getAccountsAsList()
                     .stream()
                     .map(Account::getAccountName)
@@ -572,7 +570,7 @@ public class ApplicationObjects {
 
             defineLabelsAndFields();
 
-            this.chooseAccountComboBox.getItems().addAll(loggedInUser
+            this.chooseAccountComboBox.getItems().addAll(ApplicationFront.loggedInUser
                     .getAccountsAsList()
                     .stream()
                             .filter(account -> account.getAccountType().equals(AccountCategory.SPENDING_ACCOUNT)
