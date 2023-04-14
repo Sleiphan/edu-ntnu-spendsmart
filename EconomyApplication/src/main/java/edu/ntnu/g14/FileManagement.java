@@ -16,7 +16,7 @@ import edu.ntnu.g14.dao.InvoiceDAO;
 
 public class FileManagement {
 
-    public static final String filePath          = "saves/accounts.txt";
+    public static final String PATH_ACCOUNTS     = "saves/accounts.txt";
     public static final String PATH_BUDGETS      = "saves/budgets.txt";
     public static final String PATH_INVOICES     = "saves/invoices.txt";
     public static final String PATH_TRANSACTIONS = "saves/transactions.txt";
@@ -148,7 +148,7 @@ public class FileManagement {
         }
 
         String addonTextAccount = newUser.getLoginInfo().getUserId() + ",";
-        try (RandomAccessFile file = new RandomAccessFile(filePath, "rw")) {
+        try (RandomAccessFile file = new RandomAccessFile(PATH_ACCOUNTS, "rw")) {
             String line;
             while ((line = file.readLine()) != null) {
                 if (line.startsWith(" ")) {
@@ -177,7 +177,7 @@ public class FileManagement {
     }
 
     public static Account[] readAccounts(String userId) throws IOException{
-        BufferedReader reader = new BufferedReader(new FileReader(filePath));
+        BufferedReader reader = new BufferedReader(new FileReader(PATH_ACCOUNTS));
         Stream<String> userTrans = reader.lines()
                 .filter(line -> line.startsWith(userId + ","));
         Account[] accounts = userTrans.flatMap(s -> Stream.of(s.split(","))
@@ -227,13 +227,14 @@ public class FileManagement {
 
 
     public static void writeAccount(String userId, Account account) {
-        writeTransactionOrAccount(userId, account.toCSVString(), filePath);
+        writeTransactionOrAccount(userId, account.toCSVString(), PATH_ACCOUNTS);
     }
     public static void writeTransaction(String userId, Transaction transaction) {
         writeTransactionOrAccount(userId, transaction.toCSVString(), PATH_TRANSACTIONS);
     }
+
     public static void deleteOrEditAccount(User loggedInUser) {
-        File oldFile    = new File(filePath);
+        File oldFile    = new File(PATH_ACCOUNTS);
         File newFile    = new File(PATH_TEMPFILE);
         try {
             FileWriter fileWriter         = new FileWriter(PATH_TEMPFILE, true);
@@ -275,7 +276,7 @@ public class FileManagement {
             printWriter.flush();
             printWriter.close();
             oldFile.delete();
-            File dump = new File(filePath);
+            File dump = new File(PATH_ACCOUNTS);
             newFile.renameTo(dump);
 
         } catch (IOException e) {
@@ -284,7 +285,7 @@ public class FileManagement {
     }
     public static void newEditUser(User loggedInUser) {
         String CSVString = loggedInUser.toCSVString();
-        File oldFile    = new File(filePath);
+        File oldFile    = new File(PATH_USERS);
         File newFile    = new File(PATH_TEMPFILE);
         try {
             FileWriter fileWriter         = new FileWriter(PATH_TEMPFILE, true);
@@ -324,7 +325,7 @@ public class FileManagement {
             printWriter.flush();
             printWriter.close();
             oldFile.delete();
-            File dump = new File(filePath);
+            File dump = new File(PATH_USERS);
             newFile.renameTo(dump);
 
         } catch (IOException e) {
