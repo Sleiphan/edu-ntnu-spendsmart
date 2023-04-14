@@ -93,7 +93,7 @@ public class AccountOverviewScene {
                 } else {
                     accountComboBox.setValue(currentAccount.getAccountName());
                 }
-                FileManagement.deleteOrEditAccount(ApplicationFront.loggedInUser);
+                FileManagement.editAccount(ApplicationFront.loggedInUser);
             }
         });
 

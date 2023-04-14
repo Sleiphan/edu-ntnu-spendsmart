@@ -232,8 +232,24 @@ public class FileManagement {
     public static void writeTransaction(String userId, Transaction transaction) {
         writeTransactionOrAccount(userId, transaction.toCSVString(), PATH_TRANSACTIONS);
     }
+    public static void editAccount(User loggedInUser) {
+        String accountStrings = loggedInUser.getAccountsAsList().stream()
+                .map(Account::toCSVString).reduce("", String::concat);
+        String userId = loggedInUser.getLoginInfo().getUserId();
 
-    public static void deleteOrEditAccount(User loggedInUser) {
+        String newLine = userId + "," + accountStrings;
+        editAccountOrUser(newLine, userId);
+    }
+    public static void newEditUser(User loggedInUser) {
+        String CSVString = loggedInUser.toCSVString();
+
+        String userId = loggedInUser.getLoginInfo().getUserId();
+
+        String newLine = userId + "," + CSVString;
+        editAccountOrUser(newLine, userId);
+
+    }
+    private static void editAccountOrUser(String newLine, String userId) {
         File oldFile    = new File(PATH_ACCOUNTS);
         File newFile    = new File(PATH_TEMPFILE);
         try {
@@ -247,11 +263,6 @@ public class FileManagement {
             int lines = (int) bufferedReader.lines().count();
             inputStream.getChannel().position(0);
             bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            String accountStrings = loggedInUser.getAccountsAsList().stream()
-                    .map(Account::toCSVString).reduce("", String::concat);
-            String userId = loggedInUser.getLoginInfo().getUserId();
-
-            String newLine = userId + "," + accountStrings;
 
             String currentLine;
             for (int i = 1; i < lines; i++) {
@@ -283,56 +294,6 @@ public class FileManagement {
             throw new RuntimeException(e);
         }
     }
-    public static void newEditUser(User loggedInUser) {
-        String CSVString = loggedInUser.toCSVString();
-        File oldFile    = new File(PATH_USERS);
-        File newFile    = new File(PATH_TEMPFILE);
-        try {
-            FileWriter fileWriter         = new FileWriter(PATH_TEMPFILE, true);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            PrintWriter printWriter       = new PrintWriter(bufferedWriter);
-
-            FileInputStream inputStream   = new FileInputStream(oldFile);
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-
-            int lines = (int) bufferedReader.lines().count();
-            inputStream.getChannel().position(0);
-            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            String userId = loggedInUser.getLoginInfo().getUserId();
-
-            String newLine = userId + "," + CSVString;
-
-            String currentLine;
-            for (int i = 1; i < lines; i++) {
-                currentLine = bufferedReader.readLine();
-                if (currentLine.startsWith(userId)) {
-                    printWriter.println(newLine);
-                }
-                else {
-                    printWriter.println(currentLine);
-                }
-            }
-            currentLine = bufferedReader.readLine();
-            if (currentLine.startsWith(userId)) {
-                printWriter.print(newLine);
-            }
-            else {
-                printWriter.print(currentLine);
-            }
-
-            inputStream.close();
-            bufferedReader.close();
-            printWriter.flush();
-            printWriter.close();
-            oldFile.delete();
-            File dump = new File(PATH_USERS);
-            newFile.renameTo(dump);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private static void writeTransactionOrAccount(String userId, String toCSVString, String filePath) {
         File oldFile    = new File(filePath);
         File newFile    = new File(PATH_TEMPFILE);
