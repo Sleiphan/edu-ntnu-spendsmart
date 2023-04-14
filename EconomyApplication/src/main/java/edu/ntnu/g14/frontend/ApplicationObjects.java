@@ -645,9 +645,9 @@ public class ApplicationObjects {
                 }
                 if (buttonType == deleteButtonType) {
                     Alert deleteAccountAlert = new Alert(AlertType.CONFIRMATION);
-                    deleteAccountAlert.setTitle("Are you sure you want to delete the account?");
+                    deleteAccountAlert.setHeaderText("Are you sure you want to delete the account?");
                     deleteAccountAlert.setContentText("Are you sure you want to delete: " + account.getAccountName() + "?");
-                    deleteAccountAlert.setHeaderText("Delete account");
+                    deleteAccountAlert.setTitle("Delete account");
                     deleteAccountAlert.showAndWait();
                     if (deleteAccountAlert.getResult() == ButtonType.CANCEL) {
                         return null;
