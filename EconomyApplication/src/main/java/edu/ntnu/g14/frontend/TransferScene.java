@@ -26,8 +26,8 @@ public class TransferScene {
     static Stage stage = ApplicationFront.getStage();
 
     static public Scene scene() throws IOException {
-        int x = 300;
-        int y = 35;
+        int x = 290;
+        int y = 50;
         int n = 85;
         int m = n - 5;
 
@@ -37,11 +37,11 @@ public class TransferScene {
         TextField toAccount = ApplicationObjects.newTextField("10987654321", x, y + 3 * n, 100, 20, 15);
 
         String[] categoryChoices = {"Food and Drink", "Clothes and Shoes", "Personal Care", "Leisure", "Travel", "Alcohol and Tobacco", "Other", "Payment", "Business"};
-        ComboBox<String> category = ApplicationObjects.newComboBox(categoryChoices, 100, 20, 15,x - 100, y + 4 * n);
+        ComboBox<String> category = ApplicationObjects.newComboBox(categoryChoices, 200, 20, 15, x, y + 4 * n - 25);
         category.setPromptText("Category of Payment");
 
-        Button transfer = ApplicationObjects.newButton("Pay", x, y + 2 * n + 150, 100, 20, 15);
-        Button cancel = ApplicationObjects.newButton("Cancel", 350, 255, 100, 20, 15);
+        Button transfer = ApplicationObjects.newButton("Transfer", x - 50, y + 3 * n + 125, 100, 20, 15);
+        Button cancel = ApplicationObjects.newButton("Cancel", x + 70, y + 3 * n + 125, 100, 20, 15);
         transfer.setOnAction(e -> {
             try {
                 LocalDate dateOfTransaction = LocalDate.now();
@@ -77,7 +77,7 @@ public class TransferScene {
         Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
-        Group root = new Group(fromAccount, amount, toAccount,
+        Group root = new Group(fromAccount, amount, description, toAccount, category,
                 ApplicationObjects.newText("From account", 30, false, x, y - 5),
                 ApplicationObjects.newText("Amount:", 30, false, x, y + m),
                 ApplicationObjects.newText("Description:", 30, false, x, y + 2 * m),
