@@ -9,7 +9,7 @@ public class TestUser {
 
     @Test
     public void testUser() {
-    Account testAccount = new Account(AccountCategory.SAVINGS_ACCOUNT, BigDecimal.valueOf(100000), "1256.65.56605", "kortkonto");
+    Account testAccount = new Account.AccountBuilder().accountCategory(AccountCategory.SAVINGS_ACCOUNT).amount(BigDecimal.valueOf(100000)).accountNumber("1256.65.56605").accountName("kortkonto").build();
     Account[] accounts = new Account[1];
     accounts[0] = testAccount;
     Invoice testInvoice = new Invoice(LocalDate.of(2023, 12, 4), BigDecimal.valueOf(100000), "1256.65.56605", "Comment");

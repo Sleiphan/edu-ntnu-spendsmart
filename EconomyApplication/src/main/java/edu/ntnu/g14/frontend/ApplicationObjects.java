@@ -384,32 +384,32 @@ public class ApplicationObjects {
             "-fx-font-size: " + fontSize + "px;";
     }
     
-    public static class AccountDialog extends Dialog<AccountWithProperty> {
-        private final AccountWithProperty account;
+    public static class AccountDialog extends Dialog<Account.AccountBuilder> {
+        private final Account.AccountBuilder account;
         private ComboBox<String> accountTypeField;
         private TextField amountField;
         private TextField accountNumberField;
         private TextField accountNameField;
 
-        public AccountDialog(AccountWithProperty account) {
+        public AccountDialog(Account.AccountBuilder account) {
             super();
             this.setTitle("Add Account");
             this.account = account;
             buildUI();
-            setPropertyBindings();
             setResultConverter();
         }
 
-        private void setPropertyBindings() {
-            amountField.textProperty().bindBidirectional(account.amountProperty());
-            accountNumberField.textProperty().bindBidirectional(account.accountNumberProperty());
-            accountNameField.textProperty().bindBidirectional(account.accountNameProperty());
-            accountTypeField.valueProperty().bindBidirectional(account.accountTypeProperty());
+        private void setBuilderFieldValues() {
+            account.amount(new BigDecimal(amountField.getText()));
+            account.accountNumber(accountNumberField.getText());
+            account.accountName(accountNameField.getText());
+            account.accountCategory(AccountCategory.valueOf(accountTypeField.getValue().replaceAll(" ", "_").toUpperCase()));
         }
 
         private void setResultConverter() {
-            javafx.util.Callback<ButtonType, AccountWithProperty> accountResultConverter = param -> {
+            javafx.util.Callback<ButtonType, Account.AccountBuilder> accountResultConverter = param -> {
                 if (param == ButtonType.APPLY) {
+                    setBuilderFieldValues();
                     return account;
                 } else {
                     return null;
@@ -441,15 +441,12 @@ public class ApplicationObjects {
                     }
                     return accountNumberField.getText() != null
                             && accountNameField.getText() != null
+                            && !accountNameField.getText().isBlank()
                             && accountTypeField.getValue() != null
                             && !(amountBigDecimal.floatValue() < 0)
                             && Pattern.matches(regexAccountNumber, accountNumberField.getText())
-                            && ApplicationFront.loggedInUser.getAccountsAsList().stream()
-                            .map(Account::getAccountName)
-                            .noneMatch(accountName -> accountNameField.getText().equalsIgnoreCase(accountName))
-                            && ApplicationFront.loggedInUser.getAccountsAsList().stream()
-                            .map(Account::getAccountNumber)
-                            .noneMatch(accountNumber -> accountNumberField.getText().equals(accountNumber));
+                            && ApplicationFront.loggedInUser.checkIfAccountNameIsOccupied(accountNameField.getText())
+                            && ApplicationFront.loggedInUser.checkIfAccountNumberIsOccupied(accountNumberField.getText());
                 }
             });
         }
@@ -490,8 +487,8 @@ public class ApplicationObjects {
         }
     }
     
-    static class TransactionWithPropertyDialog extends Dialog<TransactionWithProperty> {
-        private final TransactionWithProperty transaction;
+    static class TransactionBuilderDialog extends Dialog<Transaction.TransactionBuilder> {
+        private final Transaction.TransactionBuilder transaction;
         private ComboBox<String> chooseAccountComboBox;
         private TextField accountNumberField;
         private TextField amountField;
@@ -505,39 +502,41 @@ public class ApplicationObjects {
         Label accountLabel2;
         Label accountLabel1;
 
-        public TransactionWithPropertyDialog(TransactionWithProperty transaction, Boolean income) {
+        public TransactionBuilderDialog(Transaction.TransactionBuilder transaction, boolean income) {
             super();
             this.transaction = transaction;
             if (income) {
                 this.setTitle("Add Income");
                 buildUI(true);
-                setPropertyBindingsIncome();
             } else {
                 this.setTitle("Add Expense");
                 buildUI(false);
-                setPropertyBindingsExpense();
             }
-            setResultConverter();
+            setResultConverter(income);
         }
         private void setPropertyBindingsIncome() {
-            chooseAccountComboBox.valueProperty().bindBidirectional(transaction.getToAccountIdProperty());
-            accountNumberField.textProperty().bindBidirectional(transaction.getFromAccountIdProperty());
+            transaction.toAccountNumber(chooseAccountComboBox.getValue());
+            transaction.fromAccountNumber(accountNumberField.getText());
             setPropertyBindings();
         }
         private void setPropertyBindingsExpense() {
-            chooseAccountComboBox.valueProperty().bindBidirectional(transaction.getFromAccountIdProperty());
-            accountNumberField.textProperty().bindBidirectional(transaction.getToAccountIdProperty());
+            transaction.toAccountNumber(accountNumberField.getText());
+            transaction.fromAccountNumber(chooseAccountComboBox.getValue());
             setPropertyBindings();
         }
         private void setPropertyBindings() {
-            amountField.textProperty().bindBidirectional(transaction.getAmountProperty());
-            descriptionField.textProperty().bindBidirectional(transaction.getDescriptionProperty());
-            dateOfTransactionField.valueProperty().bindBidirectional(transaction.getDateOfTransactionProperty());
-            categoryField.valueProperty().bindBidirectional(transaction.getCategoryProperty());
+            transaction.amount(new BigDecimal(amountField.getText()));
+            transaction.description(descriptionField.getText());
+            transaction.dateOfTransaction(dateOfTransactionField.getValue());
+            transaction.category(BudgetCategory.valueOf(categoryField.getValue().replaceAll(" ", "_").toUpperCase()));
         }
-        private void setResultConverter() {
-            javafx.util.Callback<ButtonType, TransactionWithProperty> transactionResultConverter = param -> {
+        private void setResultConverter(boolean income) {
+            javafx.util.Callback<ButtonType, Transaction.TransactionBuilder> transactionResultConverter = param -> {
                 if (param == ButtonType.APPLY) {
+                    if (income)
+                        setPropertyBindingsIncome();
+                    else setPropertyBindingsExpense();
+
                     return transaction;
                 } else {
                     return null;
@@ -545,7 +544,7 @@ public class ApplicationObjects {
             };
             setResultConverter(transactionResultConverter);
         }
-        private void buildUI(Boolean income) {
+        private void buildUI(boolean income) {
             Pane pane;
             if (income) {
                 pane = createIncomeGridPane();

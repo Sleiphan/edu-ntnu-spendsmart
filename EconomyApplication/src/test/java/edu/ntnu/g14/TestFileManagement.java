@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 
 class TestFileManagement {
-    Account testAccount = new Account(AccountCategory.SAVINGS_ACCOUNT, BigDecimal.valueOf(100000), "1256.65.56605", "kortkonto");
+    Account testAccount = new Account.AccountBuilder().accountCategory(AccountCategory.SAVINGS_ACCOUNT).amount(BigDecimal.valueOf(100000)).accountNumber("1256.65.56605").accountName("kortkonto").build();
     Invoice testInvoice = new Invoice(LocalDate.of(2023, 12, 4), BigDecimal.valueOf(100000), "1256.65.56605", "Comment");
     Transaction testTransaction = new Transaction("1256.65.56605", "1256.65.56605", BigDecimal.valueOf(1000), "brukte penger", LocalDate.of(2023, 12, 4), BudgetCategory.ALCOHOL_AND_TOBACCO);
     Budget testBudget = new Budget(Byte.parseByte("90"), GenderCategory.FEMALE);

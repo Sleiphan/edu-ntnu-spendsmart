@@ -13,7 +13,10 @@ public class TestAccount {
         String accountNumber = "8356.79.34678";
         String accountName = "Utunga";
 
-        Account t = new Account(accountType, amount, accountNumber, accountName);
+        Account t = new Account.AccountBuilder().amount(amount)
+                .accountCategory(accountType)
+                .accountName(accountName)
+                .accountNumber(accountNumber).build();
         Account t2 = Account.fromCSVString(t.toCSVString());
         assert t.equals(t2);
     }

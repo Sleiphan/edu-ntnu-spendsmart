@@ -18,19 +18,27 @@ public class Transaction {
     public Transaction(String fromAccountNumber, String toAccountNumber, BigDecimal amount, String description,
                        LocalDate dateOfTransaction, BudgetCategory category) {
         if (fromAccountNumber.isEmpty())
-            throw new IllegalArgumentException("From account ID cannot be empty");
+            throw new IllegalArgumentException("From account number cannot be empty");
         if (toAccountNumber.isEmpty())
-            throw new IllegalArgumentException("To account ID cannot be empty");
+            throw new IllegalArgumentException("To account number cannot be empty");
         if (description == null)
             throw new IllegalArgumentException("Description cannot be null");
         if (dateOfTransaction == null)
             throw new IllegalArgumentException("Date of transaction cannot be null");
-        this.category = category;
+        this.category         = category;
         this.fromAccountNumber = fromAccountNumber;
-        this.toAccountNumber = toAccountNumber;
-        this.amount = amount;
-        this.description = description;
+        this.toAccountNumber   = toAccountNumber;
+        this.amount            = amount;
+        this.description       = description;
         this.dateOfTransaction = dateOfTransaction;
+    }
+    public Transaction(TransactionBuilder transactionBuilder) {
+        this.fromAccountNumber = transactionBuilder.fromAccountNumber;
+        this.toAccountNumber   = transactionBuilder.toAccountNumber;
+        this.amount            = transactionBuilder.amount;
+        this.description       = transactionBuilder.description;
+        this.dateOfTransaction = transactionBuilder.dateOfTransaction;
+        this.category          = transactionBuilder.category;
     }
 
     public String getFromAccountNumber() {
@@ -106,4 +114,55 @@ public class Transaction {
 
         return new Transaction(fromAccountNumber, toAccountNumber, amount, description, dateOfTransaction, budgetCategory);
     }
+
+    public static class TransactionBuilder {
+        private String fromAccountNumber;
+        private String toAccountNumber;
+        private BigDecimal amount;
+        private String description;
+        private LocalDate dateOfTransaction;
+        private BudgetCategory category;
+        public Transaction build() {
+            if (!validateBuilder())
+                return new Transaction(this);
+            else throw new IllegalStateException("Transaction not fully defined during build");
+        }
+        public TransactionBuilder fromAccountNumber(String fromAccountNumber) {
+            if (fromAccountNumber.isEmpty())
+                throw new IllegalArgumentException("From account number cannot be empty");
+            this.fromAccountNumber = fromAccountNumber;
+            return this;
+        }
+        public TransactionBuilder toAccountNumber(String toAccountNumber) {
+            if (toAccountNumber.isEmpty())
+                throw new IllegalArgumentException("To account number cannot be empty");
+            this.toAccountNumber = toAccountNumber;
+            return this;
+        }
+        public TransactionBuilder description(String description) {
+            if (description == null)
+                throw new IllegalArgumentException("Description cannot be null");
+            this.description = description;
+            return this;
+        }
+        public TransactionBuilder dateOfTransaction(LocalDate dateOfTransaction) {
+            if (dateOfTransaction == null)
+                throw new IllegalArgumentException("Date of transaction cannot be null");
+            this.dateOfTransaction = dateOfTransaction;
+            return this;
+        }
+        public TransactionBuilder category(BudgetCategory category) {
+            this.category = category;
+            return this;
+        }
+        public TransactionBuilder amount(BigDecimal amount) {
+            this.amount = amount;
+            return this;
+        }
+        private boolean validateBuilder() {
+            return this.dateOfTransaction == null || this.amount == null || this.category == null
+                    || this.description == null || this.fromAccountNumber == null || this.toAccountNumber == null;
+        }
+    }
+
 }

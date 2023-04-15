@@ -149,7 +149,11 @@ public class Account {
         String finalAccountName          = accountName.endsWith(",") ? accountName.substring(0, fields[3].length() - 1)
                 : accountName;
 
-        return new Account(accountType, amount, accountNumber, finalAccountName);
+        return new AccountBuilder().amount(amount)
+                .accountCategory(accountType)
+                .accountNumber(accountNumber)
+                .accountName(finalAccountName)
+                .build();
     }
     public static class AccountBuilder {
         private AccountCategory accountType;
@@ -161,7 +165,11 @@ public class Account {
         private String accountName;
 
         public Account build() {
-            return new Account(this);
+            if (!validateBuilder()) {
+                return new Account(this);
+            } else {
+                throw new IllegalStateException("Account not fully defined during build");
+            }
         }
         public AccountBuilder accountCategory(AccountCategory accountType) {
             this.accountType = accountType;
@@ -185,6 +193,10 @@ public class Account {
                 this.accountName = accountName;
             }
             return this;
+        }
+        private boolean validateBuilder() {
+            return this.accountType == null || this.amount == null || this.accountNumber == null
+                        || this.accountName == null;
         }
     }
 }

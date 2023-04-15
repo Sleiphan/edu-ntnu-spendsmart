@@ -93,7 +93,13 @@ public class User extends Personalia {
     public boolean checkIfAccountNameIsOccupied(String accountName) {
         return this.accounts.stream()
                 .filter(account -> account.getAccountName()
-                        .equals(accountName))
+                        .equalsIgnoreCase(accountName))
+                .findAny().isEmpty();
+    }
+    public boolean checkIfAccountNumberIsOccupied(String accountNumber) {
+        return  this.accounts.stream()
+                .filter(account -> account.getAccountNumber()
+                        .equalsIgnoreCase(accountNumber))
                 .findAny().isEmpty();
     }
     public Account getAccountWithAccountName(String accountName) {
@@ -113,7 +119,7 @@ public class User extends Personalia {
     public void removeAccount(Account account){
         this.accounts.remove(account);
     }
-    private String incomeOrExpensesAllAccountsLast30Days(Boolean incomeOrExpenses) {
+    private String incomeOrExpensesAllAccountsLast30Days(boolean incomeOrExpenses) {
         Supplier<Stream<String>> accountNumbers = () -> accounts
                 .stream()
                 .filter(account -> !account.getAccountType().equals(AccountCategory.PENSION_ACCOUNT))
@@ -131,7 +137,7 @@ public class User extends Personalia {
                 .map(Transaction::getAmount)
                 .reduce(BigDecimal.valueOf(0), BigDecimal::add).toString());
     }
-    private String incomeOrExpensesLastYear(Boolean incomeOrExpenses) {
+    private String incomeOrExpensesLastYear(boolean incomeOrExpenses) {
         LocalDate startOfLastYear = LocalDate.ofYearDay(LocalDate.now().getYear() - 1, 1);
         LocalDate endOfLastYear = LocalDate.ofYearDay(LocalDate.now().getYear() - 1, 365);
         Supplier<Stream<String>> accountNumbers = () -> accounts
@@ -159,7 +165,7 @@ public class User extends Personalia {
     public double getTotalIncomeOfCategoryLast30Days(String category) {
         return getTotalExpenseOrIncomeOfCategoryLast30Days(category, false);
     }
-    private double getTotalExpenseOrIncomeOfCategoryLast30Days(String category, Boolean expenseOrIncome) {
+    private double getTotalExpenseOrIncomeOfCategoryLast30Days(String category, boolean expenseOrIncome) {
         return getTransactionsAsList().stream()
                 .filter(transaction -> getAccountsAsList().stream()
                         .map(Account::getAccountNumber)
@@ -181,7 +187,7 @@ public class User extends Personalia {
     public double getTotalIncomeOfCategoryLastYear(String category) {
         return getTotalExpenseOrIncomeOfCategoryLastYear(category, false);
     }
-    private double getTotalExpenseOrIncomeOfCategoryLastYear(String category, Boolean expenseOrIncome) {
+    private double getTotalExpenseOrIncomeOfCategoryLastYear(String category, boolean expenseOrIncome) {
         LocalDate startOfLastYear = LocalDate.ofYearDay(LocalDate.now().getYear() - 1, 1);
         LocalDate endOfLastYear = LocalDate.ofYearDay(LocalDate.now().getYear() - 1, 365);
 
