@@ -30,8 +30,8 @@ public class AccountOverviewScene {
         ObservableList<String> accountNames = FXCollections.observableArrayList(getAccountsNames());
 
         if (accounts.isEmpty()) {
-            Dialog<AccountWithProperty> accountWithPropertyDialog = new ApplicationObjects.AccountWithPropertyDialog(new AccountWithProperty(null, null, null, null));
-            Optional<AccountWithProperty> result = accountWithPropertyDialog.showAndWait();
+            Dialog<AccountWithProperty> accountDialog = new ApplicationObjects.AccountDialog(new AccountWithProperty(null, null, null, null));
+            Optional<AccountWithProperty> result = accountDialog.showAndWait();
             if (result.isPresent()) {
 
                 createAccountDialog(accountNames, result);
@@ -48,7 +48,7 @@ public class AccountOverviewScene {
         accountComboBox.setItems(accountNames);
         accountComboBox.setValue(accounts.get(0).getAccountName());
         Text accountNumberText    = ApplicationObjects.newText("Account Number: " + accounts.get(0).getAccountNumber(), 14, false, 0, 130);
-        Text amountText           = ApplicationObjects.newText("Amount: " + accounts.get(0).getAmount() + "kr", 20, false, 0, 160);
+        Text amountText           = ApplicationObjects.newText("Amount: " + ApplicationObjects.numberRegex(accounts.get(0).getAmount().toString()) + " kr", 20, false, 0, 160);
         Button addExpense         = ApplicationObjects.newButton("Add Expense", 30,80, 100, 20,14);
         Button addIncome          = ApplicationObjects.newButton("Add Income", 30,50, 100, 20,14);
         Button addAccount         = ApplicationObjects.newButton("Add Account", 728 - 130, 50, 100, 20, 14);
@@ -69,12 +69,12 @@ public class AccountOverviewScene {
                 setCurrentAccount(accountComboBox.getValue());
 
                 accountNumberText.setText("Account Number: " + currentAccount.getAccountNumber());
-                amountText.setText("Amount: " + currentAccount.getAmount().toString() + "kr");
+                amountText.setText("Amount: " + ApplicationObjects.numberRegex(currentAccount.getAmount().toString()) + " kr");
 
             }
         });
         addAccount.setOnAction(actionEvent -> {
-            Dialog<AccountWithProperty> accountWithPropertyDialog = new ApplicationObjects.AccountWithPropertyDialog(new AccountWithProperty(null, null, null, null));
+            Dialog<AccountWithProperty> accountWithPropertyDialog = new ApplicationObjects.AccountDialog(new AccountWithProperty(null, null, null, null));
             Optional<AccountWithProperty> result = accountWithPropertyDialog.showAndWait();
             if (result.isPresent()) {
 

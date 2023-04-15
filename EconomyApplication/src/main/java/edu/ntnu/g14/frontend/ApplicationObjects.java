@@ -48,11 +48,33 @@ public class ApplicationObjects {
         return sceneColor;
     }
 
-    
+    public static Group userMenuGeneralOverview() {
+        Rectangle rectangle = newRectangle(683 + 20, 10, 130 + 26, 110);
+
+        Button logOut = newButton("Log Out", 696 + 20, 15, 130, 40, 15);
+        logOut.setOnAction(e -> {
+            try {
+                stage.setScene(LoginChooseUserScene.scene());
+            } catch (IOException e1) {
+
+                e1.printStackTrace();
+            }
+        });
+        Button manageUser = newButton("Manage User", 696 + 20, 70, 130, 40, 15);
+        manageUser.setOnAction(e -> {
+            try {
+                stage.setScene(UserManagementScene.scene());
+            } catch (IOException e1) {
+
+                e1.printStackTrace();
+            }
+        });
+        return new Group(rectangle, logOut, manageUser);
+    }
     public static Group userMenu() {
         Rectangle rectangle = newRectangle(553, 10, 145, 110);
         
-        Button logOut = newButton("log out", 563, 15, 130, 40, 15);
+        Button logOut = newButton("Log Out", 563, 15, 130, 40, 15);
         logOut.setOnAction(e -> {
             try {
                 stage.setScene(LoginChooseUserScene.scene());
@@ -61,7 +83,7 @@ public class ApplicationObjects {
                 e1.printStackTrace();
             }
         });
-        Button manageUser = newButton("manage user", 563, 70, 130, 40, 15);
+        Button manageUser = newButton("Manage User", 563, 70, 130, 40, 15);
         manageUser.setOnAction(e -> {
             try {
                 stage.setScene(UserManagementScene.scene());
@@ -72,7 +94,61 @@ public class ApplicationObjects {
         });
         return new Group(rectangle, logOut, manageUser);
     }
+    public static Group dropDownMenuGeneralOverview() {
+        Rectangle rectangle = newRectangle(683 + 20, 10, 130 + 26, 340);
+        Button invoice = newButton("invoice", 696 + 20, 15, 130, 40, 20);
+        invoice.setOnAction(e -> {
+            try {
+                stage.setScene(InvoiceScene.scene());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        });
+        Button transfer = newButton("transfer", 696 + 20, 70, 130, 40, 20);
+        transfer.setOnAction(e -> {
+            try {
+                stage.setScene(TransferScene.scene());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        });
+        Button payment = newButton("payment", 696 + 20, 125, 130, 40, 20);
+        payment.setOnAction(e -> {
+            try {
+                stage.setScene(PaymentScene.scene());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        });
+        Button accounts = newButton("accounts", 696 + 20, 180, 130, 40, 20);
+        accounts.setOnAction(e -> {
+            try {
+                stage.setScene(AccountOverviewScene.scene());
+            } catch (IOException e1) {
 
+                e1.printStackTrace();
+            }
+        });
+        Button overview = newButton("overview", 696 + 20, 235, 130, 40, 20);
+        overview.setOnAction(e -> {
+            try {
+                stage.setScene(GeneralOverviewScene.scene());
+            } catch (IOException e1) {
+
+                e1.printStackTrace();
+            }
+        });
+        Button budgetting = newButton("budgetting", 696 + 20, 290, 130, 40, 20);
+        budgetting.setOnAction(e -> {
+            try {
+                stage.setScene(BudgetingScene.scene());
+            } catch (IOException e1) {
+
+                e1.printStackTrace();
+            }
+        });
+        return new Group(rectangle, invoice, transfer, payment, accounts, overview, budgetting);
+    }
     public static Group dropDownMenu() {
         Rectangle rectangle = newRectangle(553, 10, 145, 340);
         Button invoice = newButton("invoice", 563, 15, 130, 40, 20);
@@ -128,7 +204,6 @@ public class ApplicationObjects {
         });
         return new Group(rectangle, invoice, transfer, payment, accounts, overview, budgetting);
     }
-
     public static Button newButton(String text, int x, int y, int width, int height, int fontSize){
         Button button = new Button(text);
         button.setLayoutX(x);
@@ -280,7 +355,7 @@ public class ApplicationObjects {
     }
 
     public static String[] getAccountCategories() {
-        return new String[] {"Savings Account", "Spending Account", "Pension Account", "Other"};
+        return new String[] { "Checking Account", "Savings Account", "Pension Account", "Other"};
     }
     public static String[] getBudgetCategories() {
         return new String[] {"Food and Drink", "Clothes and Shoes", "Personal Care", "Leisure", "Travel"
@@ -291,6 +366,12 @@ public class ApplicationObjects {
         return new String[] {"Food and Drink", "Clothes and Shoes", "Personal Care", "Leisure", "Travel"
                 , "Alcohol and Tobacco", "Payment", "Other"};
     }
+
+    public static String numberRegex(String number) {
+        
+        return number.replaceAll("(\\d)(?=(\\d{3})+$)", "$1 ").trim();
+    }
+
     public static String[] getBudgetIncomeCategories() {
         return new String[] {"Salary", "Income", "Business"};
     }
@@ -303,14 +384,14 @@ public class ApplicationObjects {
             "-fx-font-size: " + fontSize + "px;";
     }
     
-    public static class AccountWithPropertyDialog extends Dialog<AccountWithProperty> {
+    public static class AccountDialog extends Dialog<AccountWithProperty> {
         private final AccountWithProperty account;
         private ComboBox<String> accountTypeField;
         private TextField amountField;
         private TextField accountNumberField;
         private TextField accountNameField;
 
-        public AccountWithPropertyDialog(AccountWithProperty account) {
+        public AccountDialog(AccountWithProperty account) {
             super();
             this.setTitle("Add Account");
             this.account = account;
@@ -384,7 +465,7 @@ public class ApplicationObjects {
             this.amountField         = new TextField();
             this.accountNameField    = new TextField();
 
-            this.accountTypeField.getItems().addAll("Spendings Account", "Savings Account", "Pensions Account", "Other");
+            this.accountTypeField.getItems().addAll(getAccountCategories());
             this.accountTypeField.setPromptText("Account Type");
 
             GridPane grid = new GridPane();
@@ -568,7 +649,7 @@ public class ApplicationObjects {
             VBox content = new VBox(10);
             this.accountLabel1 = new Label("Choose the sending account:");
             this.accountLabel2 = new Label("Enter the recipient's account:");
-            this.amountLabel = new Label("Enter the amount you received:");
+            this.amountLabel = new Label("Enter the amount you sent:");
 
 
             defineLabelsAndFields();
@@ -576,7 +657,7 @@ public class ApplicationObjects {
             this.chooseAccountComboBox.getItems().addAll(ApplicationFront.loggedInUser
                     .getAccountsAsList()
                     .stream()
-                            .filter(account -> account.getAccountType().equals(AccountCategory.SPENDING_ACCOUNT)
+                            .filter(account -> account.getAccountType().equals(AccountCategory.CHECKING_ACCOUNT)
                             || account.getAccountType().equals(AccountCategory.OTHER))
                     .map(Account::getAccountName)
                     .collect(Collectors.toList()));

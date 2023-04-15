@@ -1,5 +1,7 @@
 package edu.ntnu.g14;
 
+import edu.ntnu.g14.frontend.ApplicationObjects;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -68,11 +70,12 @@ public class User extends Personalia {
 
     public String amountAllAccounts() {
 
-        return this.accounts
+        return ApplicationObjects.numberRegex(this.accounts
                 .stream()
+                .filter(account -> !account.getAccountType().equals(AccountCategory.PENSION_ACCOUNT))
                 .map(Account::getAmount)
                 .reduce(BigDecimal.valueOf(0), BigDecimal::add)
-                .toString();
+                .toString());
     }
 
     public String expensesLastYear() {
@@ -116,7 +119,7 @@ public class User extends Personalia {
                 .filter(account -> !account.getAccountType().equals(AccountCategory.PENSION_ACCOUNT))
                 .map(Account::getAccountNumber);
 
-        return this.transactions
+        return ApplicationObjects.numberRegex(this.transactions
                 .stream()
                 .filter(transaction ->
                         incomeOrExpenses ? accountNumbers.get()
@@ -126,7 +129,7 @@ public class User extends Personalia {
                         transaction.getDateOfTransaction().isAfter(LocalDate.now().minusDays(30))
                                 && transaction.getDateOfTransaction().isBefore(LocalDate.now().plusDays(1)))
                 .map(Transaction::getAmount)
-                .reduce(BigDecimal.valueOf(0), BigDecimal::add).toString();
+                .reduce(BigDecimal.valueOf(0), BigDecimal::add).toString());
     }
     private String incomeOrExpensesLastYear(Boolean incomeOrExpenses) {
         LocalDate startOfLastYear = LocalDate.ofYearDay(LocalDate.now().getYear() - 1, 1);
@@ -136,7 +139,7 @@ public class User extends Personalia {
                 .filter(account -> !account.getAccountType().equals(AccountCategory.PENSION_ACCOUNT))
                 .map(Account::getAccountNumber);
 
-        return this.transactions
+        return ApplicationObjects.numberRegex(this.transactions
                 .stream()
                 .filter(transaction ->
                         incomeOrExpenses ? accountNumbers.get()
@@ -146,7 +149,7 @@ public class User extends Personalia {
                         transaction.getDateOfTransaction().isAfter(startOfLastYear)
                                 && transaction.getDateOfTransaction().isBefore(endOfLastYear))
                 .map(Transaction::getAmount)
-                .reduce(BigDecimal.valueOf(0), BigDecimal::add).toString();
+                .reduce(BigDecimal.valueOf(0), BigDecimal::add).toString());
 
     }
     public double getTotalExpenseOfCategoryLast30Days(String category) {

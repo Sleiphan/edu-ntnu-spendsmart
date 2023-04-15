@@ -30,33 +30,32 @@ public class GeneralOverviewScene {
     private static Text totalExpensesText;
     static public Scene scene() throws IOException {
         String monthlyExpensesPieChartTitle    = "Monthly Expenses";
-        String yearlyExpensesPieChartTitle     = "Yearly Expenses";
+        String yearlyExpensesPieChartTitle     = "Expenses Last Year";
         String monthlyIncomePieChartTitle      = "Monthly Income";
-        String yearlyIncomePieChartTitle       = "Yearly Income";
+        String yearlyIncomePieChartTitle       = "Income Last Year";
         String[] columnTitlesTransactionsTable = {"Date", "Transaction", "Amount", "Account"};
-        totalOfAllAccountsCombinedText = ApplicationObjects.newText("Total of all Accounts Combined (excl. Pension)", 16, false, 900/2 - 319/2, 30);
+        totalOfAllAccountsCombinedText = ApplicationObjects.newText("Total of all Accounts Combined (excl. Pension)", 16, false, 900/2 - 319/2, 50);
         setBigSumText();
 
         totalIncomeText = ApplicationObjects.newText("Income: " + loggedInUser
-                .incomeLast30Days() + " kr", 20, false, 0, 100);
-        totalIncomeText.setX(totalOfAllAccountsCombinedText.getLayoutBounds().getMinX()
-                - totalIncomeText.getLayoutBounds().getWidth()/2);
+                .incomeLast30Days() + " kr", 20, false, 0, 170);
+        totalIncomeText.setX(205 - totalIncomeText.getLayoutBounds().getWidth()/2);
 
         totalExpensesText = ApplicationObjects.newText("Expenses: " + loggedInUser
-                .expensesLast30Days() + " kr", 20, false, 0, 100);
-        totalExpensesText.setX(totalOfAllAccountsCombinedText.getLayoutBounds().getMaxX()
-                - totalExpensesText.getLayoutBounds().getWidth()/2);
+                .expensesLast30Days() + " kr", 20, false, 0, 170);
+        totalExpensesText.setX(630 - totalExpensesText.getLayoutBounds().getWidth()/2);
 
         int expenditureDataWidth = 450;
-        int expenditureDataHeight = 340;
+        int expenditureDataHeight = 342;
         setPiesDataLast30Days();
+
         PieChart expenditurePieChart = new PieChart(expenditurePieData);
         expenditurePieChart.setLabelsVisible(false);
         expenditurePieChart.setAnimated(false);
         expenditurePieChart.setTitle(monthlyExpensesPieChartTitle);
         expenditurePieChart.setLegendVisible(true);
         expenditurePieChart.setLayoutX(400);
-        expenditurePieChart.setLayoutY(567/2 - 120);
+        expenditurePieChart.setLayoutY(567/2 - 120 + 20);
         expenditurePieChart.setStyle("-fx-pref-width: " + expenditureDataWidth +";  \n" +
                                      "-fx-pref-height: " + expenditureDataHeight +"; \n" +
                                      "-fx-min-width: " + expenditureDataWidth + ";   \n" +
@@ -70,7 +69,7 @@ public class GeneralOverviewScene {
         incomePieChart.setLegendSide(Side.BOTTOM);
         incomePieChart.setTitle(monthlyIncomePieChartTitle);
         incomePieChart.setLayoutX(-50);
-        incomePieChart.setLayoutY((float) 567/2 - 120);
+        incomePieChart.setLayoutY((float) 567/2 - 120 + 20);
         incomePieChart.setLegendVisible(true);
         incomePieChart.setLabelsVisible(false);
         incomePieChart.setStyle("-fx-pref-width: 500; \n" +
@@ -80,8 +79,8 @@ public class GeneralOverviewScene {
                 "-fx-max-width: 500;   \n" +
                 "-fx-max-height: 300;  ");
 
-        Button yearlyToggle = ApplicationObjects.newButton("Yearly", 49, 120, 100, 20, 16);
-        Button monthlyToggle = ApplicationObjects.newButton("Monthly", 173, 120, 100, 20, 16);
+        Button yearlyToggle = ApplicationObjects.newButton("Yearly", 70, 75, 100, 20, 16);
+        Button monthlyToggle = ApplicationObjects.newButton("Monthly", 173, 75, 100, 20, 16);
 
         TableView<ObservableList<Object>> transactionsTables = ApplicationObjects.newTableView(columnTitlesTransactionsTable, 40, 230, 658, 300);
         transactionsTables.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
@@ -124,7 +123,7 @@ public class GeneralOverviewScene {
 
 
 
-        ImageView homeButton = ApplicationObjects.newImage("home.png", 24, 24, 20, 20);
+        ImageView homeButton = ApplicationObjects.newImage("home.png", 24, 12, 20, 20);
         homeButton.setOnMouseClicked(e -> {
             try {
                 stage.setScene(MainPageScene.scene());
@@ -132,9 +131,9 @@ public class GeneralOverviewScene {
                 e1.printStackTrace();
             }
         });
-        Button dropDownButton = ApplicationObjects.newButton("test", 835, 24, 10, 10, 10);
-        Group dropDown = ApplicationObjects.dropDownMenu();
-        ImageView manageUserButton = ApplicationObjects.newImage("user.png", 798, 24, 20, 20);
+        Button dropDownButton = ApplicationObjects.newButton("test", 835, 12, 10, 10, 10);
+        Group dropDown = ApplicationObjects.dropDownMenuGeneralOverview();
+        ImageView manageUserButton = ApplicationObjects.newImage("user.png", 798, 12, 20, 20);
         Group root = new Group(totalOfAllAccountsCombinedText, bigSumText,
                 totalIncomeText, totalExpensesText,
                 dropDownButton, homeButton, manageUserButton, expenditurePieChart, incomePieChart, monthlyToggle, yearlyToggle);
@@ -145,7 +144,7 @@ public class GeneralOverviewScene {
         Scene scene = new Scene(root, 900, 567, ApplicationObjects.getSceneColor());
 
 
-        Group userButtons = ApplicationObjects.userMenu();
+        Group userButtons = ApplicationObjects.userMenuGeneralOverview();
 
         manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
@@ -176,7 +175,7 @@ public class GeneralOverviewScene {
 
     private static void setBigSumText() {
         bigSumText = ApplicationObjects.newText(loggedInUser
-                .amountAllAccounts() + " kr", 35, false, 346, 70);
+                .amountAllAccounts() + " kr", 35, false, 346, 100);
         bigSumText.setX((float) 900/2 - bigSumText.getLayoutBounds().getWidth()/2);
     }
 
@@ -184,29 +183,23 @@ public class GeneralOverviewScene {
         if (monthOrYear) {
             totalIncomeText.setText("Income: " + loggedInUser
                     .incomeLast30Days() + " kr");
-            totalIncomeText.setX(totalOfAllAccountsCombinedText.getLayoutBounds().getMinX()
-                    - totalIncomeText.getLayoutBounds().getWidth()/2);
         }
         else {
             totalIncomeText.setText("Income: " + loggedInUser
                     .incomeLastYear() + " kr");
-            totalIncomeText.setX(totalOfAllAccountsCombinedText.getLayoutBounds().getMinX()
-                    - totalIncomeText.getLayoutBounds().getWidth()/2);
         }
+        totalIncomeText.setX(205 - totalIncomeText.getLayoutBounds().getWidth()/2);
     }
 
     public static void setTotalExpensesText(Boolean monthOrYear) {
         if (monthOrYear) {
             totalExpensesText.setText("Expenses: " + loggedInUser
                     .expensesLast30Days() + " kr");
-            totalExpensesText.setX(totalOfAllAccountsCombinedText.getLayoutBounds().getMaxX()
-                    - totalExpensesText.getLayoutBounds().getWidth()/2);
         } else {
             totalExpensesText.setText("Expenses: " + loggedInUser
                     .expensesLastYear() + " kr");
-            totalExpensesText.setX(totalOfAllAccountsCombinedText.getLayoutBounds().getMaxX()
-                    - totalExpensesText.getLayoutBounds().getWidth()/2);
         }
+        totalExpensesText.setX(630 - totalExpensesText.getLayoutBounds().getWidth()/2);
     }
 
     private static void setPiesDataLastYear() {
