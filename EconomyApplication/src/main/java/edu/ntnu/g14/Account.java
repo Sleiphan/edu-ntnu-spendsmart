@@ -43,7 +43,7 @@ public class Account {
             this.accountNumber = accountNumber;
         }
     }
-    private Account(AccountBuilder account) {
+    public Account(AccountBuilder account) {
         this.accountType = account.accountType;
         this.accountNumber = account.accountNumber;
         this.amount = account.amount;
@@ -152,13 +152,13 @@ public class Account {
         return new Account(accountType, amount, accountNumber, finalAccountName);
     }
     public static class AccountBuilder {
-        public AccountCategory accountType;
+        private AccountCategory accountType;
         // Funds in the account, as BigDecimal
-        public BigDecimal amount;
+        private BigDecimal amount;
         // Unique reference of account in the bank system, as String
-        public String accountNumber;
+        private String accountNumber;
         // Name of the account assigned by a user, as String
-        public String accountName;
+        private String accountName;
 
         public Account build() {
             return new Account(this);
