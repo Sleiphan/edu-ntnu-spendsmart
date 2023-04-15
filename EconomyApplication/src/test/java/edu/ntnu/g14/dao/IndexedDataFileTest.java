@@ -3,10 +3,10 @@ package edu.ntnu.g14.dao;
 
 import org.junit.jupiter.api.*;
 
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -34,6 +34,13 @@ public class IndexedDataFileTest {
 
     @Test
     public void empty_then_fill_up_again() {
+        String expected =
+                "User 2:12\n" +
+                "User 1:0\n" +
+                "\n" +
+                "Test data 1\n" +
+                "Test data 2\n";
+
         try {
             dao.addNewData(user1ID, "Test data 1".getBytes(CHARSET));
             dao.addNewData(user2ID, "Test data 2".getBytes(CHARSET));
@@ -41,10 +48,13 @@ public class IndexedDataFileTest {
             dao.deleteData(user2ID, 0);
             dao.addNewData(user1ID, "Test data 1".getBytes(CHARSET));
             dao.addNewData(user2ID, "Test data 2".getBytes(CHARSET));
-            assert false; // TODO: Something is VERY WRONG here
+
+            String wholeFile = Files.readString(Path.of(TEST_FILE_PATH));
+            assert expected.equals(wholeFile);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     @Test
