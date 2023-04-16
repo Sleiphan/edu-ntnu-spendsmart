@@ -16,7 +16,7 @@ public class Account {
     private String accountName;
 
     /**
-     * This constructor fascilitates the creation of instances of this class
+     * This constructor facilitates the creation of instances of this class
      * @param accountType Type of account, as AccountCategory
      * @param amount Funds in the account, as BigDecimal
      * @param accountNumber Unique reference of account in the bank system, as String
@@ -72,7 +72,7 @@ public class Account {
     }
 
     /**
-     * This method returns the account type of an account
+     * This method returns the account type of account
      * @return accountType, as AccountCategory
      */
     public AccountCategory getAccountType() {
@@ -127,7 +127,7 @@ public class Account {
         return accountType == a.accountType &&
                 amount.equals(a.amount) &&
                 accountNumber.equals(a.accountNumber) &&
-                accountName.equals(accountName);
+                accountName.equals(a.accountName);
     }
 
     public static final String CSV_FIELD_DELIMITER = ";";

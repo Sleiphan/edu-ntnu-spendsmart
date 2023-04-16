@@ -79,29 +79,15 @@ public class GeneralOverviewScene {
                 "-fx-max-width: 500;   \n" +
                 "-fx-max-height: 300;  ");
 
-        Button yearlyToggle = ApplicationObjects.newButton("Yearly", 70, 75, 100, 20, 16);
-        Button monthlyToggle = ApplicationObjects.newButton("Monthly", 173, 75, 100, 20, 16);
+        Button intervalToggle = ApplicationObjects.newButton("Yearly", 70, 75, 100, 20, 16);
 
         TableView<ObservableList<Object>> transactionsTables = ApplicationObjects.newTableView(columnTitlesTransactionsTable, 40, 230, 658, 300);
         transactionsTables.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        monthlyToggle.setOnMouseClicked(actionEvent -> {
-            if (!expenditurePieChart.getTitle().equals(monthlyExpensesPieChartTitle)) {
-                expenditurePieChart.setVisible(true);
-                incomePieChart.setVisible(true);
-                setPiesDataLast30Days();
-                setTotalIncomeText(true);
-                setTotalExpensesText(true);
-                expenditurePieChart.setTitle(monthlyExpensesPieChartTitle);
-                expenditurePieChart.setData(expenditurePieData);
-                expenditurePieChart.setVisible(expenditurePieData.stream().anyMatch(pieData -> pieData.getPieValue() != 0));
-                incomePieChart.setTitle(monthlyIncomePieChartTitle);
-                incomePieChart.setData(incomePieData);
-                incomePieChart.setVisible(incomePieData.stream().anyMatch(pieData -> pieData.getPieValue() != 0));
 
-            }
-        });
-        yearlyToggle.setOnMouseClicked(actionEvent -> {
+        intervalToggle.setOnMouseClicked(actionEvent -> {
             if (!expenditurePieChart.getTitle().equals(yearlyExpensesPieChartTitle)) {
+                totalIncomeText.setVisible(true);
+                totalExpensesText.setVisible(true);
                 expenditurePieChart.setVisible(true);
                 incomePieChart.setVisible(true);
                 setPiesDataLastYear();
@@ -113,7 +99,23 @@ public class GeneralOverviewScene {
                 incomePieChart.setTitle(yearlyIncomePieChartTitle);
                 incomePieChart.setData(incomePieData);
                 incomePieChart.setVisible(incomePieData.stream().anyMatch(pieData -> pieData.getPieValue() != 0));
-
+                intervalToggle.setText("Monthly");
+            }
+            else {
+                totalIncomeText.setVisible(true);
+                totalExpensesText.setVisible(true);
+                expenditurePieChart.setVisible(true);
+                incomePieChart.setVisible(true);
+                setPiesDataLast30Days();
+                setTotalIncomeText(true);
+                setTotalExpensesText(true);
+                expenditurePieChart.setTitle(monthlyExpensesPieChartTitle);
+                expenditurePieChart.setData(expenditurePieData);
+                expenditurePieChart.setVisible(expenditurePieData.stream().anyMatch(pieData -> pieData.getPieValue() != 0));
+                incomePieChart.setTitle(monthlyIncomePieChartTitle);
+                incomePieChart.setData(incomePieData);
+                incomePieChart.setVisible(incomePieData.stream().anyMatch(pieData -> pieData.getPieValue() != 0));
+                intervalToggle.setText("Yearly");
             }
         });
 
@@ -136,7 +138,7 @@ public class GeneralOverviewScene {
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 798, 12, 20, 20);
         Group root = new Group(totalOfAllAccountsCombinedText, bigSumText,
                 totalIncomeText, totalExpensesText,
-                dropDownButton, homeButton, manageUserButton, expenditurePieChart, incomePieChart, monthlyToggle, yearlyToggle);
+                dropDownButton, homeButton, manageUserButton, expenditurePieChart, incomePieChart, intervalToggle);
         dropDownButton.setOnAction(e -> {
             root.getChildren().add(dropDown);
         });
@@ -188,6 +190,8 @@ public class GeneralOverviewScene {
             totalIncomeText.setText("Income: " + loggedInUser
                     .incomeLastYear() + " kr");
         }
+        if (loggedInUser.incomeLastYear().replaceAll(" ","").equals("0"))
+            totalIncomeText.setVisible(false);
         totalIncomeText.setX(205 - totalIncomeText.getLayoutBounds().getWidth()/2);
     }
 
@@ -199,6 +203,8 @@ public class GeneralOverviewScene {
             totalExpensesText.setText("Expenses: " + loggedInUser
                     .expensesLastYear() + " kr");
         }
+        if (loggedInUser.incomeLastYear().replaceAll(" ","").equals("0"))
+            totalExpensesText.setVisible(false);
         totalExpensesText.setX(630 - totalExpensesText.getLayoutBounds().getWidth()/2);
     }
 

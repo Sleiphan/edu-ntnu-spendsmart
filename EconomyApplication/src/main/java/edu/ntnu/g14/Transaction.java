@@ -4,7 +4,6 @@ import edu.ntnu.g14.frontend.ApplicationObjects;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Transaction {

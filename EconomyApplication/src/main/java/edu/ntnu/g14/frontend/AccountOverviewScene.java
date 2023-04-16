@@ -24,16 +24,19 @@ public class AccountOverviewScene {
     private static Account currentAccount;
     private static TableView<ObservableList<Object>> lastTransactionsTable;
     private static ObservableList<ObservableList<Object>> lastTransactionsData;
-    static public Scene scene() throws IOException {
+    private static Text amountText;
+    private static Text accountNumberText;
+
+    static public Scene scene(Account account) throws IOException {
         List<Account> accounts = ApplicationFront.loggedInUser.getAccountsAsList();
         ObservableList<String> accountNames = FXCollections.observableArrayList(getAccountsNames());
 
         if (accounts.isEmpty()) {
-            Dialog<Account.AccountBuilder> accountDialog = new ApplicationObjects.AccountDialog(new Account.AccountBuilder());
+            Dialog<Account.AccountBuilder> accountDialog = new AccountDialog(new Account.AccountBuilder());
             Optional<Account.AccountBuilder> result = accountDialog.showAndWait();
             if (result.isPresent()) {
 
-                createAccountDialog(accountNames, result);
+                createAccountDialog(accountNames, result.get());
             }
             else {
                 return MainPageScene.scene();
@@ -46,13 +49,18 @@ public class AccountOverviewScene {
         ComboBox<String> accountComboBox = ApplicationObjects.newComboBox(columnTitlesTransactionsTable, 364, 30, 30, 364-(364/2), 50);
         accountComboBox.setItems(accountNames);
         accountComboBox.setValue(accounts.get(0).getAccountName());
-        Text accountNumberText    = ApplicationObjects.newText("Account Number: " + accounts.get(0).getAccountNumber(), 14, false, 0, 130);
-        Text amountText           = ApplicationObjects.newText("Amount: " + ApplicationObjects.numberRegex(accounts.get(0).getAmount().toString()) + " kr", 20, false, 0, 160);
+        accountNumberText    = ApplicationObjects.newText("Account Number: " + accounts.get(0).getAccountNumber(), 14, false, 0, 130);
+        amountText = ApplicationObjects.newText("Balance: " + ApplicationObjects.numberRegex(accounts.get(0).getAmount().toString()) + " kr", 20, false, 0, 160);
         Button addExpense         = ApplicationObjects.newButton("Add Expense", 30,80, 100, 20,14);
         Button addIncome          = ApplicationObjects.newButton("Add Income", 30,50, 100, 20,14);
         Button addAccount         = ApplicationObjects.newButton("Add Account", 728 - 130, 50, 100, 20, 14);
         Button editAccount        = ApplicationObjects.newButton("Edit Account", 728 - 130, 80, 100, 20, 14);
         Text lastTransactionsText = ApplicationObjects.newText("Last Transactions:", 24, false, 20, 200);
+        if (account != null) {
+            accountComboBox.setValue(account.getAccountName());
+            setAccountNumberAndAmountText();
+
+        }
         amountText.setLayoutX((double) 728/2 - amountText.getLayoutBounds().getWidth()/2);
         accountNumberText.setLayoutX((double) 728/2 - accountNumberText.getLayoutBounds().getWidth()/2);
         lastTransactionsTable = ApplicationObjects.newTableView(columnTitlesTransactionsTable, 20, 230, 688, 300);
@@ -68,27 +76,26 @@ public class AccountOverviewScene {
                 setCurrentAccount(accountComboBox.getValue());
 
                 accountNumberText.setText("Account Number: " + currentAccount.getAccountNumber());
-                amountText.setText("Amount: " + ApplicationObjects.numberRegex(currentAccount.getAmount().toString()) + " kr");
+                amountText.setText("Balance: " + ApplicationObjects.numberRegex(currentAccount.getAmount().toString()) + " kr");
 
             }
         });
-        addAccount.setOnAction(actionEvent -> {
-            Dialog<Account.AccountBuilder> accountWithPropertyDialog = new ApplicationObjects.AccountDialog(new Account.AccountBuilder());
-            Optional<Account.AccountBuilder> result = accountWithPropertyDialog.showAndWait();
-            if (result.isPresent()) {
 
-                createAccountDialog(accountNames, result);
-            }
+        addAccount.setOnAction(actionEvent -> {
+            Dialog<Account.AccountBuilder> accountBuilderDialog = new AccountDialog(new Account.AccountBuilder());
+            Optional<Account.AccountBuilder> result = accountBuilderDialog.showAndWait();
+            result.ifPresent(accountBuilder -> createAccountDialog(accountNames, accountBuilder));
         });
         editAccount.setOnAction(actionEvent -> {
-            Dialog<Account> accountDialog = new ApplicationObjects.EditAccountDialog(currentAccount);
+            Dialog<Account> accountDialog = new EditAccountDialog(currentAccount);
             Optional<Account> result = accountDialog.showAndWait();
             if (result.isPresent()) {
                 accountComboBox.setItems(FXCollections.observableArrayList(getAccountsNames()));
                 if (!ApplicationFront.loggedInUser.getAccountsAsList().contains(currentAccount)) {
                     getAccountsNames().remove(currentAccount.getAccountName());
                     accountComboBox.setItems(FXCollections.observableArrayList(getAccountsNames()));
-                    accountComboBox.setValue(getAccountsNames().get(0));
+                    if (accountNames.size() != 0)
+                        accountComboBox.setValue(getAccountsNames().get(0));
                 } else {
                     accountComboBox.setValue(currentAccount.getAccountName());
                 }
@@ -96,13 +103,9 @@ public class AccountOverviewScene {
             }
         });
 
-        addExpense.setOnAction(actionEvent -> {
-            showDialog(false);
-        });
+        addExpense.setOnAction(actionEvent -> showDialog(false));
 
-        addIncome.setOnAction(actionEvent -> {
-            showDialog(true);
-        });
+        addIncome.setOnAction(actionEvent -> showDialog(true));
 
 
 
@@ -139,9 +142,8 @@ public class AccountOverviewScene {
         return scene;
     }
 
-    private static void createAccountDialog(ObservableList<String> accountNames, Optional<Account.AccountBuilder> result) {
-        Account.AccountBuilder accountBuilder = result.get();
-        Account account = accountBuilder.build();
+    private static void createAccountDialog(ObservableList<String> accountNames, Account.AccountBuilder result) {
+        Account account = result.build();
         FileManagement.writeAccount(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), account);
         accountNames.add(account.getAccountName());
         ApplicationFront.loggedInUser.addAccount(account);
@@ -204,15 +206,18 @@ public class AccountOverviewScene {
     }
     private static void showDialog(boolean incomeOrExpense) {
         Dialog<Transaction.TransactionBuilder> transactionBuilderDialog =
-                new ApplicationObjects.TransactionBuilderDialog(new Transaction.TransactionBuilder(), incomeOrExpense);
+                new TransactionDialog(new Transaction.TransactionBuilder(), incomeOrExpense);
         Optional<Transaction.TransactionBuilder> result = transactionBuilderDialog.showAndWait();
         if (result.isPresent()) {
-            Transaction.TransactionBuilder transactionBuilder = result.get();
-            Transaction transaction = transactionBuilder.build();
+            Transaction transaction = result.get().build();
 
             FileManagement.writeTransaction(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), transaction);
             ApplicationFront.loggedInUser.getTransactionsAsList().add(transaction);
             addTransaction(transaction);
         }
+    }
+    private static void setAccountNumberAndAmountText() {
+        accountNumberText.setText("Account Number: " + currentAccount.getAccountNumber());
+        amountText.setText("Balance: " + ApplicationObjects.numberRegex(currentAccount.getAmount().toString()) + " kr");
     }
 }
