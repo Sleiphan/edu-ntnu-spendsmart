@@ -3,7 +3,9 @@ package edu.ntnu.g14.frontend;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import edu.ntnu.g14.FileManagement;
 import edu.ntnu.g14.User;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -20,17 +22,18 @@ import javafx.stage.Stage;
 
 public class UserManagementScene {
     static Stage stage = ApplicationFront.getStage();
+    private static User loggedInUser = ApplicationFront.loggedInUser;
+
+    static Alert alert;
 
     static public Scene scene() throws IOException {
-        User currentUser = ApplicationFront.loggedInUser;
-        Text loggedInUser = ApplicationObjects.newText(currentUser.getFullName(), 40, false, 0, 0);
-        Text loggedInUserEmail = ApplicationObjects.newText(currentUser.getEmail(), 20, false, 0, 0);
 
-        // Create a VBox to hold loggedInUser and loggedInUserEmail
-        VBox userInfoBox = new VBox(5, loggedInUser, loggedInUserEmail);
-        userInfoBox.setAlignment(Pos.CENTER);
-        userInfoBox.setLayoutX(220); // Set the VBox's layoutX and layoutY to position it on the screen
-        userInfoBox.setLayoutY(75);
+
+        Label loggedInUserLabel = new Label(loggedInUser.getLoginInfo().getUserName());
+        loggedInUserLabel.setStyle("-fx-font-size: 40;");
+        Label loggedInUserEmail = new Label(loggedInUser.getEmail());
+        loggedInUserEmail.setStyle("-fx-font-size: 20;");
+
 
         Button password = ApplicationObjects.newButton("Password", 0, 0 , 157,60,16);
         password.setOnAction(event -> {
@@ -65,28 +68,20 @@ public class UserManagementScene {
         });
         HBox switchUserBox = new HBox(5, switchUser, logOut);
 
-        Button edit = ApplicationObjects.newButton("Edit", 0, 0, 157,60,16);
-        Button confirm = ApplicationObjects.newButton("confirm", 0, 0, 157,50,16);
-        confirm.setVisible(false);
-        edit.setOnAction(event -> {
-            if (edit.getText().equals("Edit")) {
-                edit.setText("Cancel");
-                confirm.setVisible(true);
-                loggedInUser.setText("Edited User");
-                loggedInUserEmail.setText("Edited User Email");
 
-            } else {
-                edit.setText("Edit");
-                confirm.setVisible(false);
-                loggedInUser.setText("Walter Banks");
-                loggedInUserEmail.setText("walBa76@gmail.com");
+        VBox userInfoBox = new VBox(5, loggedInUserLabel, loggedInUserEmail);
+        userInfoBox.setAlignment(Pos.CENTER);
+        userInfoBox.setLayoutX(220);
+        userInfoBox.setLayoutY(75);
+
+        Button edit = ApplicationObjects.newButton("Edit", 0, 0, 157,60,16);
+        edit.setOnAction(event -> {
+            try {
+                stage.setScene(UserManagementEditUserScene.scene());
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
             }
         });
-        confirm.setOnAction(event -> {loggedInUser.setText("Edited User");
-            loggedInUserEmail.setText("Edited User Email"); confirm.setVisible(false);
-            edit.setText("Edit");});
-
-        HBox editBox = new HBox(5, edit, confirm);
 
 
         Button delete = ApplicationObjects.newButton("Delete", 0, 0, 157,60,16);
@@ -106,7 +101,6 @@ public class UserManagementScene {
         buttonGrid.add(switchUser, 0, 1);
         buttonGrid.add(logOut, 1, 1);
         buttonGrid.add(edit, 0, 2);
-        buttonGrid.add(confirm, 1, 2);
         buttonGrid.add(delete, 0, 3);
 
         // Set column constraints to make sure buttons are aligned
@@ -131,7 +125,8 @@ public class UserManagementScene {
         Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
-        Group root = new Group(userInfoBox, buttonGrid,  dropDownButton, homeButton, manageUserButton);
+        Group root = new Group(userInfoBox, buttonGrid, dropDownButton, homeButton, manageUserButton);
+
         dropDownButton.setOnAction(e -> {
             root.getChildren().add(dropDown);
         });
@@ -140,13 +135,10 @@ public class UserManagementScene {
         
     
         Group userButtons = ApplicationObjects.userMenu();
-        manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event){
-                root.getChildren().add(userButtons);
-                event.consume();
-            }
-        }); 
+        manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            root.getChildren().add(userButtons);
+            event.consume();
+        });
         scene.setOnMouseClicked(e -> {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);

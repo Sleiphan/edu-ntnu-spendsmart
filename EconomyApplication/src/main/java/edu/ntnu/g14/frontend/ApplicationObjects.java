@@ -14,7 +14,6 @@ import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -49,11 +48,33 @@ public class ApplicationObjects {
         return sceneColor;
     }
 
-    
+    public static Group userMenuGeneralOverview() {
+        Rectangle rectangle = newRectangle(683 + 20, 10, 130 + 26, 110);
+
+        Button logOut = newButton("Log Out", 696 + 20, 15, 130, 40, 15);
+        logOut.setOnAction(e -> {
+            try {
+                stage.setScene(LoginChooseUserScene.scene());
+            } catch (IOException e1) {
+
+                e1.printStackTrace();
+            }
+        });
+        Button manageUser = newButton("Manage User", 696 + 20, 70, 130, 40, 15);
+        manageUser.setOnAction(e -> {
+            try {
+                stage.setScene(UserManagementScene.scene());
+            } catch (IOException e1) {
+
+                e1.printStackTrace();
+            }
+        });
+        return new Group(rectangle, logOut, manageUser);
+    }
     public static Group userMenu() {
         Rectangle rectangle = newRectangle(553, 10, 145, 110);
         
-        Button logOut = newButton("log out", 563, 15, 130, 40, 15);
+        Button logOut = newButton("Log Out", 563, 15, 130, 40, 15);
         logOut.setOnAction(e -> {
             try {
                 stage.setScene(LoginChooseUserScene.scene());
@@ -62,7 +83,7 @@ public class ApplicationObjects {
                 e1.printStackTrace();
             }
         });
-        Button manageUser = newButton("manage user", 563, 70, 130, 40, 15);
+        Button manageUser = newButton("Manage User", 563, 70, 130, 40, 15);
         manageUser.setOnAction(e -> {
             try {
                 stage.setScene(UserManagementScene.scene());
@@ -73,7 +94,61 @@ public class ApplicationObjects {
         });
         return new Group(rectangle, logOut, manageUser);
     }
+    public static Group dropDownMenuGeneralOverview() {
+        Rectangle rectangle = newRectangle(683 + 20, 10, 130 + 26, 340);
+        Button invoice = newButton("invoice", 696 + 20, 15, 130, 40, 20);
+        invoice.setOnAction(e -> {
+            try {
+                stage.setScene(InvoiceScene.scene());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        });
+        Button transfer = newButton("transfer", 696 + 20, 70, 130, 40, 20);
+        transfer.setOnAction(e -> {
+            try {
+                stage.setScene(TransferScene.scene());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        });
+        Button payment = newButton("payment", 696 + 20, 125, 130, 40, 20);
+        payment.setOnAction(e -> {
+            try {
+                stage.setScene(PaymentScene.scene());
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        });
+        Button accounts = newButton("accounts", 696 + 20, 180, 130, 40, 20);
+        accounts.setOnAction(e -> {
+            try {
+                stage.setScene(AccountOverviewScene.scene(null));
+            } catch (IOException e1) {
 
+                e1.printStackTrace();
+            }
+        });
+        Button overview = newButton("overview", 696 + 20, 235, 130, 40, 20);
+        overview.setOnAction(e -> {
+            try {
+                stage.setScene(GeneralOverviewScene.scene());
+            } catch (IOException e1) {
+
+                e1.printStackTrace();
+            }
+        });
+        Button budgetting = newButton("budgetting", 696 + 20, 290, 130, 40, 20);
+        budgetting.setOnAction(e -> {
+            try {
+                stage.setScene(BudgetingScene.scene());
+            } catch (IOException e1) {
+
+                e1.printStackTrace();
+            }
+        });
+        return new Group(rectangle, invoice, transfer, payment, accounts, overview, budgetting);
+    }
     public static Group dropDownMenu() {
         Rectangle rectangle = newRectangle(553, 10, 145, 340);
         Button invoice = newButton("invoice", 563, 15, 130, 40, 20);
@@ -103,7 +178,7 @@ public class ApplicationObjects {
         Button accounts = newButton("accounts", 563, 180, 130, 40, 20);
         accounts.setOnAction(e -> {
             try {
-                stage.setScene(AccountOverviewScene.scene());
+                stage.setScene(AccountOverviewScene.scene(null));
             } catch (IOException e1) {
                 
                 e1.printStackTrace();
@@ -129,7 +204,6 @@ public class ApplicationObjects {
         });
         return new Group(rectangle, invoice, transfer, payment, accounts, overview, budgetting);
     }
-
     public static Button newButton(String text, int x, int y, int width, int height, int fontSize){
         Button button = new Button(text);
         button.setLayoutX(x);
@@ -271,16 +345,17 @@ public class ApplicationObjects {
         return comboBox;
     }
 
-    public static void alertBox(String title, String header, String content) {
+    public static Alert alertBox(String title, String header, String content) {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+        return alert;
     }
 
     public static String[] getAccountCategories() {
-        return new String[] {"Savings Account", "Spending Account", "Pension Account", "Other"};
+        return new String[] { "Checking Account", "Savings Account", "Pension Account", "Other"};
     }
     public static String[] getBudgetCategories() {
         return new String[] {"Food and Drink", "Clothes and Shoes", "Personal Care", "Leisure", "Travel"
@@ -291,6 +366,12 @@ public class ApplicationObjects {
         return new String[] {"Food and Drink", "Clothes and Shoes", "Personal Care", "Leisure", "Travel"
                 , "Alcohol and Tobacco", "Payment", "Other"};
     }
+
+    public static String numberRegex(String number) {
+        
+        return number.replaceAll("(\\d)(?=(\\d{3})+$)", "$1 ").trim();
+    }
+
     public static String[] getBudgetIncomeCategories() {
         return new String[] {"Salary", "Income", "Business"};
     }
@@ -302,414 +383,6 @@ public class ApplicationObjects {
             "-fx-pref-height: " + height + ";" +
             "-fx-font-size: " + fontSize + "px;";
     }
-    
-    public static class AccountWithPropertyDialog extends Dialog<AccountWithProperty> {
-        private final AccountWithProperty account;
-        private ComboBox<String> accountTypeField;
-        private TextField amountField;
-        private TextField accountNumberField;
-        private TextField accountNameField;
 
-        public AccountWithPropertyDialog(AccountWithProperty account) {
-            super();
-            this.setTitle("Add Account");
-            this.account = account;
-            buildUI();
-            setPropertyBindings();
-            setResultConverter();
-        }
-
-        private void setPropertyBindings() {
-            amountField.textProperty().bindBidirectional(account.amountProperty());
-            accountNumberField.textProperty().bindBidirectional(account.accountNumberProperty());
-            accountNameField.textProperty().bindBidirectional(account.accountNameProperty());
-            accountTypeField.valueProperty().bindBidirectional(account.accountTypeProperty());
-        }
-
-        private void setResultConverter() {
-            javafx.util.Callback<ButtonType, AccountWithProperty> accountResultConverter = param -> {
-                if (param == ButtonType.APPLY) {
-                    return account;
-                } else {
-                    return null;
-                }
-            };
-            setResultConverter(accountResultConverter);
-        }
-
-        private void buildUI() {
-            Pane pane = createGridPane();
-            getDialogPane().setContent(pane);
-            getDialogPane().getButtonTypes().addAll(ButtonType.APPLY, ButtonType.CANCEL);
-            Button applyButton = (Button) getDialogPane().lookupButton(ButtonType.APPLY);
-            applyButton.addEventFilter(ActionEvent.ACTION, new EventHandler<>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    if (!validateDialog()) {
-                        event.consume();
-
-                    }
-                }
-                private boolean validateDialog() {
-                    String regexAccountNumber = "[0-9]{4}+\\.[0-9]{2}+\\.[0-9]{5}";
-                    BigDecimal amountBigDecimal;
-                    try {
-                        amountBigDecimal = new BigDecimal(amountField.getText());
-                    } catch (NumberFormatException | NullPointerException e) {
-                        return false;
-                    }
-                    return accountNumberField.getText() != null
-                            && accountNameField.getText() != null
-                            && accountTypeField.getValue() != null
-                            && !(amountBigDecimal.floatValue() < 0)
-                            && Pattern.matches(regexAccountNumber, accountNumberField.getText())
-                            && ApplicationFront.loggedInUser.getAccountsAsList().stream()
-                            .map(Account::getAccountName)
-                            .noneMatch(accountName -> accountNameField.getText().equalsIgnoreCase(accountName))
-                            && ApplicationFront.loggedInUser.getAccountsAsList().stream()
-                            .map(Account::getAccountNumber)
-                            .noneMatch(accountNumber -> accountNumberField.getText().equals(accountNumber));
-                }
-            });
-        }
-
-        public Pane createGridPane() {
-            VBox content             = new VBox(10);
-            Label accountTypeLabel   = new Label("Choose the type of account:");
-            Label accountNumberLabel = new Label("Enter the account number:");
-            Label amountLabel        = new Label("Enter the balance of your account:");
-            Label accountNameLabel   = new Label("Choose a name for your account:");
-            this.accountTypeField    = new ComboBox<>();
-            this.accountNumberField  = new TextField();
-            this.amountField         = new TextField();
-            this.accountNameField    = new TextField();
-
-            this.accountTypeField.getItems().addAll("Spendings Account", "Savings Account", "Pensions Account", "Other");
-            this.accountTypeField.setPromptText("Account Type");
-
-            GridPane grid = new GridPane();
-
-            grid.setHgap(10);
-            grid.setVgap(5);
-            grid.add(accountTypeLabel,0,0);
-            grid.add(accountNumberLabel,0,1);
-            grid.add(amountLabel,0,2);
-            grid.add(accountNameLabel,0,3);
-            grid.add(accountTypeField,1,0);
-            GridPane.setHgrow(this.accountTypeField, Priority.ALWAYS);
-            grid.add(accountNumberField, 1,1);
-            GridPane.setHgrow(this.accountNumberField,Priority.ALWAYS);
-            grid.add(amountField,1,2);
-            GridPane.setHgrow(this.amountField,Priority.ALWAYS);
-            grid.add(accountNameField,1,3);
-            GridPane.setHgrow(this.accountNameField,Priority.ALWAYS);
-            accountTypeField.setMaxWidth(160);
-            content.getChildren().add(grid);
-            return content;
-        }
-    }
-    
-    static class TransactionWithPropertyDialog extends Dialog<TransactionWithProperty> {
-        private final TransactionWithProperty transaction;
-        private ComboBox<String> chooseAccountComboBox;
-        private TextField accountNumberField;
-        private TextField amountField;
-        private TextField descriptionField;
-        private DatePicker dateOfTransactionField;
-        private ComboBox<String> categoryField;
-        Label amountLabel;
-        Label descriptionLabel;
-        Label dateOfTransactionLabel;
-        Label categoryLabel;
-        Label accountLabel2;
-        Label accountLabel1;
-
-        public TransactionWithPropertyDialog(TransactionWithProperty transaction, Boolean income) {
-            super();
-            this.transaction = transaction;
-            if (income) {
-                this.setTitle("Add Income");
-                buildUI(true);
-                setPropertyBindingsIncome();
-            } else {
-                this.setTitle("Add Expense");
-                buildUI(false);
-                setPropertyBindingsExpense();
-            }
-            setResultConverter();
-        }
-        private void setPropertyBindingsIncome() {
-            chooseAccountComboBox.valueProperty().bindBidirectional(transaction.getToAccountIdProperty());
-            accountNumberField.textProperty().bindBidirectional(transaction.getFromAccountIdProperty());
-            setPropertyBindings();
-        }
-        private void setPropertyBindingsExpense() {
-            chooseAccountComboBox.valueProperty().bindBidirectional(transaction.getFromAccountIdProperty());
-            accountNumberField.textProperty().bindBidirectional(transaction.getToAccountIdProperty());
-            setPropertyBindings();
-        }
-        private void setPropertyBindings() {
-            amountField.textProperty().bindBidirectional(transaction.getAmountProperty());
-            descriptionField.textProperty().bindBidirectional(transaction.getDescriptionProperty());
-            dateOfTransactionField.valueProperty().bindBidirectional(transaction.getDateOfTransactionProperty());
-            categoryField.valueProperty().bindBidirectional(transaction.getCategoryProperty());
-        }
-        private void setResultConverter() {
-            javafx.util.Callback<ButtonType, TransactionWithProperty> transactionResultConverter = param -> {
-                if (param == ButtonType.APPLY) {
-                    return transaction;
-                } else {
-                    return null;
-                }
-            };
-            setResultConverter(transactionResultConverter);
-        }
-        private void buildUI(Boolean income) {
-            Pane pane;
-            if (income) {
-                pane = createIncomeGridPane();
-            } else {
-                pane = createExpenseGridPane();
-            }
-            getDialogPane().setContent(pane);
-            getDialogPane().getButtonTypes().addAll(ButtonType.APPLY, ButtonType.CANCEL);
-            Button applyButton = (Button) getDialogPane().lookupButton(ButtonType.APPLY);
-            applyButton.addEventFilter(ActionEvent.ACTION, new EventHandler<>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    if (!validateDialog()) {
-                        event.consume();
-
-                    }
-                }
-                private boolean validateDialog() {
-                    String regexAccountNumber = "[0-9]{4}+\\.[0-9]{2}+\\.[0-9]{5}";
-                    return accountNumberField.getText() != null
-                            && amountField.getText() != null
-                            && descriptionField.getText() != null
-                            && accountNumberField.getText() != null
-                            && categoryField.getValue() != null
-                            && Pattern.matches(regexAccountNumber, accountNumberField.getText());
-                }
-            });
-        }
-        private void defineLabelsAndFields() {
-            this.amountLabel = new Label("Enter the amount you want to send:");
-            this.amountField = new TextField();
-            this.descriptionLabel = new Label("Enter the description of the transaction:");
-            this.descriptionField = new TextField();
-            this.dateOfTransactionLabel = new Label("Choose the date of the transaction:");
-            this.dateOfTransactionField = new DatePicker();
-
-            this.categoryLabel = new Label("Select the category of the transaction:");
-            this.categoryField = new ComboBox<>();
-            this.categoryField.setPromptText("Category of Transaction");
-            this.categoryField.setMaxWidth(200);
-
-            this.chooseAccountComboBox = new ComboBox<>();
-            this.chooseAccountComboBox.setPromptText("Choose Account");
-            this.chooseAccountComboBox.setMaxWidth(200);
-
-            this.accountNumberField = new TextField();
-            restrictDatePicker(dateOfTransactionField);
-            setDatePickerConverter(dateOfTransactionField);
-        }
-        private GridPane addLabelsAndFieldsToGrid() {
-            GridPane grid = new GridPane();
-            grid.setHgap(10);
-            grid.setVgap(5);
-
-            grid.add(categoryLabel,0,0);
-            grid.add(this.categoryField, 1,0);
-            GridPane.setHgrow(this.categoryField,Priority.ALWAYS);
-
-            grid.add(amountLabel,0,3);
-            grid.add(amountField,1,3);
-            GridPane.setHgrow(this.amountField,Priority.ALWAYS);
-
-            grid.add(descriptionLabel,0,4);
-            grid.add(descriptionField,1,4);
-            GridPane.setHgrow(this.descriptionField,Priority.ALWAYS);
-
-            grid.add(dateOfTransactionLabel,0,5);
-            grid.add(dateOfTransactionField,1,5);
-            GridPane.setHgrow(this.dateOfTransactionField,Priority.ALWAYS);
-
-            grid.add(accountLabel1,0,1);
-            grid.add(this.chooseAccountComboBox, 1,1);
-            GridPane.setHgrow(this.chooseAccountComboBox, Priority.ALWAYS);
-
-            grid.add(accountLabel2,0,2);
-            grid.add(this.accountNumberField,1,2);
-            GridPane.setHgrow(this.accountNumberField,Priority.ALWAYS);
-            return grid;
-        }
-        
-        private Pane createIncomeGridPane() {
-            VBox content = new VBox(10);
-            this.accountLabel1 = new Label("Choose your receiving account number:");
-            this.accountLabel2 = new Label("Enter the sender's account:");
-            defineLabelsAndFields();
-
-
-            this.chooseAccountComboBox.getItems().addAll(ApplicationFront.loggedInUser
-                    .getAccountsAsList()
-                    .stream()
-                    .map(Account::getAccountName)
-                    .collect(Collectors.toList()));
-            this.categoryField.getItems().addAll(ApplicationObjects.getBudgetIncomeCategories());
-
-            content.getChildren().add(addLabelsAndFieldsToGrid());
-            return content;
-        }
-
-        private Pane createExpenseGridPane() {
-            VBox content = new VBox(10);
-            this.accountLabel1 = new Label("Choose the sending account:");
-            this.accountLabel2 = new Label("Enter the recipient's account:");
-
-            defineLabelsAndFields();
-
-            this.chooseAccountComboBox.getItems().addAll(ApplicationFront.loggedInUser
-                    .getAccountsAsList()
-                    .stream()
-                            .filter(account -> account.getAccountType().equals(AccountCategory.SPENDING_ACCOUNT)
-                            || account.getAccountType().equals(AccountCategory.OTHER))
-                    .map(Account::getAccountName)
-                    .collect(Collectors.toList()));
-            this.categoryField.getItems().addAll(ApplicationObjects.getBudgetExpenditureCategories());
-
-            content.getChildren().add(addLabelsAndFieldsToGrid());
-            return content;
-        }
-        private void setDatePickerConverter(DatePicker dateOfTransactionField) {
-            dateOfTransactionField.setConverter(new StringConverter<LocalDate>() {
-                @Override
-                public String toString(LocalDate localDate) {
-                    if (localDate != null) {
-                        return dateFormatter.format(localDate);
-                    }
-                    return null;
-                }
-
-                @Override
-                public LocalDate fromString(String string) {
-                    if (string != null && !string.isBlank())
-                        return LocalDate.parse(string, dateFormatter);
-                    return null;
-                }
-            });
-        }
-        public void restrictDatePicker(DatePicker datePicker) {
-            final Callback<DatePicker, DateCell> dayCellFactory = new Callback<>() {
-                @Override
-                public DateCell call(final DatePicker datePicker) {
-                    return new DateCell() {
-                        @Override
-                        public void updateItem(LocalDate item, boolean empty) {
-                            super.updateItem(item, empty);
-                            if (item.isAfter(LocalDate.now().minusDays(1))) {
-                                setDisable(true);
-                                setStyle("-fx-background-color: #ffc0cb;");
-                            }
-                        }
-                    };
-                }
-            };
-            datePicker.setDayCellFactory(dayCellFactory);
-        }
-    }
-    public static class EditAccountDialog extends Dialog<Account> {
-        private final Account account;
-        Pane pane;
-        Button deleteAccountButton;
-        TextField editAccountNameField;
-        ComboBox<String> editAccountTypeBox;
-        ButtonType deleteButtonType;
-
-        public EditAccountDialog(Account account) {
-            super();
-            this.setTitle("Edit Account");
-            this.account = account;
-            buildUI();
-            setResultConverter();
-        }
-
-        private void setResultConverter() {
-            Callback<ButtonType, Account> accountResultConverter = buttonType -> {
-                if (buttonType == ButtonType.OK) {
-                    editAccount();
-                    return account;
-                }
-                if (buttonType == deleteButtonType) {
-                    ApplicationFront.loggedInUser.removeAccount(account);
-                    return account;
-                }
-                else {
-                    return null;
-                }
-            };
-            setResultConverter(accountResultConverter);
-        }
-
-
-        private void editAccount() {
-            account.setAccountType(AccountCategory.valueOf(editAccountTypeBox.getValue()
-                    .replaceAll(" ", "_").toUpperCase()));
-            account.setAccountName(editAccountNameField.getText());
-        }
-
-        private void buildUI() {
-            pane = createGridPane();
-            getDialogPane().setContent(pane);
-            deleteButtonType = new ButtonType("Delete");
-            getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL, deleteButtonType);
-
-            Button button = (Button) getDialogPane().lookupButton(ButtonType.OK);
-            Button deleteButton = (Button) getDialogPane().lookupButton(deleteButtonType);
-            button.addEventFilter(ActionEvent.ACTION, actionEvent -> {
-                if (!validateDialog()) {
-                    actionEvent.consume();
-                }
-            });
-
-        }
-
-        private boolean validateDialog() {
-            return editAccountNameField.getText() != null
-                    && editAccountTypeBox.getValue() != null
-                    && ApplicationFront.loggedInUser.checkIfAccountNameIsOccupied(editAccountNameField.getText());
-        }
-
-        private Pane createGridPane() {
-            VBox content = new VBox(10);
-            Label editAccountNameLabel = new Label("Enter new name for your account:");
-            Label editAccountTypeLabel = new Label("Choose the new type of your account:");
-            this.editAccountNameField  = new TextField();
-            this.editAccountTypeBox    = new ComboBox<>();
-
-            this.editAccountTypeBox.getItems().addAll(ApplicationObjects.getAccountCategories());
-            this.editAccountTypeBox.setPromptText("New account type");
-            this.editAccountTypeBox.setMaxWidth(200);
-            this.editAccountNameField.setPromptText("New account name:");
-            GridPane pane = new GridPane();
-            pane.setHgap(10);
-            pane.setVgap(5);
-            pane.add(editAccountNameLabel, 0, 0);
-            pane.add(editAccountNameField, 1,  0);
-            GridPane.setHgrow(editAccountNameField, Priority.ALWAYS);
-
-            pane.add(editAccountTypeLabel, 0, 1);
-            pane.add(editAccountTypeBox, 1, 1);
-            GridPane.setHgrow(editAccountTypeBox, Priority.ALWAYS);
-
-
-
-            content.getChildren().addAll(pane);
-
-            return content;
-        }
-
-    }
 
 }

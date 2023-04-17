@@ -39,7 +39,7 @@ public class MainPageScene {
         
         Group overview = ApplicationObjects.newButtonWithIcon("Overview", 192,90, 157,25,16, "overview.png", GeneralOverviewScene.scene());
         
-        Group accountsButton = ApplicationObjects.newButtonWithIcon("Accounts", 30,130, 157, 25, 16, "account.png", AccountOverviewScene.scene());
+        Group accountsButton = ApplicationObjects.newButtonWithIcon("Accounts", 30,130, 157, 25, 16, "account.png", AccountOverviewScene.scene(null));
         
         Group budgeting = ApplicationObjects.newButtonWithIcon("Budgeting", 192, 130, 157, 25,16, "budget.png", BudgetingScene.scene());
         
@@ -60,15 +60,21 @@ public class MainPageScene {
         duePaymentsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         Text accountsText = ApplicationObjects.newText("Accounts", 20, false, 500, 30);
         ListView accountsListView = ApplicationObjects.newListView(accountsList, 728-30-324, 50, 324, 115);
-        
-        ImageView homeButton = ApplicationObjects.newImage("home.png", 10, 10, 20, 20);
-        
+
+        accountsListView.setOnMouseClicked(mouseEvent -> {
+            try {
+                stage.setScene(AccountOverviewScene.scene(ApplicationFront.loggedInUser.getAccountWithAccountName(accountsListView.getSelectionModel().getSelectedItem().toString())));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
         Group root = new Group(actionsText, transfer, invoice, payment, 
         overview, accountsButton, budgeting, latestActivitiesText, latestActivitiesTable, 
-        duePaymentsTable, duePaymentsText, accountsListView, accountsText, dropDownButton, homeButton, manageUserButton);
+        duePaymentsTable, duePaymentsText, accountsListView, accountsText, dropDownButton, manageUserButton);
         dropDownButton.setOnAction(e -> {
             root.getChildren().add(dropDown);
         });

@@ -3,6 +3,9 @@ package edu.ntnu.g14.frontend;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import edu.ntnu.g14.FileManagement;
+import edu.ntnu.g14.User;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -14,10 +17,11 @@ import javafx.stage.Stage;
 
 public class ManageUserChangePasswordScene {
     static Stage stage = ApplicationFront.getStage();
+    private static User loggedInUser = ApplicationFront.loggedInUser;
 
     static public Scene scene() throws FileNotFoundException, IOException{
-        String email = "xxputinxx@gmail.com";
-        String name = "vladimir putin";
+        String email = loggedInUser.getEmail();
+        String name = loggedInUser.getLoginInfo().getUserName();
         Text nameText = ApplicationObjects.newText(name, 40, false, 563-329, 234-136);
         Text emailText = ApplicationObjects.newText(email, 17, false, 616-329, 283-136);
 
@@ -29,6 +33,35 @@ public class ManageUserChangePasswordScene {
         TextField oldPasswordField = ApplicationObjects.newTextField("", 594-329, 476-136, 326, 30, 0);
         TextField newPasswordField = ApplicationObjects.newTextField("", 594-329, 510-136, 326, 30, 0);
         TextField reNewPasswordField = ApplicationObjects.newTextField("", 594-329, 544-136, 326, 30, 0);
+
+        // Show an error message to the user, e.g., a dialog box, saying the old password is incorrect
+        confirmButton.setOnAction(event -> {
+            String oldPasswordInput = oldPasswordField.getText();
+            String newPasswordInput = newPasswordField.getText();
+            String reNewPasswordInput = reNewPasswordField.getText();
+
+            if (verifyOldPassword(oldPasswordInput)) {
+                if (newPasswordInput.equals(reNewPasswordInput)) {
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("Confirm Password Change");
+                    alert.setHeaderText("Are you sure you want to change the Password to: " + newPasswordField.getText() + "?");
+                    alert.showAndWait().ifPresent(response -> {
+                                if (response == ButtonType.OK) {
+                                    updatePassword(newPasswordInput);
+                                }
+                            });
+                    // Show a success message to the user, e.g., a dialog box
+                } else {
+
+                    }
+                    // Show an error message to the user, e.g., a dialog box, saying the new passwords do not match
+                }
+            try {
+                stage.setScene(UserManagementScene.scene());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            });
 
         ImageView homeButton = ApplicationObjects.newImage("home.png", 10, 10, 20, 20);
         homeButton.setOnMouseClicked(e -> {
@@ -52,13 +85,10 @@ public class ManageUserChangePasswordScene {
        
         
         Group userButtons = ApplicationObjects.userMenu();
-        manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event){
-                root.getChildren().add(userButtons);
-                event.consume();
-            }
-        }); 
+        manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            root.getChildren().add(userButtons);
+            event.consume();
+        });
         scene.setOnMouseClicked(e -> {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
@@ -66,5 +96,16 @@ public class ManageUserChangePasswordScene {
         
         return scene;
     }
-	
+    private static boolean verifyOldPassword(String oldPasswordInput) {
+        String currentPassword = loggedInUser.getLoginInfo().getPassword();
+        return oldPasswordInput.equals(currentPassword);
+    }
+
+    private static void updatePassword(String newPassword) {
+        loggedInUser.getLoginInfo().setPassword(newPassword);
+        FileManagement.newEditUser(loggedInUser);
+        // Save the updated user data to the database or storage system
+    }
+
+
 }

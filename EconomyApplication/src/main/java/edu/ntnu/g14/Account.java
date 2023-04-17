@@ -16,7 +16,7 @@ public class Account {
     private String accountName;
 
     /**
-     * This constructor fascilitates the creation of instances of this class
+     * This constructor facilitates the creation of instances of this class
      * @param accountType Type of account, as AccountCategory
      * @param amount Funds in the account, as BigDecimal
      * @param accountNumber Unique reference of account in the bank system, as String
@@ -43,7 +43,7 @@ public class Account {
             this.accountNumber = accountNumber;
         }
     }
-    private Account(AccountBuilder account) {
+    public Account(AccountBuilder account) {
         this.accountType = account.accountType;
         this.accountNumber = account.accountNumber;
         this.amount = account.amount;
@@ -72,7 +72,7 @@ public class Account {
     }
 
     /**
-     * This method returns the account type of an account
+     * This method returns the account type of account
      * @return accountType, as AccountCategory
      */
     public AccountCategory getAccountType() {
@@ -127,7 +127,7 @@ public class Account {
         return accountType == a.accountType &&
                 amount.equals(a.amount) &&
                 accountNumber.equals(a.accountNumber) &&
-                accountName.equals(accountName);
+                accountName.equals(a.accountName);
     }
 
     public static final String CSV_FIELD_DELIMITER = ";";
@@ -149,19 +149,27 @@ public class Account {
         String finalAccountName          = accountName.endsWith(",") ? accountName.substring(0, fields[3].length() - 1)
                 : accountName;
 
-        return new Account(accountType, amount, accountNumber, finalAccountName);
+        return new AccountBuilder().amount(amount)
+                .accountCategory(accountType)
+                .accountNumber(accountNumber)
+                .accountName(finalAccountName)
+                .build();
     }
     public static class AccountBuilder {
-        public AccountCategory accountType;
+        private AccountCategory accountType;
         // Funds in the account, as BigDecimal
-        public BigDecimal amount;
+        private BigDecimal amount;
         // Unique reference of account in the bank system, as String
-        public String accountNumber;
+        private String accountNumber;
         // Name of the account assigned by a user, as String
-        public String accountName;
+        private String accountName;
 
         public Account build() {
-            return new Account(this);
+            if (!validateBuilder()) {
+                return new Account(this);
+            } else {
+                throw new IllegalStateException("Account not fully defined during build");
+            }
         }
         public AccountBuilder accountCategory(AccountCategory accountType) {
             this.accountType = accountType;
@@ -185,6 +193,10 @@ public class Account {
                 this.accountName = accountName;
             }
             return this;
+        }
+        private boolean validateBuilder() {
+            return this.accountType == null || this.amount == null || this.accountNumber == null
+                        || this.accountName == null;
         }
     }
 }

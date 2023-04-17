@@ -16,7 +16,7 @@ import edu.ntnu.g14.dao.InvoiceDAO;
 
 public class FileManagement {
 
-    public static final String filePath          = "saves/accounts.txt";
+    public static final String PATH_ACCOUNTS     = "saves/accounts.txt";
     public static final String PATH_BUDGETS      = "saves/budgets.txt";
     public static final String PATH_INVOICES     = "saves/invoices.txt";
     public static final String PATH_TRANSACTIONS = "saves/transactions.txt";
@@ -96,8 +96,9 @@ public class FileManagement {
         
     }
 
+
     public static void editUser(User newUser, String userId) throws FileNotFoundException, IOException{
-        String addonText = "" + newUser.getLoginInfo().getUserId() + "," + newUser.getLoginInfo().getUserName() + "," + 
+        String addonText = "" + newUser.getLoginInfo().getUserId() + "," + newUser.getLoginInfo().getUserName() + "," +
             newUser.getEmail() + "," + newUser.getLoginInfo().getPassword() + "," + newUser.getFirstName() + "," + newUser.getLastName() + ",                                     ";
 
 
@@ -117,10 +118,10 @@ public class FileManagement {
     }
 
     public static void writeNewUser(User newUser) throws IOException{
-        String userInfo = "" + newUser.getLoginInfo().getUserId() + "," + newUser.getLoginInfo().getUserName() + "," + 
+        String userInfo = "" + newUser.getLoginInfo().getUserId() + "," + newUser.getLoginInfo().getUserName() + "," +
             newUser.getEmail() + "," + newUser.getLoginInfo().getPassword() + "," + newUser.getFirstName() + "," + newUser.getLastName() + ",";
-            
-           
+
+
         try (RandomAccessFile file = new RandomAccessFile(PATH_USERS, "rw")) {
             String line;
             while ((line = file.readLine()) != null) {
@@ -132,7 +133,7 @@ public class FileManagement {
                 }
             }
         }
-        
+
         String addonTextInvoice = newUser.getLoginInfo().getUserId() + ",";
         try (RandomAccessFile file = new RandomAccessFile(PATH_INVOICES, "rw")) {
             String line;
@@ -147,7 +148,7 @@ public class FileManagement {
         }
 
         String addonTextAccount = newUser.getLoginInfo().getUserId() + ",";
-        try (RandomAccessFile file = new RandomAccessFile(filePath, "rw")) {
+        try (RandomAccessFile file = new RandomAccessFile(PATH_ACCOUNTS, "rw")) {
             String line;
             while ((line = file.readLine()) != null) {
                 if (line.startsWith(" ")) {
@@ -159,7 +160,7 @@ public class FileManagement {
             }
         }
 
-        
+
         String addonTextTransactions = newUser.getLoginInfo().getUserId() + ",";
         try (RandomAccessFile file = new RandomAccessFile(PATH_TRANSACTIONS, "rw")) {
             String line;
@@ -176,8 +177,8 @@ public class FileManagement {
     }
 
     public static Account[] readAccounts(String userId) throws IOException{
-        BufferedReader reader = new BufferedReader(new FileReader(filePath));
-        Stream<String> userTrans = reader.lines() 
+        BufferedReader reader = new BufferedReader(new FileReader(PATH_ACCOUNTS));
+        Stream<String> userTrans = reader.lines()
                 .filter(line -> line.startsWith(userId + ","));
         Account[] accounts = userTrans.flatMap(s -> Stream.of(s.split(","))
                 .skip(1).map(Account::fromCSVString)).toArray(Account[]::new);
@@ -197,7 +198,7 @@ public class FileManagement {
 
     public static Invoice[] getInvoicesForUser(String userID) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(PATH_INVOICES));
-        Stream<String> userTrans = reader.lines() 
+        Stream<String> userTrans = reader.lines()
                 .filter(line -> line.startsWith(userID + ","));
         System.out.println(userTrans);
 
@@ -209,7 +210,7 @@ public class FileManagement {
             for(int i =  0; i < placeHolder.length - 1; i++){
                 transactionArray[i] = placeHolder[i];
             }
-            
+
             for (int i = 1; i < transactionArray.length; i++) {
                 Invoice transaction = Invoice.fromCSVString(transactionArray[i]);
                 transactionList.add(transaction);
@@ -224,14 +225,30 @@ public class FileManagement {
         return invoices;
     }
 
-    
+
     public static void writeAccount(String userId, Account account) {
-        writeTransactionOrAccount(userId, account.toCSVString(), filePath);
+        writeTransactionOrAccount(userId, account.toCSVString(), PATH_ACCOUNTS);
     }
     public static void writeTransaction(String userId, Transaction transaction) {
         writeTransactionOrAccount(userId, transaction.toCSVString(), PATH_TRANSACTIONS);
     }
-    public static void deleteOrEditAccount(User loggedInUser) {
+    public static void editAccount(User loggedInUser) {
+        String accountStrings = loggedInUser.getAccountsAsList().stream()
+                .map(Account::toCSVString).reduce("", String::concat);
+        String userId = loggedInUser.getLoginInfo().getUserId();
+
+        String newLine = userId + "," + accountStrings;
+        editAccountOrUser(newLine, userId, PATH_ACCOUNTS);
+    }
+    public static void newEditUser(User loggedInUser) {
+
+        String userId = loggedInUser.getLoginInfo().getUserId();
+
+        String newLine = loggedInUser.toCSVString();
+        editAccountOrUser(newLine, userId, PATH_USERS);
+
+    }
+    private static void editAccountOrUser(String newLine, String userId, String filePath) {
         File oldFile    = new File(filePath);
         File newFile    = new File(PATH_TEMPFILE);
         try {
@@ -245,11 +262,6 @@ public class FileManagement {
             int lines = (int) bufferedReader.lines().count();
             inputStream.getChannel().position(0);
             bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            String accountStrings = loggedInUser.getAccountsAsList().stream()
-                    .map(Account::toCSVString).reduce("", String::concat);
-            String userId = loggedInUser.getLoginInfo().getUserId();
-
-            String newLine = userId + "," + accountStrings;
 
             String currentLine;
             for (int i = 1; i < lines; i++) {
@@ -281,7 +293,6 @@ public class FileManagement {
             throw new RuntimeException(e);
         }
     }
-
     private static void writeTransactionOrAccount(String userId, String toCSVString, String filePath) {
         File oldFile    = new File(filePath);
         File newFile    = new File(PATH_TEMPFILE);

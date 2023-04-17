@@ -1,4 +1,4 @@
-*
+target/classes
 !.gitignore
 # Default ignored files
 /shelf/
@@ -13,3 +13,7 @@
 ./.DS_Store
 ./Project Bank/idatt1002_2023_group14/.DS_Store
 ./Project Bank/.DS_Store
+../.DS_Store
+target/
+saves/invoices.txt.temp
+saves/budgets.txt.temp

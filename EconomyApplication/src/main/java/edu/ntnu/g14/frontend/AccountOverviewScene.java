@@ -1,7 +1,6 @@
 package edu.ntnu.g14.frontend;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -25,16 +24,19 @@ public class AccountOverviewScene {
     private static Account currentAccount;
     private static TableView<ObservableList<Object>> lastTransactionsTable;
     private static ObservableList<ObservableList<Object>> lastTransactionsData;
-    static public Scene scene() throws IOException {
+    private static Text amountText;
+    private static Text accountNumberText;
+
+    static public Scene scene(Account account) throws IOException {
         List<Account> accounts = ApplicationFront.loggedInUser.getAccountsAsList();
         ObservableList<String> accountNames = FXCollections.observableArrayList(getAccountsNames());
 
         if (accounts.isEmpty()) {
-            Dialog<AccountWithProperty> accountWithPropertyDialog = new ApplicationObjects.AccountWithPropertyDialog(new AccountWithProperty(null, null, null, null));
-            Optional<AccountWithProperty> result = accountWithPropertyDialog.showAndWait();
+            Dialog<Account.AccountBuilder> accountDialog = new AccountDialog(new Account.AccountBuilder());
+            Optional<Account.AccountBuilder> result = accountDialog.showAndWait();
             if (result.isPresent()) {
 
-                createAccountDialog(accountNames, result);
+                createAccountDialog(accountNames, result.get());
             }
             else {
                 return MainPageScene.scene();
@@ -47,13 +49,18 @@ public class AccountOverviewScene {
         ComboBox<String> accountComboBox = ApplicationObjects.newComboBox(columnTitlesTransactionsTable, 364, 30, 30, 364-(364/2), 50);
         accountComboBox.setItems(accountNames);
         accountComboBox.setValue(accounts.get(0).getAccountName());
-        Text accountNumberText    = ApplicationObjects.newText("Account Number: " + accounts.get(0).getAccountNumber(), 14, false, 0, 130);
-        Text amountText           = ApplicationObjects.newText("Amount: " + accounts.get(0).getAmount() + "kr", 20, false, 0, 160);
+        accountNumberText    = ApplicationObjects.newText("Account Number: " + accounts.get(0).getAccountNumber(), 14, false, 0, 130);
+        amountText = ApplicationObjects.newText("Balance: " + ApplicationObjects.numberRegex(accounts.get(0).getAmount().toString()) + " kr", 20, false, 0, 160);
         Button addExpense         = ApplicationObjects.newButton("Add Expense", 30,80, 100, 20,14);
         Button addIncome          = ApplicationObjects.newButton("Add Income", 30,50, 100, 20,14);
         Button addAccount         = ApplicationObjects.newButton("Add Account", 728 - 130, 50, 100, 20, 14);
         Button editAccount        = ApplicationObjects.newButton("Edit Account", 728 - 130, 80, 100, 20, 14);
         Text lastTransactionsText = ApplicationObjects.newText("Last Transactions:", 24, false, 20, 200);
+        if (account != null) {
+            accountComboBox.setValue(account.getAccountName());
+            setAccountNumberAndAmountText();
+
+        }
         amountText.setLayoutX((double) 728/2 - amountText.getLayoutBounds().getWidth()/2);
         accountNumberText.setLayoutX((double) 728/2 - accountNumberText.getLayoutBounds().getWidth()/2);
         lastTransactionsTable = ApplicationObjects.newTableView(columnTitlesTransactionsTable, 20, 230, 688, 300);
@@ -69,41 +76,36 @@ public class AccountOverviewScene {
                 setCurrentAccount(accountComboBox.getValue());
 
                 accountNumberText.setText("Account Number: " + currentAccount.getAccountNumber());
-                amountText.setText("Amount: " + currentAccount.getAmount().toString() + "kr");
+                amountText.setText("Balance: " + ApplicationObjects.numberRegex(currentAccount.getAmount().toString()) + " kr");
 
             }
         });
-        addAccount.setOnAction(actionEvent -> {
-            Dialog<AccountWithProperty> accountWithPropertyDialog = new ApplicationObjects.AccountWithPropertyDialog(new AccountWithProperty(null, null, null, null));
-            Optional<AccountWithProperty> result = accountWithPropertyDialog.showAndWait();
-            if (result.isPresent()) {
 
-                createAccountDialog(accountNames, result);
-            }
+        addAccount.setOnAction(actionEvent -> {
+            Dialog<Account.AccountBuilder> accountBuilderDialog = new AccountDialog(new Account.AccountBuilder());
+            Optional<Account.AccountBuilder> result = accountBuilderDialog.showAndWait();
+            result.ifPresent(accountBuilder -> createAccountDialog(accountNames, accountBuilder));
         });
         editAccount.setOnAction(actionEvent -> {
-            Dialog<Account> accountDialog = new ApplicationObjects.EditAccountDialog(currentAccount);
+            Dialog<Account> accountDialog = new EditAccountDialog(currentAccount);
             Optional<Account> result = accountDialog.showAndWait();
             if (result.isPresent()) {
                 accountComboBox.setItems(FXCollections.observableArrayList(getAccountsNames()));
                 if (!ApplicationFront.loggedInUser.getAccountsAsList().contains(currentAccount)) {
                     getAccountsNames().remove(currentAccount.getAccountName());
                     accountComboBox.setItems(FXCollections.observableArrayList(getAccountsNames()));
-                    accountComboBox.setValue(getAccountsNames().get(0));
+                    if (accountNames.size() != 0)
+                        accountComboBox.setValue(getAccountsNames().get(0));
                 } else {
                     accountComboBox.setValue(currentAccount.getAccountName());
                 }
-                FileManagement.deleteOrEditAccount(ApplicationFront.loggedInUser);
+                FileManagement.editAccount(ApplicationFront.loggedInUser);
             }
         });
 
-        addExpense.setOnAction(actionEvent -> {
-            showDialog(false);
-        });
+        addExpense.setOnAction(actionEvent -> showDialog(false));
 
-        addIncome.setOnAction(actionEvent -> {
-            showDialog(true);
-        });
+        addIncome.setOnAction(actionEvent -> showDialog(true));
 
 
 
@@ -140,11 +142,8 @@ public class AccountOverviewScene {
         return scene;
     }
 
-    private static void createAccountDialog(ObservableList<String> accountNames, Optional<AccountWithProperty> result) {
-        AccountWithProperty accountWithProperty = result.get();
-        Account account = new Account(AccountCategory.valueOf(accountWithProperty.getAccountType()),
-                new BigDecimal(accountWithProperty.getAmount()),
-                accountWithProperty.getAccountNumber(), accountWithProperty.getAccountName());
+    private static void createAccountDialog(ObservableList<String> accountNames, Account.AccountBuilder result) {
+        Account account = result.build();
         FileManagement.writeAccount(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), account);
         accountNames.add(account.getAccountName());
         ApplicationFront.loggedInUser.addAccount(account);
@@ -205,34 +204,20 @@ public class AccountOverviewScene {
                     transaction.getAmount()));
         }
     }
-    private static void showDialog(Boolean incomeOrExpense) {
-        Dialog<TransactionWithProperty> transactionWithPropertyDialog =
-                new ApplicationObjects.TransactionWithPropertyDialog(
-                        new TransactionWithProperty(null,
-                                null, null,
-                                null, null, null), incomeOrExpense);
-        Optional<TransactionWithProperty> result = transactionWithPropertyDialog.showAndWait();
+    private static void showDialog(boolean incomeOrExpense) {
+        Dialog<Transaction.TransactionBuilder> transactionBuilderDialog =
+                new TransactionDialog(new Transaction.TransactionBuilder(), incomeOrExpense);
+        Optional<Transaction.TransactionBuilder> result = transactionBuilderDialog.showAndWait();
         if (result.isPresent()) {
-            TransactionWithProperty transactionWithProperty = result.get();
-            Transaction transaction;
-            if (incomeOrExpense) {
-                transaction = new Transaction(transactionWithProperty.getFromAccountId(),
-                        ApplicationFront.loggedInUser.getAccountWithAccountName(transactionWithProperty.getToAccountId()).getAccountNumber(),
-                        new BigDecimal(transactionWithProperty.getAmount()),
-                        transactionWithProperty.getDescription(), transactionWithProperty.getDateOfTransaction(),
-                        BudgetCategory.valueOf(transactionWithProperty.getCategory()));
-            } else {
-                transaction = new Transaction(
-                        ApplicationFront.loggedInUser
-                        .getAccountWithAccountName(transactionWithProperty.getFromAccountId()).getAccountNumber(),
-                        transactionWithProperty.getToAccountId(), new BigDecimal(transactionWithProperty.getAmount()),
-                        transactionWithProperty.getDescription(), transactionWithProperty.getDateOfTransaction(),
-                        BudgetCategory.valueOf(transactionWithProperty.getCategory()));
-            }
+            Transaction transaction = result.get().build();
 
             FileManagement.writeTransaction(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), transaction);
             ApplicationFront.loggedInUser.getTransactionsAsList().add(transaction);
             addTransaction(transaction);
         }
+    }
+    private static void setAccountNumberAndAmountText() {
+        accountNumberText.setText("Account Number: " + currentAccount.getAccountNumber());
+        amountText.setText("Balance: " + ApplicationObjects.numberRegex(currentAccount.getAmount().toString()) + " kr");
     }
 }

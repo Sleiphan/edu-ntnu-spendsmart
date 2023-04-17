@@ -33,7 +33,7 @@ public class PaymentConfirmationScene {
             DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     static public Scene scene() throws FileNotFoundException, IOException {
-        TableView<ObservableList<Object>> payment = ApplicationObjects.newTableView(new String[]{"Payment", "Information"}, 100, 150, 602, 150);
+        TableView<ObservableList<Object>> payment = ApplicationObjects.newTableView(new String[]{"Payment", "Information"}, 100, 150, 602, 170);
         ObservableList<ObservableList<Object>> paymentData = initializePaymentData(getPaymentInfo());
         payment.setItems(paymentData);
         payment.getColumns().forEach(colum -> colum.setMinWidth(300));
