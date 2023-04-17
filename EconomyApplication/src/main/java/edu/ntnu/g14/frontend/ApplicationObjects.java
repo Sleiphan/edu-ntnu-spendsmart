@@ -308,7 +308,7 @@ public class ApplicationObjects {
     }
 
     public static TableView<ObservableList<Object>> newTableView1(String[] columnTitles, double x, double y,
-                                                                 double width, double height, List<Object> listToCheck) {
+                                                                 double width, double height, List<String> accountNumbers) {
         TableView<ObservableList<Object>> tableView = new TableView<>();
         tableView.setLayoutX(x);
         tableView.setLayoutY(y);
@@ -322,8 +322,8 @@ public class ApplicationObjects {
             TableColumn<ObservableList<Object>, Object> column = new TableColumn<>(title);
 
             // set cell factory for second column (index 1)
-            if (tableView.getColumns().size() == 1 && columnTitles.length < 3) {
-                column.setCellFactory(param -> new TableCell<ObservableList<Object>, Object>() {
+            if (tableView.getColumns().size() == 1 && columnTitles.length < 3 || tableView.getColumns().size() == 2) {
+                column.setCellFactory(param -> new TableCell<>() {
                     @Override
                     protected void updateItem(Object item, boolean empty) {
                         super.updateItem(item, empty);
@@ -337,35 +337,10 @@ public class ApplicationObjects {
                         setStyle("-fx-font-family: 'Arial'");
                         ObservableList<Object> rowData = getTableView().getItems().get(getIndex());
                         Object prevCellData = rowData.get(0); // get data from previous cell
-                        if (listToCheck.contains(prevCellData)) {
+                        if (accountNumbers.contains(prevCellData)) {
                             setTextFill(Paint.valueOf("#3477eb")); // set text color to blue
                         } else {
                             setTextFill(Paint.valueOf("#eb344c")); // set text color to red
-                        }
-                        setText(item.toString());
-                    }
-                });
-            }
-            if (tableView.getColumns().size() == 2) {
-                column.setCellFactory(param -> new TableCell<ObservableList<Object>, Object>() {
-                    @Override
-                    protected void updateItem(Object item, boolean empty) {
-                        super.updateItem(item, empty);
-
-                        if (item == null || empty ) {
-                            setText("");
-                            setStyle("");
-                            return;
-                        }
-                        setStyle("-fx-font-weight: 700");
-                        setStyle("-fx-font-family: 'Arial'");
-                        ObservableList<Object> rowData = getTableView().getItems().get(getIndex());
-                        Object prevCellData = rowData.get(0); // get data from previous cell
-                        if (listToCheck.contains(prevCellData)) {
-                            setTextFill(Paint.valueOf("#3477eb")); // set text color to blue
-                        } else {
-                            setTextFill(Paint.valueOf("#eb344c")); // set text color to red
-
                         }
                         setText(item.toString());
                     }
