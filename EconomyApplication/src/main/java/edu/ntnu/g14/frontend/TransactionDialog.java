@@ -49,13 +49,13 @@ public class TransactionDialog extends Dialog<Transaction.TransactionBuilder> {
         setResultConverter(income);
     }
     private void setBuilderFieldValuesIncome() {
-        transaction.toAccountNumber(chooseAccountComboBox.getValue());
+        transaction.toAccountNumber(ApplicationFront.loggedInUser.getAccountWithAccountName(chooseAccountComboBox.getValue()).getAccountNumber());
         transaction.fromAccountNumber(accountNumberField.getText());
         setBuilderFieldValues();
     }
     private void setBuilderFieldValuesExpense() {
         transaction.toAccountNumber(accountNumberField.getText());
-        transaction.fromAccountNumber(chooseAccountComboBox.getValue());
+        transaction.fromAccountNumber(ApplicationFront.loggedInUser.getAccountWithAccountName(chooseAccountComboBox.getValue()).getAccountNumber());
         setBuilderFieldValues();
     }
 
@@ -86,27 +86,24 @@ public class TransactionDialog extends Dialog<Transaction.TransactionBuilder> {
         } else {
             pane = createExpenseGridPane();
         }
+
         getDialogPane().setContent(pane);
         getDialogPane().getButtonTypes().addAll(ButtonType.APPLY, ButtonType.CANCEL);
-        Button applyButton = (Button) getDialogPane().lookupButton(ButtonType.APPLY);
-        applyButton.addEventFilter(ActionEvent.ACTION, new EventHandler<>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if (!validateDialog()) {
-                    event.consume();
 
-                }
+        Button applyButton = (Button) getDialogPane().lookupButton(ButtonType.APPLY);
+        applyButton.addEventFilter(ActionEvent.ACTION, event -> {
+            if (!validateDialog()) {
+                event.consume();
             }
         });
     }
     private boolean validateDialog() {
-        String regexAccountNumber = "[0-9]{4}+\\.[0-9]{2}+\\.[0-9]{5}";
         return accountNumberField.getText() != null
                 && amountField.getText() != null
                 && descriptionField.getText() != null
                 && accountNumberField.getText() != null
                 && categoryField.getValue() != null
-                && Pattern.matches(regexAccountNumber, accountNumberField.getText());
+                && Pattern.matches(Transaction.regexAccountNumber, accountNumberField.getText());
     }
     private void defineLabelsAndFields() {
         this.amountField = new TextField();
