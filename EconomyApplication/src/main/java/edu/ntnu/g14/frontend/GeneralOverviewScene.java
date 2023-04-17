@@ -36,12 +36,12 @@ public class GeneralOverviewScene {
         totalOfAllAccountsCombinedText = ApplicationObjects.newText("Total of all Accounts Combined (excl. Pension)", 16, false, 900/2 - 319/2, 50);
         setBigSumText();
 
-        totalIncomeText = ApplicationObjects.newText("Income: " + ApplicationObjects.numberRegex(ApplicationFront.loggedInUser
-                .incomeLast30Days()), 20, false, 0, 170);
+        totalIncomeText = ApplicationObjects.newText("Income: " + ApplicationFront.loggedInUser
+                .incomeLast30Days(), 20, false, 0, 170);
         totalIncomeText.setX(205 - totalIncomeText.getLayoutBounds().getWidth()/2);
 
-        totalExpensesText = ApplicationObjects.newText("Expenses: " + ApplicationObjects.numberRegex(ApplicationFront.loggedInUser
-                .expensesLast30Days()), 20, false, 0, 170);
+        totalExpensesText = ApplicationObjects.newText("Expenses: " + ApplicationFront.loggedInUser
+                .expensesLast30Days(), 20, false, 0, 170);
         totalExpensesText.setX(630 - totalExpensesText.getLayoutBounds().getWidth()/2);
 
         int expenditureDataWidth = 450;

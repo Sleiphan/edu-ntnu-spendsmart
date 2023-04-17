@@ -315,14 +315,14 @@ public class ApplicationObjects {
         tableView.setPrefWidth(width);
         tableView.setPrefHeight(height);
 
-        int colum = columnTitles.length;
+        int numberOfColumns = columnTitles.length;
 
         // create columns
         for (String title : columnTitles) {
             TableColumn<ObservableList<Object>, Object> column = new TableColumn<>(title);
 
-            // set cell factory for second column (index 1)
-            if (tableView.getColumns().size() == 1 && columnTitles.length < 3 || tableView.getColumns().size() == 2) {
+            // set cell factory for second or third column (index 1)
+            if (tableView.getColumns().size() == 1 && numberOfColumns < 3 || tableView.getColumns().size() == 2) {
                 column.setCellFactory(param -> new TableCell<>() {
                     @Override
                     protected void updateItem(Object item, boolean empty) {
