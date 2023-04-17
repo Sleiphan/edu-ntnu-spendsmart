@@ -369,7 +369,7 @@ public class ApplicationObjects {
 
     public static String numberRegex(String number) {
         
-        return number.replaceAll("(\\d)(?=(\\d{3})+$)", "$1 ").trim();
+        return number.replaceAll("(\\d)(?=(\\d{3})+$)", "$1 ").trim().concat(" kr");
     }
 
     public static String[] getBudgetIncomeCategories() {
@@ -383,6 +383,5 @@ public class ApplicationObjects {
             "-fx-pref-height: " + height + ";" +
             "-fx-font-size: " + fontSize + "px;";
     }
-
 
 }

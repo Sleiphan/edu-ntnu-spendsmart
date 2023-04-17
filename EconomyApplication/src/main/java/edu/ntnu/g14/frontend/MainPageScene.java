@@ -31,7 +31,6 @@ public class MainPageScene {
             accountsList[i] = accounts[i].getAccountName();
         }
 
-        Text actionsText = ApplicationObjects.newText("Actions", 20, false, 160, 30);
         Group transfer = ApplicationObjects.newButtonWithIcon("Transfer", 30, 50, 157, 25, 16, "budget.png", TransferScene.scene());
         
         Group invoice = ApplicationObjects.newButtonWithIcon("Invoice", 192, 50, 157,25,16, "invoice.png", InvoiceScene.scene());
@@ -41,11 +40,9 @@ public class MainPageScene {
         Group overview = ApplicationObjects.newButtonWithIcon("Overview", 192,90, 157,25,16, "overview.png", GeneralOverviewScene.scene());
         
         Group accountsButton = ApplicationObjects.newButtonWithIcon("Accounts", 30,130, 157, 25, 16, "account.png", AccountOverviewScene.scene(Optional.empty()));
-        
+
         Group budgeting = ApplicationObjects.newButtonWithIcon("Budgeting", 192, 130, 157, 25,16, "budget.png", BudgetingScene.scene());
         
-        
-
         Text latestActivitiesText = ApplicationObjects.newText("Latest Activities", 20, false,130, 210);
         TableView latestActivitiesTable = ApplicationObjects.newTableView(columnTitlesLatestActivitiesTable, 30, 230, 324, 300);
         ObservableList<ObservableList<Object>> latestActivitiesData;
@@ -61,7 +58,11 @@ public class MainPageScene {
         duePaymentsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         Text accountsText = ApplicationObjects.newText("Accounts", 20, false, 500, 30);
         ListView accountsListView = ApplicationObjects.newListView(accountsList, 728-30-324, 50, 324, 115);
-
+        accountsListView.setFixedCellSize(40);
+        accountsListView.setStyle("-fx-font-family: \"Helvetica Neue\";\n" +
+                "    -fx-font-size: 20px;\n" +
+                "    -fx-font-weight: 800;\n" +
+                "    -fx-alignment: center");
         accountsListView.setOnMouseClicked(mouseEvent -> {
             try {
                 stage.setScene(AccountOverviewScene.scene(Optional.ofNullable(ApplicationFront.loggedInUser.getAccountWithAccountName(accountsListView.getSelectionModel().getSelectedItem().toString()))));
@@ -73,7 +74,7 @@ public class MainPageScene {
         Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
-        Group root = new Group(actionsText, transfer, invoice, payment, 
+        Group root = new Group(transfer, invoice, payment,
         overview, accountsButton, budgeting, latestActivitiesText, latestActivitiesTable, 
         duePaymentsTable, duePaymentsText, accountsListView, accountsText, dropDownButton, manageUserButton);
         dropDownButton.setOnAction(e -> {
@@ -107,10 +108,10 @@ public class MainPageScene {
         Transaction[] transactions = FileManagement.readLatestTransactions(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), length);
         ObservableList<ObservableList<Object>> latestActivitiesData = FXCollections.observableArrayList();
         for(int i = 0; i < length; i++){
-            latestActivitiesData.add(FXCollections.observableArrayList(transactions[i].getToAccountNumber(), transactions[i].getAmount()));
+            latestActivitiesData.add(FXCollections.observableArrayList(transactions[i].getToAccountNumber(), ApplicationObjects.numberRegex(transactions[i].getAmount().toString())));
         }
         
         return  latestActivitiesData;
     }
-  
+
 }

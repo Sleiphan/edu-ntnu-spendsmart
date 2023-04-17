@@ -36,12 +36,12 @@ public class GeneralOverviewScene {
         totalOfAllAccountsCombinedText = ApplicationObjects.newText("Total of all Accounts Combined (excl. Pension)", 16, false, 900/2 - 319/2, 50);
         setBigSumText();
 
-        totalIncomeText = ApplicationObjects.newText("Income: " + ApplicationFront.loggedInUser
-                .incomeLast30Days() + " kr", 20, false, 0, 170);
+        totalIncomeText = ApplicationObjects.newText("Income: " + ApplicationObjects.numberRegex(ApplicationFront.loggedInUser
+                .incomeLast30Days()), 20, false, 0, 170);
         totalIncomeText.setX(205 - totalIncomeText.getLayoutBounds().getWidth()/2);
 
-        totalExpensesText = ApplicationObjects.newText("Expenses: " + ApplicationFront.loggedInUser
-                .expensesLast30Days() + " kr", 20, false, 0, 170);
+        totalExpensesText = ApplicationObjects.newText("Expenses: " + ApplicationObjects.numberRegex(ApplicationFront.loggedInUser
+                .expensesLast30Days()), 20, false, 0, 170);
         totalExpensesText.setX(630 - totalExpensesText.getLayoutBounds().getWidth()/2);
 
         int expenditureDataWidth = 450;
@@ -176,20 +176,20 @@ public class GeneralOverviewScene {
 
     private static void setBigSumText() {
         bigSumText = ApplicationObjects.newText(ApplicationFront.loggedInUser
-                .amountAllAccounts() + " kr", 35, false, 346, 100);
+                .amountAllAccounts(), 35, false, 346, 100);
         bigSumText.setX((float) 900/2 - bigSumText.getLayoutBounds().getWidth()/2);
     }
 
     private static void setTotalIncomeText(Boolean monthOrYear) {
         if (monthOrYear) {
             totalIncomeText.setText("Income: " + ApplicationFront.loggedInUser
-                    .incomeLast30Days() + " kr");
+                    .incomeLast30Days());
             if (ApplicationFront.loggedInUser.incomeLast30Days().replaceAll(" ", "").equals("0"))
                 totalIncomeText.setVisible(false);
         }
         else {
             totalIncomeText.setText("Income: " + ApplicationFront.loggedInUser
-                    .incomeLastYear() + " kr");
+                    .incomeLastYear()       );
             if (ApplicationFront.loggedInUser.incomeLastYear().replaceAll(" ", "").equals("0"))
                 totalIncomeText.setVisible(false);
         }
@@ -199,12 +199,12 @@ public class GeneralOverviewScene {
     public static void setTotalExpensesText(Boolean monthOrYear) {
         if (monthOrYear) {
             totalExpensesText.setText("Expenses: " + ApplicationFront.loggedInUser
-                    .expensesLast30Days() + " kr");
+                    .expensesLast30Days());
             if (ApplicationFront.loggedInUser.expensesLast30Days().replaceAll(" ", "").equals("0"))
                 totalIncomeText.setVisible(false);
         } else {
             totalExpensesText.setText("Expenses: " + ApplicationFront.loggedInUser
-                    .expensesLastYear() + " kr");
+                    .expensesLastYear());
             if (ApplicationFront.loggedInUser.expensesLastYear().replaceAll(" ","").equals("0"))
                 totalExpensesText.setVisible(false);
         }

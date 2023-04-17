@@ -49,7 +49,7 @@ public class AccountOverviewScene {
         accountComboBox.setItems(accountNames);
         accountComboBox.setValue(accounts.get(0).getAccountName());
         accountNumberText    = ApplicationObjects.newText("Account Number: " + accounts.get(0).getAccountNumber(), 14, false, 0, 130);
-        amountText = ApplicationObjects.newText("Balance: " + ApplicationObjects.numberRegex(accounts.get(0).getAmount().toString()) + " kr", 20, false, 0, 160);
+        amountText = ApplicationObjects.newText("Balance: " + ApplicationObjects.numberRegex(accounts.get(0).getAmount().toString()), 20, false, 0, 160);
         Button addExpense         = ApplicationObjects.newButton("Add Expense", 30,80, 100, 20,14);
         Button addIncome          = ApplicationObjects.newButton("Add Income", 30,50, 100, 20,14);
         Button addAccount         = ApplicationObjects.newButton("Add Account", 728 - 130, 50, 100, 20, 14);
@@ -75,7 +75,7 @@ public class AccountOverviewScene {
                 setCurrentAccount(accountComboBox.getValue());
 
                 accountNumberText.setText("Account Number: " + currentAccount.getAccountNumber());
-                amountText.setText("Balance: " + ApplicationObjects.numberRegex(currentAccount.getAmount().toString()) + " kr");
+                amountText.setText("Balance: " + ApplicationObjects.numberRegex(currentAccount.getAmount().toString()));
 
             }
         });
@@ -180,11 +180,11 @@ public class AccountOverviewScene {
                 lastTransactionsData.
                         add(FXCollections.observableArrayList(transaction.getToAccountNumber(),
                                 transaction.getDateOfTransaction().format(ApplicationObjects.dateFormatter),
-                                transaction.getAmount()));
+                                ApplicationObjects.numberRegex(transaction.getAmount().toString())));
             } else {
                 lastTransactionsData.add(FXCollections.observableArrayList(transaction.getFromAccountNumber(),
                         transaction.getDateOfTransaction().format(ApplicationObjects.dateFormatter),
-                        transaction.getAmount()));
+                        ApplicationObjects.numberRegex(transaction.getAmount().toString())));
             }
             });
 
@@ -217,6 +217,6 @@ public class AccountOverviewScene {
     }
     private static void setAccountNumberAndAmountText() {
         accountNumberText.setText("Account Number: " + currentAccount.getAccountNumber());
-        amountText.setText("Balance: " + ApplicationObjects.numberRegex(currentAccount.getAmount().toString()) + " kr");
+        amountText.setText("Balance: " + ApplicationObjects.numberRegex(currentAccount.getAmount().toString()));
     }
 }
