@@ -2,6 +2,7 @@ package edu.ntnu.g14.frontend;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Optional;
 
 import edu.ntnu.g14.Account;
 import edu.ntnu.g14.FileManagement;
@@ -39,7 +40,7 @@ public class MainPageScene {
         
         Group overview = ApplicationObjects.newButtonWithIcon("Overview", 192,90, 157,25,16, "overview.png", GeneralOverviewScene.scene());
         
-        Group accountsButton = ApplicationObjects.newButtonWithIcon("Accounts", 30,130, 157, 25, 16, "account.png", AccountOverviewScene.scene(null));
+        Group accountsButton = ApplicationObjects.newButtonWithIcon("Accounts", 30,130, 157, 25, 16, "account.png", AccountOverviewScene.scene(Optional.empty()));
         
         Group budgeting = ApplicationObjects.newButtonWithIcon("Budgeting", 192, 130, 157, 25,16, "budget.png", BudgetingScene.scene());
         
@@ -63,7 +64,7 @@ public class MainPageScene {
 
         accountsListView.setOnMouseClicked(mouseEvent -> {
             try {
-                stage.setScene(AccountOverviewScene.scene(ApplicationFront.loggedInUser.getAccountWithAccountName(accountsListView.getSelectionModel().getSelectedItem().toString())));
+                stage.setScene(AccountOverviewScene.scene(Optional.ofNullable(ApplicationFront.loggedInUser.getAccountWithAccountName(accountsListView.getSelectionModel().getSelectedItem().toString()))));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

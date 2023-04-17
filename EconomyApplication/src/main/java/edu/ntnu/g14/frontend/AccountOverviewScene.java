@@ -1,7 +1,6 @@
 package edu.ntnu.g14.frontend;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -27,7 +26,7 @@ public class AccountOverviewScene {
     private static Text amountText;
     private static Text accountNumberText;
 
-    static public Scene scene(Account account) throws IOException {
+    static public Scene scene(Optional<Account> account) throws IOException {
         List<Account> accounts = ApplicationFront.loggedInUser.getAccountsAsList();
         ObservableList<String> accountNames = FXCollections.observableArrayList(getAccountsNames());
 
@@ -56,8 +55,8 @@ public class AccountOverviewScene {
         Button addAccount         = ApplicationObjects.newButton("Add Account", 728 - 130, 50, 100, 20, 14);
         Button editAccount        = ApplicationObjects.newButton("Edit Account", 728 - 130, 80, 100, 20, 14);
         Text lastTransactionsText = ApplicationObjects.newText("Last Transactions:", 24, false, 20, 200);
-        if (account != null) {
-            accountComboBox.setValue(account.getAccountName());
+        if (account.isPresent()) {
+            accountComboBox.setValue(account.get().getAccountName());
             setAccountNumberAndAmountText();
 
         }
@@ -168,7 +167,7 @@ public class AccountOverviewScene {
     }
     private static ObservableList<ObservableList<Object>> initializeLastTransactionsData(Account account) {
 
-        List<Transaction> transactionsOfAccount = Arrays.stream(ApplicationFront.loggedInUser.getTransactions())
+        List<Transaction> transactionsOfAccount = ApplicationFront.loggedInUser.getTransactionsAsList().stream()
                 .filter(transaction -> transaction.getToAccountNumber()
                 .equals(account.getAccountNumber())
                         || transaction.getFromAccountNumber().equals(account.getAccountNumber()))
@@ -212,7 +211,7 @@ public class AccountOverviewScene {
             Transaction transaction = result.get().build();
 
             FileManagement.writeTransaction(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), transaction);
-            ApplicationFront.loggedInUser.getTransactionsAsList().add(transaction);
+            ApplicationFront.loggedInUser.addTransaction(transaction);
             addTransaction(transaction);
         }
     }
