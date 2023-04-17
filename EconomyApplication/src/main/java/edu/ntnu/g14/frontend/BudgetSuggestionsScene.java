@@ -13,6 +13,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class BudgetSuggestionsScene {
@@ -46,7 +47,7 @@ public class BudgetSuggestionsScene {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        Text title = ApplicationObjects.newText("Buddget Suggestion", 30, false, 250, 50);
         // Create components
         selectTypeComponents = createSelectTypeComponents();
 
@@ -66,7 +67,7 @@ public class BudgetSuggestionsScene {
         Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
-        Group root = new Group(selectTypeComponents, revenueComponents, dropDownButton, homeButton, manageUserButton);
+        Group root = new Group(selectTypeComponents, revenueComponents, dropDownButton, homeButton, manageUserButton, title);
         dropDownButton.setOnAction(e -> {
             root.getChildren().add(dropDown);
         });
@@ -147,17 +148,19 @@ public class BudgetSuggestionsScene {
         Button continueBtnSelectType = ApplicationObjects.newButton("Continue", 500, 480, 157, 25, 16);
         continueBtnSelectType.setOnAction(e -> {
             // Get the input values for Age, Gender, and Household
-            String inputAge = AgeInput.getText();
-            String inputGender = genderToggleGroup.getSelectedToggle() != null ? genderToggleGroup.getSelectedToggle().getUserData().toString() : "";
-            String inputHousehold = HouseholdInput.getValue();
+            if (!personal.getSelectionModel().isSelected(0)) {
+                String inputAge = AgeInput.getText();
+                String inputGender = genderToggleGroup.getSelectedToggle() != null ? genderToggleGroup.getSelectedToggle().getUserData().toString() : "";
+                String inputHousehold = HouseholdInput.getValue();
 
-            // Get the selected value from the personal ChoiceBox
-            String selectedValue = personal.getValue();
+                // Get the selected value from the personal ChoiceBox
+                String selectedValue = personal.getValue();
 
-            processSelectTypeInput(selectedValue, inputAge, inputGender, inputHousehold);
+                processSelectTypeInput(selectedValue, inputAge, inputGender, inputHousehold);
 
-            selectTypeComponents.setVisible(false);
-            revenueComponents.setVisible(true);
+                selectTypeComponents.setVisible(false);
+                revenueComponents.setVisible(true);
+            }
         });
 
 
@@ -187,15 +190,17 @@ public class BudgetSuggestionsScene {
             String inputText = revenueInput.getText();
             addRevenueToBudget(selectedItem, inputText);
         });
-        savingsInput = ApplicationObjects.newTextField("Enter Savings Amount", 0, 0, 130, 30, 15);
+        savingsInput = ApplicationObjects.newTextField("Enter Savings Amount", 50, 100, 130, 30, 15);
         savingsInput.setVisible(false);
 
         Button continueBtnRevenue = ApplicationObjects.newButton("Continue", 500, 480, 157, 25, 16);
         continueBtnRevenue.setOnAction(e -> {
-            //hide and show components
-            savingsInput.setVisible(true);
-            createBudgetBtn.setVisible(true);
-            revenueBox.setVisible(false);
+            if (!revenueInput.getText().isEmpty()) {
+                //hide and show components
+                savingsInput.setVisible(true);
+                createBudgetBtn.setVisible(true);
+                revenueBox.setVisible(false);
+            }
         });
 
 
@@ -231,7 +236,7 @@ public class BudgetSuggestionsScene {
         });
         revenueBox = new VBox();
         revenueBox.setLayoutX(50);
-        revenueBox.setLayoutY(150);
+        revenueBox.setLayoutY(100);
         revenueBox.setSpacing(10);
         revenueBox.getChildren().addAll(revenue, revenueInput, addRevenueItemBtn);
 
