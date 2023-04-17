@@ -21,7 +21,7 @@ public class ManageUserChangePasswordScene {
 
     static public Scene scene() throws FileNotFoundException, IOException{
         String email = loggedInUser.getEmail();
-        String name = loggedInUser.getFullName();
+        String name = loggedInUser.getLoginInfo().getUserName();
         Text nameText = ApplicationObjects.newText(name, 40, false, 563-329, 234-136);
         Text emailText = ApplicationObjects.newText(email, 17, false, 616-329, 283-136);
 
@@ -50,17 +50,17 @@ public class ManageUserChangePasswordScene {
                                     updatePassword(newPasswordInput);
                                 }
                             });
-                    try {
-                        stage.setScene(UserManagementScene.scene());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
                     // Show a success message to the user, e.g., a dialog box
                 } else {
 
                     }
                     // Show an error message to the user, e.g., a dialog box, saying the new passwords do not match
                 }
+            try {
+                stage.setScene(UserManagementScene.scene());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             });
 
         ImageView homeButton = ApplicationObjects.newImage("home.png", 10, 10, 20, 20);

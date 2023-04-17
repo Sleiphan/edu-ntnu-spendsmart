@@ -29,7 +29,7 @@ public class UserManagementScene {
     static public Scene scene() throws IOException {
 
 
-        Label loggedInUserLabel = new Label(loggedInUser.getFullName());
+        Label loggedInUserLabel = new Label(loggedInUser.getLoginInfo().getUserName());
         loggedInUserLabel.setStyle("-fx-font-size: 40;");
         Label loggedInUserEmail = new Label(loggedInUser.getEmail());
         loggedInUserEmail.setStyle("-fx-font-size: 20;");
