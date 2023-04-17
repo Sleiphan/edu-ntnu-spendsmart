@@ -41,7 +41,7 @@ public class UserManagementEditUserScene {
             alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirm Username Change");
             alert.setHeaderText("Are you sure you want to change the username to: " + editUsernameField.getText() + "?");
-            alert.setContentText("Changing user name form: " +loggedInUser.getLoginInfo().getUserName()+ " to: " +editUsernameField.getText() );
+            alert.setContentText("Changing username form: " +loggedInUser.getLoginInfo().getUserName()+ " to: " +editUsernameField.getText() );
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
                     loggedInUser.getLoginInfo().setUserName(editUsernameField.getText());
@@ -51,8 +51,8 @@ public class UserManagementEditUserScene {
             });
             if (loggedInUser.getLoginInfo().getUserName().equals(editUsernameField.getText())) {
                 alert.setTitle("Confirm Username Change");
-                alert.setHeaderText("This user name is already in use: " + editUsernameField.getText());
-                alert.setContentText("Please enter a new user name" );
+                alert.setHeaderText("This username is already in use: " + editUsernameField.getText());
+                alert.setContentText("Please enter a new username" );
             }
         });
 
