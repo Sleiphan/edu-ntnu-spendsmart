@@ -3,6 +3,7 @@ package edu.ntnu.g14.frontend;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import edu.ntnu.g14.Account;
 import edu.ntnu.g14.FileManagement;
@@ -15,8 +16,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 public class MainPageScene {
     static Stage stage = ApplicationFront.getStage();
@@ -44,14 +49,14 @@ public class MainPageScene {
         Group budgeting = ApplicationObjects.newButtonWithIcon("Budgeting", 192, 130, 157, 25,16, "budget.png", BudgetingScene.scene());
         
         Text latestActivitiesText = ApplicationObjects.newText("Latest Activities", 20, false,130, 210);
-        TableView latestActivitiesTable = ApplicationObjects.newTableView(columnTitlesLatestActivitiesTable, 30, 230, 324, 300);
+        TableView latestActivitiesTable = ApplicationObjects.newTableView1(columnTitlesLatestActivitiesTable, 30, 230, 324, 300, ApplicationFront.loggedInUser.getAccountsAsList().stream().map(Account::getAccountNumber).collect(Collectors.toList()));
         ObservableList<ObservableList<Object>> latestActivitiesData;
         try {
             latestActivitiesData = initializeLatestActivitiesData();
             latestActivitiesTable.setItems(latestActivitiesData);
         } catch (IOException e1) {
             e1.printStackTrace();
-        } 
+        }
         latestActivitiesTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         Text duePaymentsText = ApplicationObjects.newText("Due Payments", 20, false, 473, 210);
         TableView duePaymentsTable = ApplicationObjects.newTableView(columnTitlesDuePaymentsTable, 728-30-324, 230, 324, 300);

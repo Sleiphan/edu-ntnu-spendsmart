@@ -62,7 +62,7 @@ public class AccountOverviewScene {
         }
         amountText.setLayoutX((double) 728/2 - amountText.getLayoutBounds().getWidth()/2);
         accountNumberText.setLayoutX((double) 728/2 - accountNumberText.getLayoutBounds().getWidth()/2);
-        lastTransactionsTable = ApplicationObjects.newTableView(columnTitlesTransactionsTable, 20, 230, 688, 300);
+        lastTransactionsTable = ApplicationObjects.newTableView1(columnTitlesTransactionsTable, 20, 230, 688, 300, ApplicationFront.loggedInUser.getAccountsAsList().stream().map(Account::getAccountNumber).collect(Collectors.toList()));
         lastTransactionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         if (accountComboBox.getValue() != null) {
             setCurrentAccount(accountComboBox.getValue());
