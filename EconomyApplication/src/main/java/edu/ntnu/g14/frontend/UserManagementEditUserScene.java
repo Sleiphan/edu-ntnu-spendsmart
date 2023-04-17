@@ -38,11 +38,11 @@ public class UserManagementEditUserScene {
 
         Button confirmUsername = ApplicationObjects.newButton("Confirm username", 0, 0 , 157, 25, 16 );
         confirmUsername.setOnAction(event -> {
-            alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirm Username Change");
-            alert.setHeaderText("Are you sure you want to change the username to: " + editUsernameField.getText() + "?");
-            alert.setContentText("Changing username form: " +loggedInUser.getLoginInfo().getUserName()+ " to: " +editUsernameField.getText() );
-            alert.showAndWait().ifPresent(response -> {
+            Alert usernameAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            usernameAlert.setTitle("Confirm Username Change");
+            usernameAlert.setHeaderText("Are you sure you want to change the username to: " + editUsernameField.getText() + "?");
+            usernameAlert.setContentText("Changing username form: " +loggedInUser.getLoginInfo().getUserName()+ " to: " +editUsernameField.getText() );
+            usernameAlert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
                     loggedInUser.getLoginInfo().setUserName(editUsernameField.getText());
                     // Save the updated user data to the database or storage system
@@ -50,18 +50,19 @@ public class UserManagementEditUserScene {
                 }
             });
             if (loggedInUser.getLoginInfo().getUserName().equals(editUsernameField.getText())) {
-                alert.setTitle("Confirm Username Change");
-                alert.setHeaderText("This username is already in use: " + editUsernameField.getText());
-                alert.setContentText("Please enter a new username" );
+                usernameAlert.setTitle("Confirm Username Change");
+                usernameAlert.setHeaderText("This username is already in use: " + editUsernameField.getText());
+                usernameAlert.setContentText("Please enter a new username" );
             }
         });
 
         Button confirmEmail = ApplicationObjects.newButton("Confirm Email", 0, 0 , 157, 25, 16 );
         confirmEmail.setOnAction(event -> {
-            alert.setTitle("Confirm Email Change");
-            alert.setHeaderText("Are you sure you want to change the Email to: " + editEmailField.getText() + "?");
-            alert.setContentText("Changing Email form: " +loggedInUser.getEmail()+ " to: " +editEmailField.getText());
-            alert.showAndWait().ifPresent(response -> {
+            Alert emailAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            emailAlert.setTitle("Confirm Email Change");
+            emailAlert.setHeaderText("Are you sure you want to change the Email to: " + editEmailField.getText() + "?");
+            emailAlert.setContentText("Changing Email form: " +loggedInUser.getEmail()+ " to: " +editEmailField.getText());
+            emailAlert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
                     loggedInUser.setEmail(editEmailField.getText());
                     // Save the updated user data to the database or storage system
@@ -70,9 +71,9 @@ public class UserManagementEditUserScene {
                 }
             });
             if (loggedInUser.getLoginInfo().getUserName().equals(editUsernameField.getText())) {
-                alert.setTitle("Confirm Email Change");
-                alert.setHeaderText("This user Email is already in use: " + editEmailField.getText());
-                alert.setContentText("Please enter a new Email" );
+                emailAlert.setTitle("Confirm Email Change");
+                emailAlert.setHeaderText("This user Email is already in use: " + editEmailField.getText());
+                emailAlert.setContentText("Please enter a new Email" );
             }
         });
 
