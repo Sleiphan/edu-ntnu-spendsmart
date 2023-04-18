@@ -92,15 +92,13 @@ public class User extends Personalia {
     }
     public boolean checkIfAccountNameIsOccupied(String accountName) {
         return this.accounts.stream()
-                .filter(account -> account.getAccountName()
-                        .equalsIgnoreCase(accountName))
-                .findAny().isEmpty();
+                .anyMatch(account -> account.getAccountName()
+                        .equalsIgnoreCase(accountName));
     }
     public boolean checkIfAccountNumberIsOccupied(String accountNumber) {
-        return  this.accounts.stream()
-                .filter(account -> account.getAccountNumber()
-                        .equalsIgnoreCase(accountNumber))
-                .findAny().isEmpty();
+        return  !this.accounts.stream()
+                .anyMatch(account -> account.getAccountNumber()
+                        .equalsIgnoreCase(accountNumber));
     }
     public Account getAccountWithAccountName(String accountName) {
         return this.accounts.stream()
