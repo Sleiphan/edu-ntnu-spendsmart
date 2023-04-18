@@ -2,7 +2,6 @@ package edu.ntnu.g14.frontend;
 
 import edu.ntnu.g14.*;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -26,7 +25,7 @@ public class LoginUserScene {
 
         Text forgotPassword = ApplicationObjects.newText("Forgot password", 10, true, 400, 260);
         forgotPassword.setOnMouseClicked(e -> {
-            String key = EmailVertification.sendVertificationKey(ApplicationFront.loggedInUser.getEmail());
+            String key = EmailVerification.sendVerificationKey(ApplicationFront.loggedInUser.getEmail());
             try {
                 stage.setScene(LoginForgotPasswordFirstScene.scene(key));
             } catch (IOException e1) {
