@@ -20,10 +20,10 @@ public class ManageUserChangePasswordScene {
     private static User loggedInUser = ApplicationFront.loggedInUser;
 
     static public Scene scene() throws FileNotFoundException, IOException{
-        String email = loggedInUser.getEmail();
-        String name = loggedInUser.getLoginInfo().getUserName();
-        Text nameText = ApplicationObjects.newText(name, 40, false, 563-329, 234-136);
-        Text emailText = ApplicationObjects.newText(email, 17, false, 616-329, 283-136);
+        Label loggedInUserLabel = new Label(loggedInUser.getLoginInfo().getUserName());
+        loggedInUserLabel.setStyle("-fx-font-size: 40;");
+        Label loggedInUserEmail = new Label(loggedInUser.getEmail());
+        loggedInUserEmail.setStyle("-fx-font-size: 20;");
 
         Button cancelButton = ApplicationObjects.newButton("Cancel", 594-329, 399-136, 159, 61, 16);
         Button confirmButton = ApplicationObjects.newButton("Confirm", 761-329, 399-136, 159, 61, 16);
@@ -74,7 +74,7 @@ public class ManageUserChangePasswordScene {
         Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
-        Group root = new Group(nameText, emailText, cancelButton, confirmButton,
+        Group root = new Group(loggedInUserLabel, loggedInUserEmail, cancelButton, confirmButton,
         oldPassword, newPassword, reNewPassword, oldPasswordField,
         newPasswordField, reNewPasswordField, dropDownButton, homeButton, manageUserButton);
         dropDownButton.setOnAction(e -> {

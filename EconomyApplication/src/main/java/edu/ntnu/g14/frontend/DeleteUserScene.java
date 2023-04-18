@@ -28,17 +28,20 @@ public class DeleteUserScene {
     private StackPane stackPane;
     static Stage stage = ApplicationFront.getStage();
 
+    static User loggedInUser = ApplicationFront.loggedInUser;
+
     private static boolean cancelPressed = false;
 
 
     static public Scene scene() throws FileNotFoundException, IOException {
-        User currentUser = ApplicationFront.loggedInUser;
-        Text loggedInUser = ApplicationObjects.newText(currentUser.getFullName(), 40, false, 0, 0);
-        Text loggedInUserEmail = ApplicationObjects.newText(currentUser.getEmail(), 20, false, 0, 0);
+        Label loggedInUserLabel = new Label(loggedInUser.getLoginInfo().getUserName());
+        loggedInUserLabel.setStyle("-fx-font-size: 40;");
+        Label loggedInUserEmail = new Label(loggedInUser.getEmail());
+        loggedInUserEmail.setStyle("-fx-font-size: 20;");
 
 
         // Create a VBox to hold loggedInUser and loggedInUserEmail
-        VBox userInfoBox = new VBox(5, loggedInUser, loggedInUserEmail);
+        VBox userInfoBox = new VBox(5, loggedInUserLabel, loggedInUserEmail);
         userInfoBox.setAlignment(Pos.CENTER);
         userInfoBox.setLayoutX(220); // Set the VBox's layoutX and layoutY to position it on the screen
         userInfoBox.setLayoutY(75);
@@ -69,7 +72,7 @@ public class DeleteUserScene {
             timer.setOnFinished(e -> {
                 if (!cancelPressed) {
                     //TODO: remove user
-                    ApplicationObjects.alertBox("Deleted user", "You have deleted user", currentUser.getFullName() + " R.I.P");
+                    ApplicationObjects.alertBox("Deleted user", "You have deleted user", loggedInUser.getLoginInfo().getUserName() + " R.I.P");
                     confirm.setStyle("-fx-background-color: red");
                     confirm.setTextFill(Paint.valueOf("WHITE"));
                 }
