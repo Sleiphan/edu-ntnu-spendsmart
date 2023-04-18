@@ -95,7 +95,7 @@ public class DeleteUserScene {
         // Create an VBox to hold warningText, confirm and cancel
         VBox deleteUserBox = new VBox(5, warningText, confirm, cancel);
         deleteUserBox.setAlignment(Pos.CENTER);
-        deleteUserBox.setLayoutX(180); // Set the VBox's layoutX and layoutY to position it on the screen
+        deleteUserBox.setLayoutX(145); // Set the VBox's layoutX and layoutY to position it on the screen
         deleteUserBox.setLayoutY(350);
 
 
