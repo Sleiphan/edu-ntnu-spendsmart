@@ -2,6 +2,10 @@ package edu.ntnu.g14;
 
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,6 +13,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import edu.ntnu.g14.dao.BudgetDAO;
+import edu.ntnu.g14.dao.DAOTools;
 import edu.ntnu.g14.dao.InvoiceDAO;
 
 
@@ -249,46 +254,50 @@ public class FileManagement {
 
     }
     private static void editAccountOrUser(String newLine, String userId, String filePath) {
-        File oldFile    = new File(filePath);
-        File newFile    = new File(PATH_TEMPFILE);
+        final String LINE_DELIMITER = "\n";
+        final Path accountOrUserFilePath = Path.of(filePath);
+        final Path directory = Path.of(filePath.substring(0, filePath.lastIndexOf("/")));
+        String content = "";
+
+        if (newLine.startsWith(LINE_DELIMITER))
+            newLine = newLine.substring(1);
+        if (newLine.endsWith(LINE_DELIMITER))
+            newLine = newLine.substring(0, newLine.length() - 1);
+
         try {
-            FileWriter fileWriter         = new FileWriter(PATH_TEMPFILE, true);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            PrintWriter printWriter       = new PrintWriter(bufferedWriter);
-
-            FileInputStream inputStream   = new FileInputStream(oldFile);
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-
-            int lines = (int) bufferedReader.lines().count();
-            inputStream.getChannel().position(0);
-            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-
-            String currentLine;
-            for (int i = 1; i < lines; i++) {
-                currentLine = bufferedReader.readLine();
-                if (currentLine.startsWith(userId)) {
-                    printWriter.println(newLine);
-                }
-                else {
-                    printWriter.println(currentLine);
-                }
+            content = Files.readString(accountOrUserFilePath);
+        } catch (FileNotFoundException e) {
+            try {
+                Files.createDirectories(directory);
+                Files.createFile(accountOrUserFilePath);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
-            currentLine = bufferedReader.readLine();
-            if (currentLine.startsWith(userId)) {
-                printWriter.print(newLine);
-            }
-            else {
-                printWriter.print(currentLine);
-            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-            inputStream.close();
-            bufferedReader.close();
-            printWriter.flush();
-            printWriter.close();
-            oldFile.delete();
-            File dump = new File(filePath);
-            newFile.renameTo(dump);
+        boolean entryFound = false;
 
+        String[] lines = content.split(LINE_DELIMITER);
+        for (int i = 0; i < lines.length; i++) {
+            if (lines[i].startsWith(userId)) {
+                lines[i] = newLine;
+                entryFound = true;
+                break;
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        if (entryFound) {
+            for (String line : lines)
+                sb.append(line).append(LINE_DELIMITER);
+        } else {
+            sb.append(newLine);
+        }
+
+        try {
+            Files.writeString(accountOrUserFilePath, sb.toString());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
