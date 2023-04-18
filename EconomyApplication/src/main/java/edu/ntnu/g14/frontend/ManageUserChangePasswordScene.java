@@ -7,11 +7,13 @@ import edu.ntnu.g14.FileManagement;
 import edu.ntnu.g14.User;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -20,10 +22,15 @@ public class ManageUserChangePasswordScene {
     private static User loggedInUser = ApplicationFront.loggedInUser;
 
     static public Scene scene() throws FileNotFoundException, IOException{
-        String email = loggedInUser.getEmail();
-        String name = loggedInUser.getLoginInfo().getUserName();
-        Text nameText = ApplicationObjects.newText(name, 40, false, 563-329, 234-136);
-        Text emailText = ApplicationObjects.newText(email, 17, false, 616-329, 283-136);
+        Label loggedInUserLabel = new Label(loggedInUser.getLoginInfo().getUserName());
+        loggedInUserLabel.setStyle("-fx-font-size: 40;");
+        Label loggedInUserEmail = new Label(loggedInUser.getEmail());
+        loggedInUserEmail.setStyle("-fx-font-size: 20;");
+
+        VBox userInfoBox = new VBox(5, loggedInUserLabel, loggedInUserEmail);
+        userInfoBox.setAlignment(Pos.CENTER);
+        userInfoBox.setLayoutX(220);
+        userInfoBox.setLayoutY(75);
 
         Button cancelButton = ApplicationObjects.newButton("Cancel", 594-329, 399-136, 159, 61, 16);
         Button confirmButton = ApplicationObjects.newButton("Confirm", 761-329, 399-136, 159, 61, 16);
@@ -74,7 +81,7 @@ public class ManageUserChangePasswordScene {
         Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
-        Group root = new Group(nameText, emailText, cancelButton, confirmButton,
+        Group root = new Group(userInfoBox, cancelButton, confirmButton,
         oldPassword, newPassword, reNewPassword, oldPasswordField,
         newPasswordField, reNewPasswordField, dropDownButton, homeButton, manageUserButton);
         dropDownButton.setOnAction(e -> {

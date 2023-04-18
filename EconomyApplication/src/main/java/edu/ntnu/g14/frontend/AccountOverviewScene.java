@@ -1,7 +1,6 @@
 package edu.ntnu.g14.frontend;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -27,7 +26,7 @@ public class AccountOverviewScene {
     private static Text amountText;
     private static Text accountNumberText;
 
-    static public Scene scene(Account account) throws IOException {
+    static public Scene scene(Optional<Account> account) throws IOException {
         List<Account> accounts = ApplicationFront.loggedInUser.getAccountsAsList();
         ObservableList<String> accountNames = FXCollections.observableArrayList(getAccountsNames());
 
@@ -36,7 +35,7 @@ public class AccountOverviewScene {
             Optional<Account.AccountBuilder> result = accountDialog.showAndWait();
             if (result.isPresent()) {
 
-                createAccountDialog(accountNames, result.get());
+                addAndWriteAccount(accountNames, result.get());
             }
             else {
                 return MainPageScene.scene();
@@ -50,20 +49,20 @@ public class AccountOverviewScene {
         accountComboBox.setItems(accountNames);
         accountComboBox.setValue(accounts.get(0).getAccountName());
         accountNumberText    = ApplicationObjects.newText("Account Number: " + accounts.get(0).getAccountNumber(), 14, false, 0, 130);
-        amountText = ApplicationObjects.newText("Balance: " + ApplicationObjects.numberRegex(accounts.get(0).getAmount().toString()) + " kr", 20, false, 0, 160);
+        amountText = ApplicationObjects.newText("Balance: " + ApplicationObjects.numberRegex(accounts.get(0).getAmount().toString()), 20, false, 0, 160);
         Button addExpense         = ApplicationObjects.newButton("Add Expense", 30,80, 100, 20,14);
         Button addIncome          = ApplicationObjects.newButton("Add Income", 30,50, 100, 20,14);
         Button addAccount         = ApplicationObjects.newButton("Add Account", 728 - 130, 50, 100, 20, 14);
         Button editAccount        = ApplicationObjects.newButton("Edit Account", 728 - 130, 80, 100, 20, 14);
         Text lastTransactionsText = ApplicationObjects.newText("Last Transactions:", 24, false, 20, 200);
-        if (account != null) {
-            accountComboBox.setValue(account.getAccountName());
+        if (account.isPresent()) {
+            accountComboBox.setValue(account.get().getAccountName());
             setAccountNumberAndAmountText();
 
         }
         amountText.setLayoutX((double) 728/2 - amountText.getLayoutBounds().getWidth()/2);
         accountNumberText.setLayoutX((double) 728/2 - accountNumberText.getLayoutBounds().getWidth()/2);
-        lastTransactionsTable = ApplicationObjects.newTableView(columnTitlesTransactionsTable, 20, 230, 688, 300);
+        lastTransactionsTable = ApplicationObjects.newTableView1(columnTitlesTransactionsTable, 20, 230, 688, 300, ApplicationFront.loggedInUser.getAccountsAsList().stream().map(Account::getAccountNumber).collect(Collectors.toList()));
         lastTransactionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         if (accountComboBox.getValue() != null) {
             setCurrentAccount(accountComboBox.getValue());
@@ -76,7 +75,7 @@ public class AccountOverviewScene {
                 setCurrentAccount(accountComboBox.getValue());
 
                 accountNumberText.setText("Account Number: " + currentAccount.getAccountNumber());
-                amountText.setText("Balance: " + ApplicationObjects.numberRegex(currentAccount.getAmount().toString()) + " kr");
+                amountText.setText("Balance: " + ApplicationObjects.numberRegex(currentAccount.getAmount().toString()));
 
             }
         });
@@ -84,7 +83,7 @@ public class AccountOverviewScene {
         addAccount.setOnAction(actionEvent -> {
             Dialog<Account.AccountBuilder> accountBuilderDialog = new AccountDialog(new Account.AccountBuilder());
             Optional<Account.AccountBuilder> result = accountBuilderDialog.showAndWait();
-            result.ifPresent(accountBuilder -> createAccountDialog(accountNames, accountBuilder));
+            result.ifPresent(accountBuilder -> addAndWriteAccount(accountNames, accountBuilder));
         });
         editAccount.setOnAction(actionEvent -> {
             Dialog<Account> accountDialog = new EditAccountDialog(currentAccount);
@@ -103,9 +102,9 @@ public class AccountOverviewScene {
             }
         });
 
-        addExpense.setOnAction(actionEvent -> showDialog(false));
+        addExpense.setOnAction(actionEvent -> showTransactionDialog(false));
 
-        addIncome.setOnAction(actionEvent -> showDialog(true));
+        addIncome.setOnAction(actionEvent -> showTransactionDialog(true));
 
 
 
@@ -142,7 +141,7 @@ public class AccountOverviewScene {
         return scene;
     }
 
-    private static void createAccountDialog(ObservableList<String> accountNames, Account.AccountBuilder result) {
+    private static void addAndWriteAccount(ObservableList<String> accountNames, Account.AccountBuilder result) {
         Account account = result.build();
         FileManagement.writeAccount(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), account);
         accountNames.add(account.getAccountName());
@@ -168,7 +167,7 @@ public class AccountOverviewScene {
     }
     private static ObservableList<ObservableList<Object>> initializeLastTransactionsData(Account account) {
 
-        List<Transaction> transactionsOfAccount = Arrays.stream(ApplicationFront.loggedInUser.getTransactions())
+        List<Transaction> transactionsOfAccount = ApplicationFront.loggedInUser.getTransactionsAsList().stream()
                 .filter(transaction -> transaction.getToAccountNumber()
                 .equals(account.getAccountNumber())
                         || transaction.getFromAccountNumber().equals(account.getAccountNumber()))
@@ -181,11 +180,11 @@ public class AccountOverviewScene {
                 lastTransactionsData.
                         add(FXCollections.observableArrayList(transaction.getToAccountNumber(),
                                 transaction.getDateOfTransaction().format(ApplicationObjects.dateFormatter),
-                                transaction.getAmount()));
+                                ApplicationObjects.numberRegex(transaction.getAmount().toString())));
             } else {
                 lastTransactionsData.add(FXCollections.observableArrayList(transaction.getFromAccountNumber(),
                         transaction.getDateOfTransaction().format(ApplicationObjects.dateFormatter),
-                        transaction.getAmount()));
+                        ApplicationObjects.numberRegex(transaction.getAmount().toString())));
             }
             });
 
@@ -204,7 +203,7 @@ public class AccountOverviewScene {
                     transaction.getAmount()));
         }
     }
-    private static void showDialog(boolean incomeOrExpense) {
+    private static void showTransactionDialog(boolean incomeOrExpense) {
         Dialog<Transaction.TransactionBuilder> transactionBuilderDialog =
                 new TransactionDialog(new Transaction.TransactionBuilder(), incomeOrExpense);
         Optional<Transaction.TransactionBuilder> result = transactionBuilderDialog.showAndWait();
@@ -212,12 +211,12 @@ public class AccountOverviewScene {
             Transaction transaction = result.get().build();
 
             FileManagement.writeTransaction(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), transaction);
-            ApplicationFront.loggedInUser.getTransactionsAsList().add(transaction);
+            ApplicationFront.loggedInUser.addTransaction(transaction);
             addTransaction(transaction);
         }
     }
     private static void setAccountNumberAndAmountText() {
         accountNumberText.setText("Account Number: " + currentAccount.getAccountNumber());
-        amountText.setText("Balance: " + ApplicationObjects.numberRegex(currentAccount.getAmount().toString()) + " kr");
+        amountText.setText("Balance: " + ApplicationObjects.numberRegex(currentAccount.getAmount().toString()));
     }
 }

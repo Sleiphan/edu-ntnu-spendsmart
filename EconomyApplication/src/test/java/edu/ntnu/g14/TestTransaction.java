@@ -11,8 +11,8 @@ class TestTransaction {
 
     @Test
     void csvParsing() {
-        String fromAccountId        = "From account";
-        String toAccountId          = "To account";
+        String fromAccountId        = "1111.11.11111";
+        String toAccountId          = "1111.11.11111";
         
         String description          = "Desc";
         LocalDate dateOfTransaction = LocalDate.now();

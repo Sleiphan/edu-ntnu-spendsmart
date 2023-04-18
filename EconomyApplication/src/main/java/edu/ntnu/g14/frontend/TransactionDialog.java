@@ -5,7 +5,6 @@ import edu.ntnu.g14.AccountCategory;
 import edu.ntnu.g14.BudgetCategory;
 import edu.ntnu.g14.Transaction;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -22,7 +21,7 @@ import java.util.stream.Collectors;
 import static edu.ntnu.g14.frontend.ApplicationObjects.dateFormatter;
 
 public class TransactionDialog extends Dialog<Transaction.TransactionBuilder> {
-    private final Transaction.TransactionBuilder transaction;
+    private final Transaction.TransactionBuilder transactionBuilder;
     private ComboBox<String> chooseAccountComboBox;
     private TextField accountNumberField;
     private TextField amountField;
@@ -36,9 +35,9 @@ public class TransactionDialog extends Dialog<Transaction.TransactionBuilder> {
     Label accountLabel2;
     Label accountLabel1;
 
-    public TransactionDialog(Transaction.TransactionBuilder transaction, boolean income) {
+    public TransactionDialog(Transaction.TransactionBuilder transactionBuilder, boolean income) {
         super();
-        this.transaction = transaction;
+        this.transactionBuilder = transactionBuilder;
         if (income) {
             this.setTitle("Add Income");
             buildUI(true);
@@ -49,21 +48,21 @@ public class TransactionDialog extends Dialog<Transaction.TransactionBuilder> {
         setResultConverter(income);
     }
     private void setBuilderFieldValuesIncome() {
-        transaction.toAccountNumber(chooseAccountComboBox.getValue());
-        transaction.fromAccountNumber(accountNumberField.getText());
+        transactionBuilder.toAccountNumber(ApplicationFront.loggedInUser.getAccountWithAccountName(chooseAccountComboBox.getValue()).getAccountNumber());
+        transactionBuilder.fromAccountNumber(accountNumberField.getText());
         setBuilderFieldValues();
     }
     private void setBuilderFieldValuesExpense() {
-        transaction.toAccountNumber(accountNumberField.getText());
-        transaction.fromAccountNumber(chooseAccountComboBox.getValue());
+        transactionBuilder.toAccountNumber(accountNumberField.getText());
+        transactionBuilder.fromAccountNumber(ApplicationFront.loggedInUser.getAccountWithAccountName(chooseAccountComboBox.getValue()).getAccountNumber());
         setBuilderFieldValues();
     }
 
     private void setBuilderFieldValues() {
-        transaction.amount(new BigDecimal(amountField.getText()));
-        transaction.description(descriptionField.getText());
-        transaction.dateOfTransaction(dateOfTransactionField.getValue());
-        transaction.category(BudgetCategory.valueOf(categoryField.getValue().replaceAll(" ", "_").toUpperCase()));
+        transactionBuilder.amount(new BigDecimal(amountField.getText()));
+        transactionBuilder.description(descriptionField.getText());
+        transactionBuilder.dateOfTransaction(dateOfTransactionField.getValue());
+        transactionBuilder.category(BudgetCategory.valueOf(categoryField.getValue().replaceAll(" ", "_").toUpperCase()));
     }
     private void setResultConverter(boolean income) {
         javafx.util.Callback<ButtonType, Transaction.TransactionBuilder> transactionResultConverter = param -> {
@@ -72,7 +71,7 @@ public class TransactionDialog extends Dialog<Transaction.TransactionBuilder> {
                     setBuilderFieldValuesIncome();
                 else setBuilderFieldValuesExpense();
 
-                return transaction;
+                return transactionBuilder;
             } else {
                 return null;
             }
@@ -86,27 +85,32 @@ public class TransactionDialog extends Dialog<Transaction.TransactionBuilder> {
         } else {
             pane = createExpenseGridPane();
         }
+
         getDialogPane().setContent(pane);
         getDialogPane().getButtonTypes().addAll(ButtonType.APPLY, ButtonType.CANCEL);
-        Button applyButton = (Button) getDialogPane().lookupButton(ButtonType.APPLY);
-        applyButton.addEventFilter(ActionEvent.ACTION, new EventHandler<>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if (!validateDialog()) {
-                    event.consume();
 
-                }
+        Button applyButton = (Button) getDialogPane().lookupButton(ButtonType.APPLY);
+        applyButton.addEventFilter(ActionEvent.ACTION, event -> {
+            if (!validateDialog()) {
+                event.consume();
             }
         });
     }
     private boolean validateDialog() {
-        String regexAccountNumber = "[0-9]{4}+\\.[0-9]{2}+\\.[0-9]{5}";
+        BigDecimal amountBigDecimal;
+
+        try {
+            amountBigDecimal = new BigDecimal(amountField.getText());
+        } catch (NumberFormatException | NullPointerException e) {
+            return false;
+        }
         return accountNumberField.getText() != null
                 && amountField.getText() != null
+                && !(amountBigDecimal.floatValue() < 0)
                 && descriptionField.getText() != null
                 && accountNumberField.getText() != null
                 && categoryField.getValue() != null
-                && Pattern.matches(regexAccountNumber, accountNumberField.getText());
+                && Pattern.matches(Transaction.regexAccountNumber, accountNumberField.getText());
     }
     private void defineLabelsAndFields() {
         this.amountField = new TextField();

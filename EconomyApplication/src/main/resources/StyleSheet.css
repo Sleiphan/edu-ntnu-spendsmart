@@ -64,9 +64,13 @@
 
 Text {
     -fx-font-family: 'Helvetica Neue';
-    -fx-font-weight: bold;
+    -fx-font-weight: 700;
 }
 
 .accountComboBox {
     -fx-alignment: left;
+}
+.table-cell {
+    -fx-font-size: 16px;
+    -fx-alignment: center;
 }

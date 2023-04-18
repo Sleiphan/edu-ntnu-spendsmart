@@ -14,32 +14,32 @@ import java.math.BigDecimal;
 import java.util.regex.Pattern;
 
 public class AccountDialog extends Dialog<Account.AccountBuilder> {
-    private final Account.AccountBuilder account;
+    private final Account.AccountBuilder accountBuilder;
     private ComboBox<String> accountTypeField;
     private TextField amountField;
     private TextField accountNumberField;
     private TextField accountNameField;
 
-    public AccountDialog(Account.AccountBuilder account) {
+    public AccountDialog(Account.AccountBuilder accountBuilder) {
         super();
         this.setTitle("Add Account");
-        this.account = account;
+        this.accountBuilder = accountBuilder;
         buildUI();
         setResultConverter();
     }
 
     private void setBuilderFieldValues() {
-        account.amount(new BigDecimal(amountField.getText()));
-        account.accountNumber(accountNumberField.getText());
-        account.accountName(accountNameField.getText());
-        account.accountCategory(AccountCategory.valueOf(accountTypeField.getValue().replaceAll(" ", "_").toUpperCase()));
+        accountBuilder.amount(new BigDecimal(amountField.getText()));
+        accountBuilder.accountNumber(accountNumberField.getText());
+        accountBuilder.accountName(accountNameField.getText());
+        accountBuilder.accountCategory(AccountCategory.valueOf(accountTypeField.getValue().replaceAll(" ", "_").toUpperCase()));
     }
 
     private void setResultConverter() {
         javafx.util.Callback<ButtonType, Account.AccountBuilder> accountResultConverter = param -> {
             if (param == ButtonType.APPLY) {
                 setBuilderFieldValues();
-                return account;
+                return accountBuilder;
             } else {
                 return null;
             }
@@ -60,24 +60,24 @@ public class AccountDialog extends Dialog<Account.AccountBuilder> {
 
                 }
             }
-            private boolean validateDialog() {
-                String regexAccountNumber = "[0-9]{4}+\\.[0-9]{2}+\\.[0-9]{5}";
-                BigDecimal amountBigDecimal;
-                try {
-                    amountBigDecimal = new BigDecimal(amountField.getText());
-                } catch (NumberFormatException | NullPointerException e) {
-                    return false;
-                }
-                return accountNumberField.getText() != null
-                        && accountNameField.getText() != null
-                        && !accountNameField.getText().isBlank()
-                        && accountTypeField.getValue() != null
-                        && !(amountBigDecimal.floatValue() < 0)
-                        && Pattern.matches(regexAccountNumber, accountNumberField.getText())
-                        && ApplicationFront.loggedInUser.checkIfAccountNameIsOccupied(accountNameField.getText())
-                        && ApplicationFront.loggedInUser.checkIfAccountNumberIsOccupied(accountNumberField.getText());
-            }
         });
+    }
+    private boolean validateDialog() {
+        String regexAccountNumber = "[0-9]{4}+\\.[0-9]{2}+\\.[0-9]{5}";
+        BigDecimal amountBigDecimal;
+        try {
+            amountBigDecimal = new BigDecimal(amountField.getText());
+        } catch (NumberFormatException | NullPointerException e) {
+            return false;
+        }
+        return accountNumberField.getText() != null
+                && accountNameField.getText() != null
+                && !accountNameField.getText().isBlank()
+                && accountTypeField.getValue() != null
+                && !(amountBigDecimal.floatValue() < 0)
+                && Pattern.matches(regexAccountNumber, accountNumberField.getText())
+                && !ApplicationFront.loggedInUser.checkIfAccountNameIsOccupied(accountNameField.getText())
+                && !ApplicationFront.loggedInUser.checkIfAccountNumberIsOccupied(accountNumberField.getText());
     }
 
     private Pane createGridPane() {

@@ -5,6 +5,7 @@ import edu.ntnu.g14.frontend.ApplicationObjects;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class Transaction {
     private final String fromAccountNumber;
@@ -13,9 +14,12 @@ public class Transaction {
     private final String description;
     private final LocalDate dateOfTransaction;
     private final BudgetCategory category;
+    public static final String regexAccountNumber = "[0-9]{4}+\\.[0-9]{2}+\\.[0-9]{5}";
 
     public Transaction(String fromAccountNumber, String toAccountNumber, BigDecimal amount, String description,
                        LocalDate dateOfTransaction, BudgetCategory category) {
+        if (!Pattern.matches(regexAccountNumber,fromAccountNumber) || !Pattern.matches(regexAccountNumber, toAccountNumber))
+            throw new IllegalArgumentException("This is not an account number");
         if (fromAccountNumber.isEmpty())
             throw new IllegalArgumentException("From account number cannot be empty");
         if (toAccountNumber.isEmpty())
@@ -127,14 +131,14 @@ public class Transaction {
             else throw new IllegalStateException("Transaction not fully defined during build");
         }
         public TransactionBuilder fromAccountNumber(String fromAccountNumber) {
-            if (fromAccountNumber.isEmpty())
-                throw new IllegalArgumentException("From account number cannot be empty");
+            if (!Pattern.matches(regexAccountNumber,fromAccountNumber))
+                throw new IllegalArgumentException("This is not an account number");
             this.fromAccountNumber = fromAccountNumber;
             return this;
         }
         public TransactionBuilder toAccountNumber(String toAccountNumber) {
-            if (toAccountNumber.isEmpty())
-                throw new IllegalArgumentException("To account number cannot be empty");
+            if (!Pattern.matches(regexAccountNumber, toAccountNumber))
+                throw new IllegalArgumentException("This is not an account number");
             this.toAccountNumber = toAccountNumber;
             return this;
         }

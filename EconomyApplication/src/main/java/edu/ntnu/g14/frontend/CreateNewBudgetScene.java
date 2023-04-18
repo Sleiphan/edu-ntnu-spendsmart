@@ -45,6 +45,7 @@ public class CreateNewBudgetScene {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Text title = ApplicationObjects.newText("Create New Budget", 30, false, 250, 50);
 
         // Create components
         Group selectTypeComponents = createSelectTypeComponents();
@@ -68,7 +69,7 @@ public class CreateNewBudgetScene {
         Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
-        Group root = new Group(selectTypeComponents, revenueComponents, expenditureComponents, dropDownButton, homeButton, manageUserButton);
+        Group root = new Group(title, selectTypeComponents, revenueComponents, expenditureComponents, dropDownButton, homeButton, manageUserButton);
         dropDownButton.setOnAction(e -> {
             root.getChildren().add(dropDown);
         });
@@ -165,6 +166,11 @@ public class CreateNewBudgetScene {
             // Show the revenue and expenditure components
             showRevenueComponents();
             showExpenditureComponents();
+            personal.setVisible(false);
+            HouseholdInput.setVisible(false);
+            AgeInput.setVisible(false);
+            maleRadioButton.setVisible(false);
+            femaleRadioButton.setVisible(false);
             continueBtn.setVisible(false);
             createBudgetBtn.setVisible(true);
         });
@@ -194,7 +200,7 @@ public class CreateNewBudgetScene {
             }
         }
         String[] revenueChoices = revenueChoiceList.toArray(new String[0]);
-        ChoiceBox<String> revenue = ApplicationObjects.newChoiceBox(revenueChoices, 150, 34, 15, 0, 0);
+        ChoiceBox<String> revenue = ApplicationObjects.newChoiceBox(revenueChoices, 157, 34, 15, 0, 0);
         revenue.setValue(BudgetCategory.SALARY.toString());
 
 
@@ -208,7 +214,7 @@ public class CreateNewBudgetScene {
 
         VBox revenueBox = new VBox();
         revenueBox.setLayoutX(50);
-        revenueBox.setLayoutY(150);
+        revenueBox.setLayoutY(100);
         revenueBox.setSpacing(10);
         revenueBox.getChildren().addAll(revenue, revenueInput, addRevenueItemBtn);
 
@@ -226,7 +232,7 @@ public class CreateNewBudgetScene {
             }
         }
         String[] expenditureChoices = expenditureChoiceList.toArray(new String[0]);
-        ChoiceBox<String> expenditure = ApplicationObjects.newChoiceBox(expenditureChoices, 150, 34, 15, 0, 0);
+        ChoiceBox<String> expenditure = ApplicationObjects.newChoiceBox(expenditureChoices, 157, 34, 15, 0, 0);
         expenditure.setValue(BudgetCategory.FOOD_AND_DRINK.toString().toLowerCase().replaceAll("_", " "));
 
         TextField expenditureInput = ApplicationObjects.newTextField("Enter Amount", 0, 0, 130, 30, 15);

@@ -21,7 +21,6 @@ import javafx.stage.Stage;
 
 public class GeneralOverviewScene {
     static Stage stage = ApplicationFront.getStage();
-    private static final User loggedInUser = ApplicationFront.loggedInUser;
     private static ObservableList<PieChart.Data> expenditurePieData;
     private static ObservableList<PieChart.Data> incomePieData;
     private static Text totalOfAllAccountsCombinedText;
@@ -29,21 +28,21 @@ public class GeneralOverviewScene {
     private static Text totalIncomeText;
     private static Text totalExpensesText;
     static public Scene scene() throws IOException {
-        String monthlyExpensesPieChartTitle    = "Monthly Expenses";
-        String yearlyExpensesPieChartTitle     = "Expenses Last Year";
-        String monthlyIncomePieChartTitle      = "Monthly Income";
-        String yearlyIncomePieChartTitle       = "Income Last Year";
         String[] columnTitlesTransactionsTable = {"Date", "Transaction", "Amount", "Account"};
+        String monthlyExpensesPieChartTitle    = "Expenses Last 30 Days";
+        String yearlyExpensesPieChartTitle     = "Expenses Last Year";
+        String monthlyIncomePieChartTitle      = "Income Last 30 Days";
+        String yearlyIncomePieChartTitle       = "Income Last Year";
         totalOfAllAccountsCombinedText = ApplicationObjects.newText("Total of all Accounts Combined (excl. Pension)", 16, false, 900/2 - 319/2, 50);
         setBigSumText();
 
-        totalIncomeText = ApplicationObjects.newText("Income: " + loggedInUser
-                .incomeLast30Days() + " kr", 20, false, 0, 170);
-        totalIncomeText.setX(205 - totalIncomeText.getLayoutBounds().getWidth()/2);
+        totalIncomeText = ApplicationObjects.newText("Income: " + ApplicationFront.loggedInUser
+                .incomeLast30Days(), 20, false, 0, 170);
+        totalIncomeText.setX(203 - totalIncomeText.getLayoutBounds().getWidth()/2);
 
-        totalExpensesText = ApplicationObjects.newText("Expenses: " + loggedInUser
-                .expensesLast30Days() + " kr", 20, false, 0, 170);
-        totalExpensesText.setX(630 - totalExpensesText.getLayoutBounds().getWidth()/2);
+        totalExpensesText = ApplicationObjects.newText("Expenses: " + ApplicationFront.loggedInUser
+                .expensesLast30Days(), 20, false, 0, 170);
+        totalExpensesText.setX(625 - totalExpensesText.getLayoutBounds().getWidth()/2);
 
         int expenditureDataWidth = 450;
         int expenditureDataHeight = 342;
@@ -55,7 +54,7 @@ public class GeneralOverviewScene {
         expenditurePieChart.setTitle(monthlyExpensesPieChartTitle);
         expenditurePieChart.setLegendVisible(true);
         expenditurePieChart.setLayoutX(400);
-        expenditurePieChart.setLayoutY(567/2 - 120 + 20);
+        expenditurePieChart.setLayoutY(283.5 - 120 + 20);
         expenditurePieChart.setStyle("-fx-pref-width: " + expenditureDataWidth +";  \n" +
                                      "-fx-pref-height: " + expenditureDataHeight +"; \n" +
                                      "-fx-min-width: " + expenditureDataWidth + ";   \n" +
@@ -165,57 +164,61 @@ public class GeneralOverviewScene {
     }
     private static void setPiesDataLast30Days() {
         List<PieChart.Data> pieChartExpenditureData = Arrays.stream(ApplicationObjects.getBudgetExpenditureCategories())
-                .map(category -> new PieChart.Data(category, loggedInUser
+                .map(category -> new PieChart.Data(category, ApplicationFront.loggedInUser
                         .getTotalExpenseOfCategoryLast30Days(category))).collect(Collectors.toList());
         expenditurePieData = FXCollections.observableArrayList(pieChartExpenditureData);
 
         List<PieChart.Data> pieChartIncomeData = Arrays.stream(ApplicationObjects.getBudgetIncomeCategories())
-                .map(category -> new PieChart.Data(category, loggedInUser
+                .map(category -> new PieChart.Data(category, ApplicationFront.loggedInUser
                 .getTotalIncomeOfCategoryLast30Days(category))).collect(Collectors.toList());
         incomePieData = FXCollections.observableArrayList(pieChartIncomeData);
     }
 
     private static void setBigSumText() {
-        bigSumText = ApplicationObjects.newText(loggedInUser
-                .amountAllAccounts() + " kr", 35, false, 346, 100);
+        bigSumText = ApplicationObjects.newText(ApplicationFront.loggedInUser
+                .amountAllAccounts(), 35, false, 346, 100);
         bigSumText.setX((float) 900/2 - bigSumText.getLayoutBounds().getWidth()/2);
     }
 
     private static void setTotalIncomeText(Boolean monthOrYear) {
         if (monthOrYear) {
-            totalIncomeText.setText("Income: " + loggedInUser
-                    .incomeLast30Days() + " kr");
+            totalIncomeText.setText("Income: " + ApplicationFront.loggedInUser
+                    .incomeLast30Days());
+            if (ApplicationFront.loggedInUser.incomeLast30Days().replaceAll(" ", "").equals("0"))
+                totalIncomeText.setVisible(false);
         }
         else {
-            totalIncomeText.setText("Income: " + loggedInUser
-                    .incomeLastYear() + " kr");
+            totalIncomeText.setText("Income: " + ApplicationFront.loggedInUser
+                    .incomeLastYear()       );
+            if (ApplicationFront.loggedInUser.incomeLastYear().replaceAll(" ", "").equals("0"))
+                totalIncomeText.setVisible(false);
         }
-        if (loggedInUser.incomeLastYear().replaceAll(" ","").equals("0"))
-            totalIncomeText.setVisible(false);
-        totalIncomeText.setX(205 - totalIncomeText.getLayoutBounds().getWidth()/2);
+        totalIncomeText.setX(203 - totalIncomeText.getLayoutBounds().getWidth()/2);
     }
 
     public static void setTotalExpensesText(Boolean monthOrYear) {
         if (monthOrYear) {
-            totalExpensesText.setText("Expenses: " + loggedInUser
-                    .expensesLast30Days() + " kr");
+            totalExpensesText.setText("Expenses: " + ApplicationFront.loggedInUser
+                    .expensesLast30Days());
+            if (ApplicationFront.loggedInUser.expensesLast30Days().replaceAll(" ", "").equals("0"))
+                totalExpensesText.setVisible(false);
         } else {
-            totalExpensesText.setText("Expenses: " + loggedInUser
-                    .expensesLastYear() + " kr");
+            totalExpensesText.setText("Expenses: " + ApplicationFront.loggedInUser
+                    .expensesLastYear());
+            if (ApplicationFront.loggedInUser.expensesLastYear().replaceAll(" ","").equals("0"))
+                totalExpensesText.setVisible(false);
         }
-        if (loggedInUser.incomeLastYear().replaceAll(" ","").equals("0"))
-            totalExpensesText.setVisible(false);
-        totalExpensesText.setX(630 - totalExpensesText.getLayoutBounds().getWidth()/2);
+        totalExpensesText.setX(625 - totalExpensesText.getLayoutBounds().getWidth()/2);
     }
 
     private static void setPiesDataLastYear() {
         List<PieChart.Data> pieChartExpenditureData = Arrays.stream(ApplicationObjects.getBudgetExpenditureCategories())
-                .map(category -> new PieChart.Data(category, loggedInUser
+                .map(category -> new PieChart.Data(category, ApplicationFront.loggedInUser
                         .getTotalExpenseOfCategoryLastYear(category))).collect(Collectors.toList());
         expenditurePieData = FXCollections.observableArrayList(pieChartExpenditureData);
 
         List<PieChart.Data> pieChartIncomeData = Arrays.stream(ApplicationObjects.getBudgetIncomeCategories())
-                .map(category -> new PieChart.Data(category, loggedInUser
+                .map(category -> new PieChart.Data(category, ApplicationFront.loggedInUser
                         .getTotalIncomeOfCategoryLastYear(category))).collect(Collectors.toList());
         incomePieData = FXCollections.observableArrayList(pieChartIncomeData);
     }
