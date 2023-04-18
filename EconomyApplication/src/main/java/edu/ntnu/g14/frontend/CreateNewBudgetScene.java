@@ -45,6 +45,7 @@ public class CreateNewBudgetScene {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Text title = ApplicationObjects.newText("Create New Budget", 30, false, 250, 50);
 
         // Create components
         Group selectTypeComponents = createSelectTypeComponents();
@@ -68,7 +69,7 @@ public class CreateNewBudgetScene {
         Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
-        Group root = new Group(selectTypeComponents, revenueComponents, expenditureComponents, dropDownButton, homeButton, manageUserButton);
+        Group root = new Group(title, selectTypeComponents, revenueComponents, expenditureComponents, dropDownButton, homeButton, manageUserButton);
         dropDownButton.setOnAction(e -> {
             root.getChildren().add(dropDown);
         });
