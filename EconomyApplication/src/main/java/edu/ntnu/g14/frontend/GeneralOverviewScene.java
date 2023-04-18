@@ -29,20 +29,20 @@ public class GeneralOverviewScene {
     private static Text totalExpensesText;
     static public Scene scene() throws IOException {
         String[] columnTitlesTransactionsTable = {"Date", "Transaction", "Amount", "Account"};
-        String monthlyExpensesPieChartTitle    = "Monthly Expenses";
+        String monthlyExpensesPieChartTitle    = "Expenses Last 30 Days";
         String yearlyExpensesPieChartTitle     = "Expenses Last Year";
-        String monthlyIncomePieChartTitle      = "Monthly Income";
+        String monthlyIncomePieChartTitle      = "Income Last 30 Days";
         String yearlyIncomePieChartTitle       = "Income Last Year";
         totalOfAllAccountsCombinedText = ApplicationObjects.newText("Total of all Accounts Combined (excl. Pension)", 16, false, 900/2 - 319/2, 50);
         setBigSumText();
 
         totalIncomeText = ApplicationObjects.newText("Income: " + ApplicationFront.loggedInUser
                 .incomeLast30Days(), 20, false, 0, 170);
-        totalIncomeText.setX(205 - totalIncomeText.getLayoutBounds().getWidth()/2);
+        totalIncomeText.setX(203 - totalIncomeText.getLayoutBounds().getWidth()/2);
 
         totalExpensesText = ApplicationObjects.newText("Expenses: " + ApplicationFront.loggedInUser
                 .expensesLast30Days(), 20, false, 0, 170);
-        totalExpensesText.setX(630 - totalExpensesText.getLayoutBounds().getWidth()/2);
+        totalExpensesText.setX(625 - totalExpensesText.getLayoutBounds().getWidth()/2);
 
         int expenditureDataWidth = 450;
         int expenditureDataHeight = 342;
@@ -54,7 +54,7 @@ public class GeneralOverviewScene {
         expenditurePieChart.setTitle(monthlyExpensesPieChartTitle);
         expenditurePieChart.setLegendVisible(true);
         expenditurePieChart.setLayoutX(400);
-        expenditurePieChart.setLayoutY(567/2 - 120 + 20);
+        expenditurePieChart.setLayoutY(283.5 - 120 + 20);
         expenditurePieChart.setStyle("-fx-pref-width: " + expenditureDataWidth +";  \n" +
                                      "-fx-pref-height: " + expenditureDataHeight +"; \n" +
                                      "-fx-min-width: " + expenditureDataWidth + ";   \n" +
@@ -193,7 +193,7 @@ public class GeneralOverviewScene {
             if (ApplicationFront.loggedInUser.incomeLastYear().replaceAll(" ", "").equals("0"))
                 totalIncomeText.setVisible(false);
         }
-        totalIncomeText.setX(205 - totalIncomeText.getLayoutBounds().getWidth()/2);
+        totalIncomeText.setX(203 - totalIncomeText.getLayoutBounds().getWidth()/2);
     }
 
     public static void setTotalExpensesText(Boolean monthOrYear) {
@@ -201,14 +201,14 @@ public class GeneralOverviewScene {
             totalExpensesText.setText("Expenses: " + ApplicationFront.loggedInUser
                     .expensesLast30Days());
             if (ApplicationFront.loggedInUser.expensesLast30Days().replaceAll(" ", "").equals("0"))
-                totalIncomeText.setVisible(false);
+                totalExpensesText.setVisible(false);
         } else {
             totalExpensesText.setText("Expenses: " + ApplicationFront.loggedInUser
                     .expensesLastYear());
             if (ApplicationFront.loggedInUser.expensesLastYear().replaceAll(" ","").equals("0"))
                 totalExpensesText.setVisible(false);
         }
-        totalExpensesText.setX(630 - totalExpensesText.getLayoutBounds().getWidth()/2);
+        totalExpensesText.setX(625 - totalExpensesText.getLayoutBounds().getWidth()/2);
     }
 
     private static void setPiesDataLastYear() {
