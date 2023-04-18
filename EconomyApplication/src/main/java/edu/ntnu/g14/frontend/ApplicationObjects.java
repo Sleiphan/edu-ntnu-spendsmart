@@ -429,7 +429,7 @@ public class ApplicationObjects {
 
     public static String numberRegex(String number) {
         
-        return number.replaceAll("(\\d)(?=(\\d{3})+$)", "$1 ").trim().concat(" kr");
+        return number.replaceAll("(?<=\\d)(?=(\\d{3})+(?!\\d))", " ").trim().concat(" kr");
     }
 
     public static String[] getBudgetIncomeCategories() {
