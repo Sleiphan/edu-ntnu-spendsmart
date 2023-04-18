@@ -24,12 +24,12 @@ public class PaymentScene {
         int n = 85;
         int m = n - 5;
 
-        TextField fromAccount = ApplicationObjects.newTextField("12345678910", x, y, 200, 20, 15);
+        TextField fromAccount = ApplicationObjects.newTextField("12345678910", x, y, 150, 20, 15);
         TextField amount = ApplicationObjects.newTextField("50kr", x, y + n, 100, 20, 15);
         TextField description = ApplicationObjects.newTextField("Description", x, y + 2 * n, 200, 20, 15);
         TextField dueDate = ApplicationObjects.newTextField("dd.mm.yy", x, y + 3 * n, 100, 20, 15);
-        TextField toAccount = ApplicationObjects.newTextField("10987654321", x, y + 4 * n, 100, 20, 15);
-        TextField cid = ApplicationObjects.newTextField("0123456789", x, y + 5 * n, 100, 20, 15);
+        TextField toAccount = ApplicationObjects.newTextField("10987654321", x, y + 4 * n, 150, 20, 15);
+        TextField cid = ApplicationObjects.newTextField("0123456789", x, y + 5 * n, 150, 20, 15);
 
         String[] categoryChoices = {"Food and Drink", "Clothes and Shoes", "Personal Care", "Leisure", "Travel", "Alcohol and Tobacco", "Other", "Payment", "Business"};
         ComboBox<String> category = ApplicationObjects.newComboBox(categoryChoices, 200, 20, 15,x + 130, y + 3 * n);
