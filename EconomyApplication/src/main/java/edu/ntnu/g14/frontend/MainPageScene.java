@@ -105,14 +105,15 @@ public class MainPageScene {
     }
 
     static public ObservableList<ObservableList<Object>> initializeLatestActivitiesData() throws IOException {
+
         int length = ApplicationFront.loggedInUser.getTransactions().length;
 
         Transaction[] transactions = FileManagement.readLatestTransactions(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), length);
         ObservableList<ObservableList<Object>> latestActivitiesData = FXCollections.observableArrayList();
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < Math.min(10, length); i++){
             latestActivitiesData.add(FXCollections.observableArrayList(transactions[i].getToAccountNumber(), ApplicationObjects.numberRegex(transactions[i].getAmount().toString())));
         }
-        
+
         return  latestActivitiesData;
     }
 
