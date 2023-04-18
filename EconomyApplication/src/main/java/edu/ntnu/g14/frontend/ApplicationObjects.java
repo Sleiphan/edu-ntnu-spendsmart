@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -284,7 +286,7 @@ public class ApplicationObjects {
     }
 
     public static TableView<ObservableList<Object>> newTableView(String[] columnTitles, double x, double y,
-        double width, double height) {
+                                                                 double width, double height) {
         TableView<ObservableList<Object>> tableView = new TableView<>();
         tableView.setLayoutX(x);
         tableView.setLayoutY(y);
@@ -301,9 +303,63 @@ public class ApplicationObjects {
          tableView.getColumns().add(column);
          }
 
+
         return tableView;
     }
-    
+
+    public static TableView<ObservableList<Object>> newTableView1(String[] columnTitles, double x, double y,
+                                                                 double width, double height, List<String> accountNumbers) {
+        TableView<ObservableList<Object>> tableView = new TableView<>();
+        tableView.setLayoutX(x);
+        tableView.setLayoutY(y);
+        tableView.setPrefWidth(width);
+        tableView.setPrefHeight(height);
+
+        int numberOfColumns = columnTitles.length;
+
+        // create columns
+        for (String title : columnTitles) {
+            TableColumn<ObservableList<Object>, Object> column = new TableColumn<>(title);
+
+            // set cell factory for second or third column (index 1)
+            if (tableView.getColumns().size() == 1 && numberOfColumns < 3 || tableView.getColumns().size() == 2) {
+                column.setCellFactory(param -> new TableCell<>() {
+                    @Override
+                    protected void updateItem(Object item, boolean empty) {
+                        super.updateItem(item, empty);
+
+                        if (item == null || empty) {
+                            setText("");
+                            setStyle("");
+                            return;
+                        }
+                        setStyle("-fx-font-weight: 700");
+                        setStyle("-fx-font-family: 'Arial'");
+                        ObservableList<Object> rowData = getTableView().getItems().get(getIndex());
+                        Object prevCellData = rowData.get(0); // get data from previous cell
+                        if (accountNumbers.contains(prevCellData)) {
+                            setTextFill(Paint.valueOf("#3477eb")); // set text color to blue
+                        } else {
+                            setTextFill(Paint.valueOf("#eb344c")); // set text color to red
+                        }
+                        setText(item.toString());
+                    }
+                });
+            }
+
+            column.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(
+                    param.getValue().get(tableView.getColumns().indexOf(column))));
+            tableView.getColumns().add(column);
+        }
+
+        return tableView;
+    }
+
+
+
+
+
+
     public static ListView<String> newListView(String[] elements, double x, double y, double width, double height) {
         ListView<String> listView = new ListView<>();
         listView.setLayoutX(x);
