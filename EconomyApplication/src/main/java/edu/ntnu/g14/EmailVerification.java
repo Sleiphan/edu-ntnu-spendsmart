@@ -8,9 +8,9 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 import java.util.Random;
 
-public class EmailVertification {
+public class EmailVerification {
 
-    public static String sendVertificationKey(String toMail){
+    public static String sendVerificationKey(String toMail){
         int leftLimit = 97;
         int rightLimit = 122;
         int length = 16;

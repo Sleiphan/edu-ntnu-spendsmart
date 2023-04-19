@@ -35,7 +35,7 @@ public class AccountOverviewScene {
             Optional<Account.AccountBuilder> result = accountDialog.showAndWait();
             if (result.isPresent()) {
 
-                createAccountDialog(accountNames, result.get());
+                addAndWriteAccount(accountNames, result.get());
             }
             else {
                 return MainPageScene.scene();
@@ -83,7 +83,7 @@ public class AccountOverviewScene {
         addAccount.setOnAction(actionEvent -> {
             Dialog<Account.AccountBuilder> accountBuilderDialog = new AccountDialog(new Account.AccountBuilder());
             Optional<Account.AccountBuilder> result = accountBuilderDialog.showAndWait();
-            result.ifPresent(accountBuilder -> createAccountDialog(accountNames, accountBuilder));
+            result.ifPresent(accountBuilder -> addAndWriteAccount(accountNames, accountBuilder));
         });
         editAccount.setOnAction(actionEvent -> {
             Dialog<Account> accountDialog = new EditAccountDialog(currentAccount);
@@ -102,9 +102,9 @@ public class AccountOverviewScene {
             }
         });
 
-        addExpense.setOnAction(actionEvent -> showDialog(false));
+        addExpense.setOnAction(actionEvent -> showTransactionDialog(false));
 
-        addIncome.setOnAction(actionEvent -> showDialog(true));
+        addIncome.setOnAction(actionEvent -> showTransactionDialog(true));
 
 
 
@@ -141,7 +141,7 @@ public class AccountOverviewScene {
         return scene;
     }
 
-    private static void createAccountDialog(ObservableList<String> accountNames, Account.AccountBuilder result) {
+    private static void addAndWriteAccount(ObservableList<String> accountNames, Account.AccountBuilder result) {
         Account account = result.build();
         FileManagement.writeAccount(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), account);
         accountNames.add(account.getAccountName());
@@ -203,7 +203,7 @@ public class AccountOverviewScene {
                     transaction.getAmount()));
         }
     }
-    private static void showDialog(boolean incomeOrExpense) {
+    private static void showTransactionDialog(boolean incomeOrExpense) {
         Dialog<Transaction.TransactionBuilder> transactionBuilderDialog =
                 new TransactionDialog(new Transaction.TransactionBuilder(), incomeOrExpense);
         Optional<Transaction.TransactionBuilder> result = transactionBuilderDialog.showAndWait();

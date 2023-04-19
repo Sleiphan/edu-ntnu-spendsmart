@@ -30,7 +30,7 @@ public class RegisterFirstScene {
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-                String key = EmailVertification.sendVertificationKey(email.getText().replace(" ", ""));
+                String key = EmailVerification.sendVerificationKey(email.getText().replaceAll(" ", ""));
                 try {
                     stage.setScene(RegisterSecondScene.scene(key, email.getText(), firstName.getText() + lastName.getText() + "#1"));
                 } catch (IOException e1) {

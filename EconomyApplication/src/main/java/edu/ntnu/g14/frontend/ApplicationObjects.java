@@ -333,14 +333,18 @@ public class ApplicationObjects {
                             setStyle("");
                             return;
                         }
-                        setStyle("-fx-font-weight: 700");
-                        setStyle("-fx-font-family: 'Arial'");
                         ObservableList<Object> rowData = getTableView().getItems().get(getIndex());
                         Object prevCellData = rowData.get(0); // get data from previous cell
                         if (accountNumbers.contains(prevCellData)) {
-                            setTextFill(Paint.valueOf("#3477eb")); // set text color to blue
+                            setStyle("-fx-font-family: \"Helvetica Neue\";\n" +
+                                    "    -fx-font-size: 16px;\n" +
+                                    "    -fx-font-weight: bold;\n" +
+                                    "    -fx-text-fill: #3477eb;");
                         } else {
-                            setTextFill(Paint.valueOf("#eb344c")); // set text color to red
+                            setStyle("-fx-font-family: \"Helvetica Neue\";\n" +
+                                    "    -fx-font-size: 16px;\n" +
+                                    "    -fx-font-weight: bold;\n" +
+                                    "    -fx-text-fill: #eb344c;");
                         }
                         setText(item.toString());
                     }
@@ -425,7 +429,7 @@ public class ApplicationObjects {
 
     public static String numberRegex(String number) {
         
-        return number.replaceAll("(\\d)(?=(\\d{3})+$)", "$1 ").trim().concat(" kr");
+        return number.replaceAll("(?<=\\d)(?=(\\d{3})+(?!\\d))", " ").trim().concat(" kr");
     }
 
     public static String[] getBudgetIncomeCategories() {

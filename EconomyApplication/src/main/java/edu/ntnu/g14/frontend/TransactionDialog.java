@@ -97,8 +97,16 @@ public class TransactionDialog extends Dialog<Transaction.TransactionBuilder> {
         });
     }
     private boolean validateDialog() {
+        BigDecimal amountBigDecimal;
+
+        try {
+            amountBigDecimal = new BigDecimal(amountField.getText());
+        } catch (NumberFormatException | NullPointerException e) {
+            return false;
+        }
         return accountNumberField.getText() != null
                 && amountField.getText() != null
+                && !(amountBigDecimal.floatValue() < 0)
                 && descriptionField.getText() != null
                 && accountNumberField.getText() != null
                 && categoryField.getValue() != null

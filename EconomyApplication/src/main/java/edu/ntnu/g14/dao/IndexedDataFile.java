@@ -73,7 +73,7 @@ public class IndexedDataFile {
         }
 
         fileStream.seek(dataPos); // Seek to the start of the data
-        long dataEnd = skipLine(); // Fine the end of the data
+        long dataEnd = skipLine(); // Find the end of the data
         if (dataEnd != fileStream.length())
             dataEnd--; // Make sure we do not remove the appended DATA_SEPARATOR
 
@@ -193,7 +193,7 @@ public class IndexedDataFile {
         if (dataEnd == -1)
             return false;
         if (dataEnd == -2) {
-            // We reached a DATA_SEPARATOR delimiter while searching for the next INDEX_SEPARATOR
+            // We reached a DATA_SEPARATOR while searching for the next INDEX_SEPARATOR
             dataEnd = fileStream.getFilePointer();
 
             // Is this the last index of this identifier entry?
@@ -208,7 +208,6 @@ public class IndexedDataFile {
                         break;
                 }
                 dataPos = fileStream.getFilePointer();
-                dataEnd++;
             }
         }
 
@@ -468,14 +467,7 @@ public class IndexedDataFile {
             skipLine();
         }
 
-        // As we are adding the identifiers in a backwards fashion, we need to flip the array before returning it.
-        String[] result = new String[identifiers.size()];
-        int i = 0;
-        int i2 = identifiers.size() - 1;
-        while (i < result.length)
-            result[i++] = identifiers.get(i2--);
-
-        return result;
+        return identifiers.toArray(String[]::new);
     }
 
     private long[][] getAllIndices() throws IOException {
@@ -519,6 +511,9 @@ public class IndexedDataFile {
     }
 
     private void closeStreams() throws IOException {
+        if (fileStream == null)
+            return;
+
         fileStream.close();
         tempStream.close();
         fileStream = null;
@@ -560,6 +555,14 @@ public class IndexedDataFile {
         openStreams();
         String[] ids = readAllIdentifiers();
         closeStreams();
-        return ids;
+
+        // As we are adding the identifiers in a backwards fashion, we need to flip the array before returning it.
+        String[] result = new String[ids.length];
+        int i = 0;
+        int i2 = ids.length - 1;
+        while (i < ids.length)
+            result[i++] = ids[i2--];
+
+        return result;
     }
 }

@@ -66,7 +66,6 @@ public class MainPageScene {
         accountsListView.setFixedCellSize(40);
         accountsListView.setStyle("-fx-font-family: \"Helvetica Neue\";\n" +
                 "    -fx-font-size: 20px;\n" +
-                "    -fx-font-weight: 800;\n" +
                 "    -fx-alignment: center");
         accountsListView.setOnMouseClicked(mouseEvent -> {
             try {
@@ -106,16 +105,15 @@ public class MainPageScene {
     }
 
     static public ObservableList<ObservableList<Object>> initializeLatestActivitiesData() throws IOException {
+
         int length = ApplicationFront.loggedInUser.getTransactions().length;
-        if (length > 10){
-            length = 10;
-        }
+
         Transaction[] transactions = FileManagement.readLatestTransactions(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), length);
         ObservableList<ObservableList<Object>> latestActivitiesData = FXCollections.observableArrayList();
-        for(int i = 0; i < length; i++){
+        for(int i = 0; i < Math.min(10, length); i++){
             latestActivitiesData.add(FXCollections.observableArrayList(transactions[i].getToAccountNumber(), ApplicationObjects.numberRegex(transactions[i].getAmount().toString())));
         }
-        
+
         return  latestActivitiesData;
     }
 

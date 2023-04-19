@@ -18,7 +18,7 @@ public class EditAccountDialog extends Dialog<Account> {
 
     public EditAccountDialog(Account account) {
         super();
-        this.setTitle("Edit Account");
+        this.setTitle("Edit " + account.getAccountName());
         this.account = account;
         buildUI();
         setResultConverter();
@@ -51,15 +51,18 @@ public class EditAccountDialog extends Dialog<Account> {
 
 
     private void editAccount() {
-        account.setAccountType(AccountCategory.valueOf(editAccountTypeBox.getValue()
+        if (editAccountTypeBox.getValue() != null)
+            account.setAccountType(AccountCategory.valueOf(editAccountTypeBox.getValue()
                 .replaceAll(" ", "_").toUpperCase()));
-        account.setAccountName(editAccountNameField.getText());
+
+        if (!editAccountNameField.getText().isBlank())
+            account.setAccountName(editAccountNameField.getText());
     }
 
     private void buildUI() {
         Pane pane = createGridPane();
         getDialogPane().setContent(pane);
-        deleteButtonType = new ButtonType("Delete");
+        deleteButtonType = new ButtonType("Delete Account");
         getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL, deleteButtonType);
 
         Button button = (Button) getDialogPane().lookupButton(ButtonType.OK);
@@ -72,9 +75,12 @@ public class EditAccountDialog extends Dialog<Account> {
     }
 
     private boolean validateDialog() {
-        return editAccountNameField.getText() != null
-                && editAccountTypeBox.getValue() != null
-                && ApplicationFront.loggedInUser.checkIfAccountNameIsOccupied(editAccountNameField.getText());
+        return (!editAccountNameField.getText().isBlank()
+                && !ApplicationFront.loggedInUser.checkIfAccountNameIsOccupied(editAccountNameField.getText()))
+                || editAccountTypeBox.getValue() != null;
+
+
+
     }
 
     private Pane createGridPane() {
@@ -87,7 +93,7 @@ public class EditAccountDialog extends Dialog<Account> {
         this.editAccountTypeBox.getItems().addAll(ApplicationObjects.getAccountCategories());
         this.editAccountTypeBox.setPromptText("New account type");
         this.editAccountTypeBox.setMaxWidth(200);
-        this.editAccountNameField.setPromptText("New account name:");
+        this.editAccountNameField.setPromptText("New account name");
         GridPane pane = new GridPane();
         pane.setHgap(10);
         pane.setVgap(5);
