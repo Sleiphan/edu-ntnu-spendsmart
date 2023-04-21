@@ -36,9 +36,9 @@ import javafx.util.StringConverter;
 
 public class ApplicationObjects {
 
-    public static String borderColor = "#071E22";
-    public static String backgroundColor = "#dba87d";
-    public static Color sceneColor = Color.valueOf("#F4C095");
+    public static String borderColor = "#000000";
+    public static String backgroundColor = "#b6bbbf";
+    public static Color sceneColor = Color.valueOf("#e4eff7");
 
     static Stage stage = ApplicationFront.getStage();
 
