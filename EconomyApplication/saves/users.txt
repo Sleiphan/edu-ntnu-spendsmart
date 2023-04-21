@@ -1,1 +1,4 @@
-adad#1,adad,olavsie@hotmail.com,ad,ad,ad
+##user-id,username,mail,password,first-name,last-name
+olav#1,Nikilini Bikini,a@b.no,1,olav,NikiliniBikini
+haakon#1,Haakonmannen,olav@mail.no,Passord123,olav,sie
+yasin#1,Yasinmannen,olav@mail.no,Passord123,olav,sie
