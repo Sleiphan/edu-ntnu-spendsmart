@@ -90,9 +90,12 @@ public class AccountDialog extends Dialog<Account.AccountBuilder> {
         this.accountNumberField  = new TextField();
         this.amountField         = new TextField();
         this.accountNameField    = new TextField();
-
+        this.accountTypeField.setPromptText("");
         this.accountTypeField.getItems().addAll(ApplicationObjects.getAccountCategories());
-        this.accountTypeField.setPromptText("Account Type");
+        this.accountTypeField.setPromptText("Choose an Account Type");
+        this.accountNameField.setPromptText("Enter Account Name");
+        this.amountField.setPromptText("Enter Amount");
+        this.accountNumberField.setPromptText("11-digit Account Number");
 
         GridPane grid = new GridPane();
 

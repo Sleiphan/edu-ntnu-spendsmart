@@ -114,10 +114,13 @@ public class TransactionDialog extends Dialog<Transaction.TransactionBuilder> {
     }
     private void defineLabelsAndFields() {
         this.amountField = new TextField();
+        this.amountField.setPromptText("Enter amount");
         this.descriptionLabel = new Label("Enter the description of the transaction:");
         this.descriptionField = new TextField();
-        this.dateOfTransactionLabel = new Label("Choose the date of the transaction:");
+        this.descriptionField.setPromptText("Enter description");
+        this.dateOfTransactionLabel = new Label("Select the date of the transaction:");
         this.dateOfTransactionField = new DatePicker();
+        this.dateOfTransactionField.setPromptText("Select date");
 
         this.categoryLabel = new Label("Select the category of the transaction:");
         this.categoryField = new ComboBox<>();
@@ -125,10 +128,11 @@ public class TransactionDialog extends Dialog<Transaction.TransactionBuilder> {
         this.categoryField.setMaxWidth(200);
 
         this.chooseAccountComboBox = new ComboBox<>();
-        this.chooseAccountComboBox.setPromptText("Choose Account");
+        this.chooseAccountComboBox.setPromptText("Select Account");
         this.chooseAccountComboBox.setMaxWidth(200);
 
         this.accountNumberField = new TextField();
+        this.accountNumberField.setPromptText("11-digit Account Number");
         restrictDatePicker(dateOfTransactionField);
         setDatePickerConverter(dateOfTransactionField);
     }
