@@ -22,9 +22,6 @@ public class Invoice {
             throw new IllegalArgumentException("The recipients account number must contain 11 digits, " +
                     "seperated by 2 dots");
 
-        if (dueDate.isBefore(LocalDate.now()))
-            throw new IllegalArgumentException("This date has already passed");
-
         if (comment == null)
             throw new IllegalArgumentException("CID/Comment cannot be null");
 

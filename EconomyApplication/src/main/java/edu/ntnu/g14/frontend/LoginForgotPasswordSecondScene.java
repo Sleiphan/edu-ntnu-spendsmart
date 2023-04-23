@@ -31,13 +31,7 @@ public class LoginForgotPasswordSecondScene {
                 newLogin, ApplicationFront.loggedInUser.getEmail(), ApplicationFront.loggedInUser.getLastName(),
                 ApplicationFront.loggedInUser.getFirstName(), ApplicationFront.loggedInUser.getTransactions(), ApplicationFront.loggedInUser.getBudget());
 
-                try {
-                    FileManagement.editUser(newPasswordUser, ApplicationFront.loggedInUser.getLoginInfo().getUserId());
-                } catch (FileNotFoundException e1) {
-                    e1.printStackTrace();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+                FileManagement.newEditUser(newPasswordUser);
                 try {
                     stage.setScene(LoginChooseUserScene.scene());
                 } catch (IOException e1) {

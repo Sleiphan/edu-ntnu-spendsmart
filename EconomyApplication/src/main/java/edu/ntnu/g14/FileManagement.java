@@ -123,47 +123,8 @@ public class FileManagement {
     }
 
     public static void writeNewUser(User newUser) throws IOException{
-        String userInfo = "" + newUser.getLoginInfo().getUserId() + "," + newUser.getLoginInfo().getUserName() + "," +
-            newUser.getEmail() + "," + newUser.getLoginInfo().getPassword() + "," + newUser.getFirstName() + "," + newUser.getLastName() + ",";
-
-
-        try (RandomAccessFile file = new RandomAccessFile(PATH_USERS, "rw")) {
-            String line;
-            while ((line = file.readLine()) != null) {
-                if (line.startsWith(" ")) {
-                    file.seek(file.getFilePointer() - line.length() - 2);
-                    file.write(userInfo.getBytes());
-                    file.close();
-                    break;
-                }
-            }
-        }
-
-        String addonTextInvoice = newUser.getLoginInfo().getUserId() + ",";
-        try (RandomAccessFile file = new RandomAccessFile(PATH_INVOICES, "rw")) {
-            String line;
-            while ((line = file.readLine()) != null) {
-                if (line.startsWith(" ")) {
-                    file.seek(file.getFilePointer() - line.length() - 2);
-                    file.write(addonTextInvoice.getBytes());
-                    file.close();
-                    break;
-                }
-            }
-        }
-
-        String addonTextAccount = newUser.getLoginInfo().getUserId() + ",";
-        try (RandomAccessFile file = new RandomAccessFile(PATH_ACCOUNTS, "rw")) {
-            String line;
-            while ((line = file.readLine()) != null) {
-                if (line.startsWith(" ")) {
-                    file.seek(file.getFilePointer() - line.length() - 2);
-                    file.write(addonTextAccount.getBytes());
-                    file.close();
-                    break;
-                }
-            }
-        }
+        newEditUser(newUser);
+        editAccount(newUser);
 
 
         String addonTextTransactions = newUser.getLoginInfo().getUserId() + ",";
