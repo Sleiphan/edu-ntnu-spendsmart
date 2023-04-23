@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import edu.ntnu.g14.*;
 import edu.ntnu.g14.dao.BudgetDAO;
+import javafx.animation.PauseTransition;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -15,6 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class BudgetSuggestionsScene {
     static Stage stage = ApplicationFront.getStage();
@@ -38,6 +40,8 @@ public class BudgetSuggestionsScene {
     static Button createBudgetBtn;
     static VBox revenueBox;
 
+    private static Tooltip tooltip;
+
     static public Scene scene() throws IOException {
 
 
@@ -47,7 +51,7 @@ public class BudgetSuggestionsScene {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Text title = ApplicationObjects.newText("Buddget Suggestion", 30, false, 250, 50);
+        Text title = ApplicationObjects.newText("Budget Suggestion", 30, false, 250, 50);
         // Create components
         selectTypeComponents = createSelectTypeComponents();
 
@@ -91,6 +95,7 @@ public class BudgetSuggestionsScene {
         // Create components for selecting type, age, gender, and household
 
         // Add a listener to the personal choice box
+        Text selectInfo = ApplicationObjects.newText("Please select a budget type", 15, false, 50, 85);
         String[] personals = {"Select Type", "Age & Gender", "Household"};
         ChoiceBox<String> personal = ApplicationObjects.newChoiceBox(personals, 150, 34, 15, 50, 100);
         personal.setValue("Select Type");
@@ -131,11 +136,13 @@ public class BudgetSuggestionsScene {
                 maleRadioButton.setVisible(true);
                 femaleRadioButton.setVisible(true);
                 HouseholdInput.setVisible(false);
+                selectInfo.setVisible(false);
             } else if (selectedValue.equals("Household")) {
                 AgeInput.setVisible(false);
                 maleRadioButton.setVisible(false);
                 femaleRadioButton.setVisible(false);
                 HouseholdInput.setVisible(true);
+                selectInfo.setVisible(false);
             } else {
                 AgeInput.setVisible(false);
                 maleRadioButton.setVisible(false);
@@ -147,31 +154,66 @@ public class BudgetSuggestionsScene {
 // When the 'Create' button is clicked
         Button continueBtnSelectType = ApplicationObjects.newButton("Continue", 500, 480, 157, 25, 16);
         continueBtnSelectType.setOnAction(e -> {
-            // Get the input values for Age, Gender, and Household
-            if (!personal.getSelectionModel().isSelected(0)) {
-                String inputAge = AgeInput.getText();
-                String inputGender = genderToggleGroup.getSelectedToggle() != null ? genderToggleGroup.getSelectedToggle().getUserData().toString() : "";
-                String inputHousehold = HouseholdInput.getValue();
+            String selectedValue = personal.getValue();
+            if (selectedValue.equals("Select Type")) {
+                if (tooltip == null) {
+                    tooltip = new Tooltip("Please select a type before pressing continue");
+                    continueBtnSelectType.setTooltip(tooltip);
+                }
+                tooltip.show(continueBtnSelectType.getScene().getWindow());
 
-                // Get the selected value from the personal ChoiceBox
-                String selectedValue = personal.getValue();
+                // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+                PauseTransition pause = new PauseTransition(Duration.seconds(5));
+                pause.setOnFinished(event -> tooltip.hide());
+                pause.play();
 
-                processSelectTypeInput(selectedValue, inputAge, inputGender, inputHousehold);
-
-                selectTypeComponents.setVisible(false);
-                revenueComponents.setVisible(true);
+                return;
             }
+            // Get the input values for Age, Gender, and Household
+
+            String inputAge = AgeInput.getText();
+            String inputGender = genderToggleGroup.getSelectedToggle() != null ? genderToggleGroup.getSelectedToggle().getUserData().toString() : "";
+            String inputHousehold = HouseholdInput.getValue();
+            if (selectedValue.equals("Age & Gender") && (inputAge.isEmpty() || inputGender.isEmpty())) {
+                if (tooltip == null) {
+                    if (inputAge.isEmpty() && !inputGender.isEmpty()) {
+                        tooltip = new Tooltip("Please enter in Age");
+                    } else if (!inputAge.isEmpty() && inputGender.isEmpty()) {
+                        tooltip = new Tooltip("Please select a gender, sorry if your gender is not an option");
+                    } else {
+                        tooltip = new Tooltip("Please enter age and select a gender, sorry if your gender is not an option");
+                    }
+                    continueBtnSelectType.setTooltip(tooltip);
+                }
+                tooltip.show(continueBtnSelectType.getScene().getWindow());
+
+                // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+                PauseTransition pause = new PauseTransition(Duration.seconds(5));
+                pause.setOnFinished(event -> tooltip.hide());
+                pause.play();
+
+                return;
+            }
+
+            else {
+                processSelectTypeInput(selectedValue, inputAge, inputGender, inputHousehold);
+            }
+
+            selectTypeComponents.setVisible(false);
+            revenueComponents.setVisible(true);
+
         });
 
 
 
 
-        Group selectTypeGroup = new Group(personal, AgeInput, maleRadioButton, femaleRadioButton, HouseholdInput, continueBtnSelectType);
+        Group selectTypeGroup = new Group(selectInfo,personal, AgeInput, maleRadioButton, femaleRadioButton, HouseholdInput, continueBtnSelectType);
         return selectTypeGroup;
     }
 
     private static Group createRevenueComponents() {
         // Create components for selecting and inputting revenues
+        Text infoRevenue = ApplicationObjects.newText("Select revenue type, add amount\n and add revenue item to budget", 15, false, 50,100);
         List<String> revenueChoiceList = new ArrayList<>();
         for (BudgetCategory category : BudgetCategory.values()) {
             if (category.getType().equals("r")) {
@@ -186,20 +228,52 @@ public class BudgetSuggestionsScene {
         TextField revenueInput = ApplicationObjects.newTextField("Enter Amount", 0, 0, 130, 30, 15);
         Button addRevenueItemBtn = ApplicationObjects.newButton("Add revenue to budget", 0, 0, 157, 25, 16);
         addRevenueItemBtn.setOnAction(e -> {
+            if (revenueInput.getText().isEmpty()) {
+                if (tooltip == null) {
+                    tooltip = new Tooltip("Please enter an amount, to create a revenue item");
+                    addRevenueItemBtn.setTooltip(tooltip);
+                }
+                tooltip.show(addRevenueItemBtn.getScene().getWindow());
+
+                // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+                PauseTransition pause = new PauseTransition(Duration.seconds(5));
+                pause.setOnFinished(event -> tooltip.hide());
+                pause.play();
+
+                return;
+            }
             BudgetCategory selectedItem = BudgetCategory.valueOf(revenue.getValue().toUpperCase().replaceAll(" ", "_"));
             String inputText = revenueInput.getText();
             addRevenueToBudget(selectedItem, inputText);
         });
-        savingsInput = ApplicationObjects.newTextField("Enter Savings Amount", 50, 100, 130, 30, 15);
+        Text savingsInfo = ApplicationObjects.newText("Please enter the amount you\nto save for the month", 15, false, 50,100);
+        savingsInfo.setVisible(false);
+        savingsInput = ApplicationObjects.newTextField("Enter Savings Amount", 50, 130, 130, 30, 15);
         savingsInput.setVisible(false);
 
         Button continueBtnRevenue = ApplicationObjects.newButton("Continue", 500, 480, 157, 25, 16);
         continueBtnRevenue.setOnAction(e -> {
+            if (userBudget == null || userBudget.getEntries().isEmpty()) {
+                if (tooltip == null) {
+                    tooltip = new Tooltip("Please add a revenue item");
+                    continueBtnRevenue.setTooltip(tooltip);
+                }
+                tooltip.show(continueBtnRevenue.getScene().getWindow());
+
+                // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+                PauseTransition pause = new PauseTransition(Duration.seconds(5));
+                pause.setOnFinished(event -> tooltip.hide());
+                pause.play();
+
+                return;
+            }
             if (!revenueInput.getText().isEmpty()) {
                 //hide and show components
                 savingsInput.setVisible(true);
                 createBudgetBtn.setVisible(true);
                 revenueBox.setVisible(false);
+                infoRevenue.setVisible(false);
+                savingsInfo.setVisible(true);
             }
         });
 
@@ -207,6 +281,33 @@ public class BudgetSuggestionsScene {
         createBudgetBtn =  ApplicationObjects.newButton("Create Budget", 500, 480, 157, 25, 16);
         createBudgetBtn.setVisible(false);
         createBudgetBtn.setOnAction(e -> {
+            if (savingsInput.getText().isEmpty()) {
+                if (tooltip == null) {
+                    tooltip = new Tooltip("Please enter the amount\n you want to save, you can also enter\n 0 if you don't want to save any money");
+                    addRevenueItemBtn.setTooltip(tooltip);
+                }
+                tooltip.show(addRevenueItemBtn.getScene().getWindow());
+
+                // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+                PauseTransition pause = new PauseTransition(Duration.seconds(5));
+                pause.setOnFinished(event -> tooltip.hide());
+                pause.play();
+
+                return;
+            } else if (totalRevenue.compareTo(new BigDecimal(savingsInput.getText())) < 0) {
+                if (tooltip == null) {
+                    tooltip = new Tooltip("Your savings can not be bigger than your revenue");
+                    addRevenueItemBtn.setTooltip(tooltip);
+                }
+                tooltip.show(addRevenueItemBtn.getScene().getWindow());
+
+                // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+                PauseTransition pause = new PauseTransition(Duration.seconds(5));
+                pause.setOnFinished(event -> tooltip.hide());
+                pause.play();
+
+                return;
+            }
             // Retrieve the input savings amount and convert it to BigDecimal
             BigDecimal savingsAmount = new BigDecimal(savingsInput.getText().isEmpty() ? "0" : savingsInput.getText());
 
@@ -223,8 +324,6 @@ public class BudgetSuggestionsScene {
 
             totalRevenue = sumOfRevenue(totalRevenue, savingsInput.getText());
             // Update the total revenue
-
-            BudgetingScene.refreshData();
             try {
                 budgetDAO.setBudget(loggedInUser.getLoginInfo().getUserId(), userBudget);
                 // Navigate to the BudgetingScene or another desired page after saving the budget
@@ -236,12 +335,11 @@ public class BudgetSuggestionsScene {
         });
         revenueBox = new VBox();
         revenueBox.setLayoutX(50);
-        revenueBox.setLayoutY(100);
+        revenueBox.setLayoutY(130);
         revenueBox.setSpacing(10);
         revenueBox.getChildren().addAll(revenue, revenueInput, addRevenueItemBtn);
 
-        Group revenueGroup = new Group(revenueBox, continueBtnRevenue,  savingsInput, createBudgetBtn);
-        return revenueGroup;
+        return new Group(infoRevenue, savingsInfo, revenueBox, continueBtnRevenue,  savingsInput, createBudgetBtn);
     }
 
 
@@ -266,8 +364,7 @@ public class BudgetSuggestionsScene {
 
     private static BigDecimal sumOfRevenue(BigDecimal totalRevenue, String savingsAmount) {
         BigDecimal savings = new BigDecimal(savingsAmount.isEmpty() ? "0" : savingsAmount);
-        BigDecimal remainingAmount = totalRevenue.subtract(savings);
-        return remainingAmount;
+        return totalRevenue.subtract(savings);
     }
 
 
