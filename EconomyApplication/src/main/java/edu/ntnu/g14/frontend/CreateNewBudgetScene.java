@@ -8,6 +8,7 @@ import java.util.List;
 
 import edu.ntnu.g14.*;
 import edu.ntnu.g14.dao.BudgetDAO;
+import javafx.animation.PauseTransition;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -20,6 +21,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class CreateNewBudgetScene {
     static Stage stage = ApplicationFront.getStage();
@@ -33,6 +35,9 @@ public class CreateNewBudgetScene {
     static Group expenditureComponents;
 
     static Button createBudgetBtn;
+
+    private static Tooltip tooltip;
+
 
 
 
@@ -91,9 +96,8 @@ public class CreateNewBudgetScene {
 
     private static Group createSelectTypeComponents() {
         // Create components for selecting type, age, gender, and household
-        // ... (Add your existing code for creating these components)
 
-        // Add a listener to the personal choice box
+        Text selectInfo = ApplicationObjects.newText("Please select a budget type", 15, false, 50, 85);
         String[] personals = {"Select Type", "Age & Gender", "Household"};
         ChoiceBox<String> personal = ApplicationObjects.newChoiceBox(personals, 150, 34, 15, 50, 100);
         personal.setValue("Select Type");
@@ -110,14 +114,13 @@ public class CreateNewBudgetScene {
         femaleRadioButton.setLayoutX(350);
         femaleRadioButton.setLayoutY(120);
 
-// Hide gender RadioButtons by default
+        // Hide gender RadioButtons by default
         maleRadioButton.setVisible(false);
         femaleRadioButton.setVisible(false);
 
         TextField AgeInput = ApplicationObjects.newTextField("Enter Age", 210, 100, 130, 30, 15);
-        // ...
 
-// Replace the TextField with a ChoiceBox for Household input
+
         List<String> householdChoiceList = new ArrayList<>();
         for (HouseholdCategory category : HouseholdCategory.values()) {
             householdChoiceList.add(category.toString().toLowerCase().replaceAll("_", " "));
@@ -136,11 +139,13 @@ public class CreateNewBudgetScene {
                 maleRadioButton.setVisible(true);
                 femaleRadioButton.setVisible(true);
                 HouseholdInput.setVisible(false);
+                selectInfo.setVisible(false);
             } else if (selectedValue.equals("Household")) {
                 AgeInput.setVisible(false);
                 maleRadioButton.setVisible(false);
                 femaleRadioButton.setVisible(false);
                 HouseholdInput.setVisible(true);
+                selectInfo.setVisible(false);
             } else {
                 AgeInput.setVisible(false);
                 maleRadioButton.setVisible(false);
@@ -149,19 +154,56 @@ public class CreateNewBudgetScene {
             }
         });
 
-// When the 'Create' button is clicked
+
         Button continueBtn = ApplicationObjects.newButton("Continue", 500, 480, 157, 25, 16);
         continueBtn.setOnAction(e -> {
+            // Check if a valid personal type is selected
+            String selectedValue = personal.getValue();
+            if (selectedValue.equals("Select Type")) {
+                if (tooltip == null) {
+                    tooltip = new Tooltip("Please select a type before pressing continue");
+                    continueBtn.setTooltip(tooltip);
+                }
+                tooltip.show(continueBtn.getScene().getWindow());
+
+                // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+                PauseTransition pause = new PauseTransition(Duration.seconds(5));
+                pause.setOnFinished(event -> tooltip.hide());
+                pause.play();
+
+                return;
+            }
             // Get the input values for Age, Gender, and Household
             String inputAge = AgeInput.getText();
             String inputGender = genderToggleGroup.getSelectedToggle() != null ? genderToggleGroup.getSelectedToggle().getUserData().toString() : "";
             String inputHousehold = HouseholdInput.getValue();
 
-            // Get the selected value from the personal ChoiceBox
-            String selectedValue = personal.getValue();
+            if (selectedValue.equals("Age & Gender") && (inputAge.isEmpty() || inputGender.isEmpty())) {
+                if (tooltip == null) {
+                    if (inputAge.isEmpty() && !inputGender.isEmpty()) {
+                        tooltip = new Tooltip("Please enter in Age");
+                    } else if (!inputAge.isEmpty() && inputGender.isEmpty()) {
+                        tooltip = new Tooltip("Please select a gender, sorry if your gender is not an option");
+                    } else {
+                        tooltip = new Tooltip("Please enter age and select a gender, sorry if your gender is not an option");
+                    }
+                    continueBtn.setTooltip(tooltip);
+                }
+                tooltip.show(continueBtn.getScene().getWindow());
 
+                // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+                PauseTransition pause = new PauseTransition(Duration.seconds(5));
+                pause.setOnFinished(event -> tooltip.hide());
+                pause.play();
+
+                return;
+            }
+
+            else {
+                processSelectTypeInput(selectedValue, inputAge, inputGender, inputHousehold);
+            }
             // Process the input and create the userBudget object
-            processSelectTypeInput(selectedValue, inputAge, inputGender, inputHousehold);
+
 
             // Show the revenue and expenditure components
             showRevenueComponents();
@@ -172,8 +214,12 @@ public class CreateNewBudgetScene {
             maleRadioButton.setVisible(false);
             femaleRadioButton.setVisible(false);
             continueBtn.setVisible(false);
+            selectInfo.setVisible(false);
             createBudgetBtn.setVisible(true);
+
         });
+
+
         createBudgetBtn =  ApplicationObjects.newButton("Create Budget", 500, 480, 157, 25, 16);
         createBudgetBtn.setOnAction(e -> {
             BudgetingScene.refreshData();
@@ -187,12 +233,12 @@ public class CreateNewBudgetScene {
         });
 
 
-        Group selectTypeGroup = new Group(personal, AgeInput, maleRadioButton, femaleRadioButton, HouseholdInput, continueBtn, createBudgetBtn);
-        return selectTypeGroup;
+        return new Group(selectInfo,personal, AgeInput, maleRadioButton, femaleRadioButton, HouseholdInput, continueBtn, createBudgetBtn);
     }
 
     private static Group createRevenueComponents() {
         // Create components for selecting and inputting revenues
+        Text infoRevenue = ApplicationObjects.newText("Select revenue type, add amount\n and add revenue item to budget", 15, false, 50,100);
         List<String> revenueChoiceList = new ArrayList<>();
         for (BudgetCategory category : BudgetCategory.values()) {
             if (category.getType().equals("r")) {
@@ -200,13 +246,27 @@ public class CreateNewBudgetScene {
             }
         }
         String[] revenueChoices = revenueChoiceList.toArray(new String[0]);
-        ChoiceBox<String> revenue = ApplicationObjects.newChoiceBox(revenueChoices, 157, 34, 15, 0, 0);
+        ChoiceBox<String> revenue = ApplicationObjects.newChoiceBox(revenueChoices, 200, 34, 15, 0, 0);
         revenue.setValue(BudgetCategory.SALARY.toString());
 
 
-        TextField revenueInput = ApplicationObjects.newTextField("Enter Amount", 0, 0, 130, 30, 15);
-        Button addRevenueItemBtn = ApplicationObjects.newButton("Add revenue to budget", 0, 0, 157, 25, 16);
+        TextField revenueInput = ApplicationObjects.newTextField("Enter Amount", 0, 0, 157, 30, 16);
+        Button addRevenueItemBtn = ApplicationObjects.newButton("Add revenue to budget", 0, 0, 200, 25, 16);
         addRevenueItemBtn.setOnAction(e -> {
+            if (revenueInput.getText().isEmpty()) {
+                if (tooltip == null) {
+                    tooltip = new Tooltip("Please enter an amount, to create a revenue item");
+                    createBudgetBtn.setTooltip(tooltip);
+                }
+                tooltip.show(createBudgetBtn.getScene().getWindow());
+
+                // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+                PauseTransition pause = new PauseTransition(Duration.seconds(5));
+                pause.setOnFinished(event -> tooltip.hide());
+                pause.play();
+
+                return;
+            }
             BudgetCategory selectedItem = BudgetCategory.valueOf(revenue.getValue().toUpperCase().replaceAll(" ","_"));
             String inputText = revenueInput.getText();
             addRevenueToBudget(selectedItem, inputText, budgetDAO);
@@ -214,17 +274,16 @@ public class CreateNewBudgetScene {
 
         VBox revenueBox = new VBox();
         revenueBox.setLayoutX(50);
-        revenueBox.setLayoutY(100);
+        revenueBox.setLayoutY(130);
         revenueBox.setSpacing(10);
         revenueBox.getChildren().addAll(revenue, revenueInput, addRevenueItemBtn);
 
-        Group revenueGroup = new Group(revenueBox);
-        return revenueGroup;
+        return new Group(revenueBox, infoRevenue);
     }
 
     private static Group createExpenditureComponents() {
         // Create components for selecting and inputting expenditures
-
+        Text infoExpenditure = ApplicationObjects.newText("Select expenditure type, add amount\n and add expenditure item to budget", 15, false, 50,300);
         List<String> expenditureChoiceList = new ArrayList<>();
         for (BudgetCategory category : BudgetCategory.values()) {
             if (category.getType().equals("e")) {
@@ -232,25 +291,39 @@ public class CreateNewBudgetScene {
             }
         }
         String[] expenditureChoices = expenditureChoiceList.toArray(new String[0]);
-        ChoiceBox<String> expenditure = ApplicationObjects.newChoiceBox(expenditureChoices, 157, 34, 15, 0, 0);
+        ChoiceBox<String> expenditure = ApplicationObjects.newChoiceBox(expenditureChoices, 200, 34, 15, 0, 0);
         expenditure.setValue(BudgetCategory.FOOD_AND_DRINK.toString().toLowerCase().replaceAll("_", " "));
 
-        TextField expenditureInput = ApplicationObjects.newTextField("Enter Amount", 0, 0, 130, 30, 15);
-        Button addExpenditureItemBtn = ApplicationObjects.newButton("Add expenditure to Budget", 0, 0, 157, 25, 16);;
+        TextField expenditureInput = ApplicationObjects.newTextField("Enter Amount", 0, 0, 157, 30, 16);
+        Button addExpenditureItemBtn = ApplicationObjects.newButton("Add expenditure to Budget", 0, 0, 200, 25, 16);;
         addExpenditureItemBtn.setOnAction(e -> {
+            if (expenditureInput.getText().isEmpty()) {
+                if (tooltip == null) {
+                    tooltip = new Tooltip("Please enter an amount, to create an expenditure item");
+                    createBudgetBtn.setTooltip(tooltip);
+                }
+                tooltip.show(createBudgetBtn.getScene().getWindow());
+
+                // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+                PauseTransition pause = new PauseTransition(Duration.seconds(5));
+                pause.setOnFinished(event -> tooltip.hide());
+                pause.play();
+
+                return;
+            }
             BudgetCategory selectedItem = BudgetCategory.valueOf(expenditure.getValue().toUpperCase().replaceAll(" ", "_"));
             String inputText = expenditureInput.getText();
             addExpenditureToBudget(selectedItem, inputText, budgetDAO);
         });
         VBox expenditureBox = new VBox();
         expenditureBox.setLayoutX(50);
-        expenditureBox.setLayoutY(300);
+        expenditureBox.setLayoutY(330);
         expenditureBox.setSpacing(10);
         expenditureBox.getChildren().addAll(expenditure, expenditureInput, addExpenditureItemBtn);
 
-        Group expenditureGroup = new Group(expenditureBox);
-        return expenditureGroup;
+        return new Group(expenditureBox, infoExpenditure);
     }
+
     private static void addRevenueToBudget(BudgetCategory selectedItem, String inputText, BudgetDAO budgetDAO) {
         BigDecimal amount = new BigDecimal(inputText);
 
@@ -306,7 +379,7 @@ public class CreateNewBudgetScene {
     private static void processSelectTypeInput(String selectedValue, String inputAge, String inputGender, String inputHousehold) {
         // Create a new budget object and associate it with the loggedInUser
         if (selectedValue.equals("Age & Gender")) {
-            Byte age = Byte.valueOf(inputAge);
+            byte age = Byte.parseByte(inputAge);
             GenderCategory Gender = GenderCategory.valueOf(inputGender.toUpperCase());
             userBudget = new Budget( age, Gender);
         } else if (selectedValue.equals("Household")) {
