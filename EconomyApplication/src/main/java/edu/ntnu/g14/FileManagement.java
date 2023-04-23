@@ -3,39 +3,75 @@ package edu.ntnu.g14;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import edu.ntnu.g14.dao.BudgetDAO;
-import edu.ntnu.g14.dao.DAOTools;
-import edu.ntnu.g14.dao.InvoiceDAO;
+import edu.ntnu.g14.dao.*;
 
 
 //TODO: create exceptions
 
 public class FileManagement {
-
     public static final String PATH_ACCOUNTS     = "saves/accounts.txt";
     public static final String PATH_BUDGETS      = "saves/budgets.txt";
     public static final String PATH_INVOICES     = "saves/invoices.txt";
+    private static final String PATH_TEMPFILE    = "saves/temp_file.txt";
     public static final String PATH_TRANSACTIONS = "saves/transactions.txt";
     public static final String PATH_USERS        = "saves/users.txt";
-    private static final String PATH_TEMPFILE    = "saves/temp_file.txt";
 
-    // public static void fileContentInsert(String pathToFile, long
+    private static final Charset DATA_CHARSET = StandardCharsets.UTF_8;
+    private static final TransactionDAO TRANSACTION_DAO;
+    private static final AccountDAO ACCOUNT_DAO;
+    private static final InvoiceDAO INVOICE_DAO;
+    private static final BudgetDAO BUDGET_DAO;
+
+    private static final String[] PATH_ALL = { PATH_ACCOUNTS, PATH_BUDGETS, PATH_INVOICES, PATH_TRANSACTIONS, PATH_USERS };
+
+    static {
+        try {
+            establishSaveFiles();
+
+            // Initialise data access objects
+            TRANSACTION_DAO = new TransactionDAO(PATH_TRANSACTIONS, DATA_CHARSET);
+            ACCOUNT_DAO     = new AccountDAO    (PATH_ACCOUNTS,     DATA_CHARSET);
+            INVOICE_DAO     = new InvoiceDAO    (PATH_INVOICES,     DATA_CHARSET);
+            BUDGET_DAO      = new BudgetDAO     (PATH_BUDGETS,      DATA_CHARSET);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void establishSaveFiles() throws IOException {
+        for (String s : PATH_ALL) {
+            Path file = Path.of(s);
+            int lastFS = s.lastIndexOf('/');
+            if (lastFS == -1)
+                lastFS = s.lastIndexOf('\\');
+            if (lastFS != -1) {
+                Files.createDirectories(Path.of(s.substring(0, lastFS)));
+            }
+
+            try {
+                Files.createFile(file);
+            } catch (FileAlreadyExistsException e) {
+                // Skip
+            }
+        }
+    }
 
     public static Login[] readUsers() throws IOException {
         
         List<String> lines = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new FileReader(PATH_USERS));
         int count = 0;
-        reader.readLine();
+        //reader.readLine();
         String line;
         while ((line = reader.readLine()) != null) {
             lines.add(line);
@@ -57,13 +93,7 @@ public class FileManagement {
     }
 
     public static Transaction[] readAllTransactions(String userID) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(PATH_TRANSACTIONS));
-        Stream<String> userTrans = reader.lines()
-                .filter(line -> line.startsWith(userID + ","));
-        Transaction[] transactions = userTrans.flatMap(s -> Stream.of(s.split(","))
-                .skip(1).map(Transaction::fromCSVString)).toArray(Transaction[]::new);
-        reader.close();
-        return transactions;
+        return TRANSACTION_DAO.getAllTransactionsForUser(userID);
     }
 
     public static Transaction[] findTransactionsToFromDate(LocalDate from, LocalDate to, String userId) throws IOException {
@@ -77,10 +107,10 @@ public class FileManagement {
         Stream<String> userInfoLine = reader.lines()
                 .filter(line -> line.startsWith(userId + ","));
 
-        Transaction[] transactions = readAllTransactions(userId);
-        Account[] accounts = readAccounts(userId);
-        Invoice[] invoices = new InvoiceDAO(PATH_INVOICES).getAllInvoices(userId);
-        Budget budget = new BudgetDAO(PATH_BUDGETS).getBudget(userId);
+        Transaction[] transactions = TRANSACTION_DAO.getAllTransactionsForUser(userId);
+        Account[] accounts = ACCOUNT_DAO.getAllAccountsForUser(userId);
+        Invoice[] invoices = INVOICE_DAO.getAllInvoices(userId);
+        Budget budget = BUDGET_DAO.getBudget(userId);
 
         String[] userInfo = userInfoLine.flatMap(s -> Stream.of(s.split(","))
                         .skip(1)
@@ -92,8 +122,6 @@ public class FileManagement {
         String password = userInfo[2];
         String firstName = userInfo[3];
         String lastName = userInfo[4];
-
-
 
         Login loginInfo = new Login(username,password, userId);
 
@@ -124,7 +152,7 @@ public class FileManagement {
 
     public static void writeNewUser(User newUser) throws IOException{
         newEditUser(newUser);
-        editAccount(newUser);
+        setAllAccounts(newUser);
 
 
         String addonTextTransactions = newUser.getLoginInfo().getUserId() + ",";
@@ -139,27 +167,13 @@ public class FileManagement {
                 }
             }
         }
-
     }
 
     public static Account[] readAccounts(String userId) throws IOException{
-        BufferedReader reader = new BufferedReader(new FileReader(PATH_ACCOUNTS));
-        Stream<String> userTrans = reader.lines()
-                .filter(line -> line.startsWith(userId + ","));
-        Account[] accounts = userTrans.flatMap(s -> Stream.of(s.split(","))
-                .skip(1).map(Account::fromCSVString)).toArray(Account[]::new);
-        reader.close();
-        return accounts;
+        return ACCOUNT_DAO.getAllAccountsForUser(userId);
     }
-    public static Account getAccountForUser(String userId, String accountNumber) throws IOException{
-        Account[] accounts = readAccounts(userId);
-        Account account = null;
-        for(int i = 0; i < accounts.length; i++){
-            if(accounts[i].getAccountNumber().equals(accountNumber)){
-                account = accounts[0];
-            }
-        }
-        return account;
+    public static Account getAccountForUser(String userId, String accountNumber) throws IOException {
+        return ACCOUNT_DAO.getAccount(userId, accountNumber);
     }
 
     public static Invoice[] getInvoicesForUser(String userID) throws IOException {
@@ -193,19 +207,35 @@ public class FileManagement {
 
 
     public static void writeAccount(String userId, Account account) {
-        writeTransactionOrAccount(userId, account.toCSVString(), PATH_ACCOUNTS);
+        try {
+            ACCOUNT_DAO.setAccount(userId, account);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     public static void writeTransaction(String userId, Transaction transaction) {
-        writeTransactionOrAccount(userId, transaction.toCSVString(), PATH_TRANSACTIONS);
+        try {
+            TRANSACTION_DAO.addNewTransaction(userId, transaction);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
-    public static void editAccount(User loggedInUser) {
-        String accountStrings = loggedInUser.getAccountsAsList().stream()
-                .map(Account::toCSVString).reduce("", String::concat);
-        String userId = loggedInUser.getLoginInfo().getUserId();
+    public static void editAccount(String userID, Account account) {
+        try {
+            ACCOUNT_DAO.setAccount(userID, account);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-        String newLine = userId + "," + accountStrings;
-        editAccountOrUser(newLine, userId, PATH_ACCOUNTS);
+    public static void setAllAccounts(User loggedInUser) {
+        try {
+            ACCOUNT_DAO.replaceAllAccounts(loggedInUser.getLoginInfo().getUserId(), loggedInUser.getAccounts());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
+
     public static void newEditUser(User loggedInUser) {
 
         String userId = loggedInUser.getLoginInfo().getUserId();
@@ -343,23 +373,17 @@ public class FileManagement {
     }
 
     public static Transaction[] findTransactionsOfUserAndAccountNumber(String userId, String accountNumber) throws IOException {
-        return (Transaction[]) Arrays.stream(readAllTransactions(userId)) 
+        return (Transaction[]) Arrays.stream(readAllTransactions(userId))
                 .filter(transaction -> transaction.getFromAccountNumber().equals(accountNumber) || transaction.getToAccountNumber().equals(accountNumber))
                 .toArray();
     }
 
     public static Transaction[] readLatestTransactions(String userId, int amount) throws IOException{
-        Transaction[] allTransactions = readAllTransactions(userId);
-        if (allTransactions.length >= amount) {
-            Transaction[] latestTransaction = Arrays.copyOfRange(allTransactions, allTransactions.length - amount, allTransactions.length);
-            return latestTransaction;
-        } else {
-            return null;
-        }
+        return TRANSACTION_DAO.getLatest(userId, amount);
     }
 
     public static void deleteInvoice(Invoice invoice, String userId) throws IOException{
-        
+
         try (RandomAccessFile file = new RandomAccessFile(PATH_INVOICES, "rw")) {
             String line;
             long pos = 0;

@@ -8,6 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class IndexedDataFile {
+    /**
+     * This class uses an internal charset to read and write the index-section of the file.
+     */
     private static final Charset CHARSET = Charset.defaultCharset();
 
     private static final char NEW_LINE = '\n';
@@ -24,12 +27,12 @@ public class IndexedDataFile {
     private RandomAccessFile tempStream;
     private FileChannel fileChannel;
     private FileChannel tempChannel;
+    private int chainedOpens;
 
     private long dataStartPosition;
 
     public IndexedDataFile(String filePath) throws IOException {
         fileFile = new File(filePath);
-        fileFile.createNewFile();
         tempFile = new File(filePath + ".temp");
         tempFile.createNewFile();
         tempFile.deleteOnExit();
@@ -88,6 +91,15 @@ public class IndexedDataFile {
         return true;
     }
 
+    public void deleteIdentifier(String identifier) throws IOException {
+        int index = getNumEntries(identifier) - 1;
+        if (index < 0)
+            return;
+
+        for (; index >= 0; index--)
+            deleteData(identifier, index);
+    }
+
     public void addNewData(String identifier, byte[] data) throws IOException {
         if (identifier.contains(String.valueOf(IDENTIFIER_SEPARATOR)))
             throw new IllegalArgumentException("Identifier cannot contain " + IDENTIFIER_SEPARATOR + ". The submitted invalid identifier was '" + identifier + "'");
@@ -117,6 +129,9 @@ public class IndexedDataFile {
         openStreams();
 
         long dataStart = getDataPosition(identifier, index);
+        if (dataStart == -1)
+            throw new IllegalArgumentException("Could not find any data at index " + index + ". Either the index is out of bounds, or the identifier " + identifier + " does not exist.");
+
         fileStream.seek(dataStart);
 
         long dataEnd = skipLine() - 1;
@@ -146,6 +161,71 @@ public class IndexedDataFile {
         return result;
     }
 
+    public int getNumEntries(String identifier) throws IOException {
+        openStreams();
+        long position = getPositionOfIndices(identifier);
+        if (position == -1)
+            return -1;
+        fileStream.seek(position);
+
+        int numEntries = readLineS().split(String.valueOf(INDEX_SEPARATOR)).length;
+
+        closeStreams();
+        return numEntries;
+    }
+
+    public byte[][] getRangeOfEntries(String identifier, int startIndex, int endIndex) throws IOException {
+        int numEntries = getNumEntries(identifier);
+        if (numEntries == -1 || startIndex >= numEntries || endIndex <= 0 || endIndex <= startIndex)
+            return null;
+
+        if (startIndex < 0)
+            startIndex = 0;
+        if (endIndex >= numEntries)
+            endIndex = numEntries - 1;
+
+        int length = endIndex - startIndex;
+        if (length <= 0)
+            return null;
+
+        byte[][] data = new byte[length][];
+
+        for (int i = 0; i < length; i++)
+            data[i] = getData(identifier, startIndex + i);
+
+        return data;
+    }
+
+    public byte[][] getEntriesBackwards(String identifier, int amount) throws IOException {
+        openStreams();
+        int lastIndex = getNumEntries(identifier) - 1;
+        if (lastIndex < 0)
+            return null;
+
+        if (lastIndex >= amount)
+            amount = lastIndex + 1;
+
+        byte[][] data = new byte[amount][];
+        for (int i = 0; i < amount; i++)
+            data[i] = getData(identifier, amount - 1 - i);
+
+        closeStreams();
+        return data;
+    }
+
+    public boolean containsIdentifier(String identifier) throws IOException {
+        openStreams();
+        String[] ids = readAllIdentifiers();
+        closeStreams();
+
+        boolean found = false;
+
+        for (int i = 0; i < ids.length && !found; i++)
+            if (ids[i].equals(identifier))
+                found = true;
+
+        return found;
+    }
 
     // ##### HELPER METHODS #####
     // From this point on, we define helper methods.
@@ -297,31 +377,26 @@ public class IndexedDataFile {
         return indices[index] + dataStartPosition;
     }
 
-    private boolean isFileEmpty() throws IOException {
-        return fileStream.length() <= 0;
-    }
-
     /**
      * Reads and returns all characters from the current position of the RandomAccessFile to the submitted marker.
      * If a line delimiter is found, or end of file is reached, returns null;
      * @throws IOException
      */
-    private static String readUntil_breakNewLine(RandomAccessFile stream, char marker) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        final char endL = '\n';
+    private static String readUntil_breakNewLine(RandomAccessFile stream) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         char current;
         try {
-            while ((current = (char) stream.readByte()) != marker) {
-                if (current == endL)
+            while ((current = (char) stream.readByte()) != IndexedDataFile.IDENTIFIER_SEPARATOR) {
+                if (current == DATA_SEPARATOR)
                     return null;
-                sb.append(current);
+                out.write(current);
             }
         } catch (EOFException e) {
             return null;
         }
 
-        return sb.toString();
+        return out.toString(CHARSET);
     }
 
     /**
@@ -364,7 +439,7 @@ public class IndexedDataFile {
 
         String currID = "";
         while (!currID.equals(identifier)) {
-            currID = readUntil_breakNewLine(fileStream, IDENTIFIER_SEPARATOR);
+            currID = readUntil_breakNewLine(fileStream);
             if (currID == null)
                 return -1;
             if (currID.equals(identifier))
@@ -427,7 +502,7 @@ public class IndexedDataFile {
     private long readStartPositionOfData() throws IOException {
         fileStream.seek(0);
 
-        final byte newLine = '\n';
+        final byte newLine = DATA_SEPARATOR;
         byte current = 0;
         byte lastByte = 0;
 
@@ -460,12 +535,16 @@ public class IndexedDataFile {
     private String[] readAllIdentifiers() throws IOException {
         List<String> identifiers = new ArrayList<>();
 
+        openStreams();
+
         fileStream.seek(0); // Read from the beginning of the file.
         String currID;
-        while ((currID = readUntil_breakNewLine(fileStream, IDENTIFIER_SEPARATOR)) != null) {
+        while ((currID = readUntil_breakNewLine(fileStream)) != null) {
             identifiers.add(currID);
             skipLine();
         }
+
+        closeStreams();
 
         return identifiers.toArray(String[]::new);
     }
@@ -503,16 +582,24 @@ public class IndexedDataFile {
     }
 
     private void openStreams() throws IOException {
+        if (chainedOpens > 0) {
+            chainedOpens++;
+            return;
+        }
+
         fileStream = new RandomAccessFile(fileFile, "rw");
         tempStream = new RandomAccessFile(tempFile, "rw");
         updateStartPositionIndex();
         fileChannel = fileStream.getChannel();
         tempChannel = tempStream.getChannel();
+        chainedOpens++;
     }
 
     private void closeStreams() throws IOException {
-        if (fileStream == null)
+        if (chainedOpens > 1) {
+            chainedOpens--;
             return;
+        }
 
         fileStream.close();
         tempStream.close();
@@ -520,6 +607,7 @@ public class IndexedDataFile {
         tempStream = null;
         fileChannel = null;
         tempChannel = null;
+        chainedOpens--;
     }
 
 

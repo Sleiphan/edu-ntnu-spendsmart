@@ -8,16 +8,21 @@ import java.util.Arrays;
 
 public class InvoiceDAO {
 
-    private static final Charset CHARSET = Charset.defaultCharset();
+    private final Charset charset;
     private final IndexedDataFile idf;
 
     public InvoiceDAO(String filePath) throws IOException {
-        idf = new IndexedDataFile(filePath);
+        this(filePath, Charset.defaultCharset());
+    }
+
+    public InvoiceDAO(String filePath, Charset charset) throws IOException {
+        this.idf = new IndexedDataFile(filePath);
+        this.charset = charset;
     }
 
     public boolean addNewInvoice(String userID, Invoice budget) {
         try {
-            idf.addNewData(userID, budget.toCSVString().getBytes(CHARSET));
+            idf.addNewData(userID, budget.toCSVString().getBytes(charset));
         } catch (IOException e) {
             return false;
         }
@@ -43,7 +48,7 @@ public class InvoiceDAO {
             return null;
         }
 
-        String csvString = new String(data, CHARSET);
+        String csvString = new String(data, charset);
         return Invoice.fromCSVString(csvString);
     }
 
@@ -60,7 +65,7 @@ public class InvoiceDAO {
             return null;
 
         return Arrays.stream(data)
-                .map(b -> new String(b, CHARSET))
+                .map(b -> new String(b, charset))
                 .map(Invoice::fromCSVString)
                 .toArray(Invoice[]::new);
     }

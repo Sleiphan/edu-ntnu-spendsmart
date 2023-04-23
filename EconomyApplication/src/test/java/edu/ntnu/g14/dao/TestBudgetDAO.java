@@ -71,7 +71,7 @@ public class TestBudgetDAO {
         assert(budget.equals(copy));
     }
 
-    //@Test
+    @Test
     public void special_norwegian_characters() {
         String userID = "Håkon F. Fjellanger";
 

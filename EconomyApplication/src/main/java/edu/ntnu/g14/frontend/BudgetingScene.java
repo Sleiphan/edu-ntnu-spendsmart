@@ -303,8 +303,10 @@ public class BudgetingScene {
                 .map(row -> new BigDecimal(row.get(1).toString()))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         BigDecimal savingsValue = revenuesTotal.subtract(expendituresTotal);
-        loggedInUser.getBudget().setSavings(savingsValue);
-        savings.setText("Savings: " + loggedInUser.getBudget().getSavings());
+        if (loggedInUser.getBudget() != null) {
+            loggedInUser.getBudget().setSavings(savingsValue);
+            savings.setText("Savings: " + loggedInUser.getBudget().getSavings());
+        }
     }
 
     public static void setLoggedInUser(User user) {
@@ -365,7 +367,8 @@ public class BudgetingScene {
     }
 
     private static Text createSavingsText() {
-        savings = ApplicationObjects.newText("Savings: " + loggedInUser.getBudget().getSavings(), 30, false, 40, 480);
+        BigDecimal savingsNum = loggedInUser.getBudget() != null ? loggedInUser.getBudget().getSavings() : BigDecimal.ZERO;
+        savings = ApplicationObjects.newText("Savings: " + savingsNum, 30, false, 40, 480);
         savings.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
         return savings;
     }

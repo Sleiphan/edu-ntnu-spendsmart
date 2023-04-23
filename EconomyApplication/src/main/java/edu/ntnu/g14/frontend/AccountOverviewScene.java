@@ -98,7 +98,7 @@ public class AccountOverviewScene {
                 } else {
                     accountComboBox.setValue(currentAccount.getAccountName());
                 }
-                FileManagement.editAccount(ApplicationFront.loggedInUser);
+                FileManagement.editAccount(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), currentAccount);
             }
         });
 
