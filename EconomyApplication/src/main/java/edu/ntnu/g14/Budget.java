@@ -148,6 +148,9 @@ public class Budget {
         // As of now, nothing to update or recalculate.
     }
 
+    public void clearEntries() {
+        this.entries.clear();
+    }
 
 
     /**
