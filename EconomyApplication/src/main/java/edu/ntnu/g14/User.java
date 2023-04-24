@@ -96,7 +96,7 @@ public class User extends Personalia {
                         .equalsIgnoreCase(accountName));
     }
     public boolean checkIfAccountNumberIsOccupied(String accountNumber) {
-        return  !this.accounts.stream()
+        return  this.accounts.stream()
                 .anyMatch(account -> account.getAccountNumber()
                         .equalsIgnoreCase(accountNumber));
     }
