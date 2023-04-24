@@ -4,6 +4,8 @@ import edu.ntnu.g14.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -16,7 +18,6 @@ public class LoginChooseUserScene {
     //TODO: REMOVE dropdown and add to all other scenes
     static public Scene scene() throws IOException {
         Text chooseUser = ApplicationObjects.newText("Choose user", 30, false, 0, 40);
-        chooseUser.setLayoutX(250 - chooseUser.getLayoutBounds().getWidth()/2);
         Text registerNew = ApplicationObjects.newText("Register new account", 10, true, 400, 280);
         registerNew.setOnMouseClicked(e -> {
             try {
@@ -39,7 +40,8 @@ public class LoginChooseUserScene {
 
         ComboBox<String> user = ApplicationObjects.newComboBox(usernames, 250, 20, 15, 125, 70);
         user.setPromptText("Choose Your User");
-        Button confirm = ApplicationObjects.newButton("Confirm", 175, 110, 150, 20, 15);
+        Button confirm = ApplicationObjects.newButton("Confirm", 0, 110, 150, 20, 15);
+        confirm.setLayoutX(250 - 75);
         confirm.setOnAction(e -> {
             if(user.getValue() != null){
                 try {
@@ -56,12 +58,11 @@ public class LoginChooseUserScene {
                 }
             }
         });
-    
         
         Group root = new Group(chooseUser, registerNew, user, confirm);
         root.getStylesheets().add("StyleSheet.css"); 
         Scene scene = new Scene(root, 500, 300, ApplicationObjects.getSceneColor());
-       
+        Platform.runLater(() -> chooseUser.setLayoutX(250 - chooseUser.getLayoutBounds().getWidth()/2));
         return scene;
     }
     

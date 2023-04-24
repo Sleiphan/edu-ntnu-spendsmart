@@ -20,6 +20,18 @@ public class Personalia {
         return email;
     }
 
+    public String getBlurredEmail() {
+        if (this.email == null || this.email.length() < 3) {
+            return email;
+        }
+        String handle = email.substring(0, email.lastIndexOf("@"));
+        char[] handleArray = handle.toCharArray();
+        for (int i = 1; i<handle.length() - 1; i++) {
+            handleArray[i] = '*';
+        }
+        return new String(handleArray) + email.substring(email.lastIndexOf("@"));
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
