@@ -1,5 +1,6 @@
 package edu.ntnu.g14.frontend;
 
+import edu.ntnu.g14.BankApplication;
 import edu.ntnu.g14.BudgetCategory;
 import edu.ntnu.g14.Transaction;
 
@@ -20,10 +21,10 @@ import java.time.LocalDate;
 
 
 import static edu.ntnu.g14.FileManagement.writeTransaction;
-import static edu.ntnu.g14.frontend.ApplicationFront.loggedInUser;
+import static edu.ntnu.g14.BankApplication.loggedInUser;
 
 public class TransferScene {
-    static Stage stage = ApplicationFront.getStage();
+    static Stage stage = BankApplication.getStage();
 
     static public Scene scene() throws IOException {
         int x = 290;

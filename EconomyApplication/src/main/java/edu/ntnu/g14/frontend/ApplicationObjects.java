@@ -3,18 +3,13 @@ package edu.ntnu.g14.frontend;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import edu.ntnu.g14.*;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -23,16 +18,12 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Callback;
-import javafx.util.StringConverter;
 
 
 public class ApplicationObjects {
@@ -41,7 +32,7 @@ public class ApplicationObjects {
     public static String backgroundColor = "#b6bbbf";
     public static Color sceneColor = Color.valueOf("#e4eff7");
 
-    static Stage stage = ApplicationFront.getStage();
+    static Stage stage = BankApplication.getStage();
 
     public static final DateTimeFormatter dateFormatter =
             DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -381,7 +372,7 @@ public class ApplicationObjects {
                 } else {
 
                     AccountCell cell;
-                    switch (ApplicationFront.loggedInUser.getAccountWithAccountName(item).getAccountType()) {
+                    switch (BankApplication.loggedInUser.getAccountWithAccountName(item).getAccountType()) {
                         case PENSION_ACCOUNT:
                             cell = new AccountCell(item, AccountCategory.PENSION_ACCOUNT);
                             setGraphic(cell.getHBox());

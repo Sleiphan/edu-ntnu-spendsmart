@@ -1,11 +1,11 @@
 package edu.ntnu.g14.frontend;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import edu.ntnu.g14.Account;
+import edu.ntnu.g14.BankApplication;
 import edu.ntnu.g14.FileManagement;
 import edu.ntnu.g14.Transaction;
 import javafx.collections.FXCollections;
@@ -16,23 +16,19 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 public class MainPageScene {
-    static Stage stage = ApplicationFront.getStage();
+    static Stage stage = BankApplication.getStage();
 
     static public Scene scene() throws IOException {
         String [] columnTitlesLatestActivitiesTable = {"Transaction", "Amount"};
         String [] columnTitlesDuePaymentsTable = {"Date", "Recipient", "Amount"};
 
-        String [] accountsList = new String [ApplicationFront.loggedInUser.getAccounts().length];
-        Account[] accounts = ApplicationFront.loggedInUser.getAccounts();
-        for (int i = 0; i < ApplicationFront.loggedInUser.getAccounts().length; i++){
+        String [] accountsList = new String [BankApplication.loggedInUser.getAccounts().length];
+        Account[] accounts = BankApplication.loggedInUser.getAccounts();
+        for (int i = 0; i < BankApplication.loggedInUser.getAccounts().length; i++){
             accountsList[i] = accounts[i].getAccountName();
         }
 
@@ -49,7 +45,7 @@ public class MainPageScene {
         Group budgeting = ApplicationObjects.newButtonWithIcon("Budgeting", 192, 130, 157, 25,16, "budget.png", BudgetingScene.scene());
         
         Text latestActivitiesText = ApplicationObjects.newText("Latest Activities", 20, false,130, 210);
-        TableView latestActivitiesTable = ApplicationObjects.newTableView1(columnTitlesLatestActivitiesTable, 30, 230, 324, 300, ApplicationFront.loggedInUser.getAccountsAsList().stream().map(Account::getAccountNumber).collect(Collectors.toList()));
+        TableView latestActivitiesTable = ApplicationObjects.newTableView1(columnTitlesLatestActivitiesTable, 30, 230, 324, 300, BankApplication.loggedInUser.getAccountsAsList().stream().map(Account::getAccountNumber).collect(Collectors.toList()));
         ObservableList<ObservableList<Object>> latestActivitiesData;
         try {
             latestActivitiesData = initializeLatestActivitiesData();
@@ -69,7 +65,7 @@ public class MainPageScene {
                 "    -fx-alignment: center");
         accountsListView.setOnMouseClicked(mouseEvent -> {
             try {
-                stage.setScene(AccountOverviewScene.scene(Optional.ofNullable(ApplicationFront.loggedInUser.getAccountWithAccountName(accountsListView.getSelectionModel().getSelectedItem().toString()))));
+                stage.setScene(AccountOverviewScene.scene(Optional.ofNullable(BankApplication.loggedInUser.getAccountWithAccountName(accountsListView.getSelectionModel().getSelectedItem().toString()))));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -106,9 +102,9 @@ public class MainPageScene {
 
     static public ObservableList<ObservableList<Object>> initializeLatestActivitiesData() throws IOException {
 
-        int length = ApplicationFront.loggedInUser.getTransactions().length;
+        int length = BankApplication.loggedInUser.getTransactions().length;
 
-        Transaction[] transactions = FileManagement.readLatestTransactions(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), length);
+        Transaction[] transactions = FileManagement.readLatestTransactions(BankApplication.loggedInUser.getLoginInfo().getUserId(), length);
         if (transactions == null)
             transactions = new Transaction[0];
         ObservableList<ObservableList<Object>> latestActivitiesData = FXCollections.observableArrayList();

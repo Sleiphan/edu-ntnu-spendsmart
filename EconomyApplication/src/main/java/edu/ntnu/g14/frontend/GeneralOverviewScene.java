@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.io.IOException;
 
-import edu.ntnu.g14.*;
+import edu.ntnu.g14.BankApplication;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -20,7 +20,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class GeneralOverviewScene {
-    static Stage stage = ApplicationFront.getStage();
+    static Stage stage = BankApplication.getStage();
     private static ObservableList<PieChart.Data> expenditurePieData;
     private static ObservableList<PieChart.Data> incomePieData;
     private static Text totalOfAllAccountsCombinedText;
@@ -36,11 +36,11 @@ public class GeneralOverviewScene {
         totalOfAllAccountsCombinedText = ApplicationObjects.newText("Total of all Accounts Combined (excl. Pension)", 16, false, 900/2 - 319/2, 50);
         setBigSumText();
 
-        totalIncomeText = ApplicationObjects.newText("Income: " + ApplicationFront.loggedInUser
+        totalIncomeText = ApplicationObjects.newText("Income: " + BankApplication.loggedInUser
                 .incomeLast30Days(), 20, false, 0, 170);
         totalIncomeText.setX(203 - totalIncomeText.getLayoutBounds().getWidth()/2);
 
-        totalExpensesText = ApplicationObjects.newText("Expenses: " + ApplicationFront.loggedInUser
+        totalExpensesText = ApplicationObjects.newText("Expenses: " + BankApplication.loggedInUser
                 .expensesLast30Days(), 20, false, 0, 170);
         totalExpensesText.setX(625 - totalExpensesText.getLayoutBounds().getWidth()/2);
 
@@ -164,33 +164,33 @@ public class GeneralOverviewScene {
     }
     private static void setPiesDataLast30Days() {
         List<PieChart.Data> pieChartExpenditureData = Arrays.stream(ApplicationObjects.getBudgetExpenditureCategories())
-                .map(category -> new PieChart.Data(category, ApplicationFront.loggedInUser
+                .map(category -> new PieChart.Data(category, BankApplication.loggedInUser
                         .getTotalExpenseOfCategoryLast30Days(category))).collect(Collectors.toList());
         expenditurePieData = FXCollections.observableArrayList(pieChartExpenditureData);
 
         List<PieChart.Data> pieChartIncomeData = Arrays.stream(ApplicationObjects.getBudgetIncomeCategories())
-                .map(category -> new PieChart.Data(category, ApplicationFront.loggedInUser
+                .map(category -> new PieChart.Data(category, BankApplication.loggedInUser
                 .getTotalIncomeOfCategoryLast30Days(category))).collect(Collectors.toList());
         incomePieData = FXCollections.observableArrayList(pieChartIncomeData);
     }
 
     private static void setBigSumText() {
-        bigSumText = ApplicationObjects.newText(ApplicationFront.loggedInUser
+        bigSumText = ApplicationObjects.newText(BankApplication.loggedInUser
                 .amountAllAccounts(), 35, false, 346, 100);
         bigSumText.setX((float) 900/2 - bigSumText.getLayoutBounds().getWidth()/2);
     }
 
     private static void setTotalIncomeText(Boolean monthOrYear) {
         if (monthOrYear) {
-            totalIncomeText.setText("Income: " + ApplicationFront.loggedInUser
+            totalIncomeText.setText("Income: " + BankApplication.loggedInUser
                     .incomeLast30Days());
-            if (ApplicationFront.loggedInUser.incomeLast30Days().replaceAll(" ", "").equals("0"))
+            if (BankApplication.loggedInUser.incomeLast30Days().replaceAll(" ", "").equals("0"))
                 totalIncomeText.setVisible(false);
         }
         else {
-            totalIncomeText.setText("Income: " + ApplicationFront.loggedInUser
+            totalIncomeText.setText("Income: " + BankApplication.loggedInUser
                     .incomeLastYear()       );
-            if (ApplicationFront.loggedInUser.incomeLastYear().replaceAll(" ", "").equals("0"))
+            if (BankApplication.loggedInUser.incomeLastYear().replaceAll(" ", "").equals("0"))
                 totalIncomeText.setVisible(false);
         }
         totalIncomeText.setX(203 - totalIncomeText.getLayoutBounds().getWidth()/2);
@@ -198,14 +198,14 @@ public class GeneralOverviewScene {
 
     public static void setTotalExpensesText(Boolean monthOrYear) {
         if (monthOrYear) {
-            totalExpensesText.setText("Expenses: " + ApplicationFront.loggedInUser
+            totalExpensesText.setText("Expenses: " + BankApplication.loggedInUser
                     .expensesLast30Days());
-            if (ApplicationFront.loggedInUser.expensesLast30Days().replaceAll(" ", "").equals("0"))
+            if (BankApplication.loggedInUser.expensesLast30Days().replaceAll(" ", "").equals("0"))
                 totalExpensesText.setVisible(false);
         } else {
-            totalExpensesText.setText("Expenses: " + ApplicationFront.loggedInUser
+            totalExpensesText.setText("Expenses: " + BankApplication.loggedInUser
                     .expensesLastYear());
-            if (ApplicationFront.loggedInUser.expensesLastYear().replaceAll(" ","").equals("0"))
+            if (BankApplication.loggedInUser.expensesLastYear().replaceAll(" ","").equals("0"))
                 totalExpensesText.setVisible(false);
         }
         totalExpensesText.setX(625 - totalExpensesText.getLayoutBounds().getWidth()/2);
@@ -213,12 +213,12 @@ public class GeneralOverviewScene {
 
     private static void setPiesDataLastYear() {
         List<PieChart.Data> pieChartExpenditureData = Arrays.stream(ApplicationObjects.getBudgetExpenditureCategories())
-                .map(category -> new PieChart.Data(category, ApplicationFront.loggedInUser
+                .map(category -> new PieChart.Data(category, BankApplication.loggedInUser
                         .getTotalExpenseOfCategoryLastYear(category))).collect(Collectors.toList());
         expenditurePieData = FXCollections.observableArrayList(pieChartExpenditureData);
 
         List<PieChart.Data> pieChartIncomeData = Arrays.stream(ApplicationObjects.getBudgetIncomeCategories())
-                .map(category -> new PieChart.Data(category, ApplicationFront.loggedInUser
+                .map(category -> new PieChart.Data(category, BankApplication.loggedInUser
                         .getTotalIncomeOfCategoryLastYear(category))).collect(Collectors.toList());
         incomePieData = FXCollections.observableArrayList(pieChartIncomeData);
     }

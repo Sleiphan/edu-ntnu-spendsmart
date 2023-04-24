@@ -19,7 +19,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class AccountOverviewScene {
-    static Stage stage = ApplicationFront.getStage();
+    static Stage stage = BankApplication.getStage();
     private static Account currentAccount;
     private static TableView<ObservableList<Object>> lastTransactionsTable;
     private static ObservableList<ObservableList<Object>> lastTransactionsData;
@@ -27,7 +27,7 @@ public class AccountOverviewScene {
     private static Text accountNumberText;
 
     static public Scene scene(Optional<Account> account) throws IOException {
-        List<Account> accounts = ApplicationFront.loggedInUser.getAccountsAsList();
+        List<Account> accounts = BankApplication.loggedInUser.getAccountsAsList();
         ObservableList<String> accountNames = FXCollections.observableArrayList(getAccountsNames());
 
         if (accounts.isEmpty()) {
@@ -62,7 +62,7 @@ public class AccountOverviewScene {
         }
         amountText.setLayoutX((double) 728/2 - amountText.getLayoutBounds().getWidth()/2);
         accountNumberText.setLayoutX((double) 728/2 - accountNumberText.getLayoutBounds().getWidth()/2);
-        lastTransactionsTable = ApplicationObjects.newTableView1(columnTitlesTransactionsTable, 20, 230, 688, 300, ApplicationFront.loggedInUser.getAccountsAsList().stream().map(Account::getAccountNumber).collect(Collectors.toList()));
+        lastTransactionsTable = ApplicationObjects.newTableView1(columnTitlesTransactionsTable, 20, 230, 688, 300, BankApplication.loggedInUser.getAccountsAsList().stream().map(Account::getAccountNumber).collect(Collectors.toList()));
         lastTransactionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         if (accountComboBox.getValue() != null) {
             setCurrentAccount(accountComboBox.getValue());
@@ -90,7 +90,7 @@ public class AccountOverviewScene {
             Optional<Account> result = accountDialog.showAndWait();
             if (result.isPresent()) {
                 accountComboBox.setItems(FXCollections.observableArrayList(getAccountsNames()));
-                if (!ApplicationFront.loggedInUser.getAccountsAsList().contains(currentAccount)) {
+                if (!BankApplication.loggedInUser.getAccountsAsList().contains(currentAccount)) {
                     getAccountsNames().remove(currentAccount.getAccountName());
                     accountComboBox.setItems(FXCollections.observableArrayList(getAccountsNames()));
                     if (accountNames.size() != 0)
@@ -98,7 +98,7 @@ public class AccountOverviewScene {
                 } else {
                     accountComboBox.setValue(currentAccount.getAccountName());
                 }
-                FileManagement.editAccount(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), currentAccount);
+                FileManagement.editAccount(BankApplication.loggedInUser.getLoginInfo().getUserId(), currentAccount);
             }
         });
 
@@ -143,17 +143,17 @@ public class AccountOverviewScene {
 
     private static void addAndWriteAccount(ObservableList<String> accountNames, Account.AccountBuilder result) {
         Account account = result.build();
-        FileManagement.writeAccount(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), account);
+        FileManagement.writeAccount(BankApplication.loggedInUser.getLoginInfo().getUserId(), account);
         accountNames.add(account.getAccountName());
-        ApplicationFront.loggedInUser.addAccount(account);
+        BankApplication.loggedInUser.addAccount(account);
     }
 
     private static void setCurrentAccount(String accountName) {
         try {
-            currentAccount = ApplicationFront.loggedInUser.getAccountWithAccountName(accountName);
+            currentAccount = BankApplication.loggedInUser.getAccountWithAccountName(accountName);
         } catch (NoSuchElementException e) {
             Account accountWithOldAccountName = currentAccount;
-            currentAccount = ApplicationFront.loggedInUser.getAccountWithAccountNumber(accountWithOldAccountName
+            currentAccount = BankApplication.loggedInUser.getAccountWithAccountNumber(accountWithOldAccountName
                     .getAccountNumber());
         }
         initializeLastTransactionsData(currentAccount);
@@ -162,12 +162,12 @@ public class AccountOverviewScene {
     }
     private static List<String> getAccountsNames() {
 
-        return ApplicationFront.loggedInUser.getAccountsAsList()
+        return BankApplication.loggedInUser.getAccountsAsList()
                 .stream().map(Account::getAccountName).collect(Collectors.toList());
     }
     private static ObservableList<ObservableList<Object>> initializeLastTransactionsData(Account account) {
 
-        List<Transaction> transactionsOfAccount = ApplicationFront.loggedInUser.getTransactionsAsList().stream()
+        List<Transaction> transactionsOfAccount = BankApplication.loggedInUser.getTransactionsAsList().stream()
                 .filter(transaction -> transaction.getToAccountNumber()
                 .equals(account.getAccountNumber())
                         || transaction.getFromAccountNumber().equals(account.getAccountNumber()))
@@ -210,8 +210,8 @@ public class AccountOverviewScene {
         if (result.isPresent()) {
             Transaction transaction = result.get().build();
 
-            FileManagement.writeTransaction(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), transaction);
-            ApplicationFront.loggedInUser.addTransaction(transaction);
+            FileManagement.writeTransaction(BankApplication.loggedInUser.getLoginInfo().getUserId(), transaction);
+            BankApplication.loggedInUser.addTransaction(transaction);
             addTransaction(transaction);
         }
     }

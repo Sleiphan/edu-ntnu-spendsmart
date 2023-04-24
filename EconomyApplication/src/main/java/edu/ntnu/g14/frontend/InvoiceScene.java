@@ -2,15 +2,10 @@ package edu.ntnu.g14.frontend;
 
 import edu.ntnu.g14.*;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import edu.ntnu.g14.dao.InvoiceDAO;
 import javafx.event.EventHandler;
@@ -25,13 +20,13 @@ import javafx.util.Callback;
 import org.apache.commons.validator.routines.BigDecimalValidator;
 
 public class InvoiceScene {
-    static Stage stage = ApplicationFront.getStage();
+    static Stage stage = BankApplication.getStage();
 
     private static final String INVOICE_PATH = FileManagement.PATH_INVOICES;
     private static InvoiceDAO invoiceFile;
 
     static public Scene scene() throws IOException {
-        final User user = ApplicationFront.loggedInUser;
+        final User user = BankApplication.loggedInUser;
         final String userID = user.getLoginInfo().getUserId();
         invoiceFile = new InvoiceDAO(INVOICE_PATH);
 

@@ -76,7 +76,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>edu.ntnu.g14.frontend.ApplicationFront</mainClass>
+                            <mainClass>edu.ntnu.g14.BankApplication</mainClass>
                         </configuration>
                     </execution>
                 </executions>

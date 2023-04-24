@@ -7,8 +7,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-import edu.ntnu.g14.BudgetCategory;
-import edu.ntnu.g14.User;
+import edu.ntnu.g14.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -18,12 +17,10 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import edu.ntnu.g14.FileManagement;
-import edu.ntnu.g14.Payment;
 
 
 public class PaymentConfirmationScene {
-    static Stage stage = ApplicationFront.getStage();
+    static Stage stage = BankApplication.getStage();
     private static ArrayList<String> paymentInfo;
 
     private static final DateTimeFormatter formatter =
@@ -46,7 +43,7 @@ public class PaymentConfirmationScene {
 
         confirm.setOnAction(e -> {
             try {
-                User loggedInUser = ApplicationFront.loggedInUser;
+                User loggedInUser = BankApplication.loggedInUser;
                 LocalDate dueDate = LocalDate.parse(getPaymentInfo().get(3), formatter); //Funker ikke!!! TODO: FIIIIIX
                 dueDate = LocalDate.parse(dueDate.format(dateFormatter), dateFormatter);
 

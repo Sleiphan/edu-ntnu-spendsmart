@@ -11,7 +11,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class LoginChooseUserScene {
-    static Stage stage = ApplicationFront.getStage();
+    static Stage stage = BankApplication.getStage();
 
     //TODO: REMOVE dropdown and add to all other scenes
     static public Scene scene() throws IOException {
@@ -48,7 +48,7 @@ public class LoginChooseUserScene {
                             usersID = logins[i].getUserId();
                         }
                     }
-                    ApplicationFront.setLoggedInUser(FileManagement.readUser(usersID));
+                    BankApplication.setLoggedInUser(FileManagement.readUser(usersID));
                     stage.setScene(LoginUserScene.scene());
                 } catch (IOException e1) {
                     e1.printStackTrace();

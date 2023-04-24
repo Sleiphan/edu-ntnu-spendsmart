@@ -3,6 +3,7 @@ package edu.ntnu.g14.frontend;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import edu.ntnu.g14.BankApplication;
 import edu.ntnu.g14.User;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -26,9 +27,9 @@ public class DeleteUserScene {
     private VBox vBox;
 
     private StackPane stackPane;
-    static Stage stage = ApplicationFront.getStage();
+    static Stage stage = BankApplication.getStage();
 
-    static User loggedInUser = ApplicationFront.loggedInUser;
+    static User loggedInUser = BankApplication.loggedInUser;
 
     private static boolean cancelPressed = false;
 

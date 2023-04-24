@@ -5,32 +5,24 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import edu.ntnu.g14.Budget;
-import edu.ntnu.g14.BudgetCategory;
-import edu.ntnu.g14.BudgetItem;
-import edu.ntnu.g14.User;
+import edu.ntnu.g14.*;
 import edu.ntnu.g14.dao.BudgetDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.ChoiceBoxTableCell;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
 public class BudgetingScene {
-    static Stage stage = ApplicationFront.getStage();
-    private static User loggedInUser = ApplicationFront.loggedInUser;
+    static Stage stage = BankApplication.getStage();
+    private static User loggedInUser = BankApplication.loggedInUser;
     static BudgetDAO budgetDAO;
     static TableView<ObservableList<Object>> revenues;
     static TableView<ObservableList<Object>> expenditures;

@@ -1,11 +1,11 @@
 package edu.ntnu.g14.frontend;
 
 // ... (other import statements)
+import edu.ntnu.g14.BankApplication;
 import edu.ntnu.g14.FileManagement;
 import edu.ntnu.g14.User;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -13,10 +13,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -24,10 +22,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class UserManagementEditUserScene {
-    private static User loggedInUser = ApplicationFront.loggedInUser;
+    private static User loggedInUser = BankApplication.loggedInUser;
     static Alert alert;
 
-    static Stage stage = ApplicationFront.getStage();
+    static Stage stage = BankApplication.getStage();
 
     public static Scene scene() throws FileNotFoundException {
         Text title = ApplicationObjects.newText("Edit Username and Password", 30, false, 180, 60);

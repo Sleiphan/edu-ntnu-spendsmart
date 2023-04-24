@@ -22,7 +22,7 @@ import edu.ntnu.g14.User;
 public class BankApplication extends Application {
 
     static private Stage stage;
-    static User loggedInUser;
+    public static User loggedInUser;
 
     @Override
     public void start(Stage stage) throws IOException, InterruptedException {

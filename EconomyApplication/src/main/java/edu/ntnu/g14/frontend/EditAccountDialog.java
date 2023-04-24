@@ -2,6 +2,7 @@ package edu.ntnu.g14.frontend;
 
 import edu.ntnu.g14.Account;
 import edu.ntnu.g14.AccountCategory;
+import edu.ntnu.g14.BankApplication;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -39,7 +40,7 @@ public class EditAccountDialog extends Dialog<Account> {
                 if (deleteAccountAlert.getResult() == ButtonType.CANCEL) {
                     return null;
                 }
-                ApplicationFront.loggedInUser.removeAccount(account);
+                BankApplication.loggedInUser.removeAccount(account);
                 return account;
             }
             else {
@@ -76,7 +77,7 @@ public class EditAccountDialog extends Dialog<Account> {
 
     private boolean validateDialog() {
         return (!editAccountNameField.getText().isBlank()
-                && !ApplicationFront.loggedInUser.checkIfAccountNameIsOccupied(editAccountNameField.getText()))
+                && !BankApplication.loggedInUser.checkIfAccountNameIsOccupied(editAccountNameField.getText()))
                 || editAccountTypeBox.getValue() != null;
 
 

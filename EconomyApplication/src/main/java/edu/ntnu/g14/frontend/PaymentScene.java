@@ -1,10 +1,10 @@
 package edu.ntnu.g14.frontend;
 
+import edu.ntnu.g14.BankApplication;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class PaymentScene {
-    static Stage stage = ApplicationFront.getStage();
+    static Stage stage = BankApplication.getStage();
 
     static public Scene scene() throws FileNotFoundException, IOException {
         int x = 300;

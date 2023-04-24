@@ -19,12 +19,12 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class BudgetSuggestionsScene {
-    static Stage stage = ApplicationFront.getStage();
+    static Stage stage = BankApplication.getStage();
     static BudgetDAO budgetDAO;
 
     static Budget userBudget;
 
-    static User loggedInUser = ApplicationFront.loggedInUser;
+    static User loggedInUser = BankApplication.loggedInUser;
 
     static Group revenueComponents;
 

@@ -1,15 +1,15 @@
 package edu.ntnu.g14.frontend;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import edu.ntnu.g14.BankApplication;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 public class RegisterThirdScene {
-    static Stage stage = ApplicationFront.getStage();
+    static Stage stage = BankApplication.getStage();
 
     static public Scene scene()throws IOException {
         Button yes = ApplicationObjects.newButton("Yes", 200, 120, 50, 20, 15);
