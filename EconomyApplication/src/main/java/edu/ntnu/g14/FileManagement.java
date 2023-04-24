@@ -96,12 +96,6 @@ public class FileManagement {
         return TRANSACTION_DAO.getAllTransactionsForUser(userID);
     }
 
-    public static Transaction[] findTransactionsToFromDate(LocalDate from, LocalDate to, String userId) throws IOException {
-        return (Transaction[]) Arrays.stream(readAllTransactions(userId)) //TODO: Bytt med parameter med readAllTransactions(userId), slett foregående linje
-                .filter(transaction -> transaction.getDateOfTransaction().isAfter(from) && transaction.getDateOfTransaction().isBefore(to))
-                .toArray();
-    }
-
     public static User readUser(String userId) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(PATH_USERS));
         Stream<String> userInfoLine = reader.lines()
@@ -129,27 +123,6 @@ public class FileManagement {
         
     }
 
-
-    public static void editUser(User newUser, String userId) throws FileNotFoundException, IOException{
-        String addonText = "" + newUser.getLoginInfo().getUserId() + "," + newUser.getLoginInfo().getUserName() + "," +
-            newUser.getEmail() + "," + newUser.getLoginInfo().getPassword() + "," + newUser.getFirstName() + "," + newUser.getLastName() + ",                                     ";
-
-
-        try (RandomAccessFile file = new RandomAccessFile(PATH_USERS, "rw")) {
-            String line;
-            long pos = 0;
-            while ((line = file.readLine()) != null) {
-                if (line.startsWith(userId + ",")) {
-                    pos = file.getFilePointer() - line.length() - 2;
-                    file.seek(pos);
-                    file.write(addonText.getBytes());
-                    file.close();
-                    break;
-                }
-            }
-        }
-    }
-
     public static void writeNewUser(User newUser) throws IOException{
         newEditUser(newUser);
         setAllAccounts(newUser);
@@ -167,13 +140,6 @@ public class FileManagement {
                 }
             }
         }
-    }
-
-    public static Account[] readAccounts(String userId) throws IOException{
-        return ACCOUNT_DAO.getAllAccountsForUser(userId);
-    }
-    public static Account getAccountForUser(String userId, String accountNumber) throws IOException {
-        return ACCOUNT_DAO.getAccount(userId, accountNumber);
     }
 
     public static Invoice[] getInvoicesForUser(String userID) throws IOException {
@@ -205,7 +171,6 @@ public class FileManagement {
         return invoices;
     }
 
-
     public static void writeAccount(String userId, Account account) {
         try {
             ACCOUNT_DAO.setAccount(userId, account);
@@ -213,6 +178,7 @@ public class FileManagement {
             throw new RuntimeException(e);
         }
     }
+
     public static void writeTransaction(String userId, Transaction transaction) {
         try {
             TRANSACTION_DAO.addNewTransaction(userId, transaction);
@@ -220,6 +186,7 @@ public class FileManagement {
             throw new RuntimeException(e);
         }
     }
+
     public static void editAccount(String userID, Account account) {
         try {
             ACCOUNT_DAO.setAccount(userID, account);
@@ -293,50 +260,6 @@ public class FileManagement {
             throw new RuntimeException(e);
         }
     }
-    private static void writeTransactionOrAccount(String userId, String toCSVString, String filePath) {
-        File oldFile    = new File(filePath);
-        File newFile    = new File(PATH_TEMPFILE);
-        try {
-            FileWriter fileWriter         = new FileWriter(PATH_TEMPFILE, true);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            PrintWriter printWriter       = new PrintWriter(bufferedWriter);
-
-            FileInputStream inputStream   = new FileInputStream(oldFile);
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-
-            int lines = (int) bufferedReader.lines().count();
-            inputStream.getChannel().position(0);
-            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            String currentLine;
-            for (int i = 1; i < lines; i++) {
-                currentLine = bufferedReader.readLine();
-                if (currentLine.startsWith(userId)) {
-                    printWriter.println(currentLine + toCSVString);
-                }
-                else {
-                    printWriter.println(currentLine);
-                }
-            }
-            currentLine = bufferedReader.readLine();
-            if (currentLine.startsWith(userId)) {
-                printWriter.print(currentLine + toCSVString);
-            }
-            else {
-                printWriter.print(currentLine);
-            }
-
-            inputStream.close();
-            bufferedReader.close();
-            printWriter.flush();
-            printWriter.close();
-            oldFile.delete();
-            File dump = new File(filePath);
-            newFile.renameTo(dump);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public static void writeNewInvoice(String userId, Invoice invoice) throws IOException{
         String addonText = "" + invoice.getDueDate() + "." + invoice.getAmount() + "." + invoice.getRecipientAccountNumber() + ",";
@@ -372,35 +295,8 @@ public class FileManagement {
         }
     }
 
-    public static Transaction[] findTransactionsOfUserAndAccountNumber(String userId, String accountNumber) throws IOException {
-        return (Transaction[]) Arrays.stream(readAllTransactions(userId))
-                .filter(transaction -> transaction.getFromAccountNumber().equals(accountNumber) || transaction.getToAccountNumber().equals(accountNumber))
-                .toArray();
-    }
-
     public static Transaction[] readLatestTransactions(String userId, int amount) throws IOException{
         return TRANSACTION_DAO.getLatest(userId, amount);
-    }
-
-    public static void deleteInvoice(Invoice invoice, String userId) throws IOException{
-
-        try (RandomAccessFile file = new RandomAccessFile(PATH_INVOICES, "rw")) {
-            String line;
-            long pos = 0;
-            while ((line = file.readLine()) != null) {
-                if (line.startsWith(userId + ",")) {
-                    String addonText = "";
-                    for(int i = 0; i < line.length(); i++){
-                        addonText = addonText + " ";
-                    }
-                    pos = file.getFilePointer() - line.length() - 2;
-                    file.seek(pos);
-                    file.write(addonText.getBytes());
-                    file.close();
-                    break;
-                }
-            }
-        }
     }
 
 }
