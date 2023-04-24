@@ -41,7 +41,7 @@ public class MainPageScene {
             }
         }
 
-        Group transfer = ApplicationObjects.newButtonWithIcon("Transfer", 30, 50, 157, 25, 16, "budget.png", TransferScene.scene());
+        Group transfer = ApplicationObjects.newButtonWithIcon("Transfer", 30, 50, 157, 25, 16, "transfer.png", TransferScene.scene());
 
         Group invoice = ApplicationObjects.newButtonWithIcon("Invoice", 192, 50, 157,25,16, "invoice.png", InvoiceScene.scene());
 

@@ -49,6 +49,7 @@ public class GeneralOverviewScene {
         setPiesDataLast30Days();
 
         PieChart expenditurePieChart = new PieChart(expenditurePieData);
+        expenditurePieChart.setVisible(expenditurePieData.stream().anyMatch(pieData -> pieData.getPieValue() != 0));
         expenditurePieChart.setLabelsVisible(false);
         expenditurePieChart.setAnimated(false);
         expenditurePieChart.setTitle(monthlyExpensesPieChartTitle);
@@ -64,6 +65,7 @@ public class GeneralOverviewScene {
 
 
         PieChart incomePieChart = new PieChart(incomePieData);
+        incomePieChart.setVisible(expenditurePieData.stream().anyMatch(pieData -> pieData.getPieValue() != 0));
         incomePieChart.setAnimated(false);
         incomePieChart.setLegendSide(Side.BOTTOM);
         incomePieChart.setTitle(monthlyIncomePieChartTitle);

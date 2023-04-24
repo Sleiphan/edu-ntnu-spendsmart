@@ -257,9 +257,7 @@ public class ApplicationObjects {
 
     public static ImageView newImage(String imagename,
      int x, int y, int width, int height) throws FileNotFoundException{
-        ImageView imageview = new ImageView();
-        Image image = new Image(new FileInputStream("src/main/resources/images/" + imagename));
-        imageview.setImage(image);
+        ImageView imageview = new ImageView(new Image(new FileInputStream("src/main/resources/images/" + imagename)));
         imageview.setX(x);
         imageview.setY(y);
         imageview.setFitHeight(width);
