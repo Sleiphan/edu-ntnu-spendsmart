@@ -26,14 +26,16 @@ public class LoginChooseUserScene {
                 e1.printStackTrace();
             }
         });
-    
-        String[] usernames = new String[FileManagement.readUsers().length];
-        Login[] logins = FileManagement.readUsers();
-        for(int i = 0; i < FileManagement.readUsers().length; i++){
+
+        Login[] loginsTemp = FileManagement.readUsers();
+        if (loginsTemp == null)
+            loginsTemp = new Login[0];
+        final Login[] logins = loginsTemp;
+
+        String[] usernames = new String[logins.length];
+        for (int i = 0; i < logins.length; i++)
             usernames[i] = logins[i].getUserName();
-        }
-        
-    
+
         ComboBox<String> user = ApplicationObjects.newComboBox(usernames, 250, 20, 15, 125, 70);
         user.setPromptText("Choose Your User");
         Button confirm = ApplicationObjects.newButton("Confirm", 175, 110, 150, 20, 15);
@@ -41,7 +43,7 @@ public class LoginChooseUserScene {
             if(user.getValue() != null){
                 try {
                     String usersID = "";
-                    for(int i = 0; i < FileManagement.readUsers().length; i++){
+                    for(int i = 0; i < logins.length; i++){
                         if(user.getValue().equals(logins[i].getUserName())){
                             usersID = logins[i].getUserId();
                         }

@@ -34,9 +34,16 @@ public class AccountDAO {
 
     public void setAccount(String userID, Account account) throws IOException {
         Account[] accounts = getAllAccountsForUser(userID);
+
+        int size = -1;
+        if (accounts == null)
+            size = 0;
+        else
+            size = accounts.length;
+
         int index = -1;
 
-        for (int i = 0; i < accounts.length; i++)
+        for (int i = 0; i < size; i++)
             if (accounts[i].getAccountNumber().equals(account.getAccountNumber())) {
                 index = i;
                 break;

@@ -20,16 +20,8 @@ public class RegisterThirdScene {
                 e1.printStackTrace();
             }
         });
-        Button skip = ApplicationObjects.newButton("Skip for now", 170, 170, 100, 20, 15);
-        skip.setOnAction(e -> {
-            try {
-                stage.setScene(MainPageScene.scene());
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        });
         
-        Group root = new Group(yes, skip,
+        Group root = new Group(yes,
         ApplicationObjects.newText("Would you like to add", 25, false, 130, 40),
         ApplicationObjects.newText("account information", 25, false, 130, 80));
         root.getStylesheets().add("StyleSheet.css"); 

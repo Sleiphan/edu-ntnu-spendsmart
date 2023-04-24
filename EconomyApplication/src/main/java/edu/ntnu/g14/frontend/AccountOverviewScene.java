@@ -55,7 +55,7 @@ public class AccountOverviewScene {
         Button addAccount         = ApplicationObjects.newButton("Add Account", 728 - 130, 50, 100, 20, 14);
         Button editAccount        = ApplicationObjects.newButton("Edit Account", 728 - 130, 80, 100, 20, 14);
         Text lastTransactionsText = ApplicationObjects.newText("Last Transactions:", 24, false, 20, 200);
-        if (account.isPresent()) {
+        if (account != null && account.isPresent()) {
             accountComboBox.setValue(account.get().getAccountName());
             setAccountNumberAndAmountText();
 

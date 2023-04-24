@@ -47,8 +47,10 @@ public class IndexedDataFile {
 
         // Read all indices connected to the specified identifier.
         long[] indices = getIndices(identifier);
-        if (indices == null)
+        if (indices == null) {
+            closeStreams();
             return null;
+        }
 
         // Additionally add the variable dataStartPosition to each element.
         // This is necessary since all the indices describe the data-positions relative to this variable.
@@ -96,8 +98,12 @@ public class IndexedDataFile {
         if (index < 0)
             return;
 
+        openStreams();
+
         for (; index >= 0; index--)
             deleteData(identifier, index);
+
+        closeStreams();
     }
 
     public void addNewData(String identifier, byte[] data) throws IOException {
@@ -164,8 +170,10 @@ public class IndexedDataFile {
     public int getNumEntries(String identifier) throws IOException {
         openStreams();
         long position = getPositionOfIndices(identifier);
-        if (position == -1)
+        if (position == -1) {
+            closeStreams();
             return -1;
+        }
         fileStream.seek(position);
 
         int numEntries = readLineS().split(String.valueOf(INDEX_SEPARATOR)).length;
@@ -199,8 +207,10 @@ public class IndexedDataFile {
     public byte[][] getEntriesBackwards(String identifier, int amount) throws IOException {
         openStreams();
         int lastIndex = getNumEntries(identifier) - 1;
-        if (lastIndex < 0)
+        if (lastIndex < 0) {
+            closeStreams();
             return null;
+        }
 
         if (lastIndex >= amount)
             amount = lastIndex + 1;
@@ -532,7 +542,7 @@ public class IndexedDataFile {
      * Reads all present identifiers from the file. If the file does not contain any identifiers, returns an empty array.
      * @throws IOException
      */
-    private String[] readAllIdentifiers() throws IOException {
+    public String[] readAllIdentifiers() throws IOException {
         List<String> identifiers = new ArrayList<>();
 
         openStreams();
