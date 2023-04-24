@@ -61,7 +61,7 @@ public class AccountDAO {
 
     public void addNewAccount(String userID, Account obj) throws IOException {
         if (obj == null)
-            throw new IllegalArgumentException("Parameter transaction cannot be null");
+            throw new IllegalArgumentException("Parameter account cannot be null");
 
         byte[] data = obj.toCSVString().getBytes(charset);
 

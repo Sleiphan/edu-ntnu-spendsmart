@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import edu.ntnu.g14.*;
 import javafx.beans.property.*;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -359,11 +360,6 @@ public class ApplicationObjects {
         return tableView;
     }
 
-
-
-
-
-
     public static ListView<String> newListView(String[] elements, double x, double y, double width, double height) {
         ListView<String> listView = new ListView<>();
         listView.setLayoutX(x);
@@ -371,9 +367,40 @@ public class ApplicationObjects {
         listView.setPrefWidth(width);
         listView.setPrefHeight(height);
 
-        for (String element: elements) {
-            listView.getItems().add(element);
-        }
+        ObservableList<String> items = FXCollections.observableArrayList(elements);
+
+        listView.setItems(items);
+        listView.setCellFactory(param -> new ListCell<String>() {
+            private final ImageView imageView = new ImageView();
+
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+
+                    AccountCell cell;
+                    switch (ApplicationFront.loggedInUser.getAccountWithAccountName(item).getAccountType()) {
+                        case PENSION_ACCOUNT:
+                            cell = new AccountCell(item, AccountCategory.PENSION_ACCOUNT);
+                            setGraphic(cell.getHBox());
+                            break;
+                        case SAVINGS_ACCOUNT:
+                            cell = new AccountCell(item, AccountCategory.SAVINGS_ACCOUNT);
+                            setGraphic(cell.getHBox());
+                            break;
+                        case CHECKING_ACCOUNT:
+                            cell = new AccountCell(item, AccountCategory.CHECKING_ACCOUNT);
+                            setGraphic(cell.getHBox());
+                            break;
+                        case OTHER:
+                            cell = new AccountCell(item, AccountCategory.OTHER);
+                            setGraphic(cell.getHBox());
+                    }
+                }
+            }
+        });
         return listView;
     }
     
