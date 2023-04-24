@@ -21,7 +21,7 @@ public class BudgetDAO {
     }
 
     public BudgetDAO(String filePath, Charset charset) throws IOException {
-        this.file = new IndexedDataFile(filePath);
+        this.file = new IndexedDataFile(filePath, charset);
         this.charset = charset;
     }
 
@@ -48,5 +48,9 @@ public class BudgetDAO {
 
         String csv = new String(data, charset);
         return Budget.fromCSV(csv);
+    }
+
+    public void deleteUser(String userID) throws IOException {
+        file.deleteIdentifier(userID);
     }
 }

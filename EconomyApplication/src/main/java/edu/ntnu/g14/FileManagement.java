@@ -55,14 +55,15 @@ public class FileManagement {
             }
 
             try {
-                Files.createFile(file);
+                if (Files.notExists(file))
+                    Files.createFile(file);
             } catch (FileAlreadyExistsException e) {
                 // Skip
             }
         }
     }
 
-    public static Login[] readUsers() throws IOException {
+    public static Login[] readLogins() throws IOException {
         return USER_DAO.getAllLogins();
     }
 
@@ -75,6 +76,14 @@ public class FileManagement {
         Budget budget = BUDGET_DAO.getBudget(userId);
 
         return new User(accounts, invoices, user.getLoginInfo(), user.getEmail(), user.getLastName(), user.getFirstName(), transactions, budget);
+    }
+
+    public static void newEditUser(User loggedInUser) {
+        try {
+            USER_DAO.setUser(loggedInUser);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void writeNewUser(User newUser) throws IOException {
@@ -106,9 +115,13 @@ public class FileManagement {
             ACCOUNT_DAO.replaceAllAccounts(userID, accounts);
     }
 
-    public static void writeAccount(String userId, Account account) {
+    public static void deleteUser(String userID) {
         try {
-            ACCOUNT_DAO.setAccount(userId, account);
+            TRANSACTION_DAO.deleteUser(userID);
+            ACCOUNT_DAO.deleteUser(userID);
+            INVOICE_DAO.deleteUser(userID);
+            BUDGET_DAO.deleteUser(userID);
+            USER_DAO.deleteUser(userID);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -122,24 +135,24 @@ public class FileManagement {
         }
     }
 
+    public static Transaction[] readLatestTransactions(String userId, int amount) throws IOException{
+        return TRANSACTION_DAO.getLatest(userId, amount);
+    }
+
+    public static void writeAccount(String userId, Account account) {
+        try {
+            ACCOUNT_DAO.setAccount(userId, account);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void editAccount(String userID, Account account) {
         try {
             ACCOUNT_DAO.setAccount(userID, account);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static void newEditUser(User loggedInUser) {
-        try {
-            USER_DAO.setUser(loggedInUser);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static Transaction[] readLatestTransactions(String userId, int amount) throws IOException{
-        return TRANSACTION_DAO.getLatest(userId, amount);
     }
 
 }

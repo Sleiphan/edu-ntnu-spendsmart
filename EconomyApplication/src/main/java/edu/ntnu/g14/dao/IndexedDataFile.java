@@ -8,10 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class IndexedDataFile {
-    /**
-     * This class uses an internal charset to read and write the index-section of the file.
-     */
-    private static final Charset CHARSET = Charset.defaultCharset();
 
     private static final char NEW_LINE = '\n';
     private static final char ESCAPE_CHAR = '\\';
@@ -30,8 +26,18 @@ public class IndexedDataFile {
     private int chainedOpens;
 
     private long dataStartPosition;
+    /**
+     * This class uses an internal charset to read and write the index-section of the file.
+     */
+    private final Charset charset;
 
     public IndexedDataFile(String filePath) throws IOException {
+        this(filePath, Charset.defaultCharset());
+    }
+
+    public IndexedDataFile(String filePath, Charset charset) throws IOException {
+        this.charset = charset;
+
         fileFile = new File(filePath);
         tempFile = new File(filePath + ".temp");
         tempFile.createNewFile();
@@ -117,11 +123,11 @@ public class IndexedDataFile {
         openStreams();
 
         DAOTools.appendToFile(data, fileStream);
-        DAOTools.appendToFile("\n".getBytes(CHARSET), fileStream);
+        DAOTools.appendToFile("\n".getBytes(charset), fileStream);
 
         long dataIndex = fileStream.length() - data.length - 1;
         if (dataStartPosition == -1)
-            DAOTools.insertIntoFile("\n".getBytes(CHARSET), 0, fileStream, tempStream);
+            DAOTools.insertIntoFile("\n".getBytes(charset), 0, fileStream, tempStream);
         else
             dataIndex -= dataStartPosition;
 
@@ -360,7 +366,7 @@ public class IndexedDataFile {
         String data = newIdentifier ? "" : ",";
         data += dataIndex;
 
-        DAOTools.insertIntoFile(data.getBytes(CHARSET), start, fileStream, tempStream);
+        DAOTools.insertIntoFile(data.getBytes(charset), start, fileStream, tempStream);
         updateStartPositionIndex();
     }
 
@@ -372,7 +378,7 @@ public class IndexedDataFile {
      */
     private long createNewIdentifierEntry(String identifier) throws IOException {
         String text = identifier + IDENTIFIER_SEPARATOR;
-        byte[] data = (text + '\n').getBytes(CHARSET);
+        byte[] data = (text + '\n').getBytes(charset);
 
         long offset = 0; // Add the new identifier entry to the beginning of the file.
         DAOTools.insertIntoFile(data, offset, fileStream, tempStream);
@@ -392,7 +398,7 @@ public class IndexedDataFile {
      * If a line delimiter is found, or end of file is reached, returns null;
      * @throws IOException
      */
-    private static String readUntil_breakNewLine(RandomAccessFile stream) throws IOException {
+    private String readUntil_breakNewLine(RandomAccessFile stream) throws IOException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         char current;
@@ -406,7 +412,7 @@ public class IndexedDataFile {
             return null;
         }
 
-        return out.toString(CHARSET);
+        return out.toString(charset);
     }
 
     /**
@@ -441,7 +447,7 @@ public class IndexedDataFile {
 
 
     private String readLineS() throws IOException {
-        return new String(readLine(), CHARSET);
+        return new String(readLine(), charset);
     }
 
     private long getPositionOfIndices(String identifier) throws IOException {
@@ -535,7 +541,7 @@ public class IndexedDataFile {
         int dataStart = (int) dataStartPosition;
         byte[] data = new byte[dataStart];
         fileStream.read(data, 0, dataStart);
-        return new String(data, CHARSET);
+        return new String(data, charset);
     }
 
     /**
@@ -587,7 +593,7 @@ public class IndexedDataFile {
         }
         sb.append("\n");
 
-        DAOTools.replace(sb.toString().getBytes(CHARSET), 0, dataStartPosition, fileStream, tempStream);
+        DAOTools.replace(sb.toString().getBytes(charset), 0, dataStartPosition, fileStream, tempStream);
         updateStartPositionIndex();
     }
 

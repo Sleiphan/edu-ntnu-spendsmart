@@ -15,7 +15,7 @@ public class RegisterSecondScene {
         TextField keyInput = ApplicationObjects.newTextField("", 120, 195, 100, 20, 15);
         Button next = ApplicationObjects.newButton("Next", 240, 195, 100, 20, 15);
         next.setOnAction(e -> {
-            if (true) {//if (keyInput.getText().replace(" ", "").equals(key.replace(" ", ""))) {
+            if (keyInput.getText().replace(" ", "").equals(key.replace(" ", ""))) {
                 try {
                     ApplicationFront.setLoggedInUser(FileManagement.readUser(usersID));
                 } catch (IOException e1) {

@@ -9,7 +9,6 @@ import java.util.Arrays;
 
 public class UserDAO {
 
-    private static final String LOGINS_IDENTIFIER = "ALL_LOGINS";
     private static final char LOGIN_DATA_SEPARATOR = ',';
     private static final char USER_DATA_SEPARATOR = ';';
 
@@ -23,7 +22,7 @@ public class UserDAO {
     }
 
     public UserDAO(String filePath, Charset charset) throws IOException {
-        this.file = new IndexedDataFile(filePath);
+        this.file = new IndexedDataFile(filePath, charset);
         this.charset = charset;
     }
 
@@ -104,5 +103,9 @@ public class UserDAO {
         String name = fields[1];
         String pass = fields[2];
         return new Login(name, pass, id);
+    }
+
+    public void deleteUser(String userID) throws IOException {
+        file.deleteIdentifier(userID);
     }
 }

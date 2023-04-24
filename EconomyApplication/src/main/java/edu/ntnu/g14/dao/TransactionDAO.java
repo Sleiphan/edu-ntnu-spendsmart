@@ -13,7 +13,7 @@ import java.util.Arrays;
  */
 public class TransactionDAO {
 
-    private IndexedDataFile file;
+    private final IndexedDataFile file;
     private final  Charset charset;
 
     public TransactionDAO(String filePath) throws IOException {
@@ -21,7 +21,7 @@ public class TransactionDAO {
     }
 
     public TransactionDAO(String filePath, Charset charset) throws IOException {
-        this.file = new IndexedDataFile(filePath);
+        this.file = new IndexedDataFile(filePath, charset);
         this.charset = charset;
     }
 
@@ -65,5 +65,9 @@ public class TransactionDAO {
                 .map(arr -> new String(arr, charset))
                 .map(Transaction::fromCSVString)
                 .toArray(Transaction[]::new);
+    }
+
+    public void deleteUser(String userID) throws IOException {
+        file.deleteIdentifier(userID);
     }
 }

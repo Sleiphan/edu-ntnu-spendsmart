@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class AccountDAO {
 
-    private IndexedDataFile file;
+    private final IndexedDataFile file;
     private final Charset charset;
 
     public AccountDAO(String filePath) throws IOException {
@@ -19,7 +19,7 @@ public class AccountDAO {
     }
 
     public AccountDAO(String filePath, Charset charset) throws IOException {
-        this.file = new IndexedDataFile(filePath);
+        this.file = new IndexedDataFile(filePath, charset);
         this.charset = charset;
     }
 
@@ -87,5 +87,9 @@ public class AccountDAO {
                 .map(arr -> new String(arr, charset))
                 .map(Account::fromCSVString)
                 .toArray(Account[]::new);
+    }
+
+    public void deleteUser(String userID) throws IOException {
+        file.deleteIdentifier(userID);
     }
 }

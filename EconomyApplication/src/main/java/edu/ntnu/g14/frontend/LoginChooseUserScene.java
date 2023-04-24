@@ -27,7 +27,7 @@ public class LoginChooseUserScene {
             }
         });
 
-        Login[] loginsTemp = FileManagement.readUsers();
+        Login[] loginsTemp = FileManagement.readLogins();
         if (loginsTemp == null)
             loginsTemp = new Login[0];
         final Login[] logins = loginsTemp;

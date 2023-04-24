@@ -1,5 +1,0 @@
-HåkonFjellanger#1:38
-olav#1:0
-
-"olav#1","olav","1";"f@g.c";"av";"ol"
-"HåkonFjellanger#1","HåkonFjellanger","1";"hfredrif@gmail.com";"Fjellanger";"Håkon"
