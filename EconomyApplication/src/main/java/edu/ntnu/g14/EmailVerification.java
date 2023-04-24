@@ -6,7 +6,10 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 import java.util.Random;
 
-
+/**
+ * The EmailVertification class provides functionality to generate a vertification key and send it to a 
+ * specified email adress using Gmail's SMTP server.
+ */
 public class EmailVerification {
 
     /**
