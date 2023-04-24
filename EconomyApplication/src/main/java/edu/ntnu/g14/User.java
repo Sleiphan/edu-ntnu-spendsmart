@@ -144,12 +144,11 @@ public class User extends Personalia {
     */
     public String amountAllAccounts() {
 
-        return ApplicationObjects.numberRegex(this.accounts
+        return ApplicationObjects.formatCurrency(this.accounts
                 .stream()
                 .filter(account -> !account.getAccountType().equals(AccountCategory.PENSION_ACCOUNT))
                 .map(Account::getAmount)
-                .reduce(BigDecimal.valueOf(0), BigDecimal::add)
-                .toString());
+                .reduce(BigDecimal.valueOf(0), BigDecimal::add));
     }
 
     /**
@@ -271,7 +270,7 @@ public class User extends Personalia {
                 .stream()
                 .map(Account::getAccountNumber);
 
-        return ApplicationObjects.numberRegex(this.transactions
+        return ApplicationObjects.formatCurrency(this.transactions
                 .stream()
                 .filter(transaction ->
                         incomeOrExpenses ? accountNumbers.get()
@@ -281,7 +280,7 @@ public class User extends Personalia {
                         transaction.getDateOfTransaction().isAfter(LocalDate.now().minusDays(30))
                                 && transaction.getDateOfTransaction().isBefore(LocalDate.now().plusDays(1)))
                 .map(Transaction::getAmount)
-                .reduce(BigDecimal.valueOf(0), BigDecimal::add).toString());
+                .reduce(BigDecimal.valueOf(0), BigDecimal::add));
     }
 
     /**
@@ -298,7 +297,7 @@ public class User extends Personalia {
                 .filter(account -> !account.getAccountType().equals(AccountCategory.PENSION_ACCOUNT))
                 .map(Account::getAccountNumber);
 
-        return ApplicationObjects.numberRegex(this.transactions
+        return ApplicationObjects.formatCurrency(this.transactions
                 .stream()
                 .filter(transaction ->
                         incomeOrExpenses ? accountNumbers.get()
@@ -308,7 +307,7 @@ public class User extends Personalia {
                         transaction.getDateOfTransaction().isAfter(startOfLastYear)
                                 && transaction.getDateOfTransaction().isBefore(endOfLastYear))
                 .map(Transaction::getAmount)
-                .reduce(BigDecimal.valueOf(0), BigDecimal::add).toString());
+                .reduce(BigDecimal.valueOf(0), BigDecimal::add));
 
     }
 

@@ -3,6 +3,8 @@ package edu.ntnu.g14.frontend;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -360,7 +362,6 @@ public class ApplicationObjects {
 
         listView.setItems(items);
         listView.setCellFactory(param -> new ListCell<String>() {
-            private final ImageView imageView = new ImageView();
 
             public void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -368,23 +369,24 @@ public class ApplicationObjects {
                     setText(null);
                     setGraphic(null);
                 } else {
-
+                    Account account = BankApplication.loggedInUser.getAccountWithAccountName(item);
+                    String amount = formatCurrency(account.getAmount());
                     AccountCell cell;
-                    switch (BankApplication.loggedInUser.getAccountWithAccountName(item).getAccountType()) {
+                    switch (account.getAccountType()) {
                         case PENSION_ACCOUNT:
-                            cell = new AccountCell(item, AccountCategory.PENSION_ACCOUNT);
+                            cell = new AccountCell(item, AccountCategory.PENSION_ACCOUNT, amount);
                             setGraphic(cell.getHBox());
                             break;
                         case SAVINGS_ACCOUNT:
-                            cell = new AccountCell(item, AccountCategory.SAVINGS_ACCOUNT);
+                            cell = new AccountCell(item, AccountCategory.SAVINGS_ACCOUNT, amount);
                             setGraphic(cell.getHBox());
                             break;
                         case CHECKING_ACCOUNT:
-                            cell = new AccountCell(item, AccountCategory.CHECKING_ACCOUNT);
+                            cell = new AccountCell(item, AccountCategory.CHECKING_ACCOUNT, amount);
                             setGraphic(cell.getHBox());
                             break;
                         case OTHER:
-                            cell = new AccountCell(item, AccountCategory.OTHER);
+                            cell = new AccountCell(item, AccountCategory.OTHER, amount);
                             setGraphic(cell.getHBox());
                     }
                 }
@@ -443,9 +445,30 @@ public class ApplicationObjects {
                 , "Alcohol and Tobacco", "Payment", "Other"};
     }
 
-    public static String numberRegex(String number) {
-        
-        return number.replaceAll("(?<=\\d)(?=(\\d{3})+(?!\\d))", " ").trim().concat(" kr");
+    public static String formatCurrency(BigDecimal amount) {
+        final String CURRENCY_SYMBOL = " kr";
+        final char DECIMAL_POINT = '.';
+        final String DECIMAL_PLACES = "00";
+        String decimalFormat = decimalFormat(amount);
+        if (decimalFormat.length() > 2 && decimalFormat.charAt(decimalFormat.length() - 3) != DECIMAL_POINT) {
+            decimalFormat = decimalFormat.replaceAll("(?<=\\d)(?=(\\d{3})+(?!\\d))", " ");
+            decimalFormat += DECIMAL_POINT + DECIMAL_PLACES + CURRENCY_SYMBOL;
+        } else {
+            decimalFormat = decimalFormat.replaceAll("(?<=\\d)(?=(\\d{3})+(?!\\d))", " ") + CURRENCY_SYMBOL;
+        }
+
+        return decimalFormat.trim();
+    }
+    private static String decimalFormat(BigDecimal amount) {
+        DecimalFormat df = new DecimalFormat();
+
+        df.setMaximumFractionDigits(2);
+
+        df.setMinimumFractionDigits(0);
+
+        df.setGroupingUsed(false);
+
+        return df.format(amount);
     }
 
     public static String[] getBudgetIncomeCategories() {

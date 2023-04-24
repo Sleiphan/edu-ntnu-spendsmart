@@ -1,6 +1,7 @@
 package edu.ntnu.g14;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * This class represents an account in the bank system and that a user has.
@@ -30,7 +31,7 @@ public class Account {
         if (amount.intValue() < 0) {
             throw new IllegalArgumentException("Amount needs to be zero or positive");
         } else {
-            this.amount = amount;
+            this.amount = amount.setScale(2, RoundingMode.DOWN);
         }
         // TODO: Check if accountName is occupied
         if (accountName.isBlank()) {

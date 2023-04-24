@@ -120,7 +120,7 @@ public class MainPageScene {
             transactions = new Transaction[0];
         ObservableList<ObservableList<Object>> latestActivitiesData = FXCollections.observableArrayList();
         for(int i = 0; i < Math.min(10, length); i++) {
-            latestActivitiesData.add(FXCollections.observableArrayList(transactions[i].getToAccountNumber(), ApplicationObjects.numberRegex(transactions[i].getAmount().toString())));
+            latestActivitiesData.add(FXCollections.observableArrayList(transactions[i].getToAccountNumber(), ApplicationObjects.formatCurrency(transactions[i].getAmount())));
         }
 
         return  latestActivitiesData;
