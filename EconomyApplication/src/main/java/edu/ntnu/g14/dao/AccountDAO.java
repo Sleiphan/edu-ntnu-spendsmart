@@ -1,10 +1,13 @@
 package edu.ntnu.g14.dao;
 
 import edu.ntnu.g14.Account;
+import edu.ntnu.g14.Transaction;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class AccountDAO {
 
@@ -33,18 +36,29 @@ public class AccountDAO {
         Account[] accounts = getAllAccountsForUser(userID);
         int index = -1;
 
-        boolean found = false;
         for (int i = 0; i < accounts.length; i++)
             if (accounts[i].getAccountNumber().equals(account.getAccountNumber())) {
                 index = i;
                 break;
             }
 
-        if (index == -1)
+        if (index == -1) {
+            addNewAccount(userID, account);
             return;
+        }
 
         accounts[index] = account;
+
         replaceAllAccounts(userID, accounts);
+    }
+
+    public void addNewAccount(String userID, Account obj) throws IOException {
+        if (obj == null)
+            throw new IllegalArgumentException("Parameter transaction cannot be null");
+
+        byte[] data = obj.toCSVString().getBytes(charset);
+
+        file.addNewData(userID, data);
     }
 
     public Account getAccount(String userID, String accountNumber) throws IOException {
