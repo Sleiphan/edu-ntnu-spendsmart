@@ -5,6 +5,8 @@ import edu.ntnu.g14.Account;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class AccountDAO {
 
@@ -33,17 +35,20 @@ public class AccountDAO {
         Account[] accounts = getAllAccountsForUser(userID);
         int index = -1;
 
-        boolean found = false;
         for (int i = 0; i < accounts.length; i++)
             if (accounts[i].getAccountNumber().equals(account.getAccountNumber())) {
                 index = i;
                 break;
             }
 
-        if (index == -1)
-            return;
+        if (index == -1) {
+            List<Account> accountList = Arrays.stream(accounts).collect(Collectors.toList());
+            accountList.add(account);
+            accounts = accountList.toArray(Account[]::new);
+        } else {
+            accounts[index] = account;
+        }
 
-        accounts[index] = account;
         replaceAllAccounts(userID, accounts);
     }
 
