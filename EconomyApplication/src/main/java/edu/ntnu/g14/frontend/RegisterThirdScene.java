@@ -15,7 +15,7 @@ public class RegisterThirdScene {
         Button yes = ApplicationObjects.newButton("Yes", 200, 120, 50, 20, 15);
         yes.setOnAction(e -> {
             try {
-                stage.setScene(AccountOverviewScene.scene(null));
+                stage.setScene(AccountOverviewScene.scene(java.util.Optional.empty()));
             } catch (IOException e1) {
                 e1.printStackTrace();
             }

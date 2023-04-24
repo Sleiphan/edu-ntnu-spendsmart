@@ -30,18 +30,6 @@ public class AccountOverviewScene {
         List<Account> accounts = BankApplication.loggedInUser.getAccountsAsList();
         ObservableList<String> accountNames = FXCollections.observableArrayList(getAccountsNames());
 
-        if (accounts.isEmpty()) {
-            Dialog<Account.AccountBuilder> accountDialog = new AccountDialog(new Account.AccountBuilder());
-            Optional<Account.AccountBuilder> result = accountDialog.showAndWait();
-            if (result.isPresent()) {
-
-                addAndWriteAccount(accountNames, result.get());
-            }
-            else {
-                return MainPageScene.scene();
-            }
-        }
-
         String[] columnTitlesTransactionsTable = {"Transaction", "Date", "Amount"};
 
 
@@ -88,8 +76,11 @@ public class AccountOverviewScene {
         editAccount.setOnAction(actionEvent -> {
             Dialog<Account> accountDialog = new EditAccountDialog(currentAccount);
             Optional<Account> result = accountDialog.showAndWait();
+
             if (result.isPresent()) {
+
                 accountComboBox.setItems(FXCollections.observableArrayList(getAccountsNames()));
+
                 if (!BankApplication.loggedInUser.getAccountsAsList().contains(currentAccount)) {
                     getAccountsNames().remove(currentAccount.getAccountName());
                     accountComboBox.setItems(FXCollections.observableArrayList(getAccountsNames()));

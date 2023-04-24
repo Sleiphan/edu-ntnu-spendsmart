@@ -1,6 +1,7 @@
 package edu.ntnu.g14.frontend;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -26,24 +27,32 @@ public class MainPageScene {
         String [] columnTitlesLatestActivitiesTable = {"Transaction", "Amount"};
         String [] columnTitlesDuePaymentsTable = {"Date", "Recipient", "Amount"};
 
-        String [] accountsList = new String [BankApplication.loggedInUser.getAccounts().length];
-        Account[] accounts = BankApplication.loggedInUser.getAccounts();
-        for (int i = 0; i < BankApplication.loggedInUser.getAccounts().length; i++){
-            accountsList[i] = accounts[i].getAccountName();
+        List<Account> accounts = BankApplication.loggedInUser.getAccountsAsList();
+        ObservableList<String> accountNames = FXCollections.observableArrayList(getAccountsNames());
+        if (accounts.isEmpty()) {
+            Dialog<Account.AccountBuilder> accountDialog = new AccountDialog(new Account.AccountBuilder());
+            Optional<Account.AccountBuilder> result = accountDialog.showAndWait();
+            if (result.isPresent()) {
+
+                addAndWriteAccount(accountNames, result.get());
+            }
+            else {
+                return MainPageScene.scene();
+            }
         }
 
         Group transfer = ApplicationObjects.newButtonWithIcon("Transfer", 30, 50, 157, 25, 16, "budget.png", TransferScene.scene());
-        
+
         Group invoice = ApplicationObjects.newButtonWithIcon("Invoice", 192, 50, 157,25,16, "invoice.png", InvoiceScene.scene());
-        
+
         Group payment = ApplicationObjects.newButtonWithIcon("Payment", 30, 90, 157, 25, 16, "payment.png", PaymentScene.scene());
-        
+
         Group overview = ApplicationObjects.newButtonWithIcon("Overview", 192,90, 157,25,16, "overview.png", GeneralOverviewScene.scene());
-        
+
         Group accountsButton = ApplicationObjects.newButtonWithIcon("Accounts", 30,130, 157, 25, 16, "account.png", AccountOverviewScene.scene(Optional.empty()));
 
         Group budgeting = ApplicationObjects.newButtonWithIcon("Budgeting", 192, 130, 157, 25,16, "budget.png", BudgetingScene.scene());
-        
+
         Text latestActivitiesText = ApplicationObjects.newText("Latest Activities", 20, false,130, 210);
         TableView latestActivitiesTable = ApplicationObjects.newTableView1(columnTitlesLatestActivitiesTable, 30, 230, 324, 300, BankApplication.loggedInUser.getAccountsAsList().stream().map(Account::getAccountNumber).collect(Collectors.toList()));
         ObservableList<ObservableList<Object>> latestActivitiesData;
@@ -58,14 +67,16 @@ public class MainPageScene {
         TableView duePaymentsTable = ApplicationObjects.newTableView(columnTitlesDuePaymentsTable, 728-30-324, 230, 324, 300);
         duePaymentsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         Text accountsText = ApplicationObjects.newText("Accounts", 20, false, 500, 30);
-        ListView accountsListView = ApplicationObjects.newListView(accountsList, 728-30-324, 50, 324, 115);
+        ListView accountsListView = ApplicationObjects.newListView(getAccountsNames().toArray(String[]::new), 728-30-324, 50, 324, 115);
         accountsListView.setFixedCellSize(40);
         accountsListView.setStyle("-fx-font-family: \"Helvetica Neue\";\n" +
                 "    -fx-font-size: 20px;\n" +
                 "    -fx-alignment: center");
+
         accountsListView.setOnMouseClicked(mouseEvent -> {
             try {
-                stage.setScene(AccountOverviewScene.scene(Optional.ofNullable(BankApplication.loggedInUser.getAccountWithAccountName(accountsListView.getSelectionModel().getSelectedItem().toString()))));
+                if (accountsListView.getSelectionModel().getSelectedItem() != null)
+                    stage.setScene(AccountOverviewScene.scene(Optional.ofNullable(BankApplication.loggedInUser.getAccountWithAccountName(accountsListView.getSelectionModel().getSelectedItem().toString()))));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -75,15 +86,15 @@ public class MainPageScene {
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
         Group root = new Group(transfer, invoice, payment,
-        overview, accountsButton, budgeting, latestActivitiesText, latestActivitiesTable, 
+        overview, accountsButton, budgeting, latestActivitiesText, latestActivitiesTable,
         duePaymentsTable, duePaymentsText, accountsListView, accountsText, dropDownButton, manageUserButton);
         dropDownButton.setOnAction(e -> {
             root.getChildren().add(dropDown);
         });
-        root.getStylesheets().add("StyleSheet.css"); 
+        root.getStylesheets().add("StyleSheet.css");
         Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
-    
-        
+
+
         Group userButtons = ApplicationObjects.userMenu();
         manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
@@ -91,12 +102,12 @@ public class MainPageScene {
                 root.getChildren().add(userButtons);
                 event.consume();
             }
-        }); 
+        });
         scene.setOnMouseClicked(e -> {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
         });
-        
+
         return scene;
     }
 
@@ -114,5 +125,15 @@ public class MainPageScene {
 
         return  latestActivitiesData;
     }
+    private static List<String> getAccountsNames() {
 
+        return BankApplication.loggedInUser.getAccountsAsList()
+                .stream().map(Account::getAccountName).collect(Collectors.toList());
+    }
+    private static void addAndWriteAccount(ObservableList<String> accountNames, Account.AccountBuilder result) {
+        Account account = result.build();
+        FileManagement.writeAccount(BankApplication.loggedInUser.getLoginInfo().getUserId(), account);
+        accountNames.add(account.getAccountName());
+        BankApplication.loggedInUser.addAccount(account);
+    }
 }
