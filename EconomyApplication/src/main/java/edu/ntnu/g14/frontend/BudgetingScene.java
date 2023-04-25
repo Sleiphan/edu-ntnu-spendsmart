@@ -19,7 +19,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-
+/**
+ * The {@code BudgetingScene} class represents the budgeting scene in the Bank Application,
+ * allowing users to view and edit their budget items, such as revenues and expenditures.
+ * <p>This class provides methods for creating, editing, and deleting budget items,
+ * as well as updating the savings value based on the user's budget.
+ */
 public class BudgetingScene {
     static Stage stage = BankApplication.getStage();
     private static User loggedInUser = BankApplication.loggedInUser;
@@ -39,7 +44,12 @@ public class BudgetingScene {
 
 
 
-
+    /**
+     * Generates the main budgeting scene.
+     *
+     * @return the budgeting {@link Scene}
+     * @throws IOException if there is an error accessing the budget file
+     */
     static public Scene scene() throws IOException {
         budgetDAO = getBudgetDAO();
 
@@ -121,6 +131,12 @@ public class BudgetingScene {
             event.consume();
         });
     }
+    /**
+     * Initializes revenues data from the budget file.
+     *
+     * @return an {@link ObservableList} containing the revenues data
+     * @throws IOException if there is an error accessing the budget file
+     */
     public static ObservableList<ObservableList<Object>> initializeRevenuesData() throws IOException {
         ObservableList<ObservableList<Object>> revenuesData = FXCollections.observableArrayList();
         Budget budget = budgetDAO.getBudget(loggedInUser.getLoginInfo().getUserId());
@@ -137,7 +153,11 @@ public class BudgetingScene {
 
         return revenuesData;
     }
-
+    /**
+     * Initializes expenditures data from the budget file.
+     *
+     * @return an {@link ObservableList} containing the expenditure data
+     */
     public static ObservableList<ObservableList<Object>> initializeExpenditureData() {
         ObservableList<ObservableList<Object>> expenditureData = FXCollections.observableArrayList();
         Budget budget = loggedInUser.getBudget();
@@ -250,7 +270,9 @@ public class BudgetingScene {
         }
     }
 
-
+    /**
+     * Refreshes the data in the revenues and expenditures tables.
+     */
     public static void refreshData() {
         try {
             revenues.setItems(initializeRevenuesData());
@@ -260,6 +282,9 @@ public class BudgetingScene {
             e.printStackTrace();
         }
     }
+    /**
+     * Saves the modified budget data to the budget file.
+     */
     public static void saveModifiedData() {
         try {
             Budget budget = loggedInUser.getBudget();
@@ -300,7 +325,11 @@ public class BudgetingScene {
             savings.setText("Savings: " + loggedInUser.getBudget().getSavings());
         }
     }
-
+    /**
+     * Sets the loggedInUser for the budgeting scene.
+     *
+     * @param user the {@link User} to be set as the loggedInUser
+     */
     public static void setLoggedInUser(User user) {
         loggedInUser = user;
     }
@@ -324,7 +353,7 @@ public class BudgetingScene {
         return revenues;
     }
 
-    private static TableView<ObservableList<Object>> createExpendituresTable() throws IOException {
+    private static TableView<ObservableList<Object>> createExpendituresTable() {
         expenditures = ApplicationObjects.newTableView(new String[]{"Expenditures", "Budget"}, 40, 210, 380, 250);
         expenditures.setItems(initializeExpenditureData());
         expenditures.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
