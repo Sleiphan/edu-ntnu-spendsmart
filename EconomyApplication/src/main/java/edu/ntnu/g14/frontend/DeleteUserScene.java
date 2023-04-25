@@ -1,10 +1,10 @@
 package edu.ntnu.g14.frontend;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import edu.ntnu.g14.BankApplication;
 import edu.ntnu.g14.User;
+import edu.ntnu.g14.dao.UserDAO;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -13,28 +13,39 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.EventHandler;
 import javafx.util.Duration;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-
+/**
+ * The DeleteUserScene class is responsible for displaying to delete user scene to the user.
+ * The scene displays a warning message that asks the user if they want to delete the currently loggedInUser account.
+ * The user has 10 seconds to confirm the deletion, during which a countdown timer is displayed.
+ * If the user does not confirm the deletion, the delete action is cancelled.
+ * If the user confirms the deletion, the user account is deleted from the database and a success message is displayed.
+ */
 public class DeleteUserScene {
 
-    private VBox vBox;
-
-    private StackPane stackPane;
     static Stage stage = BankApplication.getStage();
 
     static User loggedInUser = BankApplication.loggedInUser;
 
+    static UserDAO userDAO;
+
     private static boolean cancelPressed = false;
 
-
-    static public Scene scene() throws FileNotFoundException, IOException {
+    /**
+     * The scene() method creates to delete user scene, which displays a warning message and buttons
+     * that allow the user to either confirm or cancel the deletion of the currently loggedInUser account.
+     * A countdown timer is displayed that counts down from 10 seconds, and if the user does not confirm
+     * the deletion within that time frame, the deletion action is cancelled.
+     *
+     * @return Returns to delete user scene.
+     * @throws IOException if an I/O error occurs
+     */
+    static public Scene scene() throws IOException {
         Label loggedInUserLabel = new Label(loggedInUser.getLoginInfo().getUserName());
         loggedInUserLabel.setStyle("-fx-font-size: 40;");
         Label loggedInUserEmail = new Label(loggedInUser.getEmail());
@@ -72,7 +83,11 @@ public class DeleteUserScene {
 
             timer.setOnFinished(e -> {
                 if (!cancelPressed) {
-                    //TODO: remove user
+                    try {
+                        userDAO.deleteUser(loggedInUser.getLoginInfo().getUserId());
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                     ApplicationObjects.alertBox("Deleted user", "You have deleted user", loggedInUser.getLoginInfo().getUserName() + " R.I.P");
                     confirm.setStyle("-fx-background-color: red");
                     confirm.setTextFill(Paint.valueOf("WHITE"));
@@ -112,21 +127,16 @@ public class DeleteUserScene {
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
         Group root = new Group(userInfoBox, deleteUserBox, dropDownButton, homeButton, manageUserButton);
-        dropDownButton.setOnAction(e -> {
-            root.getChildren().add(dropDown);
-        });
+        dropDownButton.setOnAction(e -> root.getChildren().add(dropDown));
         root.getStylesheets().add("StyleSheet.css"); 
         Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
 
 
         Group userButtons = ApplicationObjects.userMenu();
-        manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event){
-                root.getChildren().add(userButtons);
-                event.consume();
-            }
-        }); 
+        manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            root.getChildren().add(userButtons);
+            event.consume();
+        });
         scene.setOnMouseClicked(e -> {
             root.getChildren().remove(userButtons);
             root.getChildren().remove(dropDown);
