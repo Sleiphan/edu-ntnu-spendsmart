@@ -7,12 +7,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
 import edu.ntnu.g14.dao.*;
 
-
-//TODO: create exceptions
-
+/**
+ * The class is responsible for handling file I/O for the application.
+ * It provides methods for reading and writing data to text files.
+ * The class ensures the necessary save files are created if they do not exist.
+ */
 public class FileManagement {
     public static final String PATH_ACCOUNTS     = "saves/accounts.txt";
     public static final String PATH_BUDGETS      = "saves/budgets.txt";
@@ -44,6 +45,10 @@ public class FileManagement {
         }
     }
 
+    /**
+    * Creates the save files for the application if they don't exist.
+    * @throws IOException if an error occurs while creating the directories or files.
+    */
     private static void establishSaveFiles() throws IOException {
         for (String s : PATH_ALL) {
             Path file = Path.of(s);
@@ -63,10 +68,21 @@ public class FileManagement {
         }
     }
 
+    /**
+    * Returns an array of all Login objects for all users in the application.
+    * @return an array of Login objects.
+    * @throws IOException if an error occurs while reading from the data file.
+    */
     public static Login[] readLogins() throws IOException {
         return USER_DAO.getAllLogins();
     }
 
+    /**
+    * Returns a User object with the specified user ID.
+    * @param userId the ID of the user to retrieve.
+    * @return a User object with the specified user ID.
+    * @throws IOException if an error occurs while reading from the data file.
+    */
     public static User readUser(String userId) throws IOException {
         User user = USER_DAO.getUser(userId);
 
@@ -78,6 +94,11 @@ public class FileManagement {
         return new User(accounts, invoices, user.getLoginInfo(), user.getEmail(), user.getLastName(), user.getFirstName(), transactions, budget);
     }
 
+    /**
+    * Writes changes to a User object to the data file.
+    * @param loggedInUser the updated User object to write to the data file.
+    * @throws RuntimeException if an IOException occurs while writing to the data file.
+    */
     public static void newEditUser(User loggedInUser) {
         try {
             USER_DAO.setUser(loggedInUser);
@@ -86,6 +107,12 @@ public class FileManagement {
         }
     }
 
+    /**
+    * Writes a new User object to the data file.
+    * @param newUser the new User object to write to the data file.
+    * @throws IllegalArgumentException if a user with the same ID already exists in the application.
+    * @throws IOException if an error occurs while writing to the data file.
+    */
     public static void writeNewUser(User newUser) throws IOException {
         String userID = newUser.getLoginInfo().getUserId();
 
@@ -115,6 +142,11 @@ public class FileManagement {
             ACCOUNT_DAO.replaceAllAccounts(userID, accounts);
     }
 
+    /**
+    * Deletes the specified user and all associated data from the application.
+    * @param userID the ID of the user to delete.
+    * @throws RuntimeException if an IOException occurs while deleting the user's data from the data file.
+    */
     public static void deleteUser(String userID) {
         try {
             TRANSACTION_DAO.deleteUser(userID);
@@ -127,6 +159,12 @@ public class FileManagement {
         }
     }
 
+    /**
+    * Writes a new Transaction object to the data file for the specified user.
+    * @param userId the ID of the user to associate the new transaction with.
+    * @param transaction the new Transaction object to write to the data file.
+    * @throws RuntimeException if an IOException occurs while writing to the data file.
+    */
     public static void writeTransaction(String userId, Transaction transaction) {
         try {
             TRANSACTION_DAO.addNewTransaction(userId, transaction);
@@ -135,10 +173,23 @@ public class FileManagement {
         }
     }
 
+    /**
+    * Returns an array of the specified number of the most recent transactions for the specified user.
+    * @param userId the ID of the user to retrieve transactions for.
+    * @param amount the number of transactions to retrieve.
+    * @return an array of the specified number of the most recent transactions for the specified user.
+    * @throws IOException if an error occurs while reading from the data file.
+    */
     public static Transaction[] readLatestTransactions(String userId, int amount) throws IOException{
         return TRANSACTION_DAO.getLatest(userId, amount);
     }
 
+    /**
+    * Writes a new or updated Account object to the data file for the specified user.
+    * @param userId the ID of the user to associate the new or updated account with.
+    * @param account the Account object to write to the data file.
+    * @throws RuntimeException if an IOException occurs while writing to the data file.
+    */
     public static void writeAccount(String userId, Account account) {
         try {
             ACCOUNT_DAO.setAccount(userId, account);
@@ -147,6 +198,12 @@ public class FileManagement {
         }
     }
 
+    /**
+    * Edits an existing Account object in the data file for the specified user.
+    * @param userID the ID of the user to associate the edited account with.
+    * @param account the updated Account object to write to the data file.
+    * @throws RuntimeException if an IOException occurs while writing to the data file.
+    */
     public static void editAccount(String userID, Account account) {
         try {
             ACCOUNT_DAO.setAccount(userID, account);
