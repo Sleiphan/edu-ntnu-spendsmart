@@ -18,17 +18,42 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-
+/**
+ * This class represents the scene for confirming a payment. It contains a table
+ * with information about the payment, and buttons for confirming or cancelling
+ * the payment.
+ *
+ * @author G14
+ * @version 1.0
+ * @since 2023-04-25
+ */
 public class PaymentConfirmationScene {
     static Stage stage = BankApplication.getStage();
     private static ArrayList<String> paymentInfo;
 
+    /**
+     * This variable is used to format the due date of the payment to the format from input,
+     * which is dd.MM.yyyy
+     * Used to make due date parseable by LocalDate.parse()
+     */
     private static final DateTimeFormatter formatter =
             DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
+    /**
+     * This variable is used to format the due date of the payment to the format dd/MM/yyyy
+     */
     public static final DateTimeFormatter dateFormatter =
             DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    /**
+     * This class represents the scene for confirming a payment. It contains a table
+     * with information about the payment, and buttons for confirming or cancelling
+     * the payment.
+     *
+     * @return Scene
+     * @throws FileNotFoundException if file is not found
+     * @throws IOException           if input is invalid
+     */
     static public Scene scene() throws FileNotFoundException, IOException {
         TableView<ObservableList<Object>> payment = ApplicationObjects.newTableView(new String[]{"Payment", "Information"}, 100, 100, 605, 224);
         ObservableList<ObservableList<Object>> paymentData = initializePaymentData(getPaymentInfo());

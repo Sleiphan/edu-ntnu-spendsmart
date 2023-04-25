@@ -25,9 +25,9 @@ public class AccountCell extends ListCell<String> {
         super();
         Pane pane = new Pane();
         ImageView icon = createIcon(iconType);
-        Label amountLabel = new Label(" Balance: " + amount);
+        Label amountLabel = new Label("Balance: " + amount);
         amountLabel.setStyle("-fx-text-fill: #3477eb;" +
-                             "-fx-font-size: 10px;" +
+                             "-fx-font-size: 12px;" +
                              "-fx-font-weight: 700;");
         VBox vBox = new VBox();
         vBox.getChildren().addAll(new Label(labelName), amountLabel, pane);
@@ -35,7 +35,6 @@ public class AccountCell extends ListCell<String> {
 
         hBox.getChildren().addAll(icon, vBox, pane);
         hBox.setAlignment(Pos.CENTER);
-
         HBox.setHgrow(pane, Priority.ALWAYS);
     }
     private static ImageView createIcon(AccountCategory category) {

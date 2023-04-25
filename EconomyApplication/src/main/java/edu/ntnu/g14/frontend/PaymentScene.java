@@ -15,6 +15,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * This class represents the scene for making a payment. It contains a text field
+ * for input of the account number to pay from, the amount to pay, a description
+ * of the transaction, the account number to pay to, a category for the
+ * transaction, and a due date for the payment.
+ *
+ * @author G14
+ * @version 1.0
+ * @since 2023-04-25
+ */
 public class PaymentScene {
     static Stage stage = BankApplication.getStage();
 
@@ -24,6 +34,7 @@ public class PaymentScene {
         int n = 85;
         int m = n - 5;
 
+        //Creates text fields for input
         TextField fromAccount = ApplicationObjects.newTextField("12345678910", x, y, 150, 20, 15);
         TextField amount = ApplicationObjects.newTextField("50kr", x, y + n, 100, 20, 15);
         TextField description = ApplicationObjects.newTextField("Description", x, y + 2 * n, 200, 20, 15);
@@ -35,6 +46,7 @@ public class PaymentScene {
         ComboBox<String> category = ApplicationObjects.newComboBox(categoryChoices, 200, 20, 15,x + 130, y + 3 * n);
         category.setPromptText("Category of Payment");
 
+        //Creates a button for making the payment and a button for cancelling the payment
         Button pay = ApplicationObjects.newButton("Pay", x - 50, y + 6 * n - 30, 100, 20, 15);
         Button cancel = ApplicationObjects.newButton("Cancel", x + 70, y + 6 * n - 30, 100, 20, 15);
         pay.setOnAction(e -> {

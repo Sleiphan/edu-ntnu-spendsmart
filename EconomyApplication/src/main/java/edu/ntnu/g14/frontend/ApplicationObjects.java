@@ -447,24 +447,16 @@ public class ApplicationObjects {
 
     public static String formatCurrency(BigDecimal amount) {
         final String CURRENCY_SYMBOL = " kr";
-        final char DECIMAL_POINT = '.';
-        final String DECIMAL_PLACES = "00";
         String decimalFormat = decimalFormat(amount);
-        if (decimalFormat.length() > 2 && decimalFormat.charAt(decimalFormat.length() - 3) != DECIMAL_POINT) {
-            decimalFormat = decimalFormat.replaceAll("(?<=\\d)(?=(\\d{3})+(?!\\d))", " ");
-            decimalFormat += DECIMAL_POINT + DECIMAL_PLACES + CURRENCY_SYMBOL;
-        } else {
-            decimalFormat = decimalFormat.replaceAll("(?<=\\d)(?=(\\d{3})+(?!\\d))", " ") + CURRENCY_SYMBOL;
-        }
 
-        return decimalFormat.trim();
+        return decimalFormat.replaceAll("(?<=\\d)(?=(\\d{3})+(?!\\d))", " ") + CURRENCY_SYMBOL;
     }
     private static String decimalFormat(BigDecimal amount) {
         DecimalFormat df = new DecimalFormat();
 
         df.setMaximumFractionDigits(2);
 
-        df.setMinimumFractionDigits(0);
+        df.setMinimumFractionDigits(2);
 
         df.setGroupingUsed(false);
 

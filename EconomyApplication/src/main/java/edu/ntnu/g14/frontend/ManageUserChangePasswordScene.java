@@ -15,10 +15,20 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
+/**
+ * This class represents the user management change password scene, where a user can change their password.
+ * It contains methods for creating and displaying the scene, and handling the user's input.
+ */
 public class ManageUserChangePasswordScene {
     static Stage stage = BankApplication.getStage();
-    private static User loggedInUser = BankApplication.loggedInUser;
+    private static final User loggedInUser = BankApplication.loggedInUser;
+    /**
+     * Creates and returns a Scene object for changing the password of a user.
+     *
+     * @return the Scene object for changing the user's password
+     * @throws FileNotFoundException if the file is not found
+     * @throws IOException if an I/O exception occurs
+     */
 
     static public Scene scene() throws FileNotFoundException, IOException{
         Label loggedInUserLabel = new Label(loggedInUser.getLoginInfo().getUserName());
@@ -47,8 +57,8 @@ public class ManageUserChangePasswordScene {
             String reNewPasswordInput = reNewPasswordField.getText();
 
             if (verifyOldPassword(oldPasswordInput)) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 if (newPasswordInput.equals(reNewPasswordInput)) {
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                     alert.setTitle("Confirm Password Change");
                     alert.setHeaderText("Are you sure you want to change the Password to: " + newPasswordField.getText() + "?");
                     alert.showAndWait().ifPresent(response -> {
@@ -58,7 +68,10 @@ public class ManageUserChangePasswordScene {
                             });
                     // Show a success message to the user, e.g., a dialog box
                 } else {
-
+                    alert.setTitle("Try Again");
+                    alert.setHeaderText("The you have to enter the new password twice");
+                    alert.setContentText(newPasswordInput +" is not the same as: " + reNewPasswordInput);
+                    alert.showAndWait();
                     }
                     // Show an error message to the user, e.g., a dialog box, saying the new passwords do not match
                 }
@@ -83,9 +96,7 @@ public class ManageUserChangePasswordScene {
         Group root = new Group(userInfoBox, cancelButton, confirmButton,
         oldPassword, newPassword, reNewPassword, oldPasswordField,
         newPasswordField, reNewPasswordField, dropDownButton, homeButton, manageUserButton);
-        dropDownButton.setOnAction(e -> {
-            root.getChildren().add(dropDown);
-        });
+        dropDownButton.setOnAction(e -> root.getChildren().add(dropDown));
         root.getStylesheets().add("StyleSheet.css"); 
         Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
        
@@ -102,11 +113,24 @@ public class ManageUserChangePasswordScene {
         
         return scene;
     }
+
+    /**
+     * Verifies the old password by checking if the
+     * currentPassword, is equal to the oldPasswordInput
+     *
+     * @param oldPasswordInput the old password entered by user
+     * @return true if equal, fasle if not
+     */
     private static boolean verifyOldPassword(String oldPasswordInput) {
         String currentPassword = loggedInUser.getLoginInfo().getPassword();
         return oldPasswordInput.equals(currentPassword);
     }
 
+    /**
+     * Sets the newPassword to loggedInUser, and writes to file management.
+     *
+     * @param newPassword new password entered by User
+     */
     private static void updatePassword(String newPassword) {
         loggedInUser.getLoginInfo().setPassword(newPassword);
         FileManagement.newEditUser(loggedInUser);

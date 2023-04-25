@@ -107,7 +107,12 @@ public class BudgetingScene {
 
         return scene;
     }
-
+    /**
+     * Creates and returns a new {@link BudgetDAO} instance with the specified file path.
+     *
+     * @return a new {@link BudgetDAO} instance
+     * @throws IOException if there is an error accessing the file at the specified path
+     */
     private static BudgetDAO getBudgetDAO() throws IOException {
         try {
             return new BudgetDAO("saves/budgets.txt");
@@ -116,7 +121,13 @@ public class BudgetingScene {
             throw e;
         }
     }
-
+    /**
+     * Creates and returns a new {@link Scene} with the specified root {@link Group} and mouse click event handler.
+     *
+     * @param root the root {@link Group} for the scene
+     * @param mouseClickHandler the {@link EventHandler} for handling mouse click events on the scene
+     * @return a new {@link Scene} instance
+     */
     private static Scene createScene(Group root, EventHandler<MouseEvent> mouseClickHandler) {
         Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
         scene.setFill(ApplicationObjects.getSceneColor());
@@ -124,7 +135,13 @@ public class BudgetingScene {
         return scene;
     }
 
-
+    /**
+     * Adds an event handler to the specified {@link ImageView} that displays the user buttons group when clicked.
+     *
+     * @param manageUserButton the {@link ImageView} to add the event handler to
+     * @param root the root {@link Group} of the scene
+     * @param userButtons the {@link Group} containing the user buttons
+     */
     private static void addUserButtonsEventHandler(ImageView manageUserButton, Group root, Group userButtons) {
         manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             root.getChildren().add(userButtons);
@@ -172,7 +189,11 @@ public class BudgetingScene {
         }
         return expenditureData;
     }
-
+    /**
+     * Creates a context menu for the provided table view.
+     * @param tableView the table view for which the context menu is created
+     * @return the created context menu
+     */
     private static ContextMenu createContextMenu(TableView<ObservableList<Object>> tableView) {
         MenuItem addItem = new MenuItem("Add");
         addItem.setOnAction(e -> addBudgetItem(tableView));
@@ -185,10 +206,14 @@ public class BudgetingScene {
         return contextMenu;
     }
 
-
+    /**
+     * Creates a custom cell factory for the provided table view.
+     * @param tableView the table view for which the cell factory is created
+     * @param <T> the type of the items contained in the table
+     * @return the created cell factory
+     */
     private static <T> Callback<TableColumn<ObservableList<Object>, T>, TableCell<ObservableList<Object>, T>> createCustomCellFactory(TableView<ObservableList<Object>> tableView) {
         return param -> new TableCell<>() {
-            private ChoiceBox<String> choiceBox;
             private TextField textField;
 
             @Override
@@ -200,6 +225,7 @@ public class BudgetingScene {
                     int columnIndex = getTableView().getColumns().indexOf(getTableColumn());
 
                     if (columnIndex == 0) {
+                        ChoiceBox<String> choiceBox;
                         if (tableView == expenditures) {
                             List<String> expenditureChoiceList = new ArrayList<>();
                             for (BudgetCategory category : BudgetCategory.values()) {
@@ -245,6 +271,11 @@ public class BudgetingScene {
             }
         };
     }
+
+    /**
+     * Adds a new budget item to the provided table view.
+     * @param tableView the table view to add the new budget item
+     */
     private static void addBudgetItem(TableView<ObservableList<Object>> tableView) {
         List<String> choiceList = new ArrayList<>();
         String type = tableView == revenues ? "r" : "e";
@@ -261,7 +292,10 @@ public class BudgetingScene {
         tableView.getItems().add(newRow);
     }
 
-
+    /**
+     * Deletes the selected budget item from the provided table view.
+     * @param tableView the table view from which the selected budget item will be deleted
+     */
     private static void deleteBudgetItem(TableView<ObservableList<Object>> tableView) {
         ObservableList<Object> selectedItem = tableView.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
@@ -311,7 +345,10 @@ public class BudgetingScene {
             e.printStackTrace();
         }
     }
-
+    /**
+     * Updates the savings value by calculating the difference between the total revenues and total expenditures.
+     * Then sets the savings value to the loggedInUser's budget and updates the savings text on the screen.
+     */
     private static void updateSavings() {
         BigDecimal revenuesTotal = revenues.getItems().stream()
                 .map(row -> new BigDecimal(row.get(1).toString()))
@@ -325,6 +362,7 @@ public class BudgetingScene {
             savings.setText("Savings: " + loggedInUser.getBudget().getSavings());
         }
     }
+
     /**
      * Sets the loggedInUser for the budgeting scene.
      *
@@ -334,6 +372,12 @@ public class BudgetingScene {
         loggedInUser = user;
     }
 
+    /**
+     * Creates a new TableView for displaying revenues and configures its properties.
+     *
+     * @return the configured TableView for displaying revenues
+     * @throws IOException if an I/O error occurs
+     */
     private static TableView<ObservableList<Object>> createRevenuesTable() throws IOException {
         revenues = ApplicationObjects.newTableView(new String[]{"Revenues", "Amount"}, 40, 70, 380, 120);
         revenues.setItems(initializeRevenuesData());
@@ -346,13 +390,16 @@ public class BudgetingScene {
             }
         });
 
-        revenues.getColumns().forEach(column -> {
-            column.setCellFactory(createCustomCellFactory(revenues));
-        });
+        revenues.getColumns().forEach(column -> column.setCellFactory(createCustomCellFactory(revenues)));
 
         return revenues;
     }
 
+    /**
+     * Creates a new TableView for displaying expenditures and configures its properties.
+     *
+     * @return the configured TableView for displaying expenditures
+     */
     private static TableView<ObservableList<Object>> createExpendituresTable() {
         expenditures = ApplicationObjects.newTableView(new String[]{"Expenditures", "Budget"}, 40, 210, 380, 250);
         expenditures.setItems(initializeExpenditureData());
@@ -365,14 +412,16 @@ public class BudgetingScene {
             }
         });
 
-        expenditures.getColumns().forEach(column -> {
-            column.setCellFactory(createCustomCellFactory(expenditures));
-        });
+        expenditures.getColumns().forEach(column -> column.setCellFactory(createCustomCellFactory(expenditures)));
 
         return expenditures;
     }
 
-
+    /**
+     * Creates a new background label with a specific style and dimensions.
+     *
+     * @return the configured Label for the background
+     */
     private static Label createBackgroundLabel() {
         Label backgroundLabel = new Label();
         backgroundLabel.setPrefWidth(400);
@@ -383,20 +432,41 @@ public class BudgetingScene {
         return backgroundLabel;
     }
 
+    /**
+     * Creates a new Text object for displaying the "Monthly Budget" title.
+     *
+     * @return the configured Text object for the "Monthly Budget" title
+     */
     private static Text createMonthlyBudgetText() {
         return ApplicationObjects.newText("Monthly Budget", 30, false, 40, 60);
     }
 
+    /**
+     * Creates a new Text object for displaying the savings value.
+     *
+     * @return the configured Text object for the savings value
+     */
     private static Text createSavingsText() {
         BigDecimal savingsNum = loggedInUser.getBudget() != null ? loggedInUser.getBudget().getSavings() : BigDecimal.ZERO;
         savings = ApplicationObjects.newText("Savings: " + savingsNum, 30, false, 40, 480);
         savings.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
         return savings;
     }
+
+    /**
+     * Creates a new Text object for displaying informational text.
+     *
+     * @return the configured Text object for the informational text
+     */
     private static Text createInfoText(){
         return ApplicationObjects.newText("Right click on row, to add or delete budget item", 15, true, 100, 530 );
     }
 
+    /**
+     * Creates a new Button for creating a new budget and configures its properties.
+     *
+     * @return the configured Button for creating a new budget
+     */
     private static Button createCreateNewBudgetButton() {
         Button createNewBudget = ApplicationObjects.newButton("Create new budget", 470, 180, 157, 25, 16);
         createNewBudget.setOnAction(e -> {
@@ -409,6 +479,11 @@ public class BudgetingScene {
         return createNewBudget;
     }
 
+    /**
+     * Creates a new Button for accessing budget suggestions and configures its properties.
+     *
+     * @return the configured Button for accessing budget suggestions
+     */
     private static Button createBudgetSuggestionsButton() {
         Button budgetSuggestions = ApplicationObjects.newButton("Budget suggestion", 470, 270, 157, 25, 16);
         budgetSuggestions.setOnAction(e -> {
@@ -420,6 +495,12 @@ public class BudgetingScene {
         });
         return budgetSuggestions;
     }
+
+    /**
+     * Creates a new Button for confirming edits made to budget items and configures its properties.
+     *
+     * @return the configured Button for confirming budget item edits
+     */
     private static Button confirmEditButton() {
                 confirmEditButton = ApplicationObjects.newButton("Confirm Edit", 270, 470, 157, 25, 16);
             confirmEditButton.setVisible(false);
@@ -431,6 +512,12 @@ public class BudgetingScene {
         return confirmEditButton;
     }
 
+    /**
+     * Creates a new ImageView as a home button and configures its properties.
+     *
+     * @return the configured ImageView for the home button
+     * @throws FileNotFoundException if the image file is not found
+     */
     private static ImageView createHomeButton() throws FileNotFoundException {
         ImageView homeButton = ApplicationObjects.newImage("home.png", 10, 10, 20, 20);
         homeButton.setOnMouseClicked(e -> {
@@ -443,10 +530,21 @@ public class BudgetingScene {
         return homeButton;
     }
 
+    /**
+     * Creates a new Button for a drop-down menu and configures its properties.
+     *
+     * @return the configured Button for the drop-down menu
+     */
     private static Button createDropDownButton() {
         return ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
     }
 
+    /**
+     * Creates a new ImageView as a user management button and configures its properties.
+     *
+     * @return the configured ImageView for the user management button
+     * @throws FileNotFoundException if the image file is not found
+     */
     private static ImageView createManageUserButton() throws FileNotFoundException {
         return ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
     }

@@ -7,6 +7,14 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+/**
+ * This class represents a transaction object. It contains information about the source and destination accounts, amount, description,
+ * date of transaction, and category.
+ *
+ * @author G14
+ * @version 1.0
+ * @since 2023-04-25
+ */
 public class Transaction {
     private final String fromAccountNumber;
     private final String toAccountNumber;
@@ -16,6 +24,16 @@ public class Transaction {
     private final BudgetCategory category;
     public static final String regexAccountNumber = "[0-9]{4}+\\.[0-9]{2}+\\.[0-9]{5}";
 
+    /**
+     * This constructor creates a transaction object with the given parameters.
+     *
+     * @param fromAccountNumber The account number of the account that the money is being taken from
+     * @param toAccountNumber   The account number of the account that the money is being transferred to
+     * @param amount            The amount of money that is being transferred
+     * @param description       A description of the transaction
+     * @param dateOfTransaction The date that the transaction was made
+     * @param category          The category that the transaction belongs to
+     */
     public Transaction(String fromAccountNumber, String toAccountNumber, BigDecimal amount, String description,
                        LocalDate dateOfTransaction, BudgetCategory category) {
         if (!Pattern.matches(regexAccountNumber,fromAccountNumber) || !Pattern.matches(regexAccountNumber, toAccountNumber))
@@ -35,6 +53,8 @@ public class Transaction {
         this.description       = description;
         this.dateOfTransaction = dateOfTransaction;
     }
+
+
     public Transaction(TransactionBuilder transactionBuilder) {
         this.fromAccountNumber = transactionBuilder.fromAccountNumber;
         this.toAccountNumber   = transactionBuilder.toAccountNumber;
@@ -44,26 +64,56 @@ public class Transaction {
         this.category          = transactionBuilder.category;
     }
 
+    /**
+     * This method returns the account number of the account that the money is being taken from.
+     *
+     * @return The account number of the account that the money is being taken from
+     */
     public String getFromAccountNumber() {
         return fromAccountNumber;
     }
 
+    /**
+     * This method returns the account number of the account that the money is being transferred to.
+     *
+     * @return The account number of the account that the money is being transferred to
+     */
     public String getToAccountNumber() {
         return toAccountNumber;
     }
 
+    /**
+     * This method returns the amount of money that is being transferred.
+     *
+     * @return The amount of money that is being transferred
+     */
     public BigDecimal getAmount() {
         return amount;
     }
 
+    /**
+     * This method returns a description of the transaction.
+     *
+     * @return A description of the transaction
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * This method returns the date that the transaction was made.
+     *
+     * @return The date that the transaction was made
+     */
     public LocalDate getDateOfTransaction() {
         return dateOfTransaction;
     }
 
+    /**
+     * This method returns the category that the transaction belongs to.
+     *
+     * @return The category that the transaction belongs to
+     */
     public BudgetCategory getCategory() {
         return category;
     }
@@ -74,6 +124,12 @@ public class Transaction {
         return "Transaction{" + "fromAccountNumber=" + fromAccountNumber + ", toAccountNumber=" + toAccountNumber + ", amount=" + amount + ", description=" + description + ", dateOfTransaction=" + dateOfTransaction + ", category=" + category + '}';
     }
 
+    /**
+     * This method is used to compare two transaction objects.
+     *
+     * @param o The object that is being compared to the transaction object
+     * @return True if the transaction objects are equal, false otherwise
+     */
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Transaction))
@@ -93,6 +149,9 @@ public class Transaction {
         return dateOfTransaction.equals(t.dateOfTransaction);
     }
 
+    /**
+     * This method is used to convert a transaction object to a string that can be saved to a CSV file.
+     */
     public static final String CSV_FIELD_DELIMITER = ";";
     public String toCSVString() {
         return dateOfTransaction.format(ApplicationObjects.dateFormatter) + CSV_FIELD_DELIMITER +
@@ -103,6 +162,12 @@ public class Transaction {
                 + category;
     }
 
+    /**
+     * This method is used to convert a string from a CSV file to a transaction object.
+     *
+     * @param csvString The string that is being converted to a transaction object
+     * @return The transaction object that is created from the string
+     */
     public static Transaction fromCSVString(String csvString) {
         String[] fields = csvString.split(CSV_FIELD_DELIMITER);
         String fromAccountNumber   = fields[3];
