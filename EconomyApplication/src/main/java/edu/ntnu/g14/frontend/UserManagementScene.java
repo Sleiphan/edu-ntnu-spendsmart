@@ -3,10 +3,8 @@ package edu.ntnu.g14.frontend;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import edu.ntnu.g14.FileManagement;
+import edu.ntnu.g14.BankApplication;
 import edu.ntnu.g14.User;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -17,12 +15,11 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class UserManagementScene {
-    static Stage stage = ApplicationFront.getStage();
-    private static User loggedInUser = ApplicationFront.loggedInUser;
+    static Stage stage = BankApplication.getStage();
+    private static User loggedInUser = BankApplication.loggedInUser;
 
     static Alert alert;
 

@@ -3,6 +3,7 @@ package edu.ntnu.g14.frontend;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import edu.ntnu.g14.BankApplication;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -14,7 +15,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class EmptyBudgetScene {
-    static Stage stage = ApplicationFront.getStage();
+    static Stage stage = BankApplication.getStage();
 
     static public Scene scene() throws FileNotFoundException, IOException {
         TableView<ObservableList<Object>> revenues = ApplicationObjects.newTableView(new String[]{"Revenues", "Amount"}, 40, 70, 380, 120);

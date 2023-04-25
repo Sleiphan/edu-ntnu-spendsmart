@@ -95,12 +95,12 @@ public class Transaction {
 
     public static final String CSV_FIELD_DELIMITER = ";";
     public String toCSVString() {
-        return dateOfTransaction.format(ApplicationObjects.dateFormatter)
-                + CSV_FIELD_DELIMITER +
+        return dateOfTransaction.format(ApplicationObjects.dateFormatter) + CSV_FIELD_DELIMITER +
                 amount + CSV_FIELD_DELIMITER +
-                        toAccountNumber + CSV_FIELD_DELIMITER +
-                        fromAccountNumber + CSV_FIELD_DELIMITER +
-                description + CSV_FIELD_DELIMITER + category + ",";
+                toAccountNumber + CSV_FIELD_DELIMITER +
+                fromAccountNumber + CSV_FIELD_DELIMITER +
+                description + CSV_FIELD_DELIMITER
+                + category;
     }
 
     public static Transaction fromCSVString(String csvString) {
@@ -110,10 +110,7 @@ public class Transaction {
         BigDecimal amount      = new BigDecimal(fields[1]);
         String description     = fields[4];
         LocalDate dateOfTransaction = LocalDate.parse(fields[0], ApplicationObjects.dateFormatter);
-        String category = fields[5];
-        BudgetCategory budgetCategory = category.endsWith(",") ?
-                BudgetCategory.valueOf(category.substring(0, category.length() - 1))
-                : BudgetCategory.valueOf(category);
+        BudgetCategory budgetCategory = BudgetCategory.valueOf(fields[5]);
 
         return new Transaction(fromAccountNumber, toAccountNumber, amount, description, dateOfTransaction, budgetCategory);
     }

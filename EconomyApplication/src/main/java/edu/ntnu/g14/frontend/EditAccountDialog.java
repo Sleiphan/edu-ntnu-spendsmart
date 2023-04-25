@@ -2,6 +2,7 @@ package edu.ntnu.g14.frontend;
 
 import edu.ntnu.g14.Account;
 import edu.ntnu.g14.AccountCategory;
+import edu.ntnu.g14.BankApplication;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -31,15 +32,23 @@ public class EditAccountDialog extends Dialog<Account> {
                 return account;
             }
             if (buttonType == deleteButtonType) {
+                if (BankApplication.loggedInUser.getAccountsAsList().size() == 1) {
+                    Alert cannotDeleteAccount = new Alert(Alert.AlertType.WARNING);
+                    cannotDeleteAccount.setHeaderText("Cannot delete Bank Account");
+                    cannotDeleteAccount.setContentText("Account cannot be deleted since it's your last account");
+                    cannotDeleteAccount.setTitle("Delete Bank Account");
+                    cannotDeleteAccount.showAndWait();
+                    return null;
+                }
                 Alert deleteAccountAlert = new Alert(Alert.AlertType.CONFIRMATION);
-                deleteAccountAlert.setHeaderText("Are you sure you want to delete the account?");
+                deleteAccountAlert.setHeaderText("Are you sure you want to delete the Bank Account?");
                 deleteAccountAlert.setContentText("Are you sure you want to delete: " + account.getAccountName() + "?");
-                deleteAccountAlert.setTitle("Delete account");
+                deleteAccountAlert.setTitle("Delete Bank Account");
                 deleteAccountAlert.showAndWait();
                 if (deleteAccountAlert.getResult() == ButtonType.CANCEL) {
                     return null;
                 }
-                ApplicationFront.loggedInUser.removeAccount(account);
+                BankApplication.loggedInUser.removeAccount(account);
                 return account;
             }
             else {
@@ -76,7 +85,7 @@ public class EditAccountDialog extends Dialog<Account> {
 
     private boolean validateDialog() {
         return (!editAccountNameField.getText().isBlank()
-                && !ApplicationFront.loggedInUser.checkIfAccountNameIsOccupied(editAccountNameField.getText()))
+                && !BankApplication.loggedInUser.checkIfAccountNameIsOccupied(editAccountNameField.getText()))
                 || editAccountTypeBox.getValue() != null;
 
 

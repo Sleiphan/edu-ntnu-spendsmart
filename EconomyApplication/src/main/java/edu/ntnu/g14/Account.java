@@ -1,6 +1,7 @@
 package edu.ntnu.g14;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * This class represents an account in the bank system and that a user has.
@@ -15,6 +16,8 @@ public class Account {
     // Name of the account assigned by a user, as String
     private String accountName;
 
+    private static final String CSV_FIELD_DELIMITER = ";";
+
     /**
      * This constructor facilitates the creation of instances of this class
      * @param accountType Type of account, as AccountCategory
@@ -28,7 +31,7 @@ public class Account {
         if (amount.intValue() < 0) {
             throw new IllegalArgumentException("Amount needs to be zero or positive");
         } else {
-            this.amount = amount;
+            this.amount = amount.setScale(2, RoundingMode.DOWN);
         }
         // TODO: Check if accountName is occupied
         if (accountName.isBlank()) {
@@ -130,16 +133,24 @@ public class Account {
                 accountName.equals(a.accountName);
     }
 
-    public static final String CSV_FIELD_DELIMITER = ";";
+    /**
+     * This method returns the CSV string of an account
+     * @return CSV string of Account, as String
+     */
     public String toCSVString() {
         String sb = accountType + CSV_FIELD_DELIMITER +
                 amount.toString() + CSV_FIELD_DELIMITER +
                 accountNumber + CSV_FIELD_DELIMITER +
-                accountName + ",";
+                accountName;
 
         return sb;
     }
 
+    /**
+     * This method parses an account CSV string, and instantiates an account
+     * @param csvString Account CSV String, as String
+     * @return Account that equals the fields of CSV String, as Account
+     */
     public static Account fromCSVString(String csvString) {
         String[] fields = csvString.split(CSV_FIELD_DELIMITER);
         AccountCategory accountType = AccountCategory.valueOf(fields[0]);
@@ -155,6 +166,10 @@ public class Account {
                 .accountName(finalAccountName)
                 .build();
     }
+
+    /**
+     * This class is a builder class for Account
+     */
     public static class AccountBuilder {
         private AccountCategory accountType;
         // Funds in the account, as BigDecimal

@@ -1,12 +1,8 @@
 package edu.ntnu.g14.frontend;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import edu.ntnu.g14.FileManagement;
-import edu.ntnu.g14.Invoice;
-import edu.ntnu.g14.Login;
-import edu.ntnu.g14.User;
+import edu.ntnu.g14.*;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -14,7 +10,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class LoginForgotPasswordSecondScene {
-    static Stage stage = ApplicationFront.getStage();
+    static Stage stage = BankApplication.getStage();
 
 
     
@@ -26,10 +22,10 @@ public class LoginForgotPasswordSecondScene {
         Button confirmButton = ApplicationObjects.newButton("Confirm", 175, 150, 150, 20, 15);
         confirmButton.setOnAction(e -> {
             if(newPassword.getText().equals(retypeNewPassword.getText()) && !newPassword.getText().equals("")){
-                Login newLogin = new Login(ApplicationFront.loggedInUser.getLoginInfo().getUserName(), newPassword.getText(), ApplicationFront.loggedInUser.getLoginInfo().getUserId());
-                User newPasswordUser = new User(ApplicationFront.loggedInUser.getAccounts(), ApplicationFront.loggedInUser.getAllInvoices().toArray(Invoice[]::new),
-                newLogin, ApplicationFront.loggedInUser.getEmail(), ApplicationFront.loggedInUser.getLastName(),
-                ApplicationFront.loggedInUser.getFirstName(), ApplicationFront.loggedInUser.getTransactions(), ApplicationFront.loggedInUser.getBudget());
+                Login newLogin = new Login(BankApplication.loggedInUser.getLoginInfo().getUserName(), newPassword.getText(), BankApplication.loggedInUser.getLoginInfo().getUserId());
+                User newPasswordUser = new User(BankApplication.loggedInUser.getAccounts(), BankApplication.loggedInUser.getAllInvoices().toArray(Invoice[]::new),
+                newLogin, BankApplication.loggedInUser.getEmail(), BankApplication.loggedInUser.getLastName(),
+                BankApplication.loggedInUser.getFirstName(), BankApplication.loggedInUser.getTransactions(), BankApplication.loggedInUser.getBudget());
 
                 FileManagement.newEditUser(newPasswordUser);
                 try {

@@ -2,6 +2,7 @@ package edu.ntnu.g14.frontend;
 
 import edu.ntnu.g14.Account;
 import edu.ntnu.g14.AccountCategory;
+import edu.ntnu.g14.BankApplication;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
@@ -76,8 +77,8 @@ public class AccountDialog extends Dialog<Account.AccountBuilder> {
                 && accountTypeField.getValue() != null
                 && !(amountBigDecimal.floatValue() < 0)
                 && Pattern.matches(regexAccountNumber, accountNumberField.getText())
-                && !ApplicationFront.loggedInUser.checkIfAccountNameIsOccupied(accountNameField.getText())
-                && !ApplicationFront.loggedInUser.checkIfAccountNumberIsOccupied(accountNumberField.getText());
+                && !BankApplication.loggedInUser.checkIfAccountNameIsOccupied(accountNameField.getText())
+                && !BankApplication.loggedInUser.checkIfAccountNumberIsOccupied(accountNumberField.getText());
     }
 
     private Pane createGridPane() {

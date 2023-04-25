@@ -1,5 +1,3 @@
-//String key = EmailVertification.sendVertificationKey("olavsie@hotmail.no");
-
 package edu.ntnu.g14;
 
 import javax.mail.*;
@@ -8,8 +6,18 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 import java.util.Random;
 
+/**
+ * The EmailVertification class provides functionality to generate a vertification key and send it to a 
+ * specified email adress using Gmail's SMTP server.
+ */
 public class EmailVerification {
 
+    /**
+    * Generates a verification key and sends it to the provided email address using the Gmail SMTP server.
+    *
+    * @param toMail The email address to send the verification key to.
+    * @return The generated verification key.
+    */
     public static String sendVerificationKey(String toMail){
         int leftLimit = 97;
         int rightLimit = 122;

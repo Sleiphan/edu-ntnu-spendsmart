@@ -2,6 +2,7 @@ package edu.ntnu.g14.frontend;
 
 import java.io.IOException;
 
+import edu.ntnu.g14.BankApplication;
 import edu.ntnu.g14.FileManagement;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -9,7 +10,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 public class RegisterSecondScene {
-    static Stage stage = ApplicationFront.getStage();
+    static Stage stage = BankApplication.getStage();
 
     static public Scene scene(String key, String email, String usersID) throws IOException{
         TextField keyInput = ApplicationObjects.newTextField("", 120, 195, 100, 20, 15);
@@ -17,7 +18,7 @@ public class RegisterSecondScene {
         next.setOnAction(e -> {
             if (keyInput.getText().replace(" ", "").equals(key.replace(" ", ""))) {
                 try {
-                    ApplicationFront.setLoggedInUser(FileManagement.readUser(usersID));
+                    BankApplication.setLoggedInUser(FileManagement.readUser(usersID));
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }

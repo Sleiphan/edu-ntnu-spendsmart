@@ -4,16 +4,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import edu.ntnu.g14.*;
 import javafx.beans.property.*;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -22,16 +20,12 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Callback;
-import javafx.util.StringConverter;
 
 
 public class ApplicationObjects {
@@ -40,7 +34,7 @@ public class ApplicationObjects {
     public static String backgroundColor = "#b6bbbf";
     public static Color sceneColor = Color.valueOf("#e4eff7");
 
-    static Stage stage = ApplicationFront.getStage();
+    static Stage stage = BankApplication.getStage();
 
     public static final DateTimeFormatter dateFormatter =
             DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -265,9 +259,7 @@ public class ApplicationObjects {
 
     public static ImageView newImage(String imagename,
      int x, int y, int width, int height) throws FileNotFoundException{
-        ImageView imageview = new ImageView();
-        Image image = new Image(new FileInputStream("src/main/resources/images/" + imagename));
-        imageview.setImage(image);
+        ImageView imageview = new ImageView(new Image(new FileInputStream("src/main/resources/images/" + imagename)));
         imageview.setX(x);
         imageview.setY(y);
         imageview.setFitHeight(width);
@@ -359,11 +351,6 @@ public class ApplicationObjects {
         return tableView;
     }
 
-
-
-
-
-
     public static ListView<String> newListView(String[] elements, double x, double y, double width, double height) {
         ListView<String> listView = new ListView<>();
         listView.setLayoutX(x);
@@ -371,9 +358,40 @@ public class ApplicationObjects {
         listView.setPrefWidth(width);
         listView.setPrefHeight(height);
 
-        for (String element: elements) {
-            listView.getItems().add(element);
-        }
+        ObservableList<String> items = FXCollections.observableArrayList(elements);
+
+        listView.setItems(items);
+        listView.setCellFactory(param -> new ListCell<String>() {
+
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    Account account = BankApplication.loggedInUser.getAccountWithAccountName(item);
+                    String amount = formatCurrency(account.getAmount());
+                    AccountCell cell;
+                    switch (account.getAccountType()) {
+                        case PENSION_ACCOUNT:
+                            cell = new AccountCell(item, AccountCategory.PENSION_ACCOUNT, amount);
+                            setGraphic(cell.getHBox());
+                            break;
+                        case SAVINGS_ACCOUNT:
+                            cell = new AccountCell(item, AccountCategory.SAVINGS_ACCOUNT, amount);
+                            setGraphic(cell.getHBox());
+                            break;
+                        case CHECKING_ACCOUNT:
+                            cell = new AccountCell(item, AccountCategory.CHECKING_ACCOUNT, amount);
+                            setGraphic(cell.getHBox());
+                            break;
+                        case OTHER:
+                            cell = new AccountCell(item, AccountCategory.OTHER, amount);
+                            setGraphic(cell.getHBox());
+                    }
+                }
+            }
+        });
         return listView;
     }
     
@@ -427,9 +445,30 @@ public class ApplicationObjects {
                 , "Alcohol and Tobacco", "Payment", "Other"};
     }
 
-    public static String numberRegex(String number) {
-        
-        return number.replaceAll("(?<=\\d)(?=(\\d{3})+(?!\\d))", " ").trim().concat(" kr");
+    public static String formatCurrency(BigDecimal amount) {
+        final String CURRENCY_SYMBOL = " kr";
+        final char DECIMAL_POINT = '.';
+        final String DECIMAL_PLACES = "00";
+        String decimalFormat = decimalFormat(amount);
+        if (decimalFormat.length() > 2 && decimalFormat.charAt(decimalFormat.length() - 3) != DECIMAL_POINT) {
+            decimalFormat = decimalFormat.replaceAll("(?<=\\d)(?=(\\d{3})+(?!\\d))", " ");
+            decimalFormat += DECIMAL_POINT + DECIMAL_PLACES + CURRENCY_SYMBOL;
+        } else {
+            decimalFormat = decimalFormat.replaceAll("(?<=\\d)(?=(\\d{3})+(?!\\d))", " ") + CURRENCY_SYMBOL;
+        }
+
+        return decimalFormat.trim();
+    }
+    private static String decimalFormat(BigDecimal amount) {
+        DecimalFormat df = new DecimalFormat();
+
+        df.setMaximumFractionDigits(2);
+
+        df.setMinimumFractionDigits(0);
+
+        df.setGroupingUsed(false);
+
+        return df.format(amount);
     }
 
     public static String[] getBudgetIncomeCategories() {

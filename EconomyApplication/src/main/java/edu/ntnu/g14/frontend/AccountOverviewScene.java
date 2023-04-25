@@ -19,7 +19,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class AccountOverviewScene {
-    static Stage stage = ApplicationFront.getStage();
+    static Stage stage = BankApplication.getStage();
     private static Account currentAccount;
     private static TableView<ObservableList<Object>> lastTransactionsTable;
     private static ObservableList<ObservableList<Object>> lastTransactionsData;
@@ -27,20 +27,8 @@ public class AccountOverviewScene {
     private static Text accountNumberText;
 
     static public Scene scene(Optional<Account> account) throws IOException {
-        List<Account> accounts = ApplicationFront.loggedInUser.getAccountsAsList();
+        List<Account> accounts = BankApplication.loggedInUser.getAccountsAsList();
         ObservableList<String> accountNames = FXCollections.observableArrayList(getAccountsNames());
-
-        if (accounts.isEmpty()) {
-            Dialog<Account.AccountBuilder> accountDialog = new AccountDialog(new Account.AccountBuilder());
-            Optional<Account.AccountBuilder> result = accountDialog.showAndWait();
-            if (result.isPresent()) {
-
-                addAndWriteAccount(accountNames, result.get());
-            }
-            else {
-                return MainPageScene.scene();
-            }
-        }
 
         String[] columnTitlesTransactionsTable = {"Transaction", "Date", "Amount"};
 
@@ -49,20 +37,20 @@ public class AccountOverviewScene {
         accountComboBox.setItems(accountNames);
         accountComboBox.setValue(accounts.get(0).getAccountName());
         accountNumberText    = ApplicationObjects.newText("Account Number: " + accounts.get(0).getAccountNumber(), 14, false, 0, 130);
-        amountText = ApplicationObjects.newText("Balance: " + ApplicationObjects.numberRegex(accounts.get(0).getAmount().toString()), 20, false, 0, 160);
+        amountText = ApplicationObjects.newText("Balance: " + ApplicationObjects.formatCurrency(accounts.get(0).getAmount()), 20, false, 0, 160);
         Button addExpense         = ApplicationObjects.newButton("Add Expense", 30,80, 100, 20,14);
         Button addIncome          = ApplicationObjects.newButton("Add Income", 30,50, 100, 20,14);
         Button addAccount         = ApplicationObjects.newButton("Add Account", 728 - 130, 50, 100, 20, 14);
         Button editAccount        = ApplicationObjects.newButton("Edit Account", 728 - 130, 80, 100, 20, 14);
         Text lastTransactionsText = ApplicationObjects.newText("Last Transactions:", 24, false, 20, 200);
-        if (account.isPresent()) {
+        if (account != null && account.isPresent()) {
             accountComboBox.setValue(account.get().getAccountName());
             setAccountNumberAndAmountText();
 
         }
         amountText.setLayoutX((double) 728/2 - amountText.getLayoutBounds().getWidth()/2);
         accountNumberText.setLayoutX((double) 728/2 - accountNumberText.getLayoutBounds().getWidth()/2);
-        lastTransactionsTable = ApplicationObjects.newTableView1(columnTitlesTransactionsTable, 20, 230, 688, 300, ApplicationFront.loggedInUser.getAccountsAsList().stream().map(Account::getAccountNumber).collect(Collectors.toList()));
+        lastTransactionsTable = ApplicationObjects.newTableView1(columnTitlesTransactionsTable, 20, 230, 688, 300, BankApplication.loggedInUser.getAccountsAsList().stream().map(Account::getAccountNumber).collect(Collectors.toList()));
         lastTransactionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         if (accountComboBox.getValue() != null) {
             setCurrentAccount(accountComboBox.getValue());
@@ -75,7 +63,7 @@ public class AccountOverviewScene {
                 setCurrentAccount(accountComboBox.getValue());
 
                 accountNumberText.setText("Account Number: " + currentAccount.getAccountNumber());
-                amountText.setText("Balance: " + ApplicationObjects.numberRegex(currentAccount.getAmount().toString()));
+                amountText.setText("Balance: " + ApplicationObjects.formatCurrency(currentAccount.getAmount()));
 
             }
         });
@@ -88,9 +76,12 @@ public class AccountOverviewScene {
         editAccount.setOnAction(actionEvent -> {
             Dialog<Account> accountDialog = new EditAccountDialog(currentAccount);
             Optional<Account> result = accountDialog.showAndWait();
+
             if (result.isPresent()) {
+
                 accountComboBox.setItems(FXCollections.observableArrayList(getAccountsNames()));
-                if (!ApplicationFront.loggedInUser.getAccountsAsList().contains(currentAccount)) {
+
+                if (!BankApplication.loggedInUser.getAccountsAsList().contains(currentAccount)) {
                     getAccountsNames().remove(currentAccount.getAccountName());
                     accountComboBox.setItems(FXCollections.observableArrayList(getAccountsNames()));
                     if (accountNames.size() != 0)
@@ -98,7 +89,7 @@ public class AccountOverviewScene {
                 } else {
                     accountComboBox.setValue(currentAccount.getAccountName());
                 }
-                FileManagement.editAccount(ApplicationFront.loggedInUser);
+                FileManagement.editAccount(BankApplication.loggedInUser.getLoginInfo().getUserId(), currentAccount);
             }
         });
 
@@ -143,17 +134,17 @@ public class AccountOverviewScene {
 
     private static void addAndWriteAccount(ObservableList<String> accountNames, Account.AccountBuilder result) {
         Account account = result.build();
-        FileManagement.writeAccount(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), account);
+        FileManagement.writeAccount(BankApplication.loggedInUser.getLoginInfo().getUserId(), account);
         accountNames.add(account.getAccountName());
-        ApplicationFront.loggedInUser.addAccount(account);
+        BankApplication.loggedInUser.addAccount(account);
     }
 
     private static void setCurrentAccount(String accountName) {
         try {
-            currentAccount = ApplicationFront.loggedInUser.getAccountWithAccountName(accountName);
+            currentAccount = BankApplication.loggedInUser.getAccountWithAccountName(accountName);
         } catch (NoSuchElementException e) {
             Account accountWithOldAccountName = currentAccount;
-            currentAccount = ApplicationFront.loggedInUser.getAccountWithAccountNumber(accountWithOldAccountName
+            currentAccount = BankApplication.loggedInUser.getAccountWithAccountNumber(accountWithOldAccountName
                     .getAccountNumber());
         }
         initializeLastTransactionsData(currentAccount);
@@ -162,12 +153,12 @@ public class AccountOverviewScene {
     }
     private static List<String> getAccountsNames() {
 
-        return ApplicationFront.loggedInUser.getAccountsAsList()
+        return BankApplication.loggedInUser.getAccountsAsList()
                 .stream().map(Account::getAccountName).collect(Collectors.toList());
     }
     private static ObservableList<ObservableList<Object>> initializeLastTransactionsData(Account account) {
 
-        List<Transaction> transactionsOfAccount = ApplicationFront.loggedInUser.getTransactionsAsList().stream()
+        List<Transaction> transactionsOfAccount = BankApplication.loggedInUser.getTransactionsAsList().stream()
                 .filter(transaction -> transaction.getToAccountNumber()
                 .equals(account.getAccountNumber())
                         || transaction.getFromAccountNumber().equals(account.getAccountNumber()))
@@ -180,11 +171,11 @@ public class AccountOverviewScene {
                 lastTransactionsData.
                         add(FXCollections.observableArrayList(transaction.getToAccountNumber(),
                                 transaction.getDateOfTransaction().format(ApplicationObjects.dateFormatter),
-                                ApplicationObjects.numberRegex(transaction.getAmount().toString())));
+                                ApplicationObjects.formatCurrency(transaction.getAmount())));
             } else {
                 lastTransactionsData.add(FXCollections.observableArrayList(transaction.getFromAccountNumber(),
                         transaction.getDateOfTransaction().format(ApplicationObjects.dateFormatter),
-                        ApplicationObjects.numberRegex(transaction.getAmount().toString())));
+                        ApplicationObjects.formatCurrency(transaction.getAmount())));
             }
             });
 
@@ -210,13 +201,13 @@ public class AccountOverviewScene {
         if (result.isPresent()) {
             Transaction transaction = result.get().build();
 
-            FileManagement.writeTransaction(ApplicationFront.loggedInUser.getLoginInfo().getUserId(), transaction);
-            ApplicationFront.loggedInUser.addTransaction(transaction);
+            FileManagement.writeTransaction(BankApplication.loggedInUser.getLoginInfo().getUserId(), transaction);
+            BankApplication.loggedInUser.addTransaction(transaction);
             addTransaction(transaction);
         }
     }
     private static void setAccountNumberAndAmountText() {
         accountNumberText.setText("Account Number: " + currentAccount.getAccountNumber());
-        amountText.setText("Balance: " + ApplicationObjects.numberRegex(currentAccount.getAmount().toString()));
+        amountText.setText("Balance: " + ApplicationObjects.formatCurrency(currentAccount.getAmount()));
     }
 }

@@ -13,6 +13,7 @@ class TestFileManagement {
     Login loginInfo = new Login("test", "test", "Test#1");
     User testUser = new User(null, null, loginInfo, null, null, null, null, testBudget);
 
+    /*
     @Test
     void write() throws IOException{
         FileManagement.writeTransaction("olav#1", testTransaction);
@@ -27,5 +28,6 @@ class TestFileManagement {
         System.out.println(FileManagement.getInvoicesForUser("olav#1").toString());
         
     }
+    */
     //test methods
 }

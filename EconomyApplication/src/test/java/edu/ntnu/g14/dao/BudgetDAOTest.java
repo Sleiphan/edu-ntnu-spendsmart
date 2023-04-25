@@ -7,7 +7,6 @@ import edu.ntnu.g14.GenderCategory;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.math.BigDecimal;
@@ -15,7 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class TestBudgetDAO {
+public class BudgetDAOTest {
     private static final String TEST_FILE_PATH = "budgetTestFile.txt";
     private static final String TEMP_FILE_PATH = TEST_FILE_PATH + ".temp";
 
@@ -71,7 +70,7 @@ public class TestBudgetDAO {
         assert(budget.equals(copy));
     }
 
-    //@Test
+    @Test
     public void special_norwegian_characters() {
         String userID = "Håkon F. Fjellanger";
 

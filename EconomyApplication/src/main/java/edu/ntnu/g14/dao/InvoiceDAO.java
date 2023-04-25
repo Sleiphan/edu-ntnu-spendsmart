@@ -8,16 +8,21 @@ import java.util.Arrays;
 
 public class InvoiceDAO {
 
-    private static final Charset CHARSET = Charset.defaultCharset();
-    private final IndexedDataFile idf;
+    private final Charset charset;
+    private final IndexedDataFile file;
 
     public InvoiceDAO(String filePath) throws IOException {
-        idf = new IndexedDataFile(filePath);
+        this(filePath, Charset.defaultCharset());
+    }
+
+    public InvoiceDAO(String filePath, Charset charset) throws IOException {
+        this.file = new IndexedDataFile(filePath, charset);
+        this.charset = charset;
     }
 
     public boolean addNewInvoice(String userID, Invoice budget) {
         try {
-            idf.addNewData(userID, budget.toCSVString().getBytes(CHARSET));
+            file.addNewData(userID, budget.toCSVString().getBytes(charset));
         } catch (IOException e) {
             return false;
         }
@@ -27,7 +32,7 @@ public class InvoiceDAO {
 
     public boolean deleteInvoice(String userID, int invoiceIndex) {
         try {
-            idf.deleteData(userID, invoiceIndex);
+            file.deleteData(userID, invoiceIndex);
         } catch (IOException e) {
             return false;
         }
@@ -38,12 +43,12 @@ public class InvoiceDAO {
     public Invoice getInvoice(String userID, int invoiceIndex) {
         byte[] data;
         try {
-            data = idf.getData(userID, invoiceIndex);
+            data = file.getData(userID, invoiceIndex);
         } catch (IOException e) {
             return null;
         }
 
-        String csvString = new String(data, CHARSET);
+        String csvString = new String(data, charset);
         return Invoice.fromCSVString(csvString);
     }
 
@@ -51,7 +56,7 @@ public class InvoiceDAO {
         byte[][] data;
 
         try {
-            data = idf.readAllInIdentifier(userID);
+            data = file.readAllInIdentifier(userID);
         } catch (IOException e) {
             return null;
         }
@@ -60,8 +65,12 @@ public class InvoiceDAO {
             return null;
 
         return Arrays.stream(data)
-                .map(b -> new String(b, CHARSET))
+                .map(b -> new String(b, charset))
                 .map(Invoice::fromCSVString)
                 .toArray(Invoice[]::new);
+    }
+
+    public void deleteUser(String userID) throws IOException {
+        file.deleteIdentifier(userID);
     }
 }

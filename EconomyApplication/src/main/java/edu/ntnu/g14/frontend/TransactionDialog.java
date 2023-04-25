@@ -1,9 +1,6 @@
 package edu.ntnu.g14.frontend;
 
-import edu.ntnu.g14.Account;
-import edu.ntnu.g14.AccountCategory;
-import edu.ntnu.g14.BudgetCategory;
-import edu.ntnu.g14.Transaction;
+import edu.ntnu.g14.*;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -48,13 +45,13 @@ public class TransactionDialog extends Dialog<Transaction.TransactionBuilder> {
         setResultConverter(income);
     }
     private void setBuilderFieldValuesIncome() {
-        transactionBuilder.toAccountNumber(ApplicationFront.loggedInUser.getAccountWithAccountName(chooseAccountComboBox.getValue()).getAccountNumber());
+        transactionBuilder.toAccountNumber(BankApplication.loggedInUser.getAccountWithAccountName(chooseAccountComboBox.getValue()).getAccountNumber());
         transactionBuilder.fromAccountNumber(accountNumberField.getText());
         setBuilderFieldValues();
     }
     private void setBuilderFieldValuesExpense() {
         transactionBuilder.toAccountNumber(accountNumberField.getText());
-        transactionBuilder.fromAccountNumber(ApplicationFront.loggedInUser.getAccountWithAccountName(chooseAccountComboBox.getValue()).getAccountNumber());
+        transactionBuilder.fromAccountNumber(BankApplication.loggedInUser.getAccountWithAccountName(chooseAccountComboBox.getValue()).getAccountNumber());
         setBuilderFieldValues();
     }
 
@@ -176,7 +173,7 @@ public class TransactionDialog extends Dialog<Transaction.TransactionBuilder> {
         defineLabelsAndFields();
 
 
-        this.chooseAccountComboBox.getItems().addAll(ApplicationFront.loggedInUser
+        this.chooseAccountComboBox.getItems().addAll(BankApplication.loggedInUser
                 .getAccountsAsList()
                 .stream()
                 .map(Account::getAccountName)
@@ -196,7 +193,7 @@ public class TransactionDialog extends Dialog<Transaction.TransactionBuilder> {
 
         defineLabelsAndFields();
 
-        this.chooseAccountComboBox.getItems().addAll(ApplicationFront.loggedInUser
+        this.chooseAccountComboBox.getItems().addAll(BankApplication.loggedInUser
                 .getAccountsAsList()
                 .stream()
                 .filter(account -> account.getAccountType().equals(AccountCategory.CHECKING_ACCOUNT)

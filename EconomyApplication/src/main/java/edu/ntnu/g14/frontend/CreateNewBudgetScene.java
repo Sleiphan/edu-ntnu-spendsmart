@@ -1,6 +1,5 @@
 package edu.ntnu.g14.frontend;
 
-import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,27 +8,23 @@ import java.util.List;
 import edu.ntnu.g14.*;
 import edu.ntnu.g14.dao.BudgetDAO;
 import javafx.animation.PauseTransition;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class CreateNewBudgetScene {
-    static Stage stage = ApplicationFront.getStage();
+    static Stage stage = BankApplication.getStage();
     static BudgetDAO budgetDAO;
 
     static Budget userBudget;
 
-    static User loggedInUser = ApplicationFront.loggedInUser;
+    static User loggedInUser = BankApplication.loggedInUser;
 
     static Group revenueComponents;
     static Group expenditureComponents;
