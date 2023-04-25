@@ -81,9 +81,7 @@ public class CreateNewBudgetScene {
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
         Group root = new Group(title, selectTypeComponents, revenueComponents, expenditureComponents, dropDownButton, homeButton, manageUserButton);
-        dropDownButton.setOnAction(e -> {
-            root.getChildren().add(dropDown);
-        });
+        dropDownButton.setOnAction(e -> root.getChildren().add(dropDown));
 
         Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
         Group userButtons = ApplicationObjects.userMenu();
@@ -99,7 +97,13 @@ public class CreateNewBudgetScene {
 
         return scene;
     }
-
+    /**
+     * Creates and returns a Group containing the components necessary for selecting
+     * the type of budget (e.g., age and gender, or household size) and corresponding
+     * inputs (e.g., age, gender, and household size).
+     *
+     * @return Group containing the components for selecting the budget type and inputs
+     */
     private static Group createSelectTypeComponents() {
         // Create components for selecting type, age, gender, and household
 
@@ -188,7 +192,7 @@ public class CreateNewBudgetScene {
                 if (tooltip == null) {
                     if (inputAge.isEmpty() && !inputGender.isEmpty()) {
                         tooltip = new Tooltip("Please enter in Age");
-                    } else if (!inputAge.isEmpty() && inputGender.isEmpty()) {
+                    } else if (!inputAge.isEmpty()) {
                         tooltip = new Tooltip("Please select a gender, sorry if your gender is not an option");
                     } else {
                         tooltip = new Tooltip("Please enter age and select a gender, sorry if your gender is not an option");
@@ -241,7 +245,12 @@ public class CreateNewBudgetScene {
 
         return new Group(selectInfo,personal, AgeInput, maleRadioButton, femaleRadioButton, HouseholdInput, continueBtn, createBudgetBtn);
     }
-
+    /**
+     * Creates and returns a Group containing the components necessary for inputting
+     * revenue items (e.g., selecting a revenue category and entering an amount).
+     *
+     * @return Group containing the components for inputting revenue items
+     */
     private static Group createRevenueComponents() {
         // Create components for selecting and inputting revenues
         Text infoRevenue = ApplicationObjects.newText("Select revenue type, add amount\n and add revenue item to budget", 15, false, 50,100);
@@ -286,7 +295,12 @@ public class CreateNewBudgetScene {
 
         return new Group(revenueBox, infoRevenue);
     }
-
+    /**
+     * Creates and returns a Group containing the components necessary for inputting
+     * expenditure items (e.g., selecting an expenditure category and entering an amount).
+     *
+     * @return Group containing the components for inputting expenditure items
+     */
     private static Group createExpenditureComponents() {
         // Create components for selecting and inputting expenditures
         Text infoExpenditure = ApplicationObjects.newText("Select expenditure type, add amount\n and add expenditure item to budget", 15, false, 50,300);
@@ -301,7 +315,7 @@ public class CreateNewBudgetScene {
         expenditure.setValue(BudgetCategory.FOOD_AND_DRINK.toString().toLowerCase().replaceAll("_", " "));
 
         TextField expenditureInput = ApplicationObjects.newTextField("Enter Amount", 0, 0, 157, 30, 16);
-        Button addExpenditureItemBtn = ApplicationObjects.newButton("Add expenditure to Budget", 0, 0, 200, 25, 16);;
+        Button addExpenditureItemBtn = ApplicationObjects.newButton("Add expenditure to Budget", 0, 0, 200, 25, 16);
         addExpenditureItemBtn.setOnAction(e -> {
             if (expenditureInput.getText().isEmpty()) {
                 if (tooltip == null) {
@@ -329,7 +343,14 @@ public class CreateNewBudgetScene {
 
         return new Group(expenditureBox, infoExpenditure);
     }
-
+    /**
+     * Adds a revenue item to the user's budget, updates the loggedInUser's budget,
+     * and refreshes the BudgetingScene data.
+     *
+     * @param selectedItem BudgetCategory of the selected revenue item
+     * @param inputText String representing the amount of the revenue item
+     * @param budgetDAO BudgetDAO instance for saving the budget
+     */
     private static void addRevenueToBudget(BudgetCategory selectedItem, String inputText, BudgetDAO budgetDAO) {
         BigDecimal amount = new BigDecimal(inputText);
 
@@ -355,7 +376,14 @@ public class CreateNewBudgetScene {
         }
         BudgetingScene.refreshData();
     }
-
+    /**
+     * Adds an expenditure item to the user's budget, updates the loggedInUser's budget,
+     * and refreshes the BudgetingScene data.
+     *
+     * @param selectedItem BudgetCategory of the selected expenditure item
+     * @param inputText String representing the amount of the expenditure item
+     * @param budgetDAO BudgetDAO instance for saving the budget
+     */
     private static void addExpenditureToBudget(BudgetCategory selectedItem, String inputText, BudgetDAO budgetDAO) {
         BigDecimal amount = new BigDecimal(inputText);
 
@@ -381,7 +409,15 @@ public class CreateNewBudgetScene {
         }
         BudgetingScene.refreshData();
     }
-
+    /**
+     * Processes the input values from the budget type selection and creates a new budget
+     * object based on the user's inputs (e.g., age and gender or household size).
+     *
+     * @param selectedValue String representing the selected budget type
+     * @param inputAge String representing the user's age
+     * @param inputGender String representing the user's gender
+     * @param inputHousehold String representing the user's household size
+     */
     private static void processSelectTypeInput(String selectedValue, String inputAge, String inputGender, String inputHousehold) {
         // Create a new budget object and associate it with the loggedInUser
         if (selectedValue.equals("Age & Gender")) {
@@ -394,10 +430,15 @@ public class CreateNewBudgetScene {
             userBudget = new Budget(householdSize);
         }
     }
+    /**
+     Sets the visibility of the revenue components to true, making them visible in the UI.
+     */
     private static void showRevenueComponents() {
         revenueComponents.setVisible(true);
     }
-
+    /**
+     Sets the visibility of the expenditure components to true, making them visible in the UI.
+     */
     private static void showExpenditureComponents() {
         expenditureComponents.setVisible(true);
     }
