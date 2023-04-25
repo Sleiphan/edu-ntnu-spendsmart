@@ -16,12 +16,14 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
+/**
+ * UserManagementScene class represents the user management page in the frontend of the bank application.
+ * It allows the logged-in user to view and manage their account information, including changing their password,
+ * switching user, logging out, editing their user profile, and deleting their account.
+ */
 public class UserManagementScene {
     static Stage stage = BankApplication.getStage();
     private static User loggedInUser = BankApplication.loggedInUser;
-
-    static Alert alert;
 
     static public Scene scene() throws IOException {
 
@@ -59,11 +61,9 @@ public class UserManagementScene {
             try {
                 stage.setScene(LoginChooseUserScene.scene());
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         });
-        HBox switchUserBox = new HBox(5, switchUser, logOut);
 
 
         VBox userInfoBox = new VBox(5, loggedInUserLabel, loggedInUserEmail);
