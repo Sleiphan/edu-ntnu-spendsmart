@@ -79,9 +79,7 @@ public class BudgetSuggestionsScene {
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
         Group root = new Group(selectTypeComponents, revenueComponents, dropDownButton, homeButton, manageUserButton, title);
-        dropDownButton.setOnAction(e -> {
-            root.getChildren().add(dropDown);
-        });
+        dropDownButton.setOnAction(e -> root.getChildren().add(dropDown));
 
         Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());
         Group userButtons = ApplicationObjects.userMenu();
@@ -97,7 +95,12 @@ public class BudgetSuggestionsScene {
 
         return scene;
     }
-
+    /**
+     * Creates the components for selecting the budget type, age, gender, and household.
+     * The method creates a group of components and sets the appropriate visibility and action listeners.
+     *
+     * @return a Group of components for selecting the budget type, age, gender, and household
+     */
     private static Group createSelectTypeComponents() {
         // Create components for selecting type, age, gender, and household
 
@@ -185,7 +188,7 @@ public class BudgetSuggestionsScene {
                 if (tooltip == null) {
                     if (inputAge.isEmpty() && !inputGender.isEmpty()) {
                         tooltip = new Tooltip("Please enter in Age");
-                    } else if (!inputAge.isEmpty() && inputGender.isEmpty()) {
+                    } else if (!inputAge.isEmpty()) {
                         tooltip = new Tooltip("Please select a gender, sorry if your gender is not an option");
                     } else {
                         tooltip = new Tooltip("Please enter age and select a gender, sorry if your gender is not an option");
@@ -214,7 +217,12 @@ public class BudgetSuggestionsScene {
 
         return new Group(selectInfo,personal, AgeInput, maleRadioButton, femaleRadioButton, HouseholdInput, continueBtnSelectType);
     }
-
+    /**
+     * Creates the components for selecting and inputting revenues.
+     * The method creates a group of components and sets the appropriate visibility and action listeners.
+     *
+     * @return a Group of components for selecting and inputting revenues
+     */
     private static Group createRevenueComponents() {
         // Create components for selecting and inputting revenues
         Text infoRevenue = ApplicationObjects.newText("Select revenue type, add amount\n and add revenue item to budget", 15, false, 50,100);
@@ -346,7 +354,14 @@ public class BudgetSuggestionsScene {
         return new Group(infoRevenue, savingsInfo, revenueBox, continueBtnRevenue,  savingsInput, createBudgetBtn);
     }
 
-
+    /**
+     * Adds a revenue item to the user's budget.
+     * This method takes a BudgetCategory and a string input, converts the input to a BigDecimal,
+     * and adds the new BudgetItem to the user's budget.
+     *
+     * @param selectedItem a BudgetCategory representing the type of revenue item
+     * @param inputText a String representing the amount of the revenue item
+     */
     private static void addRevenueToBudget(BudgetCategory selectedItem, String inputText) {
         BigDecimal amount = new BigDecimal(inputText);
 
@@ -365,13 +380,28 @@ public class BudgetSuggestionsScene {
         // Update the loggedInUser object in the BudgetingScene class
         BudgetingScene.setLoggedInUser(updatedUser);
     }
-
+    /**
+     *Calculates the sum of the total revenue and the savings amount.
+     *
+     *@param totalRevenue a BigDecimal representing the current total revenue
+     *@param savingsAmount a String representing the savings amount to be added
+     *@return a BigDecimal representing the new total revenue after adding the savings amount
+     */
     private static BigDecimal sumOfRevenue(BigDecimal totalRevenue, String savingsAmount) {
         BigDecimal savings = new BigDecimal(savingsAmount.isEmpty() ? "0" : savingsAmount);
         return totalRevenue.subtract(savings);
     }
 
+    /**
 
+     * Processes the input data from the select type components and initializes the user's budget.
+     * This method creates a new Budget object based on the selectedValue and associates it with the loggedInUser.
+     *
+     * @param selectedValue a String representing the selected budget type
+     * @param inputAge a String representing the input age (if applicable)
+     * @param inputGender a String representing the input gender (if applicable)
+     * @param inputHousehold a String representing the input household size (if applicable)
+     */
     private static void processSelectTypeInput(String selectedValue, String inputAge, String inputGender, String inputHousehold) {
         // Create a new budget object and associate it with the loggedInUser
         if (selectedValue.equals("Age & Gender")) {
