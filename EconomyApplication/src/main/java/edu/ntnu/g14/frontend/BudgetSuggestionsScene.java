@@ -41,6 +41,13 @@ public class BudgetSuggestionsScene {
     static VBox revenueBox;
 
     private static Tooltip tooltip;
+    /**
+    * The {@code BudgetSuggestionsScene} class represents the graphical user interface
+    * for generating budget suggestions in the Bank Application.
+    * It contains various UI components to create and view suggested budgets.
+    * This class makes use of the {@code BudgetSuggestion} class to generate
+    * budget suggestions based on user input.
+    */
 
     static public Scene scene() throws IOException {
 
@@ -112,7 +119,7 @@ public class BudgetSuggestionsScene {
         femaleRadioButton.setLayoutX(350);
         femaleRadioButton.setLayoutY(120);
 
-// Hide gender RadioButtons by default
+        // Hide gender RadioButtons by default
         maleRadioButton.setVisible(false);
         femaleRadioButton.setVisible(false);
 
@@ -151,7 +158,7 @@ public class BudgetSuggestionsScene {
             }
         });
 
-// When the 'Create' button is clicked
+        // When the 'Create' button is clicked
         Button continueBtnSelectType = ApplicationObjects.newButton("Continue", 500, 480, 157, 25, 16);
         continueBtnSelectType.setOnAction(e -> {
             String selectedValue = personal.getValue();
@@ -205,10 +212,7 @@ public class BudgetSuggestionsScene {
         });
 
 
-
-
-        Group selectTypeGroup = new Group(selectInfo,personal, AgeInput, maleRadioButton, femaleRadioButton, HouseholdInput, continueBtnSelectType);
-        return selectTypeGroup;
+        return new Group(selectInfo,personal, AgeInput, maleRadioButton, femaleRadioButton, HouseholdInput, continueBtnSelectType);
     }
 
     private static Group createRevenueComponents() {
@@ -371,7 +375,7 @@ public class BudgetSuggestionsScene {
     private static void processSelectTypeInput(String selectedValue, String inputAge, String inputGender, String inputHousehold) {
         // Create a new budget object and associate it with the loggedInUser
         if (selectedValue.equals("Age & Gender")) {
-            Byte age = Byte.valueOf(inputAge);
+            byte age = Byte.parseByte(inputAge);
             GenderCategory Gender = GenderCategory.valueOf(inputGender.toUpperCase());
             userBudget = new Budget( age, Gender);
         } else if (selectedValue.equals("Household")) {
