@@ -44,17 +44,30 @@ public class BudgetItem {
         this.description = description;
         this.category = category;
     }
-
+    /**
+     * Creates a BudgetItem object with the specified budget category and financial value.
+     * @param category the budget category of the item
+     * @param financialValue the financial value of the item
+     */
     public BudgetItem(BudgetCategory category, BigDecimal financialValue){
      this(financialValue, "", category);
     }
 
+    /**
+     * Returns a string representation of the BudgetItem object in CSV format.
+     * @return a string in CSV format with financialValue, description, and category separated by CSV_DELIMITER
+     */
     public String toCSV() {
         return  financialValue.toPlainString() + CSV_DELIMITER +
                 "\"" + description + "\"" + CSV_DELIMITER +
                 category;
     }
 
+    /**
+     * Creates a BudgetItem object from a CSV string representation.
+     * @param data a string in CSV format with financialValue, description, and category separated by CSV_DELIMITER
+     * @return a BudgetItem object with the specified financialValue, description, and category
+     */
     public static BudgetItem fromCSV(String data) {
         String[] fields = data.split(CSV_DELIMITER + "(?!\\s)");
         fields[1] = fields[1].substring(1, fields[1].length() - 1);
