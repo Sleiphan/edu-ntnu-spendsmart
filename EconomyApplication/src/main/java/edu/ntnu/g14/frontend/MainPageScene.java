@@ -70,7 +70,7 @@ public class MainPageScene {
         ListView accountsListView = ApplicationObjects.newListView(getAccountsNames().toArray(String[]::new), 728-30-324, 50, 324, 115);
         accountsListView.setFixedCellSize(40);
         accountsListView.setStyle("-fx-font-family: \"Helvetica Neue\";\n" +
-                "    -fx-font-size: 20px;\n" +
+                "    -fx-font-size: 16px;\n" +
                 "    -fx-alignment: center");
 
         accountsListView.setOnMouseClicked(mouseEvent -> {
