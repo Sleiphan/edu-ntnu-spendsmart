@@ -21,12 +21,21 @@ import javafx.stage.Stage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+/**
+ * This class represents the user management edit user scene, where a user can edit their username and email.
+ * It contains methods for creating and displaying the scene, and handling the user's input.
+ */
+
 public class UserManagementEditUserScene {
     private static User loggedInUser = BankApplication.loggedInUser;
-    static Alert alert;
-
     static Stage stage = BankApplication.getStage();
 
+    /**
+     * Creates and returns the user management edit user scene.
+     *
+     * @return the user management edit user scene
+     * @throws FileNotFoundException if the necessary files are not found
+     */
     public static Scene scene() throws FileNotFoundException {
         Text title = ApplicationObjects.newText("Edit Username and Password", 30, false, 180, 60);
         TextField editUsernameField = ApplicationObjects.newTextField("Enter new Username", 0, 0, 130, 38, 15);

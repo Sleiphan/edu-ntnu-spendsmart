@@ -25,6 +25,12 @@ public class UserManagementScene {
     static Stage stage = BankApplication.getStage();
     private static User loggedInUser = BankApplication.loggedInUser;
 
+    /**
+     * Creates and returns the user management scene.
+     *
+     * @return the user management scene
+     * @throws IOException if an I/O error occurs
+     */
     static public Scene scene() throws IOException {
 
 
