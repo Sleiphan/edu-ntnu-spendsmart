@@ -1,14 +1,22 @@
 package edu.ntnu.g14;
 
-import edu.ntnu.g14.BudgetCategory;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The {@code BudgetSuggestion} class provides methods to suggest a budget based on the
+ * user's total income. The suggested budget is represented as a map of {@link BudgetCategory}
+ * instances and corresponding amounts in {@link BigDecimal} format.
+ */
 public class BudgetSuggestion {
-
+    /**
+     * Suggests a budget based on the total income provided.
+     *
+     * @param totalIncome the total income of the user
+     * @return a map of {@link BudgetCategory} instances with suggested amounts
+     */
     public Map<BudgetCategory, BigDecimal> suggestBudget(BigDecimal totalIncome) {
         Map<BudgetCategory, BigDecimal> budgetMap = new HashMap<>();
 
@@ -67,7 +75,12 @@ public class BudgetSuggestion {
 
         return budgetMap;
     }
-
+    /**
+     * Determines the income bracket based on the given total income.
+     *
+     * @param totalIncome the total income of the user
+     * @return an integer representing the income bracket
+     */
     private int determineIncomeBracket(BigDecimal totalIncome) {
         int bracket;
 
@@ -83,7 +96,13 @@ public class BudgetSuggestion {
 
         return bracket;
     }
-
+    /**
+     * Calculates the percentage of a given base value.
+     *
+     * @param base       the base value to calculate the percentage of
+     * @param percentage the percentage to be calculated
+     * @return a {@link BigDecimal} representing the calculated percentage
+     */
     private BigDecimal calculatePercentage(BigDecimal base, int percentage) {
         return base.multiply(BigDecimal.valueOf(percentage)).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
     }
