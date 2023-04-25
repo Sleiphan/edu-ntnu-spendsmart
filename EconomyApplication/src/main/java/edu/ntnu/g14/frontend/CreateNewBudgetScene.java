@@ -18,6 +18,12 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+/**
+ * The {@code CreateNewBudgetScene} class represents the graphical user interface
+ * for creating a new budget in the Bank Application.
+ * It contains various UI components to enter budget revenues, expenditures, and
+ * other related information.
+ */
 public class CreateNewBudgetScene {
     static Stage stage = BankApplication.getStage();
     static BudgetDAO budgetDAO;
@@ -35,7 +41,12 @@ public class CreateNewBudgetScene {
 
 
 
-
+    /**
+     * Returns a {@code Scene} containing the UI components for creating a new budget.
+     *
+     * @return a new {@code Scene} instance with the new budget creation components
+     * @throws IOException if there is an error accessing the budget file
+     */
     static public Scene scene() throws IOException {
 
 
