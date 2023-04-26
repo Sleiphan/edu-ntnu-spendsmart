@@ -15,5 +15,6 @@ target/classes
 ./Project Bank/.DS_Store
 ../.DS_Store
 target/
+target/
 saves/invoices.txt.temp
 saves/budgets.txt.temp

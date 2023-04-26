@@ -13,12 +13,10 @@ import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.MediaPlayer;
@@ -43,6 +41,21 @@ public class AccountOverviewScene {
 
     ComboBox<String> accountComboBox = ApplicationObjects.newComboBox(columnTitlesTransactionsTable,
         364, 30, 30, 364 - (364 / 2), 50);
+    accountComboBox.setButtonCell(new ListCell(){
+
+      @Override
+      protected void updateItem(Object item, boolean empty) {
+        super.updateItem(item, empty);
+        if(empty || item==null){
+          setStyle("-fx-font-size:16;");
+          setStyle("-fx-alignment: left;");
+        } else {
+          setStyle("-fx-font-size:15");
+          setText(item.toString());
+        }
+      }
+
+    });
     accountComboBox.setItems(accountNames);
     accountComboBox.setValue(accounts.get(0).getAccountName());
     accountNumberText = ApplicationObjects.newText(

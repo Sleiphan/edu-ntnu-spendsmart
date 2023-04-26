@@ -1,5 +1,6 @@
 package edu.ntnu.g14.frontend;
 
+import static edu.ntnu.g14.Transaction.regexAccountNumber;
 import static edu.ntnu.g14.frontend.ApplicationObjects.dateFormatter;
 
 import edu.ntnu.g14.model.Account;
@@ -11,15 +12,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DateCell;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -36,12 +32,12 @@ public class TransactionDialog extends Dialog<Transaction.TransactionBuilder> {
   private TextField descriptionField;
   private DatePicker dateOfTransactionField;
   private ComboBox<String> categoryField;
-  Label amountLabel;
-  Label descriptionLabel;
-  Label dateOfTransactionLabel;
-  Label categoryLabel;
-  Label accountLabel2;
-  Label accountLabel1;
+  private Label amountLabel;
+  private Label descriptionLabel;
+  private Label dateOfTransactionLabel;
+  private Label categoryLabel;
+  private Label accountLabel2;
+  private Label accountLabel1;
 
   public TransactionDialog(Transaction.TransactionBuilder transactionBuilder, boolean income) {
     super();
@@ -122,15 +118,53 @@ public class TransactionDialog extends Dialog<Transaction.TransactionBuilder> {
     try {
       amountBigDecimal = new BigDecimal(amountField.getText());
     } catch (NumberFormatException | NullPointerException e) {
-      return false;
+      amountBigDecimal = new BigDecimal(-1);
+      amountField.setStyle(amountField.getStyle() + "-fx-border-color: red;" +
+              "-fx-border-width: 0.3px;");
+    }
+
+    if (!(amountBigDecimal.intValue() > 0)) {
+      amountField.setStyle(amountField.getStyle() + "-fx-border-color: red;" +
+              "-fx-border-width: 0.3px;");
+    }
+
+
+    if (!Pattern.matches(regexAccountNumber, accountNumberField.getText())) {
+      accountNumberField.setStyle(accountNumberField.getStyle() + "-fx-border-color: red;" +
+              "-fx-border-width: 0.3px;");
+    }
+
+    if (descriptionField.getText().isBlank()) {
+      descriptionField.setStyle(descriptionField.getStyle() + "-fx-border-color: red;" +
+              "-fx-border-width: 0.3px;");
+    }
+
+    if (categoryField.getValue() == null) {
+        categoryField.setStyle(categoryField.getStyle() + "-fx-border-color: red;" +
+                "-fx-border-width: 0.3px;");
+    }
+
+    if (chooseAccountComboBox.getValue() == null) {
+      chooseAccountComboBox.setStyle(chooseAccountComboBox.getStyle() + "-fx-border-color: red;"
+              + "-fx-border-width: 0.3px;");
+    }
+
+    if (dateOfTransactionField.getValue() == null) {
+      dateOfTransactionField.setStyle(dateOfTransactionField.getStyle() + "-fx-border-color: red;" +
+              "-fx-border-width: 0.3px;");
     }
     return accountNumberField.getText() != null
+        && !accountNumberField.getText().isBlank()
         && amountField.getText() != null
         && !(amountBigDecimal.floatValue() < 0)
         && descriptionField.getText() != null
-        && accountNumberField.getText() != null
+        && !descriptionField.getText().isBlank()
         && categoryField.getValue() != null
-        && Pattern.matches(Transaction.regexAccountNumber, accountNumberField.getText());
+        && !categoryField.getValue().isBlank()
+        && Pattern.matches(regexAccountNumber, accountNumberField.getText())
+        && chooseAccountComboBox.getValue() != null
+        && !chooseAccountComboBox.getValue().isBlank()
+        && dateOfTransactionField.getValue() != null;
   }
 
   private void defineLabelsAndFields() {
@@ -266,5 +300,13 @@ public class TransactionDialog extends Dialog<Transaction.TransactionBuilder> {
       }
     };
     datePicker.setDayCellFactory(dayCellFactory);
+  }
+  private void setStyleNull() {
+         chooseAccountComboBox.setStyle(null);
+         accountNumberField.setStyle(null);
+         amountField.setStyle(null);
+         descriptionField.setStyle(null);
+         dateOfTransactionField.setStyle(null);
+         categoryField.setStyle(null);
   }
 }

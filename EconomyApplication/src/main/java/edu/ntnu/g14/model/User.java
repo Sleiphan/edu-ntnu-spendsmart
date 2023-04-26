@@ -216,7 +216,6 @@ public class User extends Personalia {
    *
    * @param accountName the name of the account to get
    * @return the account with the specified name
-   * @throws NoSuchElementException if no account with the specified name exists
    */
   public Account getAccountWithAccountName(String accountName) {
     return this.accounts.stream()
@@ -361,7 +360,7 @@ public class User extends Personalia {
    * @return the total expenses of the specified budget category in the last year
    */
   public double getTotalExpenseOfCategoryLastYear(String category) {
-    return getTotalExpenseOrIncomeOfCategoryLastYear(category, true);
+    return getTotalExpenseOrIncomeOfCategoryLastYear(category);
   }
 
   /**
@@ -371,7 +370,7 @@ public class User extends Personalia {
    * @return the total income of the specified budget category in the last year
    */
   public double getTotalIncomeOfCategoryLastYear(String category) {
-    return getTotalExpenseOrIncomeOfCategoryLastYear(category, false);
+    return getTotalExpenseOrIncomeOfCategoryLastYear(category);
   }
 
   /**
@@ -379,13 +378,10 @@ public class User extends Personalia {
    * year.
    *
    * @param category        the name of the budget category to calculate expenses or income for
-   * @param expenseOrIncome a boolean indicating whether to calculate expenses (true) or income
-   *                        (false)
    * @return the total amount of expenses or income for the given category over the last calendar
    * year
    */
-  private double getTotalExpenseOrIncomeOfCategoryLastYear(String category,
-      boolean expenseOrIncome) {
+  private double getTotalExpenseOrIncomeOfCategoryLastYear(String category) {
     LocalDate startOfLastYear = LocalDate.ofYearDay(LocalDate.now().getYear() - 1, 1);
     LocalDate endOfLastYear = LocalDate.ofYearDay(LocalDate.now().getYear() - 1, 365);
 
