@@ -2,6 +2,7 @@ package edu.ntnu.g14.frontend;
 
 import edu.ntnu.g14.BankApplication;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -133,6 +134,17 @@ public class GeneralOverviewScene {
 
     ImageView homeButton = ApplicationObjects.newImage("home.png", 24, 12, 20, 20);
     homeButton.setOnMouseClicked(e -> {
+      MediaPlayer textToSpeachnew;
+      try {
+        textToSpeachnew = ApplicationObjects.newSound("mainPageScene");
+        if (ApplicationObjects.soundOn()) {
+          ApplicationObjects.getPlaying().stop();
+          textToSpeachnew.play();
+          ApplicationObjects.setPlaying(textToSpeachnew);
+        }
+      } catch (MalformedURLException e1) {
+        e1.printStackTrace();
+      }
       try {
         stage.setScene(MainPageScene.scene());
       } catch (IOException e1) {

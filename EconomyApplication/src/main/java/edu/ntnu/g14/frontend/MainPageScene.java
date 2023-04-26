@@ -5,6 +5,7 @@ import edu.ntnu.g14.BankApplication;
 import edu.ntnu.g14.FileManagement;
 import edu.ntnu.g14.Transaction;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -96,6 +97,17 @@ public class MainPageScene {
         "    -fx-alignment: center");
 
     accountsListView.setOnMouseClicked(mouseEvent -> {
+      MediaPlayer textToSpeachnew;
+      try {
+        textToSpeachnew = ApplicationObjects.newSound("accountOverviewScene");
+        if (ApplicationObjects.soundOn()) {
+          ApplicationObjects.getPlaying().stop();
+          textToSpeachnew.play();
+          ApplicationObjects.setPlaying(textToSpeachnew);
+        }
+      } catch (MalformedURLException e) {
+        e.printStackTrace();
+      }
       try {
         if (accountsListView.getSelectionModel().getSelectedItem() != null) {
           stage.setScene(AccountOverviewScene.scene(Optional.ofNullable(

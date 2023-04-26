@@ -3,6 +3,7 @@ package edu.ntnu.g14.frontend;
 import edu.ntnu.g14.BankApplication;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -70,6 +71,17 @@ public class PaymentScene {
       }
     });
     cancel.setOnAction(e -> {
+      MediaPlayer textToSpeachnew;
+      try {
+        textToSpeachnew = ApplicationObjects.newSound("mainPageScene");
+        if (ApplicationObjects.soundOn()) {
+          ApplicationObjects.getPlaying().stop();
+          textToSpeachnew.play();
+          ApplicationObjects.setPlaying(textToSpeachnew);
+        }
+      } catch (MalformedURLException e1) {
+        e1.printStackTrace();
+      }
       try {
         stage.setScene(MainPageScene.scene());
       } catch (IOException e1) {
@@ -80,6 +92,17 @@ public class PaymentScene {
 
     ImageView homeButton = ApplicationObjects.newImage("home.png", 10, 10, 20, 20);
     homeButton.setOnMouseClicked(e -> {
+      MediaPlayer textToSpeachnew;
+      try {
+        textToSpeachnew = ApplicationObjects.newSound("mainPageScene");
+        if (ApplicationObjects.soundOn()) {
+          ApplicationObjects.getPlaying().stop();
+          textToSpeachnew.play();
+          ApplicationObjects.setPlaying(textToSpeachnew);
+        }
+      } catch (MalformedURLException e1) {
+        e1.printStackTrace();
+      }
       try {
         stage.setScene(MainPageScene.scene());
       } catch (IOException e1) {
