@@ -4,7 +4,6 @@ stages:
   - build
   - test
   - package
-  - deploy
 
 build:
   stage: build
@@ -33,9 +32,8 @@ package:
       - target/idatt2002demo-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 generatepdf:
-  image: ubuntu:20.04 #20.04  # vi kjører dette i en docker container, som kjører Ubuntu Linux
-  stage: deploy # vi kjører den parallelt med å publisere javadoc til Pages
-  when: manual
+  image: ubuntu:20.04  # vi kjører dette i en docker container, som kjører Ubuntu Linux
+  stage: package # vi kjører den parallelt med å publisere javadoc til Pages
   script:
     - apt-get update --allow-insecure-repositories  # apt-get er en pakkehåndterer som kan laste ned og installere pakker på linux-system
     - apt-get install -y wget  # installerer et tool som heter "wget", som kan fyre av HTML-requester på kommandolinja
@@ -61,20 +59,17 @@ generatepdf:
 # NB! Javadoc genereres IKKE under bygging av prosjektet. Man må kjøre javadoc lokalt og legge til katalogen (med navnet "javadoc")
 # til roten av prosjektet. Ellers vil denne delen feile.
 pages:
-  stage: deploy
-  when: manual
+  stage: package
   script:
     - mvn clean package
     - mvn javadoc:javadoc
-    - ls target/site/
-    - ls target/site/apidocs/
+    - mvn jacoco:prepare-agent install jacoco:report
     - mkdir .public
-    - cd .public
-    - mkdir apidocs
-    - cd ..
-    - cp -rf target/site/apidocs/* .public/apidocs/
+    - cp -rf target/site/apidocs/* .public
     - cp -rf target/jacoco/* .public
     - mv -f .public public
   artifacts:
     paths:
       - public
+  only:
+    - web
