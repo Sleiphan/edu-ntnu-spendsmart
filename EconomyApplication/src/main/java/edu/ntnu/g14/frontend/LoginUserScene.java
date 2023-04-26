@@ -19,10 +19,10 @@ public class LoginUserScene {
 
   static public Scene scene() throws IOException {
     MediaPlayer textToSpeach = ApplicationObjects.newSound("loginUserScene");
-    ApplicationObjects.setPlaying(textToSpeach);
     if (ApplicationObjects.soundOn()) {
       ApplicationObjects.getPlaying().stop();
       textToSpeach.play();
+      ApplicationObjects.setPlaying(textToSpeach);
     }
 
     Text notYou = ApplicationObjects.newText("Is this not you?", 10, true, 400, 280);

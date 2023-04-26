@@ -14,10 +14,10 @@ public class RegisterThirdScene {
 
   static public Scene scene() throws IOException {
     MediaPlayer textToSpeach = ApplicationObjects.newSound("registerThirdScene");
-    ApplicationObjects.setPlaying(textToSpeach);
     if (ApplicationObjects.soundOn()) {
       ApplicationObjects.getPlaying().stop();
       textToSpeach.play();
+      ApplicationObjects.setPlaying(textToSpeach);
     }
     Button yes = ApplicationObjects.newButton("Yes", 200, 120, 50, 20, 15);
     yes.setOnAction(e -> {

@@ -21,10 +21,10 @@ public class RegisterFirstScene {
 
   static public Scene scene() throws FileNotFoundException, IOException {
     MediaPlayer textToSpeach = ApplicationObjects.newSound("registerFirstScene");
-    ApplicationObjects.setPlaying(textToSpeach);
     if (ApplicationObjects.soundOn()) {
       ApplicationObjects.getPlaying().stop();
       textToSpeach.play();
+      ApplicationObjects.setPlaying(textToSpeach);
     }
     TextField firstName = ApplicationObjects.newTextField("", 10, 35, 100, 20, 15);
     TextField lastName = ApplicationObjects.newTextField("", 10, 135, 100, 20, 15);

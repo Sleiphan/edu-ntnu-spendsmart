@@ -18,10 +18,10 @@ public class LoginForgotPasswordFirstScene {
 
   static public Scene scene(String key) throws IOException {
     MediaPlayer textToSpeach = ApplicationObjects.newSound("loginForgotPasswordFirstScene");
-    ApplicationObjects.setPlaying(textToSpeach);
     if (ApplicationObjects.soundOn()) {
       ApplicationObjects.getPlaying().stop();
       textToSpeach.play();
+      ApplicationObjects.setPlaying(textToSpeach);
     }
     Text goBack = ApplicationObjects.newText("Go back?", 10, true, 400, 260);
     goBack.setOnMouseClicked(e -> {

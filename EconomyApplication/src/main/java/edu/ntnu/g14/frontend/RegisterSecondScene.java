@@ -16,10 +16,10 @@ public class RegisterSecondScene {
 
   static public Scene scene(String key, String email, String usersID) throws IOException {
     MediaPlayer textToSpeach = ApplicationObjects.newSound("registerSecondScene");
-    ApplicationObjects.setPlaying(textToSpeach);
     if (ApplicationObjects.soundOn()) {
       ApplicationObjects.getPlaying().stop();
       textToSpeach.play();
+      ApplicationObjects.setPlaying(textToSpeach);
     }
 
     TextField keyInput = ApplicationObjects.newTextField("", 120, 195, 100, 20, 15);
