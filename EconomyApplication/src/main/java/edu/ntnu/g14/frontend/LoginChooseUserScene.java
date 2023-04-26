@@ -18,9 +18,6 @@ public class LoginChooseUserScene {
 
     static public Scene scene() throws IOException {
         MediaPlayer textToSpeach = ApplicationObjects.newSound("loginChooseUserScene");
-        if(ApplicationObjects.soundOn()){
-            textToSpeach.play();
-        }
 
         Text chooseUser = ApplicationObjects.newText("Choose user", 30, false, 0, 40);
         Text registerNew = ApplicationObjects.newText("Register new account", 10, true, 400, 280);
@@ -51,6 +48,7 @@ public class LoginChooseUserScene {
             if(soundButton.getText().equals("Sound on?") || soundButton.getText().equals("OFF")){
                 soundButton.setText("ON");
                 ApplicationObjects.setSound(true);
+                textToSpeach.play();
             } else{
                 soundButton.setText("OFF");
                 ApplicationObjects.setSound(false);
