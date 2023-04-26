@@ -1,9 +1,11 @@
 package edu.ntnu.g14.frontend;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -20,6 +22,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -40,6 +44,17 @@ public class ApplicationObjects {
             DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 
+
+    public static boolean sounds;
+
+    public static boolean soundOn(){
+        return sounds;
+    }
+
+    public static void setSound(boolean onOff){
+        sounds = onOff;
+    }
+    
     public static Color getSceneColor(){
         return sceneColor;
     }
@@ -238,6 +253,13 @@ public class ApplicationObjects {
         return group;
     }
     
+    public static MediaPlayer newSound(String soundName) throws MalformedURLException{
+        File mediaFile = new File("src/main/resources/sounds/" + soundName + ".mp3");
+        Media media = new Media(mediaFile.toURI().toURL().toString());
+        MediaPlayer player = new MediaPlayer(media);
+        return player;
+    }
+
     public static ToggleButton newToggleButton(String text, int x, int y, int width, int height, int fontSize) {
         ToggleButton toggleButton = new ToggleButton(text);
         toggleButton.setLayoutX(x);

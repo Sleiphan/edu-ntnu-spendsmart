@@ -40,6 +40,17 @@ public class LoginChooseUserScene {
         ComboBox<String> user = ApplicationObjects.newComboBox(usernames, 250, 20, 15, 125, 70);
         user.setPromptText("Choose Your User");
         Button confirm = ApplicationObjects.newButton("Confirm", 0, 110, 150, 20, 15);
+        Button soundButton = ApplicationObjects.newButton("Sound on?", 10, 260, 150, 20, 15);
+        soundButton.setOnAction(e -> {
+            if(soundButton.getText().equals("Sound on?") || soundButton.getText().equals("OFF")){
+                soundButton.setText("ON");
+                ApplicationObjects.setSound(true);
+            } else{
+                soundButton.setText("OFF");
+                ApplicationObjects.setSound(false);
+            }
+        });
+
         confirm.setLayoutX(250 - 75);
         confirm.setOnAction(e -> {
             if(user.getValue() != null){
@@ -58,7 +69,7 @@ public class LoginChooseUserScene {
             }
         });
         
-        Group root = new Group(chooseUser, registerNew, user, confirm);
+        Group root = new Group(chooseUser, registerNew, user, confirm, soundButton);
         root.getStylesheets().add("StyleSheet.css"); 
         Scene scene = new Scene(root, 500, 300, ApplicationObjects.getSceneColor());
         Platform.runLater(() -> chooseUser.setLayoutX(250 - chooseUser.getLayoutBounds().getWidth()/2));
