@@ -29,10 +29,6 @@ public class PaymentScene {
   static Stage stage = BankApplication.getStage();
 
   static public Scene scene() throws FileNotFoundException, IOException {
-    MediaPlayer textToSpeach = ApplicationObjects.newSound("transferScene");
-    if (ApplicationObjects.soundOn()) {
-      textToSpeach.play();
-    }
     int x = 300;
     int y = 35;
     int n = 85;

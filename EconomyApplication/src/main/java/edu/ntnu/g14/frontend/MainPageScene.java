@@ -30,6 +30,7 @@ public class MainPageScene {
   static public Scene scene() throws IOException {
     MediaPlayer textToSpeach = ApplicationObjects.newSound("mainPageScene");
     if (ApplicationObjects.soundOn()) {
+      ApplicationObjects.getPlaying().stop();
       textToSpeach.play();
       ApplicationObjects.setPlaying(textToSpeach);
     }
