@@ -1,6 +1,6 @@
 package edu.ntnu.g14.frontend;
 
-import static edu.ntnu.g14.Transaction.regexAccountNumber;
+import static edu.ntnu.g14.model.Transaction.regexAccountNumber;
 import static edu.ntnu.g14.frontend.ApplicationObjects.dateFormatter;
 
 import edu.ntnu.g14.model.Account;
@@ -13,7 +13,6 @@ import java.time.LocalDate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
