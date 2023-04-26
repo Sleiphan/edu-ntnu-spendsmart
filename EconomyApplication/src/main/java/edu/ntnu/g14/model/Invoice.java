@@ -13,7 +13,7 @@ public class Invoice {
   private BigDecimal amount;
   private String recipientAccountNumber;
   private String comment;
-  private static final DateTimeFormatter dateFormatter =
+  public static final DateTimeFormatter dateFormatter =
       DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
   /**
@@ -50,56 +50,6 @@ public class Invoice {
     this.amount = amount;
     this.recipientAccountNumber = recipientAccountNumber;
     this.comment = comment;
-  }
-
-  /**
-   * Changes the recipient account number of the invoice. Throws IllegalArgumentException if the new
-   * recipient account number is blank or does not contain 11 digits separated by 2 dots.
-   *
-   * @param newRecipientAccountNumber the new recipient account number of the invoice
-   * @return true if the recipient account number was successfully changed
-   * @throws IllegalArgumentException if the new recipient account number is blank or does not
-   *                                  contain 11 digits separated by 2 dots.
-   */
-  public boolean changeRecipientAccountNumber(String newRecipientAccountNumber) {
-    if (recipientAccountNumber.isBlank()) {
-      throw new IllegalArgumentException("The recipients account number must be entered!");
-    } else if (recipientAccountNumber.length() != 13) {
-      throw new IllegalArgumentException("The recipients account number must contain 11 digits, " +
-          "seperated by 2 dots");
-    }
-    this.recipientAccountNumber = newRecipientAccountNumber;
-    return true;
-  }
-
-  /**
-   * Changes the due date of the invoice.
-   *
-   * @param newDueDate the new due date for the invoice
-   * @return true if the due date is successfully changed
-   * @throws IllegalArgumentException if the new due date is in the past
-   */
-  public boolean changeDueDate(final LocalDate newDueDate) {
-    if (newDueDate.isBefore(LocalDate.now())) {
-      throw new IllegalArgumentException("This date has already passed");
-    }
-    this.dueDate = newDueDate;
-    return true;
-  }
-
-  /**
-   * Changes the amount of the invoice.
-   *
-   * @param newAmount the new amount for the invoice
-   * @return true if the amount is successfully changed
-   * @throws IllegalArgumentException if the new amount is less than 1
-   */
-  public boolean changeAmount(final BigDecimal newAmount) {
-    if (amount.intValue() < 1) {
-      throw new IllegalArgumentException("The invoice must have a value greater than 1");
-    }
-    this.amount = newAmount;
-    return true;
   }
 
   /**
