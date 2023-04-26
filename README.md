@@ -1,7 +1,7 @@
 # Welcome to SpendSmart 🤖
 
  SpendSmart is a newly launched desktop application for personal banking and budgeting purposes 💸. It offers a wide range of features including creating budgets and providing budget suggestions, as well as managing and updating bank account details 💳.
-#
+
 ## Installation Guide 🖥️
 To run the SpendSmart software, simply run the .jar file. 
 
@@ -20,14 +20,13 @@ Verify that Java is installed with version 17+.
 
 #### **macOS:**
 
-Open the Terminal and run the following command: `java -version`
+Open the Terminal and run the following command: `java -version`.
 
 Verify that Java is installed with version 17+.
-___
+
 ## Usage Instructions 
 
 For detailed usage instructions, refer to the 
 [User Manual in the project's GitLab.](https://gitlab.stud.idi.ntnu.no/idatt1002_2023_group14/idatt1002_2023_group14/-/wikis/Home/System/User-manual)
-___
 ## Known Issues ⛔️
-___
+
