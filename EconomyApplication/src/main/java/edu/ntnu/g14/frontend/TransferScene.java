@@ -11,6 +11,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -40,6 +41,10 @@ public class TransferScene {
      * @throws IOException if input is invalid
      */
     static public Scene scene() throws IOException {
+        MediaPlayer textToSpeach = ApplicationObjects.newSound("transferScene");
+        if(ApplicationObjects.soundOn()){
+            textToSpeach.play();
+        }
         int x = 290;
         int y = 50;
         int n = 85;

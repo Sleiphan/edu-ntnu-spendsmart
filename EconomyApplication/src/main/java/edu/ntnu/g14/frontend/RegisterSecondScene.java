@@ -7,12 +7,18 @@ import edu.ntnu.g14.FileManagement;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
 public class RegisterSecondScene {
     static Stage stage = BankApplication.getStage();
 
     static public Scene scene(String key, String email, String usersID) throws IOException{
+        MediaPlayer textToSpeach = ApplicationObjects.newSound("registerSecondScene");
+        if(ApplicationObjects.soundOn()){
+            textToSpeach.play();
+        }
+
         TextField keyInput = ApplicationObjects.newTextField("", 120, 195, 100, 20, 15);
         Button next = ApplicationObjects.newButton("Next", 240, 195, 100, 20, 15);
         next.setOnAction(e -> {

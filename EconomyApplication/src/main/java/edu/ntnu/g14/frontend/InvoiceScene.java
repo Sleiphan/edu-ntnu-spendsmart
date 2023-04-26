@@ -14,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -26,6 +27,10 @@ public class InvoiceScene {
     private static InvoiceDAO invoiceFile;
 
     static public Scene scene() throws IOException {
+        MediaPlayer textToSpeach = ApplicationObjects.newSound("invoiceScene");
+        if(ApplicationObjects.soundOn()){
+            textToSpeach.play();
+        }
         final User user = BankApplication.loggedInUser;
         final String userID = user.getLoginInfo().getUserId();
         invoiceFile = new InvoiceDAO(INVOICE_PATH);

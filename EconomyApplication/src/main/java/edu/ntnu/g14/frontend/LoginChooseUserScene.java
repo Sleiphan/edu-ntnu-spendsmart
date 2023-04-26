@@ -9,6 +9,7 @@ import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -16,6 +17,11 @@ public class LoginChooseUserScene {
     static Stage stage = BankApplication.getStage();
 
     static public Scene scene() throws IOException {
+        MediaPlayer textToSpeach = ApplicationObjects.newSound("loginChooseUserScene");
+        if(ApplicationObjects.soundOn()){
+            textToSpeach.play();
+        }
+
         Text chooseUser = ApplicationObjects.newText("Choose user", 30, false, 0, 40);
         Text registerNew = ApplicationObjects.newText("Register new account", 10, true, 400, 280);
         registerNew.setOnMouseClicked(e -> {

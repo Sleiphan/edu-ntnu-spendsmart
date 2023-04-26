@@ -14,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 /**
  * UserManagementScene class represents the user management page in the frontend of the bank application.
@@ -32,7 +33,10 @@ public class UserManagementScene {
      */
     static public Scene scene() throws IOException {
 
-
+        MediaPlayer textToSpeach = ApplicationObjects.newSound("userManagementScene");
+        if(ApplicationObjects.soundOn()){
+            textToSpeach.play();
+        }
         Label loggedInUserLabel = new Label(loggedInUser.getLoginInfo().getUserName());
         loggedInUserLabel.setStyle("-fx-font-size: 40;");
         Label loggedInUserEmail = new Label(loggedInUser.getEmail());
@@ -124,10 +128,22 @@ public class UserManagementScene {
                 e1.printStackTrace();
             }
         });
+
+        Button soundButton = ApplicationObjects.newButton("Sound on?", 10, 537, 150, 20, 15);
+        soundButton.setOnAction(e -> {
+            if(soundButton.getText().equals("Sound on?") || soundButton.getText().equals("OFF")){
+                soundButton.setText("ON");
+                ApplicationObjects.setSound(true);
+            } else{
+                soundButton.setText("OFF");
+                ApplicationObjects.setSound(false);
+            }
+        });
+
         Button dropDownButton = ApplicationObjects.newButton("test", 676, 10, 10, 10, 10);
         Group dropDown = ApplicationObjects.dropDownMenu();
         ImageView manageUserButton = ApplicationObjects.newImage("user.png", 646, 10, 20, 20);
-        Group root = new Group(userInfoBox, buttonGrid, dropDownButton, homeButton, manageUserButton);
+        Group root = new Group(userInfoBox, buttonGrid, dropDownButton, homeButton, manageUserButton, soundButton);
 
         dropDownButton.setOnAction(e -> {
             root.getChildren().add(dropDown);

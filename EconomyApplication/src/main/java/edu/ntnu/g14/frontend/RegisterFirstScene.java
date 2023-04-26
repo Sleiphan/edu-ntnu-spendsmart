@@ -7,6 +7,7 @@ import edu.ntnu.g14.*;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
 public class RegisterFirstScene {
@@ -14,6 +15,10 @@ public class RegisterFirstScene {
 
 
     static public Scene scene() throws FileNotFoundException, IOException{
+        MediaPlayer textToSpeach = ApplicationObjects.newSound("registerFirstScene");
+        if(ApplicationObjects.soundOn()){
+            textToSpeach.play();
+        }
         TextField firstName = ApplicationObjects.newTextField("", 10, 35, 100, 20, 15);
         TextField lastName = ApplicationObjects.newTextField("", 10, 135, 100, 20, 15);
         TextField email = ApplicationObjects.newTextField("", 10, 235, 100, 20, 15);

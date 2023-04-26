@@ -6,12 +6,17 @@ import edu.ntnu.g14.BankApplication;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
 public class RegisterThirdScene {
     static Stage stage = BankApplication.getStage();
 
     static public Scene scene()throws IOException {
+        MediaPlayer textToSpeach = ApplicationObjects.newSound("registerThirdScene");
+        if(ApplicationObjects.soundOn()){
+            textToSpeach.play();
+        }
         Button yes = ApplicationObjects.newButton("Yes", 200, 120, 50, 20, 15);
         yes.setOnAction(e -> {
             try {

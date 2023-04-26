@@ -17,6 +17,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -24,6 +25,10 @@ public class MainPageScene {
     static Stage stage = BankApplication.getStage();
 
     static public Scene scene() throws IOException {
+        MediaPlayer textToSpeach = ApplicationObjects.newSound("mainPageScene");
+        if(ApplicationObjects.soundOn()){
+            textToSpeach.play();
+        }
         String [] columnTitlesLatestActivitiesTable = {"Transaction", "Amount"};
         String [] columnTitlesDuePaymentsTable = {"Date", "Recipient", "Amount"};
 

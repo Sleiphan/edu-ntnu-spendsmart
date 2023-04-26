@@ -9,6 +9,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -16,6 +17,11 @@ public class LoginUserScene {
     static Stage stage = BankApplication.getStage();
 
     static public Scene scene() throws IOException{
+        MediaPlayer textToSpeach = ApplicationObjects.newSound("loginUserScene");
+        if(ApplicationObjects.soundOn()){
+            textToSpeach.play();
+        }
+
         Text notYou = ApplicationObjects.newText("Is this not you?", 10, true, 400, 280);
         notYou.setOnMouseClicked(e -> {
             try {

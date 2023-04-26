@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -15,6 +16,10 @@ public class LoginForgotPasswordFirstScene {
 
 
     static public Scene scene(String key) throws IOException{
+        MediaPlayer textToSpeach = ApplicationObjects.newSound("loginForgotPasswordFirstScene");
+        if(ApplicationObjects.soundOn()){
+            textToSpeach.play();
+        }
         Text goBack = ApplicationObjects.newText("Go back?", 10, true, 400, 260);
         goBack.setOnMouseClicked(e -> {
             try {

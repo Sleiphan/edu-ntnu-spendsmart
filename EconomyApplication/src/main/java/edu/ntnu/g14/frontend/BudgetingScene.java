@@ -16,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -51,6 +52,10 @@ public class BudgetingScene {
      * @throws IOException if there is an error accessing the budget file
      */
     static public Scene scene() throws IOException {
+        MediaPlayer textToSpeach = ApplicationObjects.newSound("budgetingScene");
+        if(ApplicationObjects.soundOn()){
+            textToSpeach.play();
+        }
         budgetDAO = getBudgetDAO();
 
         contextMenu = createContextMenu(null); // Pass null initially
