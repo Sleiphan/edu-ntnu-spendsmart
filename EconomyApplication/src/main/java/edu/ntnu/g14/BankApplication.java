@@ -34,7 +34,7 @@ public class BankApplication extends Application {
     FileManagement.initialize();
 
     BankApplication.stage = stage;
-    stage.setTitle("Spend Smart");
+    stage.setTitle("SpendSmart");
     stage.setResizable(false);
     stage.setScene(LoginChooseUserScene.scene());
     stage.getIcons().add(new Image(new FileInputStream("src/main/resources/images/icon.png")));
