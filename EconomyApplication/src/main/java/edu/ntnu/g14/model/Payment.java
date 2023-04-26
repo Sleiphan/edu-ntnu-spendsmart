@@ -44,19 +44,4 @@ public class Payment extends Transaction {
     this.dueDate = dueDate;
   }
 
-  private String getCID() {
-    return CID;
-  }
-
-  private LocalDate getDueDate() {
-    return dueDate;
-  }
-
-  private void setCID(String CID) {
-    this.CID = CID;
-  }
-
-  private void setDueDate(LocalDate dueDate) {
-    this.dueDate = dueDate;
-  }
 }
