@@ -112,14 +112,14 @@ public class IndexedDataFileTest {
       dao.addNewData(user2ID, "Test data 3".getBytes(CHARSET));
       dao.addNewData(user2ID, "Test data 4".getBytes(CHARSET));
 
-      dao.deleteData(user2ID, 0);
+      dao.deleteData(user2ID, 1);
       byte[] data = dao.getData(user2ID, 1);
       assert data == null;
 
       data = dao.getData(user2ID, 0);
       assert data != null;
       String s = new String(data, CHARSET);
-      assert s.equals("Test data 4");
+      assert s.equals("Test data 3");
 
       assert dao.deleteData(user2ID, 0);
       assert !dao.deleteData(user2ID, 0);

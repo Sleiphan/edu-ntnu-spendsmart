@@ -448,6 +448,10 @@ public class IndexedDataFile {
         }
         dataPos = fileStream.getFilePointer();
       }
+      else {
+        dataPos--;
+        dataEnd--;
+      }
     }
 
     long dataLength = dataEnd - dataPos;
