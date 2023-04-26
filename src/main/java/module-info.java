@@ -1,4 +1,4 @@
-module edu.ntnu.g14 {
+module edu.ntnu {
     requires transitive javafx.controls;
     requires transitive javafx.graphics;
     requires java.sql;
