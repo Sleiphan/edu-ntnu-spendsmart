@@ -23,14 +23,14 @@ public class TestAccount {
   @Test
   public void testRemoveAmount() {
     account.removeAmount(new BigDecimal(500));
-    assertEquals(new BigDecimal(500), account.getAmount());
+    assertEquals(new BigDecimal("500.00"), account.getAmount());
     assertThrows(IllegalArgumentException.class, () -> account.removeAmount(new BigDecimal(1000)));
   }
 
   @Test
   public void testAddAmount() {
     account.addAmount(new BigDecimal(500));
-    assertEquals(new BigDecimal(1500), account.getAmount());
+    assertEquals(new BigDecimal("1500.00"), account.getAmount());
   }
 
   @Test
@@ -47,7 +47,7 @@ public class TestAccount {
 
   @Test
   public void testGetAmount() {
-    assertEquals(new BigDecimal(1000), account.getAmount());
+    assertEquals(new BigDecimal("1000.00"), account.getAmount());
   }
 
   @Test
@@ -73,13 +73,13 @@ public class TestAccount {
 
   @Test
   public void testToCSVString() {
-    String expected = "CHECKING_ACCOUNT;1000;1234.56.78910;My Account";
+    String expected = "CHECKING_ACCOUNT;1000.00;1234.56.78910;My Account";
     assertEquals(expected, account.toCSVString());
   }
 
   @Test
   public void testFromCSVString() {
-    String csvString = "CHECKING_ACCOUNT;1000;1234.56.78910;My Account";
+    String csvString = "CHECKING_ACCOUNT;1000.00;1234.56.78910;My Account";
     Account account2 = Account.fromCSVString(csvString);
     assertEquals(account, account2);
   }
