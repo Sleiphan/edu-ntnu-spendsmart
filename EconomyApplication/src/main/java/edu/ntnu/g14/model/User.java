@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -399,5 +400,18 @@ public class User extends Personalia {
                 .replaceAll(" ", "_")
                 .toUpperCase())))
         .map(Transaction::getAmount).reduce(new BigDecimal(0), BigDecimal::add).doubleValue();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    User user = (User) o;
+    return Objects.equals(accounts, user.accounts) && Objects.equals(invoices, user.invoices) && Objects.equals(transactions, user.transactions) && Objects.equals(budget, user.budget);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(accounts, invoices, transactions, budget);
   }
 }

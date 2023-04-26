@@ -6,6 +6,8 @@ import edu.ntnu.g14.dao.BudgetDAO;
 import edu.ntnu.g14.dao.InvoiceDAO;
 import edu.ntnu.g14.dao.TransactionDAO;
 import edu.ntnu.g14.dao.UserDAO;
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -26,17 +28,17 @@ public class FileManagement {
   public static final String PATH_TRANSACTIONS = "saves/transactions.txt";
   public static final String PATH_USERS = "saves/users.txt";
 
-  private static final Charset DATA_CHARSET = StandardCharsets.UTF_8;
-  private static final TransactionDAO TRANSACTION_DAO;
-  private static final AccountDAO ACCOUNT_DAO;
-  private static final InvoiceDAO INVOICE_DAO;
-  private static final BudgetDAO BUDGET_DAO;
-  private static final UserDAO USER_DAO;
+  static final Charset DATA_CHARSET = StandardCharsets.UTF_8;
+  static TransactionDAO TRANSACTION_DAO;
+  static AccountDAO ACCOUNT_DAO;
+  static InvoiceDAO INVOICE_DAO;
+  static BudgetDAO BUDGET_DAO;
+  static UserDAO USER_DAO;
 
   private static final String[] PATH_ALL = {PATH_ACCOUNTS, PATH_BUDGETS, PATH_INVOICES,
       PATH_TRANSACTIONS, PATH_USERS};
 
-  static {
+  public static void initialize() {
     try {
       establishSaveFiles();
 
@@ -46,6 +48,34 @@ public class FileManagement {
       INVOICE_DAO = new InvoiceDAO(PATH_INVOICES, DATA_CHARSET);
       BUDGET_DAO = new BudgetDAO(PATH_BUDGETS, DATA_CHARSET);
       USER_DAO = new UserDAO(PATH_USERS, DATA_CHARSET);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  static void initializeTestCase() {
+    String[] testPaths = new String[] {
+            "transactionsTest.txt",
+            "accountsTest.txt",
+            "invoicesTest.txt",
+            "budgetsTest.txt",
+            "usersTest.txt"
+    };
+
+    try {
+
+      for (String path : testPaths) {
+        File f = new File(path);
+        f.createNewFile();
+        f.deleteOnExit();
+      }
+
+      // Initialise data access objects
+      TRANSACTION_DAO = new TransactionDAO(testPaths[0], DATA_CHARSET);
+      ACCOUNT_DAO     = new     AccountDAO(testPaths[1], DATA_CHARSET);
+      INVOICE_DAO     = new     InvoiceDAO(testPaths[2], DATA_CHARSET);
+      BUDGET_DAO      = new      BudgetDAO(testPaths[3], DATA_CHARSET);
+      USER_DAO        = new        UserDAO(testPaths[4], DATA_CHARSET);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

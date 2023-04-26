@@ -2,6 +2,7 @@ package edu.ntnu.g14;
 
 
 import edu.ntnu.g14.frontend.LoginChooseUserScene;
+import edu.ntnu.g14.model.FileManagement;
 import edu.ntnu.g14.model.User;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,6 +31,8 @@ public class BankApplication extends Application {
    */
   @Override
   public void start(Stage stage) throws IOException, InterruptedException {
+    FileManagement.initialize();
+
     BankApplication.stage = stage;
     stage.setTitle("Spend Smart");
     stage.setResizable(false);

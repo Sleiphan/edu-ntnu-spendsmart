@@ -3,6 +3,7 @@ package edu.ntnu.g14.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 /**
  * The invoice class represents an invoice.
@@ -125,5 +126,18 @@ public class Invoice {
     String comment = fields[3].substring(1, fields[3].length() - 1);
 
     return new Invoice(dateOfTransaction, amount, recipient, comment);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Invoice invoice = (Invoice) o;
+    return Objects.equals(dueDate, invoice.dueDate) && Objects.equals(amount, invoice.amount) && Objects.equals(recipientAccountNumber, invoice.recipientAccountNumber) && Objects.equals(comment, invoice.comment);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(dueDate, amount, recipientAccountNumber, comment);
   }
 }
