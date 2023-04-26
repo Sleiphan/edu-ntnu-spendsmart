@@ -1,6 +1,6 @@
 package edu.ntnu.g14.Overview;
 
-import edu.ntnu.g14.Transaction;
+import edu.ntnu.g14.model.Transaction;
 import java.sql.Date;
 
 public class OverviewMonthly implements Overview {

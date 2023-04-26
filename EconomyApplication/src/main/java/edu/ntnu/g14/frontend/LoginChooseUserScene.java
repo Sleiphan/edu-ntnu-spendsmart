@@ -1,8 +1,8 @@
 package edu.ntnu.g14.frontend;
 
 import edu.ntnu.g14.BankApplication;
-import edu.ntnu.g14.FileManagement;
-import edu.ntnu.g14.Login;
+import edu.ntnu.g14.model.FileManagement;
+import edu.ntnu.g14.model.Login;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import javafx.application.Platform;

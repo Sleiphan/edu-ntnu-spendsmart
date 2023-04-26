@@ -1,6 +1,6 @@
 package edu.ntnu.g14.frontend;
 
-import edu.ntnu.g14.AccountCategory;
+import edu.ntnu.g14.model.AccountCategory;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import javafx.geometry.Insets;

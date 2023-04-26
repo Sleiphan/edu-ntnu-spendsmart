@@ -1,4 +1,4 @@
-package edu.ntnu.g14;
+package edu.ntnu.g14.model;
 
 public enum BudgetCategory {
   FOOD_AND_DRINK("e"),

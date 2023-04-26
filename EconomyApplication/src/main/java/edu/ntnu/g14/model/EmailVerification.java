@@ -1,4 +1,4 @@
-package edu.ntnu.g14;
+package edu.ntnu.g14.model;
 
 import java.util.Properties;
 import java.util.Random;

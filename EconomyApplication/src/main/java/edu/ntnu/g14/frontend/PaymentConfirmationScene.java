@@ -1,10 +1,10 @@
 package edu.ntnu.g14.frontend;
 
 import edu.ntnu.g14.BankApplication;
-import edu.ntnu.g14.BudgetCategory;
-import edu.ntnu.g14.FileManagement;
-import edu.ntnu.g14.Payment;
-import edu.ntnu.g14.User;
+import edu.ntnu.g14.model.BudgetCategory;
+import edu.ntnu.g14.model.FileManagement;
+import edu.ntnu.g14.model.Payment;
+import edu.ntnu.g14.model.User;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;

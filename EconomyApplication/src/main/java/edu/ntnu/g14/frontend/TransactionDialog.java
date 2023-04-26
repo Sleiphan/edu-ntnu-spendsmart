@@ -2,11 +2,11 @@ package edu.ntnu.g14.frontend;
 
 import static edu.ntnu.g14.frontend.ApplicationObjects.dateFormatter;
 
-import edu.ntnu.g14.Account;
-import edu.ntnu.g14.AccountCategory;
+import edu.ntnu.g14.model.Account;
+import edu.ntnu.g14.model.AccountCategory;
 import edu.ntnu.g14.BankApplication;
-import edu.ntnu.g14.BudgetCategory;
-import edu.ntnu.g14.Transaction;
+import edu.ntnu.g14.model.BudgetCategory;
+import edu.ntnu.g14.model.Transaction;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.regex.Pattern;

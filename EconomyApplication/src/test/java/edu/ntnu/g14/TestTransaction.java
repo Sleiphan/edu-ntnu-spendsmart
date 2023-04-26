@@ -1,5 +1,7 @@
 package edu.ntnu.g14;
 
+import edu.ntnu.g14.model.BudgetCategory;
+import edu.ntnu.g14.model.Transaction;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;

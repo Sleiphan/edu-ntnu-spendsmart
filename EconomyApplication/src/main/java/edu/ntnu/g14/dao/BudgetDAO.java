@@ -1,6 +1,6 @@
 package edu.ntnu.g14.dao;
 
-import edu.ntnu.g14.Budget;
+import edu.ntnu.g14.model.Budget;
 import java.io.IOException;
 import java.nio.charset.Charset;
 

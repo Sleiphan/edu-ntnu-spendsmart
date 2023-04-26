@@ -1,4 +1,4 @@
-package edu.ntnu.g14;
+package edu.ntnu.g14.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

@@ -1,4 +1,4 @@
-package edu.ntnu.g14;
+package edu.ntnu.g14.model;
 
 
 import edu.ntnu.g14.dao.AccountDAO;

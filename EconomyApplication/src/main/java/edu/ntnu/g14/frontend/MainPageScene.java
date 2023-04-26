@@ -1,9 +1,9 @@
 package edu.ntnu.g14.frontend;
 
-import edu.ntnu.g14.Account;
+import edu.ntnu.g14.model.Account;
 import edu.ntnu.g14.BankApplication;
-import edu.ntnu.g14.FileManagement;
-import edu.ntnu.g14.Transaction;
+import edu.ntnu.g14.model.FileManagement;
+import edu.ntnu.g14.model.Transaction;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;

@@ -2,6 +2,7 @@ package edu.ntnu.g14;
 
 
 import edu.ntnu.g14.frontend.LoginChooseUserScene;
+import edu.ntnu.g14.model.User;
 import java.io.FileInputStream;
 import java.io.IOException;
 import javafx.application.Application;

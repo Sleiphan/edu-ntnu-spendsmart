@@ -1,4 +1,4 @@
-package edu.ntnu.g14;
+package edu.ntnu.g14.model;
 
 /**
  * A class that represents a person's personal information including login credentials and personal

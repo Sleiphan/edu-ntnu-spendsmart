@@ -1,11 +1,11 @@
 package edu.ntnu.g14.frontend;
 
 import static edu.ntnu.g14.BankApplication.loggedInUser;
-import static edu.ntnu.g14.FileManagement.writeTransaction;
+import static edu.ntnu.g14.model.FileManagement.writeTransaction;
 
 import edu.ntnu.g14.BankApplication;
-import edu.ntnu.g14.BudgetCategory;
-import edu.ntnu.g14.Transaction;
+import edu.ntnu.g14.model.BudgetCategory;
+import edu.ntnu.g14.model.Transaction;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;

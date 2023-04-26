@@ -1,9 +1,9 @@
 package edu.ntnu.g14.dao;
 
-import edu.ntnu.g14.Budget;
-import edu.ntnu.g14.BudgetCategory;
-import edu.ntnu.g14.BudgetItem;
-import edu.ntnu.g14.GenderCategory;
+import edu.ntnu.g14.model.Budget;
+import edu.ntnu.g14.model.BudgetCategory;
+import edu.ntnu.g14.model.BudgetItem;
+import edu.ntnu.g14.model.GenderCategory;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;

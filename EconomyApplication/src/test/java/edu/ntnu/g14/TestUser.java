@@ -2,6 +2,15 @@ package edu.ntnu.g14;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import edu.ntnu.g14.model.Account;
+import edu.ntnu.g14.model.AccountCategory;
+import edu.ntnu.g14.model.Budget;
+import edu.ntnu.g14.model.BudgetCategory;
+import edu.ntnu.g14.model.GenderCategory;
+import edu.ntnu.g14.model.Invoice;
+import edu.ntnu.g14.model.Login;
+import edu.ntnu.g14.model.Transaction;
+import edu.ntnu.g14.model.User;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;

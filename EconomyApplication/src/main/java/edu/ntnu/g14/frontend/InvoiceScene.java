@@ -1,9 +1,9 @@
 package edu.ntnu.g14.frontend;
 
 import edu.ntnu.g14.BankApplication;
-import edu.ntnu.g14.FileManagement;
-import edu.ntnu.g14.Invoice;
-import edu.ntnu.g14.User;
+import edu.ntnu.g14.model.FileManagement;
+import edu.ntnu.g14.model.Invoice;
+import edu.ntnu.g14.model.User;
 import edu.ntnu.g14.dao.InvoiceDAO;
 import java.io.IOException;
 import java.math.BigDecimal;

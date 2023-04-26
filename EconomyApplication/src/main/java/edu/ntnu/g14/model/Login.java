@@ -1,4 +1,4 @@
-package edu.ntnu.g14;
+package edu.ntnu.g14.model;
 
 /**
  * The login class represents a user's login information, including the user's username, password,

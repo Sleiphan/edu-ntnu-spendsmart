@@ -1,7 +1,7 @@
 package edu.ntnu.g14.dao;
 
-import edu.ntnu.g14.Login;
-import edu.ntnu.g14.User;
+import edu.ntnu.g14.model.Login;
+import edu.ntnu.g14.model.User;
 import org.junit.jupiter.api.Test;
 
 public class UserDAOTest {

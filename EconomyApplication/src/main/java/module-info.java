@@ -10,4 +10,6 @@ module edu.ntnu.g14 {
   exports edu.ntnu.g14;
   opens edu.ntnu.g14 to javafx.graphics;
   exports edu.ntnu.g14.frontend;
+  exports edu.ntnu.g14.model;
+  opens edu.ntnu.g14.model to javafx.graphics;
 }
