@@ -63,6 +63,7 @@ public class BudgetSuggestion {
         budgetMap.put(BudgetCategory.TRAVEL, calculatePercentage(totalIncome, 15));
         budgetMap.put(BudgetCategory.ALCOHOL_AND_TOBACCO, calculatePercentage(totalIncome, 5));
         budgetMap.put(BudgetCategory.OTHER, calculatePercentage(totalIncome, 20));
+        break;
       default:
         // Default budget suggestion
         budgetMap.put(BudgetCategory.FOOD_AND_DRINK, calculatePercentage(totalIncome, 10));
