@@ -126,87 +126,6 @@ public class BudgetItem {
   }
 
   /**
-   * Sets the financial value of this budget item. Since BigDecimal is immutable, no changes can be
-   * made to the parameter-object, thus making the internal value safe from such unexpected
-   * changes.
-   *
-   * @param financialValue The new financial value of this budget item.
-   * @see BigDecimal
-   */
-  public void setFinancialValue(BigDecimal financialValue) {
-    this.financialValue = financialValue;
-    updateBudgetCalculations();
-  }
-
-  /**
-   * Parses the submitted text as a value, and sets the financial value of this budget item to the
-   * parsed value.
-   *
-   * @param financialValueText The text containing the new financial value of this budget item.
-   * @throws NumberFormatException if the submitted String could not be parsed to a financial
-   *                               value.
-   */
-  public void setFinancialValue(String financialValueText) {
-    this.financialValue = new BigDecimal(financialValueText);
-  }
-
-  /**
-   * Parses the submitted text as a value, and sets the amount of this budget item to the parsed
-   * value. This method tries to achieve high performance in situations where many successive
-   * parsing failures are expected, e.g. checking the input of a user as they type in a value. This
-   * is done by avoiding the use of catching a NumberFormatException, by using a validator from the
-   * Apache Commons library.
-   *
-   * @param financialValueText A String containing the new amount of this budget item.
-   * @return true if the submitted text could be successfully parsed, or false if the parse failed.
-   */
-  public boolean setFinancialValue_tryParse(String financialValueText) {
-    BigDecimal newValue = BigDecimalValidator.getInstance().validate(financialValueText);
-    if (newValue == null) {
-      return false;
-    }
-
-    setFinancialValue(newValue);
-    return true;
-  }
-
-  /**
-   * Sets the financial value of this budget item.
-   *
-   * @param financialValue The new financial value of this budget item.
-   */
-  public void setFinancialValue(int financialValue) {
-    setFinancialValue(new BigDecimal(financialValue));
-  }
-
-  /**
-   * Sets the financial value of this budget item.
-   *
-   * @param financialValue The new financial value of this budget item.
-   */
-  public void setFinancialValue(long financialValue) {
-    setFinancialValue(new BigDecimal(financialValue));
-  }
-
-  /**
-   * Sets the financial value of this budget item.
-   *
-   * @param financialValue The new financial value of this budget item.
-   */
-  public void setFinancialValue(float financialValue) {
-    setFinancialValue(new BigDecimal(financialValue));
-  }
-
-  /**
-   * Sets the financial value of this budget item.
-   *
-   * @param financialValue The new financial value of this budget item.
-   */
-  public void setFinancialValue(double financialValue) {
-    setFinancialValue(new BigDecimal(financialValue));
-  }
-
-  /**
    * Returns the financial value of this budget item, as BigDecimal.
    *
    * @return the financial value of this budget item, as BigDecimal.
@@ -226,27 +145,6 @@ public class BudgetItem {
    */
   public int getFinancialValue_int() {
     return financialValue.intValue();
-  }
-
-  /**
-   * Returns the financial value of this budget item as a double-value. <br>
-   * <i>WARNING: Returns the result of BigDecimal::intValue(), which cuts away certain pieces of
-   * the original value.</i>
-   *
-   * @return the financial value of this budget item, as a double-value.
-   * @see BigDecimal
-   */
-  public double getFinancialValue_double() {
-    return financialValue.doubleValue();
-  }
-
-  /**
-   * Sets the description of this budget item.
-   *
-   * @param newDescription The new description of this budget item.
-   */
-  public void setDescription(String newDescription) {
-    description = newDescription;
   }
 
   /**
