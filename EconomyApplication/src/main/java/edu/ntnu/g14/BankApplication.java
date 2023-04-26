@@ -6,15 +6,9 @@ import java.io.IOException;
 
 import edu.ntnu.g14.frontend.LoginChooseUserScene;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import edu.ntnu.g14.User;
+
 
 /**
  * The class is the main entry point for the application.

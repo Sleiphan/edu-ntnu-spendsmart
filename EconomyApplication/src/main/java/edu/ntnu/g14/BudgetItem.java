@@ -1,7 +1,6 @@
 package edu.ntnu.g14;
 
 import org.apache.commons.validator.routines.BigDecimalValidator;
-import org.json.JSONObject;
 import java.math.BigDecimal;
 
 /**
