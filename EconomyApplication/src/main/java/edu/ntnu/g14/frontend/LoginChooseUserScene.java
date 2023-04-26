@@ -27,6 +27,11 @@ public class LoginChooseUserScene {
     registerNew.setOnMouseClicked(e -> {
       try {
         stage.setScene(RegisterFirstScene.scene());
+        ApplicationObjects.alertBox("Data collection", "This program uses personal information to run",
+         "By clicking 'Ok', you agree to provide personal" +
+         "information that will be used solely for the purpose of enabling" +
+         "the functionality of this program. We will not use your personal" +
+         "information for any other purpose without your explicit consent.");
       } catch (FileNotFoundException e1) {
         e1.printStackTrace();
       } catch (IOException e1) {
