@@ -1,3 +1,0 @@
-JohnDoe#1:0
-
-"JohnDoe#1","John Doe","1";"john.doe290687@gmail.com";"Doe";"John"
