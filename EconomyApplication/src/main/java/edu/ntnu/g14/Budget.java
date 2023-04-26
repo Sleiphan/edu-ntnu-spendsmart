@@ -7,247 +7,275 @@ import java.util.List;
 
 public class Budget {
 
-    private static final char CSV_DELIMITER = ',';
+  private static final char CSV_DELIMITER = ',';
 
-    private BigDecimal salary = BigDecimal.ZERO;
-    private BigDecimal savings = BigDecimal.ZERO;
-    private byte age;
-    private GenderCategory gender;
+  private BigDecimal salary = BigDecimal.ZERO;
+  private BigDecimal savings = BigDecimal.ZERO;
+  private byte age;
+  private GenderCategory gender;
 
-    private HouseholdCategory household;
-    private final List<BudgetItem> entries = new ArrayList<>();
+  private HouseholdCategory household;
+  private final List<BudgetItem> entries = new ArrayList<>();
 
 
+  /**
+   * Creates a new empty budget.
+   *
+   * @param i           The age of the person following this budget.
+   * @param ownerGender The gender of the person following this budget.
+   */
+  public Budget(byte i, GenderCategory ownerGender) {
+    this.age = i;
+    this.gender = ownerGender;
+    this.household = HouseholdCategory.LIVING_ALONE;
+  }
 
-    /**
-     * Creates a new empty budget.
-     * @param i The age of the person following this budget.
-     * @param ownerGender The gender of the person following this budget.
-     */
-    public Budget(byte i, GenderCategory ownerGender) {
-        this.age = i;
-        this.gender = ownerGender;
-        this.household = HouseholdCategory.LIVING_ALONE;
+  public Budget(HouseholdCategory householdSize) {
+    this.household = householdSize;
+  }
+
+
+  /**
+   * Adds a new budget item to this budget.
+   *
+   * @param newBudgetItem The new budget item to be added to this budget.
+   */
+  public void addBudgetItem(BudgetItem newBudgetItem) {
+    entries.add(newBudgetItem);
+    newBudgetItem.setAssociatedBudget(this);
+  }
+
+  /**
+   * Returns the number of budget items currently in this budget.
+   *
+   * @return the number of budget items currently in this budget.
+   */
+  public int getNumBudgetItems() {
+    return entries.size();
+  }
+
+  /**
+   * Attempts to remove the submitted budget item from this Budget.
+   *
+   * @param index the index of the BudgetItem to be removed from this Budget. The index scheme
+   *              follows the one present in the List-object returned by Budget::getEntries().
+   * @return true if the object was found and removed. Else, returns false.
+   */
+  public boolean removeBudgetItem(int index) {
+    BudgetItem removed = entries.remove(index);
+    if (removed == null) {
+      return false;
     }
 
-    public Budget(HouseholdCategory householdSize) {
-        this.household = householdSize;
+    removed.setAssociatedBudget(null);
+    return true;
+  }
+
+  // BigDecimal salary = BigDecimal.ZERO;
+  // BigDecimal savings = BigDecimal.ZERO;
+  // byte age;
+  // GenderCategory gender;
+  // final List<BudgetItem> entries = new ArrayList<>();
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) {
+      return false;
+    }
+    if (!(o instanceof Budget)) {
+      return false;
     }
 
+    return o.hashCode() == this.hashCode();
+  }
 
-    /**
-     * Adds a new budget item to this budget.
-     * @param newBudgetItem The new budget item to be added to this budget.
-     */
-    public void addBudgetItem(BudgetItem newBudgetItem) {
-        entries.add(newBudgetItem);
-        newBudgetItem.setAssociatedBudget(this);
+  @Override
+  public int hashCode() {
+    int hash = salary.hashCode() * savings.hashCode() * age * entries.hashCode();
+    if (gender != null) {
+      hash *= gender.hashCode();
+    }
+    if (household != null) {
+      hash *= household.hashCode();
     }
 
-    /**
-     * Returns the number of budget items currently in this budget.
-     * @return the number of budget items currently in this budget.
-     */
-    public int getNumBudgetItems() {
-        return entries.size();
+    return hash;
+  }
+
+  public String toCSV() {
+    StringBuilder allEntries = new StringBuilder();
+    for (BudgetItem b : entries) {
+      allEntries.append(b.toCSV()).append(CSV_DELIMITER);
     }
 
-    /**
-     * Attempts to remove the submitted budget item from this Budget.
-     * @param index the index of the BudgetItem to be removed from this Budget.
-     *              The index scheme follows the one present in the List-object returned by Budget::getEntries().
-     * @return true if the object was found and removed. Else, returns false.
-     */
-    public boolean removeBudgetItem(int index) {
-        BudgetItem removed = entries.remove(index);
-        if (removed == null)
-            return false;
+    // Pop the last element, as it is a lone delimiter.
+    allEntries.deleteCharAt(allEntries.length() - 1);
 
-        removed.setAssociatedBudget(null);
-        return true;
+    return salary.toPlainString() + CSV_DELIMITER +
+        savings.toPlainString() + CSV_DELIMITER +
+        age + CSV_DELIMITER +
+        gender + CSV_DELIMITER +
+        household + CSV_DELIMITER +
+        allEntries.toString();
+  }
+
+  public static Budget fromCSV(String data) {
+    final String[] fields = data.split(CSV_DELIMITER + "(?!\\s)");
+    final BigDecimal salary = new BigDecimal(fields[0]);
+    final BigDecimal savings = new BigDecimal(fields[1]);
+    final byte age = Byte.parseByte(fields[2]);
+    final GenderCategory gender =
+        fields[3].equals("null") ? null : GenderCategory.valueOf(fields[3]);
+    final HouseholdCategory householdCategory =
+        fields[4].equals("null") ? null : HouseholdCategory.valueOf(fields[4]);
+    final List<BudgetItem> entries = new ArrayList<>();
+
+    for (int i = 5; i < fields.length; i++) {
+      entries.add(BudgetItem.fromCSV(fields[i]));
     }
 
-    // BigDecimal salary = BigDecimal.ZERO;
-    // BigDecimal savings = BigDecimal.ZERO;
-    // byte age;
-    // GenderCategory gender;
-    // final List<BudgetItem> entries = new ArrayList<>();
+    Budget budget = new Budget(age, gender);
+    budget.setSalary(salary);
+    budget.setSavings(savings);
+    budget.setSavings(savings);
+    budget.setHouseholdCategory(householdCategory);
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null)
-            return false;
-        if (!(o instanceof Budget))
-            return false;
-
-        return o.hashCode() == this.hashCode();
+    for (BudgetItem i : entries) {
+      budget.addBudgetItem(i);
+      i.setAssociatedBudget(budget);
     }
 
-    @Override
-    public int hashCode() {
-        int hash = salary.hashCode() * savings.hashCode() * age * entries.hashCode();
-        if (gender != null)
-            hash *= gender.hashCode();
-        if (household != null)
-            hash *= household.hashCode();
+    return budget;
+  }
 
-        return hash;
+  private void setHouseholdCategory(HouseholdCategory householdCategory) {
+    this.household = householdCategory;
+  }
+
+  /**
+   * Updates the associated results of this budget. This method should be called every time a change
+   * the budget is made.
+   */
+  public void updateCalculations() {
+    // As of now, nothing to update or recalculate.
+  }
+
+  /**
+   * Clears the entries in this Budget.
+   */
+  public void clearEntries() {
+    this.entries.clear();
+  }
+
+
+  /**
+   * Sets the salary registered with this budget.
+   *
+   * @param salary the salary registered with this budget.
+   */
+  public void setSalary(BigDecimal salary) {
+    if (salary == null) {
+      throw new IllegalArgumentException("Salary cannot be null");
     }
-
-    public String toCSV() {
-        StringBuilder allEntries = new StringBuilder();
-        for (BudgetItem b : entries)
-            allEntries.append(b.toCSV()).append(CSV_DELIMITER);
-
-        // Pop the last element, as it is a lone delimiter.
-        allEntries.deleteCharAt(allEntries.length() - 1);
-
-        return  salary .toPlainString() + CSV_DELIMITER +
-                savings.toPlainString() + CSV_DELIMITER +
-                age                     + CSV_DELIMITER +
-                gender                  + CSV_DELIMITER +
-                household               + CSV_DELIMITER +
-                allEntries.toString();
+    if (salary.compareTo(BigDecimal.ZERO) < 0) {
+      throw new IllegalArgumentException("Salary cannot be a negative number.");
     }
+    this.salary = salary;
+    updateCalculations();
+  }
 
-    public static Budget fromCSV(String data) {
-        final String[] fields = data.split(CSV_DELIMITER + "(?!\\s)");
-        final BigDecimal salary = new BigDecimal(fields[0]);
-        final BigDecimal savings = new BigDecimal(fields[1]);
-        final byte age = Byte.parseByte(fields[2]);
-        final GenderCategory gender = fields[3].equals("null") ? null : GenderCategory.valueOf(fields[3]);
-        final HouseholdCategory householdCategory = fields[4].equals("null") ? null : HouseholdCategory.valueOf(fields[4]);
-        final List<BudgetItem> entries = new ArrayList<>();
-
-        for (int i = 5; i < fields.length; i++) {
-            entries.add(BudgetItem.fromCSV(fields[i]));
-        }
-
-        Budget budget = new Budget(age, gender);
-        budget.setSalary(salary);
-        budget.setSavings(savings);
-        budget.setSavings(savings);
-        budget.setHouseholdCategory(householdCategory);
-
-        for (BudgetItem i : entries) {
-            budget.addBudgetItem(i);
-            i.setAssociatedBudget(budget);
-        }
-
-        return budget;
+  /**
+   * Sets the savings registered with this budget.
+   *
+   * @param savings the savings registered with this budget.
+   */
+  public void setSavings(BigDecimal savings) {
+    if (savings == null) {
+      throw new IllegalArgumentException("Savings cannot be null");
     }
-
-    private void setHouseholdCategory(HouseholdCategory householdCategory) {
-        this.household = householdCategory;
+    if (savings.compareTo(BigDecimal.ZERO) < 0) {
+      throw new IllegalArgumentException("Savings cannot be a negative number.");
     }
+    this.savings = savings;
+    updateCalculations();
+  }
 
-    /**
-     * Updates the associated results of this budget. This method should be called every time a change the budget is made.
-     */
-    public void updateCalculations() {
-        // As of now, nothing to update or recalculate.
+  /**
+   * Sets the age of the person following this budget.
+   *
+   * @param age the age of the person following this budget.
+   */
+  public void setAge(byte age) {
+    if (age < 0) {
+      throw new IllegalArgumentException(
+          "The age of the person following this budget cannot be negative.");
     }
+    this.age = age;
+    updateCalculations();
+  }
 
-    /**
-     * Clears the entries in this Budget.
-     */
-    public void clearEntries() {
-        this.entries.clear();
-    }
+  /**
+   * Sets the gender of the person following this budget.
+   *
+   * @param gender the gender of the person following this budget.
+   */
+  public void setGender(GenderCategory gender) {
+    this.gender = gender;
+    updateCalculations();
+  }
 
+  public HouseholdCategory getCategory() {
+    return household;
+  }
 
-    /**
-     * Sets the salary registered with this budget.
-     * @param salary the salary registered with this budget.
-     */
-    public void setSalary(BigDecimal salary) {
-        if (salary == null)
-            throw new IllegalArgumentException("Salary cannot be null");
-        if (salary.compareTo(BigDecimal.ZERO) < 0)
-            throw new IllegalArgumentException("Salary cannot be a negative number.");
-        this.salary = salary;
-        updateCalculations();
-    }
+  /**
+   * Returns the salary registered with this budget.
+   *
+   * @return the salary registered with this budget.
+   */
+  public BigDecimal getSalary() {
+    return salary;
+  }
 
-    /**
-     * Sets the savings registered with this budget.
-     * @param savings the savings registered with this budget.
-     */
-    public void setSavings(BigDecimal savings) {
-        if (savings == null)
-            throw new IllegalArgumentException("Savings cannot be null");
-        if (savings.compareTo(BigDecimal.ZERO) < 0)
-            throw new IllegalArgumentException("Savings cannot be a negative number.");
-        this.savings = savings;
-        updateCalculations();
-    }
+  /**
+   * Returns the savings registered with this budget.
+   *
+   * @return the savings registered with this budget.
+   */
+  public BigDecimal getSavings() {
+    return savings;
+  }
 
-    /**
-     * Sets the age of the person following this budget.
-     * @param age the age of the person following this budget.
-     */
-    public void setAge(byte age) {
-        if (age < 0)
-            throw new IllegalArgumentException("The age of the person following this budget cannot be negative.");
-        this.age = age;
-        updateCalculations();
-    }
+  /**
+   * Returns the age of the person following this budget.
+   *
+   * @return the age of the person following this budget.
+   */
+  public byte getAge() {
+    return age;
+  }
 
-    /**
-     * Sets the gender of the person following this budget.
-     * @param gender the gender of the person following this budget.
-     */
-    public void setGender(GenderCategory gender) {
-        this.gender = gender;
-        updateCalculations();
-    }
+  /**
+   * Returns the gender of the person following this budget.
+   *
+   * @return the gender of the person following this budget.
+   */
+  public GenderCategory getGender() {
+    return gender;
+  }
 
-    public HouseholdCategory getCategory() {
-        return household;
-    }
+  public HouseholdCategory getHouseholdCategory() {
+    return household;
+  }
 
-    /**
-     * Returns the salary registered with this budget.
-     * @return the salary registered with this budget.
-     */
-    public BigDecimal getSalary() {
-        return salary;
-    }
-
-    /**
-     * Returns the savings registered with this budget.
-     * @return the savings registered with this budget.
-     */
-    public BigDecimal getSavings() {
-        return savings;
-    }
-
-    /**
-     * Returns the age of the person following this budget.
-     * @return the age of the person following this budget.
-     */
-    public byte getAge() {
-        return age;
-    }
-
-    /**
-     * Returns the gender of the person following this budget.
-     * @return the gender of the person following this budget.
-     */
-    public GenderCategory getGender() {
-        return gender;
-    }
-
-    public HouseholdCategory getHouseholdCategory() {
-        return household;
-    }
-
-    /**
-     * Returns the budget items of this Budget. The returned object is a copy of the internal List-object containing all the BudgetItems.
-     * However, changes made to the existing elements in the returned List-object will make changes to this budget.
-     * @return the budget items of this Budget.
-     */
-    public List<BudgetItem> getEntries() {
-        return new ArrayList<>(entries);
-    }
+  /**
+   * Returns the budget items of this Budget. The returned object is a copy of the internal
+   * List-object containing all the BudgetItems. However, changes made to the existing elements in
+   * the returned List-object will make changes to this budget.
+   *
+   * @return the budget items of this Budget.
+   */
+  public List<BudgetItem> getEntries() {
+    return new ArrayList<>(entries);
+  }
 }
