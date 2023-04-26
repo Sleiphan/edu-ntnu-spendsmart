@@ -46,15 +46,6 @@ public class Budget {
   }
 
   /**
-   * Returns the number of budget items currently in this budget.
-   *
-   * @return the number of budget items currently in this budget.
-   */
-  public int getNumBudgetItems() {
-    return entries.size();
-  }
-
-  /**
    * Attempts to remove the submitted budget item from this Budget.
    *
    * @param index the index of the BudgetItem to be removed from this Budget. The index scheme
@@ -70,12 +61,6 @@ public class Budget {
     removed.setAssociatedBudget(null);
     return true;
   }
-
-  // BigDecimal salary = BigDecimal.ZERO;
-  // BigDecimal savings = BigDecimal.ZERO;
-  // byte age;
-  // GenderCategory gender;
-  // final List<BudgetItem> entries = new ArrayList<>();
 
   @Override
   public boolean equals(Object o) {
@@ -116,7 +101,7 @@ public class Budget {
         age + CSV_DELIMITER +
         gender + CSV_DELIMITER +
         household + CSV_DELIMITER +
-        allEntries.toString();
+        allEntries;
   }
 
   public static Budget fromCSV(String data) {
@@ -201,20 +186,6 @@ public class Budget {
   }
 
   /**
-   * Sets the age of the person following this budget.
-   *
-   * @param age the age of the person following this budget.
-   */
-  public void setAge(byte age) {
-    if (age < 0) {
-      throw new IllegalArgumentException(
-          "The age of the person following this budget cannot be negative.");
-    }
-    this.age = age;
-    updateCalculations();
-  }
-
-  /**
    * Sets the gender of the person following this budget.
    *
    * @param gender the gender of the person following this budget.
@@ -247,25 +218,12 @@ public class Budget {
   }
 
   /**
-   * Returns the age of the person following this budget.
-   *
-   * @return the age of the person following this budget.
-   */
-  public byte getAge() {
-    return age;
-  }
-
-  /**
    * Returns the gender of the person following this budget.
    *
    * @return the gender of the person following this budget.
    */
   public GenderCategory getGender() {
     return gender;
-  }
-
-  public HouseholdCategory getHouseholdCategory() {
-    return household;
   }
 
   /**
