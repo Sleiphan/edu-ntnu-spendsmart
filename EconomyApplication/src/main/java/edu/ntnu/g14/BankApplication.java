@@ -32,7 +32,7 @@ public class BankApplication extends Application {
     */
     @Override
     public void start(Stage stage) throws IOException, InterruptedException {
-        this.stage = stage;
+        BankApplication.stage = stage;
         stage.setTitle("Bank Application");
         stage.setResizable(false);
         stage.setScene(LoginChooseUserScene.scene());

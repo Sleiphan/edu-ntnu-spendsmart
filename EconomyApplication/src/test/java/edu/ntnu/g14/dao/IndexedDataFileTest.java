@@ -16,7 +16,7 @@ public class IndexedDataFileTest {
     private static final String TEMP_FILE_PATH = TEST_FILE_PATH + ".temp";
     private static final String user1ID = "User 1";
     private static final String user2ID = "User 2";
-    private  String initialTestData = null;
+    
 
     private IndexedDataFile dao;
 

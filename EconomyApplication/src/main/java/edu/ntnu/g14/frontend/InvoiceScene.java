@@ -86,7 +86,6 @@ public class InvoiceScene {
 
             // TODO: Check validity of account number.
 
-            // TODO: Reconsider use of Date class.
             LocalDate due = due_dp.getValue();
             Invoice newInvoice = new Invoice(
                     due.atStartOfDay(ZoneId.systemDefault()).toLocalDate(), 

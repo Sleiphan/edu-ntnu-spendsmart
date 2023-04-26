@@ -1,9 +1,7 @@
 package edu.ntnu.g14;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import org.junit.jupiter.api.Test;
 
 class TestFileManagement {
     Account testAccount = new Account.AccountBuilder().accountCategory(AccountCategory.SAVINGS_ACCOUNT).amount(BigDecimal.valueOf(100000)).accountNumber("1256.65.56605").accountName("kortkonto").build();

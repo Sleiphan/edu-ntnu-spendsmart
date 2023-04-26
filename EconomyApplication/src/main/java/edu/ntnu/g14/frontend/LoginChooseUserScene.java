@@ -15,7 +15,6 @@ import javafx.stage.Stage;
 public class LoginChooseUserScene {
     static Stage stage = BankApplication.getStage();
 
-    //TODO: REMOVE dropdown and add to all other scenes
     static public Scene scene() throws IOException {
         Text chooseUser = ApplicationObjects.newText("Choose user", 30, false, 0, 40);
         Text registerNew = ApplicationObjects.newText("Register new account", 10, true, 400, 280);

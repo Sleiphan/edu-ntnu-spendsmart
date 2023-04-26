@@ -69,7 +69,7 @@ public class PaymentConfirmationScene {
         confirm.setOnAction(e -> {
             try {
                 User loggedInUser = BankApplication.loggedInUser;
-                LocalDate dueDate = LocalDate.parse(getPaymentInfo().get(3), formatter); //Funker ikke!!! TODO: FIIIIIX
+                LocalDate dueDate = LocalDate.parse(getPaymentInfo().get(3), formatter);
                 dueDate = LocalDate.parse(dueDate.format(dateFormatter), dateFormatter);
 
                 LocalDate dateOfTransaction = LocalDate.now();

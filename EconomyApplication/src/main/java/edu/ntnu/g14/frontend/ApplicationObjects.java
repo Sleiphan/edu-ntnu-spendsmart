@@ -285,9 +285,6 @@ public class ApplicationObjects {
         tableView.setPrefWidth(width);
         tableView.setPrefHeight(height);
 
-        int colum = columnTitles.length;
-
-        // create columns
          for (String title : columnTitles) {
          TableColumn<ObservableList<Object>, Object> column = new TableColumn<>(title);
          column.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(
