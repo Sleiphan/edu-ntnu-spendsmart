@@ -20,6 +20,7 @@ public class LoginChooseUserScene {
 
   static public Scene scene() throws IOException {
     MediaPlayer textToSpeach = ApplicationObjects.newSound("loginChooseUserScene");
+    ApplicationObjects.setPlaying(textToSpeach);
 
     Text chooseUser = ApplicationObjects.newText("Choose user", 30, false, 0, 40);
     Text registerNew = ApplicationObjects.newText("Register new account", 10, true, 400, 280);

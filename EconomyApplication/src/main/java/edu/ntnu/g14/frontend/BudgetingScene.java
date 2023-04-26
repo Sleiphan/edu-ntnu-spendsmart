@@ -64,10 +64,7 @@ public class BudgetingScene {
    * @throws IOException if there is an error accessing the budget file
    */
   static public Scene scene() throws IOException {
-    MediaPlayer textToSpeach = ApplicationObjects.newSound("budgetingScene");
-    if (ApplicationObjects.soundOn()) {
-      textToSpeach.play();
-    }
+    
     budgetDAO = getBudgetDAO();
 
     contextMenu = createContextMenu(null); // Pass null initially

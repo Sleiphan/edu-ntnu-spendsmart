@@ -16,7 +16,9 @@ public class RegisterSecondScene {
 
   static public Scene scene(String key, String email, String usersID) throws IOException {
     MediaPlayer textToSpeach = ApplicationObjects.newSound("registerSecondScene");
+    ApplicationObjects.setPlaying(textToSpeach);
     if (ApplicationObjects.soundOn()) {
+      ApplicationObjects.getPlaying().stop();
       textToSpeach.play();
     }
 

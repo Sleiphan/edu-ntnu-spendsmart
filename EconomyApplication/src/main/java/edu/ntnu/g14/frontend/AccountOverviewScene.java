@@ -34,10 +34,7 @@ public class AccountOverviewScene {
   private static Text accountNumberText;
 
   static public Scene scene(Optional<Account> account) throws IOException {
-    MediaPlayer textToSpeach = ApplicationObjects.newSound("accountOverviewScene");
-    if (ApplicationObjects.soundOn()) {
-      textToSpeach.play();
-    }
+   
     List<Account> accounts = BankApplication.loggedInUser.getAccountsAsList();
     ObservableList<String> accountNames = FXCollections.observableArrayList(getAccountsNames());
 

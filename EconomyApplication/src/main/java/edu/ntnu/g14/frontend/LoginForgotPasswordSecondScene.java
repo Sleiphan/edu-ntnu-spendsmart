@@ -21,7 +21,9 @@ public class LoginForgotPasswordSecondScene {
 
   static public Scene scene() throws IOException {
     MediaPlayer textToSpeach = ApplicationObjects.newSound("loginForgotPasswordSecondScene");
+    ApplicationObjects.setPlaying(textToSpeach);
     if (ApplicationObjects.soundOn()) {
+      ApplicationObjects.getPlaying().stop();
       textToSpeach.play();
     }
 

@@ -31,10 +31,7 @@ public class GeneralOverviewScene {
   private static Text totalExpensesText;
 
   static public Scene scene() throws IOException {
-    MediaPlayer textToSpeach = ApplicationObjects.newSound("generalOverviewScene");
-    if (ApplicationObjects.soundOn()) {
-      textToSpeach.play();
-    }
+    
 
     String[] columnTitlesTransactionsTable = {"Date", "Transaction", "Amount", "Account"};
     String monthlyExpensesPieChartTitle = "Expenses Last 30 Days";

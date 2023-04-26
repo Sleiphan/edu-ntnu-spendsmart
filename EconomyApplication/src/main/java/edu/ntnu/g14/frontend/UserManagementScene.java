@@ -35,11 +35,6 @@ public class UserManagementScene {
    * @throws IOException if an I/O error occurs
    */
   static public Scene scene() throws IOException {
-
-    MediaPlayer textToSpeach = ApplicationObjects.newSound("userManagementScene");
-    if (ApplicationObjects.soundOn()) {
-      textToSpeach.play();
-    }
     Label loggedInUserLabel = new Label(loggedInUser.getLoginInfo().getUserName());
     loggedInUserLabel.setStyle("-fx-font-size: 40;");
     Label loggedInUserEmail = new Label(loggedInUser.getEmail());

@@ -93,6 +93,16 @@ public class ApplicationObjects {
     return new Group(rectangle, logOut, manageUser);
   }
 
+  public static MediaPlayer playing;
+
+  public static void setPlaying(MediaPlayer play){
+    playing = play;
+  }
+
+  public static MediaPlayer getPlaying(){
+    return playing;
+  }
+
   public static Group userMenu() {
     Rectangle rectangle = newRectangle(553, 10, 145, 110);
 
@@ -108,6 +118,10 @@ public class ApplicationObjects {
     Button manageUser = newButton("Manage User", 563, 70, 130, 40, 15);
     manageUser.setOnAction(e -> {
       try {
+        playing.stop();
+        MediaPlayer sound = ApplicationObjects.newSound("userManagementScene");
+        setPlaying(sound);
+        sound.play();
         stage.setScene(UserManagementScene.scene());
       } catch (IOException e1) {
 
@@ -122,6 +136,10 @@ public class ApplicationObjects {
     Button invoice = newButton("invoice", 696 + 20, 15, 130, 40, 20);
     invoice.setOnAction(e -> {
       try {
+        playing.stop();
+        MediaPlayer sound = ApplicationObjects.newSound("invoiceScene");
+        setPlaying(sound);
+        sound.play();
         stage.setScene(InvoiceScene.scene());
       } catch (IOException e1) {
         e1.printStackTrace();
@@ -130,6 +148,10 @@ public class ApplicationObjects {
     Button transfer = newButton("transfer", 696 + 20, 70, 130, 40, 20);
     transfer.setOnAction(e -> {
       try {
+        playing.stop();
+        MediaPlayer sound = ApplicationObjects.newSound("transferScene");
+        setPlaying(sound);
+        sound.play();
         stage.setScene(TransferScene.scene());
       } catch (IOException e1) {
         e1.printStackTrace();
@@ -138,6 +160,10 @@ public class ApplicationObjects {
     Button payment = newButton("payment", 696 + 20, 125, 130, 40, 20);
     payment.setOnAction(e -> {
       try {
+        playing.stop();
+        MediaPlayer sound = ApplicationObjects.newSound("transferScene");
+        setPlaying(sound);
+        sound.play();
         stage.setScene(PaymentScene.scene());
       } catch (IOException e1) {
         e1.printStackTrace();
@@ -146,6 +172,10 @@ public class ApplicationObjects {
     Button accounts = newButton("accounts", 696 + 20, 180, 130, 40, 20);
     accounts.setOnAction(e -> {
       try {
+        playing.stop();
+        MediaPlayer sound = ApplicationObjects.newSound("accountOverviewScene");
+        setPlaying(sound);
+        sound.play();
         stage.setScene(AccountOverviewScene.scene(null));
       } catch (IOException e1) {
 
@@ -155,15 +185,23 @@ public class ApplicationObjects {
     Button overview = newButton("overview", 696 + 20, 235, 130, 40, 20);
     overview.setOnAction(e -> {
       try {
+        playing.stop();
+        MediaPlayer sound = ApplicationObjects.newSound("generalOverviewScene");
+        setPlaying(sound);
+        sound.play();
         stage.setScene(GeneralOverviewScene.scene());
       } catch (IOException e1) {
 
         e1.printStackTrace();
       }
     });
-    Button budgetting = newButton("budgetting", 696 + 20, 290, 130, 40, 20);
+    Button budgetting = newButton("budgeting", 696 + 20, 290, 130, 40, 20);
     budgetting.setOnAction(e -> {
       try {
+        playing.stop();
+        MediaPlayer sound = ApplicationObjects.newSound("budgetingScene");
+        setPlaying(sound);
+        sound.play();
         stage.setScene(BudgetingScene.scene());
       } catch (IOException e1) {
 
@@ -178,6 +216,10 @@ public class ApplicationObjects {
     Button invoice = newButton("invoice", 563, 15, 130, 40, 20);
     invoice.setOnAction(e -> {
       try {
+        playing.stop();
+        MediaPlayer sound = ApplicationObjects.newSound("invoiceScene");
+        setPlaying(sound);
+        sound.play();
         stage.setScene(InvoiceScene.scene());
       } catch (IOException e1) {
         e1.printStackTrace();
@@ -186,6 +228,10 @@ public class ApplicationObjects {
     Button transfer = newButton("transfer", 563, 70, 130, 40, 20);
     transfer.setOnAction(e -> {
       try {
+        playing.stop();
+        MediaPlayer sound = ApplicationObjects.newSound("transferScene");
+        setPlaying(sound);
+        sound.play();
         stage.setScene(TransferScene.scene());
       } catch (IOException e1) {
         e1.printStackTrace();
@@ -194,6 +240,10 @@ public class ApplicationObjects {
     Button payment = newButton("payment", 563, 125, 130, 40, 20);
     payment.setOnAction(e -> {
       try {
+        playing.stop();
+        MediaPlayer sound = ApplicationObjects.newSound("transferScene");
+        setPlaying(sound);
+        sound.play();
         stage.setScene(PaymentScene.scene());
       } catch (IOException e1) {
         e1.printStackTrace();
@@ -202,6 +252,10 @@ public class ApplicationObjects {
     Button accounts = newButton("accounts", 563, 180, 130, 40, 20);
     accounts.setOnAction(e -> {
       try {
+        playing.stop();
+        MediaPlayer sound = ApplicationObjects.newSound("accountOverviewScene");
+        setPlaying(sound);
+        sound.play();
         stage.setScene(AccountOverviewScene.scene(null));
       } catch (IOException e1) {
 
@@ -211,15 +265,23 @@ public class ApplicationObjects {
     Button overview = newButton("overview", 563, 235, 130, 40, 20);
     overview.setOnAction(e -> {
       try {
+        playing.stop();
+        MediaPlayer sound = ApplicationObjects.newSound("generalOverviewScene");
+        setPlaying(sound);
+        sound.play();
         stage.setScene(GeneralOverviewScene.scene());
       } catch (IOException e1) {
 
         e1.printStackTrace();
       }
     });
-    Button budgetting = newButton("budgetting", 563, 290, 130, 40, 20);
+    Button budgetting = newButton("budgeting", 563, 290, 130, 40, 20);
     budgetting.setOnAction(e -> {
       try {
+        playing.stop();
+        MediaPlayer sound = ApplicationObjects.newSound("budgetingScene");
+        setPlaying(sound);
+        sound.play();
         stage.setScene(BudgetingScene.scene());
       } catch (IOException e1) {
 
@@ -243,7 +305,7 @@ public class ApplicationObjects {
   }
 
   public static Group newButtonWithIcon(String text, int x, int y, int width, int height,
-      int fontSize, String iconname, Scene scene) throws FileNotFoundException {
+      int fontSize, String iconname, Scene scene, MediaPlayer playing, MediaPlayer play) throws FileNotFoundException {
     Button button = new Button(text);
     button.setLayoutX(x);
     button.setLayoutY(y);
@@ -262,7 +324,9 @@ public class ApplicationObjects {
       }
     });
     button.setOnAction(e -> {
-      stage.setScene(scene);
+        playing.stop();
+        stage.setScene(scene);
+        play.play();
     });
     Group group = new Group(button, icon);
     return group;
