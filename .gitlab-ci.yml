@@ -19,7 +19,7 @@ test:
     paths:
       - target/surefire-reports/
     reports:
-      junit: target/surefire-reports/TEST-no.ntnu.idatt1002.demo.repo.MyEntityRepoTest.xml
+      junit: target/surefire-reports/TEST-edu.ntnu.g14.TestUser.xml
       coverage_report:
         coverage_format: cobertura
         path: target/jacoco/coverage-reports/jacoco.xml
@@ -30,7 +30,7 @@ package:
     - mvn clean package
   artifacts:
     paths:
-      - target/idatt2002demo-1.0-SNAPSHOT-jar-with-dependencies.jar
+      - target/g14-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 generatepdf:
   image: ubuntu:20.04 #20.04  # vi kjører dette i en docker container, som kjører Ubuntu Linux
