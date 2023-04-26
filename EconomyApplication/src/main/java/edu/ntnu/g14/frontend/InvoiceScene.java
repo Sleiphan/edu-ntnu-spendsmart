@@ -1,17 +1,22 @@
 package edu.ntnu.g14.frontend;
 
-import edu.ntnu.g14.*;
-
+import edu.ntnu.g14.BankApplication;
+import edu.ntnu.g14.FileManagement;
+import edu.ntnu.g14.Invoice;
+import edu.ntnu.g14.User;
+import edu.ntnu.g14.dao.InvoiceDAO;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
-
-import edu.ntnu.g14.dao.InvoiceDAO;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.DateCell;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.MediaPlayer;

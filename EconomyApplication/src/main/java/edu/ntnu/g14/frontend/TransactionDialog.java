@@ -1,21 +1,31 @@
 package edu.ntnu.g14.frontend;
 
-import edu.ntnu.g14.*;
+import static edu.ntnu.g14.frontend.ApplicationObjects.dateFormatter;
+
+import edu.ntnu.g14.Account;
+import edu.ntnu.g14.AccountCategory;
+import edu.ntnu.g14.BankApplication;
+import edu.ntnu.g14.BudgetCategory;
+import edu.ntnu.g14.Transaction;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javafx.event.ActionEvent;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DateCell;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import static edu.ntnu.g14.frontend.ApplicationObjects.dateFormatter;
 
 public class TransactionDialog extends Dialog<Transaction.TransactionBuilder> {
 

@@ -1,8 +1,14 @@
 package edu.ntnu.g14.frontend;
 
+import static edu.ntnu.g14.BankApplication.loggedInUser;
+import static edu.ntnu.g14.FileManagement.writeTransaction;
+
 import edu.ntnu.g14.BankApplication;
 import edu.ntnu.g14.BudgetCategory;
 import edu.ntnu.g14.Transaction;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -13,13 +19,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
-import static edu.ntnu.g14.BankApplication.loggedInUser;
-import static edu.ntnu.g14.FileManagement.writeTransaction;
 
 /**
  * This class represents the scene for transferring money between accounts. It contains a text field

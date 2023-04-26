@@ -5,6 +5,8 @@ package edu.ntnu.g14.frontend;
 import edu.ntnu.g14.BankApplication;
 import edu.ntnu.g14.FileManagement;
 import edu.ntnu.g14.User;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -18,9 +20,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 /**
  * This class represents the user management edit user scene, where a user can edit their username

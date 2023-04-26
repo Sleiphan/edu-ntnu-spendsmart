@@ -1,19 +1,30 @@
 package edu.ntnu.g14.frontend;
 
+import edu.ntnu.g14.BankApplication;
+import edu.ntnu.g14.Budget;
+import edu.ntnu.g14.BudgetCategory;
+import edu.ntnu.g14.BudgetItem;
+import edu.ntnu.g14.User;
+import edu.ntnu.g14.dao.BudgetDAO;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
-import edu.ntnu.g14.*;
-import edu.ntnu.g14.dao.BudgetDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.MediaPlayer;

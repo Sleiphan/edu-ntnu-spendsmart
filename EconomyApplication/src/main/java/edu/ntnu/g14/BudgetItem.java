@@ -1,7 +1,7 @@
 package edu.ntnu.g14;
 
-import org.apache.commons.validator.routines.BigDecimalValidator;
 import java.math.BigDecimal;
+import org.apache.commons.validator.routines.BigDecimalValidator;
 
 /**
  * This class represents the individual entries of a complete budget. Every Budget consists of
@@ -219,8 +219,7 @@ public class BudgetItem {
   /**
    * Returns the financial value of this budget item as an int-value. <br>
    * <i>WARNING: Returns the result of BigDecimal::intValue(), which cuts away certain pieces of
-   * the
-   * original value.</i>
+   * the original value.</i>
    *
    * @return the financial value of this budget item, as an int-value.
    * @see BigDecimal
@@ -232,8 +231,7 @@ public class BudgetItem {
   /**
    * Returns the financial value of this budget item as a double-value. <br>
    * <i>WARNING: Returns the result of BigDecimal::intValue(), which cuts away certain pieces of
-   * the
-   * original value.</i>
+   * the original value.</i>
    *
    * @return the financial value of this budget item, as a double-value.
    * @see BigDecimal

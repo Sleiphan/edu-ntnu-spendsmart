@@ -1,8 +1,7 @@
 package edu.ntnu.g14.dao;
 
 import edu.ntnu.g14.Invoice;
-
-import java.io.*;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 

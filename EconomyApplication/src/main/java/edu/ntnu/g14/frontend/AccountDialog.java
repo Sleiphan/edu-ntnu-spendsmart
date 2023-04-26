@@ -3,16 +3,20 @@ package edu.ntnu.g14.frontend;
 import edu.ntnu.g14.Account;
 import edu.ntnu.g14.AccountCategory;
 import edu.ntnu.g14.BankApplication;
+import java.math.BigDecimal;
+import java.util.regex.Pattern;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-
-import java.math.BigDecimal;
-import java.util.regex.Pattern;
 
 public class AccountDialog extends Dialog<Account.AccountBuilder> {
 

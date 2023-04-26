@@ -1,16 +1,26 @@
 package edu.ntnu.g14.frontend;
 
-import java.math.BigDecimal;
+import edu.ntnu.g14.BankApplication;
+import edu.ntnu.g14.Budget;
+import edu.ntnu.g14.BudgetCategory;
+import edu.ntnu.g14.BudgetItem;
+import edu.ntnu.g14.GenderCategory;
+import edu.ntnu.g14.HouseholdCategory;
+import edu.ntnu.g14.User;
+import edu.ntnu.g14.dao.BudgetDAO;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
-import edu.ntnu.g14.*;
-import edu.ntnu.g14.dao.BudgetDAO;
 import javafx.animation.PauseTransition;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;

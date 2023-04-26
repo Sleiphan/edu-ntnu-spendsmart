@@ -1,15 +1,18 @@
 package edu.ntnu.g14.frontend;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import edu.ntnu.g14.BankApplication;
 import edu.ntnu.g14.FileManagement;
 import edu.ntnu.g14.User;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;

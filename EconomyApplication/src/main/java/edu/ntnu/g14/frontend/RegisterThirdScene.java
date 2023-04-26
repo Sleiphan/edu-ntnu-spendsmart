@@ -1,11 +1,10 @@
 package edu.ntnu.g14.frontend;
 
-import java.io.IOException;
-
 import edu.ntnu.g14.BankApplication;
+import java.io.IOException;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 

@@ -1,6 +1,9 @@
 package edu.ntnu.g14.frontend;
 
 import edu.ntnu.g14.BankApplication;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -11,10 +14,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * This class represents the scene for making a payment. It contains a text field for input of the

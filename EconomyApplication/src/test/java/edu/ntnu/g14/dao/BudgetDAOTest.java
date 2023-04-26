@@ -4,14 +4,16 @@ import edu.ntnu.g14.Budget;
 import edu.ntnu.g14.BudgetCategory;
 import edu.ntnu.g14.BudgetItem;
 import edu.ntnu.g14.GenderCategory;
-import org.junit.jupiter.api.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class BudgetDAOTest {

@@ -1,10 +1,9 @@
 package edu.ntnu.g14;
 
 
+import edu.ntnu.g14.frontend.LoginChooseUserScene;
 import java.io.FileInputStream;
 import java.io.IOException;
-
-import edu.ntnu.g14.frontend.LoginChooseUserScene;
 import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;

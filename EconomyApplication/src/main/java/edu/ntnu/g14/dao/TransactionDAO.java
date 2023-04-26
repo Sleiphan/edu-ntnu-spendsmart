@@ -1,7 +1,6 @@
 package edu.ntnu.g14.dao;
 
 import edu.ntnu.g14.Transaction;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;

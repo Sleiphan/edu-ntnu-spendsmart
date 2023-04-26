@@ -1,24 +1,24 @@
 package edu.ntnu.g14.frontend;
 
-import java.io.IOException;
-
 import edu.ntnu.g14.BankApplication;
 import edu.ntnu.g14.User;
 import edu.ntnu.g14.dao.UserDAO;
+import java.io.IOException;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.util.Duration;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  * The DeleteUserScene class is responsible for displaying to delete user scene to the user. The

@@ -1,14 +1,15 @@
 package edu.ntnu.g14.frontend;
 
-import edu.ntnu.g14.*;
-
+import edu.ntnu.g14.BankApplication;
+import edu.ntnu.g14.FileManagement;
+import edu.ntnu.g14.Login;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
 import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;

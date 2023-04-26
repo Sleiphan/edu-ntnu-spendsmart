@@ -1,6 +1,8 @@
 package edu.ntnu.g14.frontend;
 
 import edu.ntnu.g14.AccountCategory;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -11,9 +13,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 public class AccountCell extends ListCell<String> {
 

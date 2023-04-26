@@ -1,11 +1,10 @@
 package edu.ntnu.g14.frontend;
 
+import edu.ntnu.g14.BankApplication;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.io.IOException;
-
-import edu.ntnu.g14.BankApplication;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -13,7 +12,8 @@ import javafx.geometry.Side;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.MediaPlayer;
@@ -197,15 +197,15 @@ public class GeneralOverviewScene {
     if (monthOrYear) {
       totalIncomeText.setText("Income: " + BankApplication.loggedInUser
           .incomeLast30Days());
-        if (BankApplication.loggedInUser.incomeLast30Days().replaceAll(" ", "").equals("0")) {
-            totalIncomeText.setVisible(false);
-        }
+      if (BankApplication.loggedInUser.incomeLast30Days().replaceAll(" ", "").equals("0")) {
+        totalIncomeText.setVisible(false);
+      }
     } else {
       totalIncomeText.setText("Income: " + BankApplication.loggedInUser
           .incomeLastYear());
-        if (BankApplication.loggedInUser.incomeLastYear().replaceAll(" ", "").equals("0")) {
-            totalIncomeText.setVisible(false);
-        }
+      if (BankApplication.loggedInUser.incomeLastYear().replaceAll(" ", "").equals("0")) {
+        totalIncomeText.setVisible(false);
+      }
     }
     totalIncomeText.setX(203 - totalIncomeText.getLayoutBounds().getWidth() / 2);
   }
@@ -214,15 +214,15 @@ public class GeneralOverviewScene {
     if (monthOrYear) {
       totalExpensesText.setText("Expenses: " + BankApplication.loggedInUser
           .expensesLast30Days());
-        if (BankApplication.loggedInUser.expensesLast30Days().replaceAll(" ", "").equals("0")) {
-            totalExpensesText.setVisible(false);
-        }
+      if (BankApplication.loggedInUser.expensesLast30Days().replaceAll(" ", "").equals("0")) {
+        totalExpensesText.setVisible(false);
+      }
     } else {
       totalExpensesText.setText("Expenses: " + BankApplication.loggedInUser
           .expensesLastYear());
-        if (BankApplication.loggedInUser.expensesLastYear().replaceAll(" ", "").equals("0")) {
-            totalExpensesText.setVisible(false);
-        }
+      if (BankApplication.loggedInUser.expensesLastYear().replaceAll(" ", "").equals("0")) {
+        totalExpensesText.setVisible(false);
+      }
     }
     totalExpensesText.setX(625 - totalExpensesText.getLayoutBounds().getWidth() / 2);
   }

@@ -1,8 +1,7 @@
 package edu.ntnu.g14;
 
-import org.junit.jupiter.api.Test;
-
 import java.math.BigDecimal;
+import org.junit.jupiter.api.Test;
 
 public class TestBudget {
 
