@@ -5,6 +5,7 @@ import edu.ntnu.g14.BankApplication;
 import edu.ntnu.g14.model.FileManagement;
 import edu.ntnu.g14.model.Transaction;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -34,10 +35,7 @@ public class AccountOverviewScene {
   private static Text accountNumberText;
 
   static public Scene scene(Optional<Account> account) throws IOException {
-    MediaPlayer textToSpeach = ApplicationObjects.newSound("accountOverviewScene");
-    if (ApplicationObjects.soundOn()) {
-      textToSpeach.play();
-    }
+   
     List<Account> accounts = BankApplication.loggedInUser.getAccountsAsList();
     ObservableList<String> accountNames = FXCollections.observableArrayList(getAccountsNames());
 
@@ -123,6 +121,17 @@ public class AccountOverviewScene {
 
     ImageView homeButton = ApplicationObjects.newImage("home.png", 10, 10, 20, 20);
     homeButton.setOnMouseClicked(e -> {
+      MediaPlayer textToSpeachnew;
+      try {
+        textToSpeachnew = ApplicationObjects.newSound("mainPageScene");
+        if (ApplicationObjects.soundOn()) {
+          ApplicationObjects.getPlaying().stop();
+          textToSpeachnew.play();
+          ApplicationObjects.setPlaying(textToSpeachnew);
+        }
+      } catch (MalformedURLException e1) {
+        e1.printStackTrace();
+      }
       try {
         stage.setScene(MainPageScene.scene());
       } catch (IOException e1) {

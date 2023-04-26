@@ -9,6 +9,7 @@ import edu.ntnu.g14.dao.BudgetDAO;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.collections.FXCollections;
@@ -64,10 +65,7 @@ public class BudgetingScene {
    * @throws IOException if there is an error accessing the budget file
    */
   static public Scene scene() throws IOException {
-    MediaPlayer textToSpeach = ApplicationObjects.newSound("budgetingScene");
-    if (ApplicationObjects.soundOn()) {
-      textToSpeach.play();
-    }
+    
     budgetDAO = getBudgetDAO();
 
     contextMenu = createContextMenu(null); // Pass null initially
@@ -576,6 +574,17 @@ public class BudgetingScene {
   private static ImageView createHomeButton() throws FileNotFoundException {
     ImageView homeButton = ApplicationObjects.newImage("home.png", 10, 10, 20, 20);
     homeButton.setOnMouseClicked(e -> {
+      MediaPlayer textToSpeachnew;
+      try {
+        textToSpeachnew = ApplicationObjects.newSound("mainPageScene");
+        if (ApplicationObjects.soundOn()) {
+          ApplicationObjects.getPlaying().stop();
+          textToSpeachnew.play();
+          ApplicationObjects.setPlaying(textToSpeachnew);
+        }
+      } catch (MalformedURLException e1) {
+        e1.printStackTrace();
+      }
       try {
         stage.setScene(MainPageScene.scene());
       } catch (IOException e1) {

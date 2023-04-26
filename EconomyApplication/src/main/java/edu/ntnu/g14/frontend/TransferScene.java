@@ -8,6 +8,7 @@ import edu.ntnu.g14.model.BudgetCategory;
 import edu.ntnu.g14.model.Transaction;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
 import java.time.LocalDate;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -40,10 +41,6 @@ public class TransferScene {
    * @throws IOException if input is invalid
    */
   static public Scene scene() throws IOException {
-    MediaPlayer textToSpeach = ApplicationObjects.newSound("transferScene");
-    if (ApplicationObjects.soundOn()) {
-      textToSpeach.play();
-    }
     int x = 290;
     int y = 50;
     int n = 85;
@@ -84,6 +81,17 @@ public class TransferScene {
       }
     });
     cancel.setOnAction(e -> {
+      MediaPlayer textToSpeachnew;
+      try {
+        textToSpeachnew = ApplicationObjects.newSound("mainPageScene");
+        if (ApplicationObjects.soundOn()) {
+          ApplicationObjects.getPlaying().stop();
+          textToSpeachnew.play();
+          ApplicationObjects.setPlaying(textToSpeachnew);
+        }
+      } catch (MalformedURLException e1) {
+        e1.printStackTrace();
+      }
       try {
         stage.setScene(MainPageScene.scene());
       } catch (IOException e1) {
@@ -94,6 +102,17 @@ public class TransferScene {
 
     ImageView homeButton = ApplicationObjects.newImage("home.png", 10, 10, 20, 20);
     homeButton.setOnMouseClicked(e -> {
+      MediaPlayer textToSpeachnew;
+      try {
+        textToSpeachnew = ApplicationObjects.newSound("mainPageScene");
+        if (ApplicationObjects.soundOn()) {
+          ApplicationObjects.getPlaying().stop();
+          textToSpeachnew.play();
+          ApplicationObjects.setPlaying(textToSpeachnew);
+        }
+      } catch (MalformedURLException e1) {
+        e1.printStackTrace();
+      }
       try {
         stage.setScene(MainPageScene.scene());
       } catch (IOException e1) {

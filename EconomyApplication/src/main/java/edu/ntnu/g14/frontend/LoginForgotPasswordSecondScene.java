@@ -22,7 +22,9 @@ public class LoginForgotPasswordSecondScene {
   static public Scene scene() throws IOException {
     MediaPlayer textToSpeach = ApplicationObjects.newSound("loginForgotPasswordSecondScene");
     if (ApplicationObjects.soundOn()) {
+      ApplicationObjects.getPlaying().stop();
       textToSpeach.play();
+      ApplicationObjects.setPlaying(textToSpeach);
     }
 
     TextField newPassword = ApplicationObjects.newTextField("New password", 125, 70, 250, 20, 15);

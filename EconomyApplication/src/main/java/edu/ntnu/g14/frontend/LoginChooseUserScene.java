@@ -20,12 +20,18 @@ public class LoginChooseUserScene {
 
   static public Scene scene() throws IOException {
     MediaPlayer textToSpeach = ApplicationObjects.newSound("loginChooseUserScene");
+    ApplicationObjects.setPlaying(textToSpeach);
 
     Text chooseUser = ApplicationObjects.newText("Choose user", 30, false, 0, 40);
     Text registerNew = ApplicationObjects.newText("Register new account", 10, true, 400, 280);
     registerNew.setOnMouseClicked(e -> {
       try {
         stage.setScene(RegisterFirstScene.scene());
+        ApplicationObjects.alertBox("Data collection", "This program uses personal information to run",
+         "By clicking 'Ok', you agree to provide personal" +
+         "information that will be used solely for the purpose of enabling" +
+         "the functionality of this program. We will not use your personal" +
+         "information for any other purpose without your explicit consent.");
       } catch (FileNotFoundException e1) {
         e1.printStackTrace();
       } catch (IOException e1) {

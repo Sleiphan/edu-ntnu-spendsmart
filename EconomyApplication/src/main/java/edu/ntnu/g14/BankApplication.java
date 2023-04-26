@@ -31,7 +31,7 @@ public class BankApplication extends Application {
   @Override
   public void start(Stage stage) throws IOException, InterruptedException {
     BankApplication.stage = stage;
-    stage.setTitle("Bank Application");
+    stage.setTitle("Spend Smart");
     stage.setResizable(false);
     stage.setScene(LoginChooseUserScene.scene());
     stage.getIcons().add(new Image(new FileInputStream("src/main/resources/images/icon.png")));

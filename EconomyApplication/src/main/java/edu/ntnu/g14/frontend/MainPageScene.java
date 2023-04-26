@@ -5,6 +5,7 @@ import edu.ntnu.g14.BankApplication;
 import edu.ntnu.g14.model.FileManagement;
 import edu.ntnu.g14.model.Transaction;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,7 +31,9 @@ public class MainPageScene {
   static public Scene scene() throws IOException {
     MediaPlayer textToSpeach = ApplicationObjects.newSound("mainPageScene");
     if (ApplicationObjects.soundOn()) {
+      ApplicationObjects.getPlaying().stop();
       textToSpeach.play();
+      ApplicationObjects.setPlaying(textToSpeach);
     }
     String[] columnTitlesLatestActivitiesTable = {"Transaction", "Amount"};
     String[] columnTitlesDuePaymentsTable = {"Date", "Recipient", "Amount"};
@@ -50,22 +53,22 @@ public class MainPageScene {
     }
 
     Group transfer = ApplicationObjects.newButtonWithIcon("Transfer", 30, 50, 157, 25, 16,
-        "transfer.png", TransferScene.scene());
+        "transfer.png", TransferScene.scene(), textToSpeach, ApplicationObjects.newSound("transferScene"));
 
     Group invoice = ApplicationObjects.newButtonWithIcon("Invoice", 192, 50, 157, 25, 16,
-        "invoice.png", InvoiceScene.scene());
+        "invoice.png", InvoiceScene.scene(), textToSpeach, ApplicationObjects.newSound("invoiceScene"));
 
     Group payment = ApplicationObjects.newButtonWithIcon("Payment", 30, 90, 157, 25, 16,
-        "payment.png", PaymentScene.scene());
+        "payment.png", PaymentScene.scene(), textToSpeach, ApplicationObjects.newSound("transferScene"));
 
     Group overview = ApplicationObjects.newButtonWithIcon("Overview", 192, 90, 157, 25, 16,
-        "overview.png", GeneralOverviewScene.scene());
+        "overview.png", GeneralOverviewScene.scene(), textToSpeach, ApplicationObjects.newSound("generalOverviewScene"));
 
     Group accountsButton = ApplicationObjects.newButtonWithIcon("Accounts", 30, 130, 157, 25, 16,
-        "account.png", AccountOverviewScene.scene(Optional.empty()));
+        "account.png", AccountOverviewScene.scene(Optional.empty()), textToSpeach, ApplicationObjects.newSound("accountOverviewScene"));
 
     Group budgeting = ApplicationObjects.newButtonWithIcon("Budgeting", 192, 130, 157, 25, 16,
-        "budget.png", BudgetingScene.scene());
+        "budget.png", BudgetingScene.scene(), textToSpeach, ApplicationObjects.newSound("budgetingScene"));
 
     Text latestActivitiesText = ApplicationObjects.newText("Latest Activities", 20, false, 130,
         210);
@@ -94,6 +97,17 @@ public class MainPageScene {
         "    -fx-alignment: center");
 
     accountsListView.setOnMouseClicked(mouseEvent -> {
+      MediaPlayer textToSpeachnew;
+      try {
+        textToSpeachnew = ApplicationObjects.newSound("accountOverviewScene");
+        if (ApplicationObjects.soundOn()) {
+          ApplicationObjects.getPlaying().stop();
+          textToSpeachnew.play();
+          ApplicationObjects.setPlaying(textToSpeachnew);
+        }
+      } catch (MalformedURLException e) {
+        e.printStackTrace();
+      }
       try {
         if (accountsListView.getSelectionModel().getSelectedItem() != null) {
           stage.setScene(AccountOverviewScene.scene(Optional.ofNullable(
