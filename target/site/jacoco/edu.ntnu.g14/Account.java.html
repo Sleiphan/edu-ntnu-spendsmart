@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Account.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">edu.ntnu.g14</a> &gt; <span class="el_source">Account.java</span></div><h1>Account.java</h1><pre class="source lang-java linenums">package edu.ntnu.g14;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+/**
+ * This class represents an account in the bank system and that a user has.
+ */
+public class Account {
+    // Type of account, as AccountCategory
+    private AccountCategory accountType;
+    // Funds in the account, as BigDecimal
+    private BigDecimal amount;
+    // Unique reference of account in the bank system, as String
+    private final String accountNumber;
+    // Name of the account assigned by a user, as String
+    private String accountName;
+
+    private static final String CSV_FIELD_DELIMITER = &quot;;&quot;;
+
+    /**
+     * This constructor facilitates the creation of instances of this class
+     * @param accountType Type of account, as AccountCategory
+     * @param amount Funds in the account, as BigDecimal
+     * @param accountNumber Unique reference of account in the bank system, as String
+     * @param accountName Name of the account assigned by a user, as String
+     */
+    public Account(final AccountCategory accountType, final BigDecimal amount, final String accountNumber,
+<span class="fc" id="L29">                   final String accountName) {</span>
+<span class="fc" id="L30">        this.accountType = accountType;</span>
+<span class="pc bpc" id="L31" title="1 of 2 branches missed.">        if (amount.intValue() &lt; 0) {</span>
+<span class="nc" id="L32">            throw new IllegalArgumentException(&quot;Amount needs to be zero or positive&quot;);</span>
+        } else {
+<span class="fc" id="L34">            this.amount = amount.setScale(2, RoundingMode.DOWN);</span>
+        }
+        // TODO: Check if accountName is occupied
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">        if (accountName.isBlank()) {</span>
+<span class="nc" id="L38">            this.accountName = accountType.toString();</span>
+        } else {
+<span class="fc" id="L40">            this.accountName = accountName;</span>
+        }
+        // TODO: Check if account with this accountNumber already exists
+<span class="pc bpc" id="L43" title="1 of 2 branches missed.">        if (accountNumber.length() != 13) {</span>
+<span class="nc" id="L44">            throw new IllegalArgumentException(&quot;Account number must contain 11 digits, seperated by 2 dots&quot;);</span>
+        } else {
+<span class="fc" id="L46">            this.accountNumber = accountNumber;</span>
+        }
+<span class="fc" id="L48">    }</span>
+<span class="fc" id="L49">    public Account(AccountBuilder account) {</span>
+<span class="fc" id="L50">        this.accountType = account.accountType;</span>
+<span class="fc" id="L51">        this.accountNumber = account.accountNumber;</span>
+<span class="fc" id="L52">        this.amount = account.amount;</span>
+<span class="fc" id="L53">        this.accountName = account.accountName;</span>
+<span class="fc" id="L54">    }</span>
+
+    /**
+     * This method removes an amount from this account
+     * @param subtrahend Subtrahend, as BigDecimal
+     * @return true if account has sufficient funds, false if not
+     */
+    public boolean removeAmount(BigDecimal subtrahend) {
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        if (this.amount.subtract(subtrahend).floatValue() &lt; 0) {</span>
+<span class="fc" id="L63">            throw new IllegalArgumentException(&quot;Account does not have sufficient funds&quot;);</span>
+        }
+<span class="fc" id="L65">        this.amount = this.amount.subtract(subtrahend);</span>
+<span class="fc" id="L66">        return true;</span>
+    }
+
+    /**
+     * This method adds an amount to this account
+     * @param augend Augend, as BigDecimal
+     */
+    public void addAmount(BigDecimal augend) {
+<span class="fc" id="L74">        this.amount = this.amount.add(augend);</span>
+<span class="fc" id="L75">    }</span>
+
+    /**
+     * This method returns the account type of account
+     * @return accountType, as AccountCategory
+     */
+    public AccountCategory getAccountType() {
+<span class="fc" id="L82">        return accountType;</span>
+    }
+
+    /**
+     * This method changes the name of an account. The new name must be unique to a users accounts
+     *
+     * @param newName
+     */
+    public void setAccountName(String newName) {
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        if (newName.isBlank()) {</span>
+<span class="fc" id="L92">            throw new IllegalArgumentException(&quot;Account name cannot be left blank&quot;);</span>
+        }
+<span class="fc" id="L94">        this.accountName = newName;</span>
+<span class="fc" id="L95">    }</span>
+
+    public void setAccountType(AccountCategory accountType) {
+<span class="nc" id="L98">        this.accountType = accountType;</span>
+<span class="nc" id="L99">    }</span>
+
+    /**
+     * This method returns the amount in an account
+     * @return amount, as BigDecimal
+     */
+    public BigDecimal getAmount() {
+<span class="fc" id="L106">        return amount;</span>
+    }
+
+    /**
+     * This method returns the account number of an account
+     * @return accountNumber, as String
+     */
+    public String getAccountNumber() {
+<span class="fc" id="L114">        return accountNumber;</span>
+    }
+
+    /**
+     * This method returns the name of an account
+     * @return accountName, as String
+     */
+    public String getAccountName() {
+<span class="fc" id="L122">        return accountName;</span>
+    }
+
+    public boolean equals(Object o) {
+<span class="pc bpc" id="L126" title="1 of 2 branches missed.">        if (!(o instanceof Account))</span>
+<span class="nc" id="L127">            return false;</span>
+
+<span class="fc" id="L129">        Account a = (Account) o;</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">        return accountType == a.accountType &amp;&amp;</span>
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">                amount.equals(a.amount) &amp;&amp;</span>
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">                accountNumber.equals(a.accountNumber) &amp;&amp;</span>
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">                accountName.equals(a.accountName);</span>
+    }
+
+    /**
+     * This method returns the CSV string of an account
+     * @return CSV string of Account, as String
+     */
+    public String toCSVString() {
+<span class="fc" id="L141">        String sb = accountType + CSV_FIELD_DELIMITER +</span>
+<span class="fc" id="L142">                amount.toString() + CSV_FIELD_DELIMITER +</span>
+                accountNumber + CSV_FIELD_DELIMITER +
+                accountName;
+
+<span class="fc" id="L146">        return sb;</span>
+    }
+
+    /**
+     * This method parses an account CSV string, and instantiates an account
+     * @param csvString Account CSV String, as String
+     * @return Account that equals the fields of CSV String, as Account
+     */
+    public static Account fromCSVString(String csvString) {
+<span class="fc" id="L155">        String[] fields = csvString.split(CSV_FIELD_DELIMITER);</span>
+<span class="fc" id="L156">        AccountCategory accountType = AccountCategory.valueOf(fields[0]);</span>
+<span class="fc" id="L157">        BigDecimal amount           = new BigDecimal(fields[1]);</span>
+<span class="fc" id="L158">        String accountNumber        = fields[2];</span>
+<span class="fc" id="L159">        String accountName = fields[3];</span>
+<span class="pc bpc" id="L160" title="1 of 2 branches missed.">        String finalAccountName          = accountName.endsWith(&quot;,&quot;) ? accountName.substring(0, fields[3].length() - 1)</span>
+<span class="fc" id="L161">                : accountName;</span>
+
+<span class="fc" id="L163">        return new AccountBuilder().amount(amount)</span>
+<span class="fc" id="L164">                .accountCategory(accountType)</span>
+<span class="fc" id="L165">                .accountNumber(accountNumber)</span>
+<span class="fc" id="L166">                .accountName(finalAccountName)</span>
+<span class="fc" id="L167">                .build();</span>
+    }
+
+    /**
+     * This class is a builder class for Account
+     */
+<span class="fc" id="L173">    public static class AccountBuilder {</span>
+        private AccountCategory accountType;
+        // Funds in the account, as BigDecimal
+        private BigDecimal amount;
+        // Unique reference of account in the bank system, as String
+        private String accountNumber;
+        // Name of the account assigned by a user, as String
+        private String accountName;
+
+        public Account build() {
+<span class="pc bpc" id="L183" title="1 of 2 branches missed.">            if (!validateBuilder()) {</span>
+<span class="fc" id="L184">                return new Account(this);</span>
+            } else {
+<span class="nc" id="L186">                throw new IllegalStateException(&quot;Account not fully defined during build&quot;);</span>
+            }
+        }
+        public AccountBuilder accountCategory(AccountCategory accountType) {
+<span class="fc" id="L190">            this.accountType = accountType;</span>
+<span class="fc" id="L191">            return this;</span>
+        }
+        public AccountBuilder amount(BigDecimal amount) {
+<span class="pc bpc" id="L194" title="1 of 2 branches missed.">            if (amount.intValue() &lt; 0) {</span>
+<span class="nc" id="L195">                throw new IllegalArgumentException(&quot;Amount needs to be zero or positive&quot;);</span>
+            }
+<span class="fc" id="L197">            this.amount = amount;</span>
+<span class="fc" id="L198">            return this;</span>
+        }
+        public AccountBuilder accountNumber(String accountNumber) {
+<span class="fc" id="L201">            this.accountNumber = accountNumber;</span>
+<span class="fc" id="L202">            return this;</span>
+        }
+        public AccountBuilder accountName(String accountName) {
+<span class="pc bpc" id="L205" title="1 of 2 branches missed.">            if (accountName.isBlank()) {</span>
+<span class="nc" id="L206">                this.accountName = accountType.toString();</span>
+            } else {
+<span class="fc" id="L208">                this.accountName = accountName;</span>
+            }
+<span class="fc" id="L210">            return this;</span>
+        }
+        private boolean validateBuilder() {
+<span class="pc bpc" id="L213" title="4 of 8 branches missed.">            return this.accountType == null || this.amount == null || this.accountNumber == null</span>
+                        || this.accountName == null;
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DeleteUserScene.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">edu.ntnu.g14.frontend</a> &gt; <span class="el_source">DeleteUserScene.java</span></div><h1>DeleteUserScene.java</h1><pre class="source lang-java linenums">package edu.ntnu.g14.frontend;
+
+import java.io.IOException;
+
+import edu.ntnu.g14.BankApplication;
+import edu.ntnu.g14.User;
+import edu.ntnu.g14.dao.UserDAO;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
+/**
+ * The DeleteUserScene class is responsible for displaying to delete user scene to the user.
+ * The scene displays a warning message that asks the user if they want to delete the currently loggedInUser account.
+ * The user has 10 seconds to confirm the deletion, during which a countdown timer is displayed.
+ * If the user does not confirm the deletion, the delete action is cancelled.
+ * If the user confirms the deletion, the user account is deleted from the database and a success message is displayed.
+ */
+<span class="nc" id="L29">public class DeleteUserScene {</span>
+
+<span class="nc" id="L31">    static Stage stage = BankApplication.getStage();</span>
+
+<span class="nc" id="L33">    static User loggedInUser = BankApplication.loggedInUser;</span>
+
+    static UserDAO userDAO;
+
+<span class="nc" id="L37">    private static boolean cancelPressed = false;</span>
+
+    /**
+     * The scene() method creates to delete user scene, which displays a warning message and buttons
+     * that allow the user to either confirm or cancel the deletion of the currently loggedInUser account.
+     * A countdown timer is displayed that counts down from 10 seconds, and if the user does not confirm
+     * the deletion within that time frame, the deletion action is cancelled.
+     *
+     * @return Returns to delete user scene.
+     * @throws IOException if an I/O error occurs
+     */
+    static public Scene scene() throws IOException {
+<span class="nc" id="L49">        Label loggedInUserLabel = new Label(loggedInUser.getLoginInfo().getUserName());</span>
+<span class="nc" id="L50">        loggedInUserLabel.setStyle(&quot;-fx-font-size: 40;&quot;);</span>
+<span class="nc" id="L51">        Label loggedInUserEmail = new Label(loggedInUser.getEmail());</span>
+<span class="nc" id="L52">        loggedInUserEmail.setStyle(&quot;-fx-font-size: 20;&quot;);</span>
+
+
+        // Create a VBox to hold loggedInUser and loggedInUserEmail
+<span class="nc" id="L56">        VBox userInfoBox = new VBox(5, loggedInUserLabel, loggedInUserEmail);</span>
+<span class="nc" id="L57">        userInfoBox.setAlignment(Pos.CENTER);</span>
+<span class="nc" id="L58">        userInfoBox.setLayoutX(220); // Set the VBox's layoutX and layoutY to position it on the screen</span>
+<span class="nc" id="L59">        userInfoBox.setLayoutY(75);</span>
+
+
+<span class="nc" id="L62">        Text warningText = ApplicationObjects.newText(&quot;Are you sure you want to delete this user?\n&quot; +</span>
+                &quot;This action cannot be undone\n&quot; +
+                &quot;10 seconds left&quot;, 20, true, 0, 0);
+<span class="nc" id="L65">        warningText.setTextAlignment(TextAlignment.CENTER);</span>
+<span class="nc" id="L66">        warningText.setVisible(false);</span>
+        // Create a countdown timer using a Timeline
+<span class="nc" id="L68">        final int[] countdown = {10};</span>
+<span class="nc" id="L69">        Timeline timer = new Timeline(new KeyFrame(Duration.seconds(1), event -&gt; {</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">            if (countdown[0] &gt; 0) {</span>
+<span class="nc" id="L71">                countdown[0]--;</span>
+<span class="nc" id="L72">                warningText.setText(&quot;Are you sure you want to delete this user?\n&quot; +</span>
+                        &quot;This action cannot be undone\n&quot; +
+                        countdown[0] + &quot; seconds left&quot;);
+            }
+<span class="nc" id="L76">        }));</span>
+<span class="nc" id="L77">        timer.setCycleCount(10);</span>
+<span class="nc" id="L78">        Button confirm = ApplicationObjects.newButton(&quot;Delete&quot;, 0, 0, 157,25,16);</span>
+<span class="nc" id="L79">        confirm.setTextFill(Paint.valueOf(&quot;WHITE&quot;));</span>
+<span class="nc" id="L80">        confirm.setOnMousePressed(event -&gt; {</span>
+<span class="nc" id="L81">            warningText.setVisible(true);</span>
+<span class="nc" id="L82">            timer.play();</span>
+
+<span class="nc" id="L84">            timer.setOnFinished(e -&gt; {</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">                if (!cancelPressed) {</span>
+                    try {
+<span class="nc" id="L87">                        userDAO.deleteUser(loggedInUser.getLoginInfo().getUserId());</span>
+<span class="nc" id="L88">                    } catch (IOException ex) {</span>
+<span class="nc" id="L89">                        throw new RuntimeException(ex);</span>
+<span class="nc" id="L90">                    }</span>
+<span class="nc" id="L91">                    ApplicationObjects.alertBox(&quot;Deleted user&quot;, &quot;You have deleted user&quot;, loggedInUser.getLoginInfo().getUserName() + &quot; R.I.P&quot;);</span>
+<span class="nc" id="L92">                    confirm.setStyle(&quot;-fx-background-color: red&quot;);</span>
+<span class="nc" id="L93">                    confirm.setTextFill(Paint.valueOf(&quot;WHITE&quot;));</span>
+                }
+<span class="nc" id="L95">            });</span>
+<span class="nc" id="L96">        });</span>
+
+<span class="nc" id="L98">        Button cancel = ApplicationObjects.newButton(&quot;Cancel&quot;, 0, 0, 157,25,16);</span>
+<span class="nc" id="L99">        cancel.setOnAction(event -&gt; {</span>
+<span class="nc" id="L100">            cancelPressed = true;</span>
+<span class="nc" id="L101">            timer.stop();</span>
+            try {
+<span class="nc" id="L103">                stage.setScene(UserManagementScene.scene());</span>
+<span class="nc" id="L104">            } catch (IOException e1) {</span>
+<span class="nc" id="L105">                e1.printStackTrace();</span>
+<span class="nc" id="L106">            }</span>
+<span class="nc" id="L107">        });</span>
+
+
+
+        // Create an VBox to hold warningText, confirm and cancel
+<span class="nc" id="L112">        VBox deleteUserBox = new VBox(5, warningText, confirm, cancel);</span>
+<span class="nc" id="L113">        deleteUserBox.setAlignment(Pos.CENTER);</span>
+<span class="nc" id="L114">        deleteUserBox.setLayoutX(145); // Set the VBox's layoutX and layoutY to position it on the screen</span>
+<span class="nc" id="L115">        deleteUserBox.setLayoutY(350);</span>
+
+
+<span class="nc" id="L118">        ImageView homeButton = ApplicationObjects.newImage(&quot;home.png&quot;, 10, 10, 20, 20);</span>
+<span class="nc" id="L119">        homeButton.setOnMouseClicked(e -&gt; {</span>
+            try {
+<span class="nc" id="L121">                stage.setScene(MainPageScene.scene());</span>
+<span class="nc" id="L122">            } catch (IOException e1) {</span>
+<span class="nc" id="L123">                e1.printStackTrace();</span>
+<span class="nc" id="L124">            }</span>
+<span class="nc" id="L125">        });</span>
+<span class="nc" id="L126">        Button dropDownButton = ApplicationObjects.newButton(&quot;test&quot;, 676, 10, 10, 10, 10);</span>
+<span class="nc" id="L127">        Group dropDown = ApplicationObjects.dropDownMenu();</span>
+<span class="nc" id="L128">        ImageView manageUserButton = ApplicationObjects.newImage(&quot;user.png&quot;, 646, 10, 20, 20);</span>
+<span class="nc" id="L129">        Group root = new Group(userInfoBox, deleteUserBox, dropDownButton, homeButton, manageUserButton);</span>
+<span class="nc" id="L130">        dropDownButton.setOnAction(e -&gt; root.getChildren().add(dropDown));</span>
+<span class="nc" id="L131">        root.getStylesheets().add(&quot;StyleSheet.css&quot;); </span>
+<span class="nc" id="L132">        Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());</span>
+
+
+<span class="nc" id="L135">        Group userButtons = ApplicationObjects.userMenu();</span>
+<span class="nc" id="L136">        manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -&gt; {</span>
+<span class="nc" id="L137">            root.getChildren().add(userButtons);</span>
+<span class="nc" id="L138">            event.consume();</span>
+<span class="nc" id="L139">        });</span>
+<span class="nc" id="L140">        scene.setOnMouseClicked(e -&gt; {</span>
+<span class="nc" id="L141">            root.getChildren().remove(userButtons);</span>
+<span class="nc" id="L142">            root.getChildren().remove(dropDown);</span>
+<span class="nc" id="L143">        });</span>
+        
+<span class="nc" id="L145">        return scene;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,673 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IndexedDataFile.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">edu.ntnu.g14.dao</a> &gt; <span class="el_source">IndexedDataFile.java</span></div><h1>IndexedDataFile.java</h1><pre class="source lang-java linenums">package edu.ntnu.g14.dao;
+
+import java.io.*;
+import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class IndexedDataFile {
+
+    private static final char NEW_LINE = '\n';
+    private static final char ESCAPE_CHAR = '\\';
+    private static final char IDENTIFIER_SEPARATOR = ':';
+    private static final char INDEX_SEPARATOR = ',';
+    private static final char DATA_SEPARATOR = NEW_LINE;
+    private static final char DATA_SEPARATOR_REPLACEMENT = 'n';
+
+    private final File fileFile;
+    private final File tempFile;
+
+    private RandomAccessFile fileStream;
+    private RandomAccessFile tempStream;
+    private FileChannel fileChannel;
+    private FileChannel tempChannel;
+    private int chainedOpens;
+
+    private long dataStartPosition;
+    /**
+     * This class uses an internal charset to read and write the index-section of the file.
+     */
+    private final Charset charset;
+
+    public IndexedDataFile(String filePath) throws IOException {
+<span class="fc" id="L35">        this(filePath, Charset.defaultCharset());</span>
+<span class="fc" id="L36">    }</span>
+
+<span class="fc" id="L38">    public IndexedDataFile(String filePath, Charset charset) throws IOException {</span>
+<span class="fc" id="L39">        this.charset = charset;</span>
+
+<span class="fc" id="L41">        fileFile = new File(filePath);</span>
+<span class="fc" id="L42">        tempFile = new File(filePath + &quot;.temp&quot;);</span>
+<span class="fc" id="L43">        tempFile.createNewFile();</span>
+<span class="fc" id="L44">        tempFile.deleteOnExit();</span>
+
+<span class="fc" id="L46">        openStreams();</span>
+<span class="fc" id="L47">        updateStartPositionIndex();</span>
+<span class="fc" id="L48">        closeStreams();</span>
+<span class="fc" id="L49">    }</span>
+
+    public byte[][] readAllInIdentifier(String identifier) throws IOException {
+<span class="nc" id="L52">        openStreams();</span>
+
+        // Read all indices connected to the specified identifier.
+<span class="nc" id="L55">        long[] indices = getIndices(identifier);</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        if (indices == null) {</span>
+<span class="nc" id="L57">            closeStreams();</span>
+<span class="nc" id="L58">            return null;</span>
+        }
+
+        // Additionally add the variable dataStartPosition to each element.
+        // This is necessary since all the indices describe the data-positions relative to this variable.
+<span class="nc" id="L63">        indices = Arrays.stream(indices)</span>
+<span class="nc" id="L64">                .map(l -&gt; l + dataStartPosition)</span>
+<span class="nc" id="L65">                .toArray();</span>
+
+<span class="nc" id="L67">        byte[][] result = new byte[indices.length][];</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        for (int i = 0; i &lt; result.length; i++) {</span>
+<span class="nc" id="L69">            fileStream.seek(indices[i]);</span>
+<span class="nc" id="L70">            result[i] = readLine();</span>
+        }
+
+<span class="nc" id="L73">        closeStreams();</span>
+
+<span class="nc" id="L75">        return result;</span>
+    }
+
+    public boolean deleteData(String identifier, int index) throws IOException {
+<span class="fc" id="L79">        openStreams();</span>
+<span class="fc" id="L80">        long dataPos = getDataPosition(identifier, index);</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (dataPos == -1) {</span>
+<span class="fc" id="L82">            closeStreams();</span>
+<span class="fc" id="L83">            return false;</span>
+        }
+
+<span class="fc" id="L86">        fileStream.seek(dataPos); // Seek to the start of the data</span>
+<span class="fc" id="L87">        long dataEnd = skipLine(); // Find the end of the data</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        if (dataEnd != fileStream.length())</span>
+<span class="fc" id="L89">            dataEnd--; // Make sure we do not remove the appended DATA_SEPARATOR</span>
+
+
+<span class="fc" id="L92">        dataPos--; // We delete the prepending DATA_SEPARATOR</span>
+<span class="fc" id="L93">        long dataLength = dataEnd - dataPos;</span>
+
+<span class="fc" id="L95">        DAOTools.deleteData(dataPos, dataLength, fileStream, tempStream);</span>
+<span class="fc" id="L96">        deleteIndex(identifier, index);</span>
+<span class="fc" id="L97">        updateIndices(-dataLength, dataPos);</span>
+<span class="fc" id="L98">        closeStreams();</span>
+<span class="fc" id="L99">        return true;</span>
+    }
+
+    public void deleteIdentifier(String identifier) throws IOException {
+<span class="nc" id="L103">        int index = getNumEntries(identifier) - 1;</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        if (index &lt; 0)</span>
+<span class="nc" id="L105">            return;</span>
+
+<span class="nc" id="L107">        openStreams();</span>
+
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        for (; index &gt;= 0; index--)</span>
+<span class="nc" id="L110">            deleteData(identifier, index);</span>
+
+<span class="nc" id="L112">        closeStreams();</span>
+<span class="nc" id="L113">    }</span>
+
+    public void addNewData(String identifier, byte[] data) throws IOException {
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">        if (identifier.contains(String.valueOf(IDENTIFIER_SEPARATOR)))</span>
+<span class="nc" id="L117">            throw new IllegalArgumentException(&quot;Identifier cannot contain &quot; + IDENTIFIER_SEPARATOR + &quot;. The submitted invalid identifier was '&quot; + identifier + &quot;'&quot;);</span>
+<span class="pc bpc" id="L118" title="1 of 2 branches missed.">        if (identifier.contains(String.valueOf(DATA_SEPARATOR)))</span>
+<span class="nc" id="L119">            throw new IllegalArgumentException(&quot;Identifier cannot contain &quot; + DATA_SEPARATOR + &quot;. The submitted invalid identifier was '&quot; + identifier + &quot;'&quot;);</span>
+
+<span class="fc" id="L121">        data = convertToStorageFormat(data);</span>
+
+<span class="fc" id="L123">        openStreams();</span>
+
+<span class="fc" id="L125">        DAOTools.appendToFile(data, fileStream);</span>
+<span class="fc" id="L126">        DAOTools.appendToFile(&quot;\n&quot;.getBytes(charset), fileStream);</span>
+
+<span class="fc" id="L128">        long dataIndex = fileStream.length() - data.length - 1;</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">        if (dataStartPosition == -1)</span>
+<span class="fc" id="L130">            DAOTools.insertIntoFile(&quot;\n&quot;.getBytes(charset), 0, fileStream, tempStream);</span>
+        else
+<span class="fc" id="L132">            dataIndex -= dataStartPosition;</span>
+
+<span class="fc" id="L134">        appendIndex(identifier, dataIndex);</span>
+<span class="fc" id="L135">        closeStreams();</span>
+<span class="fc" id="L136">    }</span>
+
+    public void setData(String identifier, int index, byte[] data) throws IOException {
+<span class="fc" id="L139">        data = convertToStorageFormat(data);</span>
+
+<span class="fc" id="L141">        openStreams();</span>
+
+<span class="fc" id="L143">        long dataStart = getDataPosition(identifier, index);</span>
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">        if (dataStart == -1)</span>
+<span class="nc" id="L145">            throw new IllegalArgumentException(&quot;Could not find any data at index &quot; + index + &quot;. Either the index is out of bounds, or the identifier &quot; + identifier + &quot; does not exist.&quot;);</span>
+
+<span class="fc" id="L147">        fileStream.seek(dataStart);</span>
+
+<span class="fc" id="L149">        long dataEnd = skipLine() - 1;</span>
+<span class="fc" id="L150">        long dataLength = dataEnd - dataStart;</span>
+<span class="fc" id="L151">        DAOTools.replace(data, dataStart, dataLength, fileStream, tempStream);</span>
+
+<span class="fc" id="L153">        long dataSizeChange = data.length - dataLength;</span>
+<span class="fc" id="L154">        updateIndices(dataSizeChange, dataStart);</span>
+
+<span class="fc" id="L156">        closeStreams();</span>
+<span class="fc" id="L157">    }</span>
+
+    public byte[] getData(String identifier, int index) throws IOException {
+<span class="fc" id="L160">        openStreams();</span>
+<span class="fc" id="L161">        long dataPos = getDataPosition(identifier, index);</span>
+<span class="fc bfc" id="L162" title="All 2 branches covered.">        if (dataPos == -1) {</span>
+<span class="fc" id="L163">            closeStreams();</span>
+<span class="fc" id="L164">            return null;</span>
+        }
+
+<span class="fc" id="L167">        fileStream.seek(dataPos);</span>
+<span class="fc" id="L168">        byte[] result = readLine();</span>
+<span class="fc" id="L169">        closeStreams();</span>
+
+<span class="fc" id="L171">        result = convertFromStorageFormat(result);</span>
+
+<span class="fc" id="L173">        return result;</span>
+    }
+
+    public int getNumEntries(String identifier) throws IOException {
+<span class="nc" id="L177">        openStreams();</span>
+<span class="nc" id="L178">        long position = getPositionOfIndices(identifier);</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">        if (position == -1) {</span>
+<span class="nc" id="L180">            closeStreams();</span>
+<span class="nc" id="L181">            return -1;</span>
+        }
+<span class="nc" id="L183">        fileStream.seek(position);</span>
+
+<span class="nc" id="L185">        int numEntries = readLineS().split(String.valueOf(INDEX_SEPARATOR)).length;</span>
+
+<span class="nc" id="L187">        closeStreams();</span>
+<span class="nc" id="L188">        return numEntries;</span>
+    }
+
+    public byte[][] getRangeOfEntries(String identifier, int startIndex, int endIndex) throws IOException {
+<span class="nc" id="L192">        int numEntries = getNumEntries(identifier);</span>
+<span class="nc bnc" id="L193" title="All 8 branches missed.">        if (numEntries == -1 || startIndex &gt;= numEntries || endIndex &lt;= 0 || endIndex &lt;= startIndex)</span>
+<span class="nc" id="L194">            return null;</span>
+
+<span class="nc bnc" id="L196" title="All 2 branches missed.">        if (startIndex &lt; 0)</span>
+<span class="nc" id="L197">            startIndex = 0;</span>
+<span class="nc bnc" id="L198" title="All 2 branches missed.">        if (endIndex &gt;= numEntries)</span>
+<span class="nc" id="L199">            endIndex = numEntries - 1;</span>
+
+<span class="nc" id="L201">        int length = endIndex - startIndex;</span>
+<span class="nc bnc" id="L202" title="All 2 branches missed.">        if (length &lt;= 0)</span>
+<span class="nc" id="L203">            return null;</span>
+
+<span class="nc" id="L205">        byte[][] data = new byte[length][];</span>
+
+<span class="nc bnc" id="L207" title="All 2 branches missed.">        for (int i = 0; i &lt; length; i++)</span>
+<span class="nc" id="L208">            data[i] = getData(identifier, startIndex + i);</span>
+
+<span class="nc" id="L210">        return data;</span>
+    }
+
+    public byte[][] getEntriesBackwards(String identifier, int amount) throws IOException {
+<span class="nc" id="L214">        openStreams();</span>
+<span class="nc" id="L215">        int lastIndex = getNumEntries(identifier) - 1;</span>
+<span class="nc bnc" id="L216" title="All 2 branches missed.">        if (lastIndex &lt; 0) {</span>
+<span class="nc" id="L217">            closeStreams();</span>
+<span class="nc" id="L218">            return null;</span>
+        }
+
+<span class="nc bnc" id="L221" title="All 2 branches missed.">        if (lastIndex &gt;= amount)</span>
+<span class="nc" id="L222">            amount = lastIndex + 1;</span>
+
+<span class="nc" id="L224">        byte[][] data = new byte[amount][];</span>
+<span class="nc bnc" id="L225" title="All 2 branches missed.">        for (int i = 0; i &lt; amount; i++)</span>
+<span class="nc" id="L226">            data[i] = getData(identifier, amount - 1 - i);</span>
+
+<span class="nc" id="L228">        closeStreams();</span>
+<span class="nc" id="L229">        return data;</span>
+    }
+
+    public boolean containsIdentifier(String identifier) throws IOException {
+<span class="fc" id="L233">        openStreams();</span>
+<span class="fc" id="L234">        String[] ids = readAllIdentifiers();</span>
+<span class="fc" id="L235">        closeStreams();</span>
+
+<span class="fc" id="L237">        boolean found = false;</span>
+
+<span class="pc bpc" id="L239" title="1 of 4 branches missed.">        for (int i = 0; i &lt; ids.length &amp;&amp; !found; i++)</span>
+<span class="pc bpc" id="L240" title="1 of 2 branches missed.">            if (ids[i].equals(identifier))</span>
+<span class="nc" id="L241">                found = true;</span>
+
+<span class="fc" id="L243">        return found;</span>
+    }
+
+    // ##### HELPER METHODS #####
+    // From this point on, we define helper methods.
+
+    private byte[] convertToStorageFormat(byte[] data) {
+<span class="fc" id="L250">        ByteArrayOutputStream out = new ByteArrayOutputStream(data.length);</span>
+<span class="fc bfc" id="L251" title="All 2 branches covered.">        for (byte b : data) {</span>
+<span class="fc bfc" id="L252" title="All 2 branches covered.">            if (b == DATA_SEPARATOR) {</span>
+<span class="fc" id="L253">                out.write(ESCAPE_CHAR);</span>
+<span class="fc" id="L254">                out.write(DATA_SEPARATOR_REPLACEMENT);</span>
+            } else
+<span class="fc" id="L256">                out.write(b);</span>
+        }
+
+<span class="fc bfc" id="L259" title="All 2 branches covered.">        if (out.size() == data.length)</span>
+<span class="fc" id="L260">            return data;</span>
+        else
+<span class="fc" id="L262">            return out.toByteArray();</span>
+    }
+
+    private byte[] convertFromStorageFormat(byte[] data) {
+<span class="fc" id="L266">        ByteArrayOutputStream out = new ByteArrayOutputStream(data.length);</span>
+
+<span class="fc bfc" id="L268" title="All 2 branches covered.">        for (int i = 0; i &lt; data.length; i++) {</span>
+<span class="pc bpc" id="L269" title="2 of 6 branches missed.">            if (data[i] == ESCAPE_CHAR &amp;&amp; i + 1 &lt; data.length &amp;&amp; data[i+1] == DATA_SEPARATOR_REPLACEMENT){</span>
+<span class="fc" id="L270">                out.write(DATA_SEPARATOR);</span>
+<span class="fc" id="L271">                i++;</span>
+            }
+            else
+<span class="fc" id="L274">                out.write(data[i]);</span>
+        }
+
+<span class="fc bfc" id="L277" title="All 2 branches covered.">        if (out.size() == data.length)</span>
+<span class="fc" id="L278">            return data;</span>
+        else
+<span class="fc" id="L280">            return out.toByteArray();</span>
+    }
+
+    private boolean deleteIndex(String identifier, int index) throws IOException {
+<span class="fc" id="L284">        long dataPos = getIndexDataPosition(identifier, index);</span>
+<span class="pc bpc" id="L285" title="1 of 2 branches missed.">        if (dataPos &lt; 0)</span>
+<span class="nc" id="L286">            return false;</span>
+
+<span class="fc" id="L288">        long dataEnd = skipToNextIndex();</span>
+<span class="pc bpc" id="L289" title="1 of 2 branches missed.">        if (dataEnd == -1)</span>
+<span class="nc" id="L290">            return false;</span>
+<span class="fc bfc" id="L291" title="All 2 branches covered.">        if (dataEnd == -2) {</span>
+            // We reached a DATA_SEPARATOR while searching for the next INDEX_SEPARATOR
+<span class="fc" id="L293">            dataEnd = fileStream.getFilePointer();</span>
+
+            // Is this the last index of this identifier entry?
+<span class="pc bpc" id="L296" title="1 of 2 branches missed.">            if (index == 0) {</span>
+                // Remove the entire entry
+<span class="fc" id="L298">                fileStream.seek(fileStream.getFilePointer() - 2);</span>
+                byte b;
+<span class="fc bfc" id="L300" title="All 2 branches covered.">                while ((b = fileStream.readByte()) != DATA_SEPARATOR) { // Move backwards until we find the beginning of the entry.</span>
+<span class="fc" id="L301">                    long newPos = fileStream.getFilePointer() - 2;</span>
+<span class="fc" id="L302">                    fileStream.seek(newPos);</span>
+<span class="fc bfc" id="L303" title="All 2 branches covered.">                    if (newPos == 0)</span>
+<span class="fc" id="L304">                        break;</span>
+<span class="fc" id="L305">                }</span>
+<span class="fc" id="L306">                dataPos = fileStream.getFilePointer();</span>
+            }
+        }
+
+<span class="fc" id="L310">        long dataLength = dataEnd - dataPos;</span>
+
+<span class="fc" id="L312">        DAOTools.deleteData(dataPos, dataLength, fileStream, tempStream);</span>
+<span class="fc" id="L313">        updateStartPositionIndex();</span>
+<span class="fc" id="L314">        return true;</span>
+    }
+
+    private long getIndexDataPosition(String identifier, int index) throws IOException {
+<span class="fc" id="L318">        long pos = getPositionOfIndices(identifier);</span>
+<span class="pc bpc" id="L319" title="1 of 2 branches missed.">        if (pos == -1)</span>
+<span class="nc" id="L320">            return -1;</span>
+
+<span class="pc bpc" id="L322" title="1 of 2 branches missed.">        for (int i = 0; i &lt; index; i++)</span>
+<span class="nc bnc" id="L323" title="All 2 branches missed.">            if (skipToNextIndex() &lt; 0)</span>
+<span class="nc" id="L324">                return -1;</span>
+
+<span class="fc" id="L326">        return fileStream.getFilePointer();</span>
+    }
+
+    /**
+     *
+     * @return The position in the file of the next index. -1 if end of file is reached, and -2 if end of line is reached.
+     * @throws IOException
+     */
+    private long skipToNextIndex() throws IOException {
+        byte b;
+        try {
+<span class="fc" id="L337">            b = fileStream.readByte();</span>
+<span class="fc bfc" id="L338" title="All 4 branches covered.">            while (b != INDEX_SEPARATOR &amp;&amp; b != DATA_SEPARATOR)</span>
+<span class="fc" id="L339">                b = fileStream.readByte();</span>
+<span class="nc" id="L340">        } catch (EOFException e) {</span>
+<span class="nc" id="L341">            return -1;</span>
+<span class="fc" id="L342">        }</span>
+<span class="fc bfc" id="L343" title="All 2 branches covered.">        if (b == DATA_SEPARATOR)</span>
+<span class="fc" id="L344">            return -2;</span>
+        else
+<span class="fc" id="L346">            return fileStream.getFilePointer();</span>
+    }
+
+    /**
+     *
+     * @param identifier
+     * @param dataIndex The position in the file where the new data was written, relative to the variable dataStartPosition.
+     * @throws IOException
+     */
+    private void appendIndex(String identifier, long dataIndex) throws IOException {
+<span class="fc" id="L356">        long indicesPos = getPositionOfIndices(identifier);</span>
+
+<span class="fc bfc" id="L358" title="All 2 branches covered.">        boolean newIdentifier = indicesPos == -1;</span>
+<span class="fc bfc" id="L359" title="All 2 branches covered.">        if (newIdentifier)</span>
+<span class="fc" id="L360">            indicesPos = createNewIdentifierEntry(identifier);</span>
+
+<span class="fc" id="L362">        fileStream.seek(indicesPos);</span>
+<span class="fc" id="L363">        skipLine();</span>
+<span class="fc" id="L364">        long start = fileStream.getFilePointer() - 1;</span>
+
+<span class="fc bfc" id="L366" title="All 2 branches covered.">        String data = newIdentifier ? &quot;&quot; : &quot;,&quot;;</span>
+<span class="fc" id="L367">        data += dataIndex;</span>
+
+<span class="fc" id="L369">        DAOTools.insertIntoFile(data.getBytes(charset), start, fileStream, tempStream);</span>
+<span class="fc" id="L370">        updateStartPositionIndex();</span>
+<span class="fc" id="L371">    }</span>
+
+    /**
+     * Creates a new identifier entry able to hold indices in the index-section of the file.
+     * @param identifier
+     * @return The index of the new identifier's index-area.
+     * @throws IOException
+     */
+    private long createNewIdentifierEntry(String identifier) throws IOException {
+<span class="fc" id="L380">        String text = identifier + IDENTIFIER_SEPARATOR;</span>
+<span class="fc" id="L381">        byte[] data = (text + '\n').getBytes(charset);</span>
+
+<span class="fc" id="L383">        long offset = 0; // Add the new identifier entry to the beginning of the file.</span>
+<span class="fc" id="L384">        DAOTools.insertIntoFile(data, offset, fileStream, tempStream);</span>
+<span class="fc" id="L385">        updateStartPositionIndex();</span>
+<span class="fc" id="L386">        return offset + text.length() - 1;</span>
+    }
+
+    private long getDataPosition(String identifier, int index) throws IOException {
+<span class="fc" id="L390">        long[] indices = getIndices(identifier);</span>
+<span class="fc bfc" id="L391" title="All 4 branches covered.">        if (indices == null || index &gt;= indices.length)</span>
+<span class="fc" id="L392">            return -1;</span>
+<span class="fc" id="L393">        return indices[index] + dataStartPosition;</span>
+    }
+
+    /**
+     * Reads and returns all characters from the current position of the RandomAccessFile to the submitted marker.
+     * If a line delimiter is found, or end of file is reached, returns null;
+     * @throws IOException
+     */
+    private String readUntil_breakNewLine(RandomAccessFile stream) throws IOException {
+<span class="fc" id="L402">        ByteArrayOutputStream out = new ByteArrayOutputStream();</span>
+
+        char current;
+        try {
+<span class="fc bfc" id="L406" title="All 2 branches covered.">            while ((current = (char) stream.readByte()) != IndexedDataFile.IDENTIFIER_SEPARATOR) {</span>
+<span class="fc bfc" id="L407" title="All 2 branches covered.">                if (current == DATA_SEPARATOR)</span>
+<span class="fc" id="L408">                    return null;</span>
+<span class="fc" id="L409">                out.write(current);</span>
+            }
+<span class="fc" id="L411">        } catch (EOFException e) {</span>
+<span class="fc" id="L412">            return null;</span>
+<span class="fc" id="L413">        }</span>
+
+<span class="fc" id="L415">        return out.toString(charset);</span>
+    }
+
+    /**
+     * Forwards the cursor of the fileStream past the next DATA_SEPARATOR delimiter.
+     * @return The data index pointing past the next line shift. If end of file was reached, returns the position at the end of the file.
+     * @throws IOException
+     */
+    private long skipLine() throws IOException {
+        try {
+<span class="fc bfc" id="L425" title="All 2 branches covered.">            while (fileStream.readByte() != DATA_SEPARATOR) continue;</span>
+<span class="nc" id="L426">        } catch (EOFException e) {</span>
+<span class="nc" id="L427">            return fileStream.length();</span>
+<span class="fc" id="L428">        }</span>
+
+<span class="fc" id="L430">        return fileStream.getFilePointer();</span>
+    }
+
+    private byte[] readLine() throws IOException {
+<span class="fc" id="L434">        final byte newLine = '\n';</span>
+<span class="fc" id="L435">        ByteArrayOutputStream out = new ByteArrayOutputStream();</span>
+
+        try {
+            byte b;
+<span class="fc bfc" id="L439" title="All 2 branches covered.">            while ((b = fileStream.readByte()) != newLine)</span>
+<span class="fc" id="L440">                out.write(b);</span>
+<span class="fc" id="L441">        } catch (EOFException e) {</span>
+            // Ignore
+<span class="fc" id="L443">        }</span>
+
+<span class="fc" id="L445">        return out.toByteArray();</span>
+    }
+
+
+    private String readLineS() throws IOException {
+<span class="fc" id="L450">        return new String(readLine(), charset);</span>
+    }
+
+    private long getPositionOfIndices(String identifier) throws IOException {
+<span class="fc" id="L454">        fileStream.seek(0); // Read from the beginning of the file.</span>
+
+<span class="fc" id="L456">        String currID = &quot;&quot;;</span>
+<span class="pc bpc" id="L457" title="1 of 2 branches missed.">        while (!currID.equals(identifier)) {</span>
+<span class="fc" id="L458">            currID = readUntil_breakNewLine(fileStream);</span>
+<span class="fc bfc" id="L459" title="All 2 branches covered.">            if (currID == null)</span>
+<span class="fc" id="L460">                return -1;</span>
+<span class="fc bfc" id="L461" title="All 2 branches covered.">            if (currID.equals(identifier))</span>
+<span class="fc" id="L462">                break;</span>
+            else
+<span class="fc" id="L464">                skipLine();</span>
+        }
+
+<span class="fc" id="L467">        long position = fileStream.getFilePointer();</span>
+<span class="fc" id="L468">        return position;</span>
+    }
+
+    /**
+     * Reads the index line of the submitted identifier, and returns all indices as an array.
+     * An index points to the start of the data.
+     * @return A long[] containing all indices under the submitted identifier. Returns null if no such identifier exists.
+     * @throws IOException
+     */
+    private long[] getIndices(String identifier) throws IOException {
+<span class="fc" id="L478">        long position = getPositionOfIndices(identifier);</span>
+<span class="fc bfc" id="L479" title="All 2 branches covered.">        if (position == -1)</span>
+<span class="fc" id="L480">            return null;</span>
+<span class="fc" id="L481">        fileStream.seek(position);</span>
+<span class="fc" id="L482">        String line = readLineS();</span>
+
+<span class="fc" id="L484">        return Arrays.stream(line.split(String.valueOf(INDEX_SEPARATOR)))</span>
+<span class="fc" id="L485">                .map(s-&gt;s.replaceAll(&quot;\\s+&quot;,&quot;&quot;))</span>
+<span class="fc" id="L486">                .mapToLong(Long::parseLong)</span>
+<span class="fc" id="L487">                .toArray();</span>
+    }
+
+    /**
+     * Call this method when changing the data-part of the file, e.g. adding a new entry, editing data, and removing an entry.
+     * @param dataAmountChange
+     * @param positionOfChange
+     * @throws IOException
+     */
+    private void updateIndices(long dataAmountChange, long positionOfChange) throws IOException {
+<span class="pc bpc" id="L497" title="1 of 2 branches missed.">        if (dataAmountChange == 0)</span>
+<span class="nc" id="L498">            return;</span>
+
+<span class="fc bfc" id="L500" title="All 2 branches covered.">        if (dataStartPosition == -1)</span>
+<span class="fc" id="L501">            return;</span>
+
+<span class="fc" id="L503">        positionOfChange -= dataStartPosition;</span>
+
+<span class="fc" id="L505">        long[][] allIndices = getAllIndices();</span>
+
+<span class="fc bfc" id="L507" title="All 2 branches covered.">        for (long[] indexGroup : allIndices)</span>
+<span class="fc bfc" id="L508" title="All 2 branches covered.">            for (int i = 0; i &lt; indexGroup.length; i++)</span>
+<span class="fc bfc" id="L509" title="All 2 branches covered.">                indexGroup[i] = indexGroup[i] &gt; positionOfChange ? indexGroup[i] + dataAmountChange : indexGroup[i];</span>
+
+<span class="fc" id="L511">        setAllIndices(allIndices);</span>
+<span class="fc" id="L512">    }</span>
+
+    private void updateStartPositionIndex() throws IOException {
+<span class="fc" id="L515">        dataStartPosition = readStartPositionOfData();</span>
+<span class="fc" id="L516">    }</span>
+
+    private long readStartPositionOfData() throws IOException {
+<span class="fc" id="L519">        fileStream.seek(0);</span>
+
+<span class="fc" id="L521">        final byte newLine = DATA_SEPARATOR;</span>
+<span class="fc" id="L522">        byte current = 0;</span>
+<span class="fc" id="L523">        byte lastByte = 0;</span>
+
+        try {
+<span class="fc bfc" id="L526" title="All 4 branches covered.">            while (!((current = fileStream.readByte()) == newLine &amp;&amp; lastByte == newLine))</span>
+<span class="fc" id="L527">                lastByte = current;</span>
+<span class="fc" id="L528">        } catch (EOFException e) {</span>
+<span class="fc" id="L529">            return -1;</span>
+<span class="fc" id="L530">        }</span>
+
+<span class="fc" id="L532">        return fileStream.getFilePointer();</span>
+    }
+
+    /**
+     * Reads all data in the index part of the file, including the double line shift marking the beginning of the data.
+     * @return
+     * @throws IOException
+     */
+    private String readAllIndexData() throws IOException {
+<span class="nc" id="L541">        int dataStart = (int) dataStartPosition;</span>
+<span class="nc" id="L542">        byte[] data = new byte[dataStart];</span>
+<span class="nc" id="L543">        fileStream.read(data, 0, dataStart);</span>
+<span class="nc" id="L544">        return new String(data, charset);</span>
+    }
+
+    /**
+     * Reads all present identifiers from the file. If the file does not contain any identifiers, returns an empty array.
+     * @throws IOException
+     */
+    public String[] readAllIdentifiers() throws IOException {
+<span class="fc" id="L552">        List&lt;String&gt; identifiers = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L554">        openStreams();</span>
+
+<span class="fc" id="L556">        fileStream.seek(0); // Read from the beginning of the file.</span>
+        String currID;
+<span class="fc bfc" id="L558" title="All 2 branches covered.">        while ((currID = readUntil_breakNewLine(fileStream)) != null) {</span>
+<span class="fc" id="L559">            identifiers.add(currID);</span>
+<span class="fc" id="L560">            skipLine();</span>
+        }
+
+<span class="fc" id="L563">        closeStreams();</span>
+
+<span class="fc" id="L565">        return identifiers.toArray(String[]::new);</span>
+    }
+
+    private long[][] getAllIndices() throws IOException {
+<span class="fc" id="L569">        List&lt;long[]&gt; indexGroups = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L571">        fileStream.seek(0);</span>
+        String line;
+<span class="fc bfc" id="L573" title="All 2 branches covered.">        while (!(line = readLineS()).isEmpty())</span>
+<span class="fc" id="L574">            indexGroups.add(Arrays.stream(line.split(String.valueOf(IDENTIFIER_SEPARATOR))[1].split(String.valueOf(INDEX_SEPARATOR)))</span>
+<span class="fc" id="L575">                    .map(s-&gt;s.replaceAll(&quot;\\s+&quot;,&quot;&quot;))</span>
+<span class="fc" id="L576">                    .mapToLong(Long::parseLong)</span>
+<span class="fc" id="L577">                    .toArray());</span>
+
+<span class="fc" id="L579">        return indexGroups.toArray(long[][]::new);</span>
+    }
+
+    private void setAllIndices(long[][] allIndices) throws IOException {
+<span class="fc" id="L583">        String[] identifiers = readAllIdentifiers();</span>
+
+<span class="fc" id="L585">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc bfc" id="L586" title="All 2 branches covered.">        for (int indexGroup = 0; indexGroup &lt; allIndices.length; indexGroup++) {</span>
+<span class="fc" id="L587">            sb.append(identifiers[indexGroup]).append(IDENTIFIER_SEPARATOR);</span>
+<span class="fc bfc" id="L588" title="All 2 branches covered.">            for (int i = 0; i &lt; allIndices[indexGroup].length; i++) {</span>
+<span class="fc" id="L589">                sb.append(allIndices[indexGroup][i]).append(INDEX_SEPARATOR);</span>
+            }
+<span class="fc" id="L591">            sb.deleteCharAt(sb.length() - 1);</span>
+<span class="fc" id="L592">            sb.append(&quot;\n&quot;);</span>
+        }
+<span class="fc" id="L594">        sb.append(&quot;\n&quot;);</span>
+
+<span class="fc" id="L596">        DAOTools.replace(sb.toString().getBytes(charset), 0, dataStartPosition, fileStream, tempStream);</span>
+<span class="fc" id="L597">        updateStartPositionIndex();</span>
+<span class="fc" id="L598">    }</span>
+
+    private void openStreams() throws IOException {
+<span class="fc bfc" id="L601" title="All 2 branches covered.">        if (chainedOpens &gt; 0) {</span>
+<span class="fc" id="L602">            chainedOpens++;</span>
+<span class="fc" id="L603">            return;</span>
+        }
+
+<span class="fc" id="L606">        fileStream = new RandomAccessFile(fileFile, &quot;rw&quot;);</span>
+<span class="fc" id="L607">        tempStream = new RandomAccessFile(tempFile, &quot;rw&quot;);</span>
+<span class="fc" id="L608">        updateStartPositionIndex();</span>
+<span class="fc" id="L609">        fileChannel = fileStream.getChannel();</span>
+<span class="fc" id="L610">        tempChannel = tempStream.getChannel();</span>
+<span class="fc" id="L611">        chainedOpens++;</span>
+<span class="fc" id="L612">    }</span>
+
+    private void closeStreams() throws IOException {
+<span class="fc bfc" id="L615" title="All 2 branches covered.">        if (chainedOpens &gt; 1) {</span>
+<span class="fc" id="L616">            chainedOpens--;</span>
+<span class="fc" id="L617">            return;</span>
+        }
+
+<span class="fc" id="L620">        fileStream.close();</span>
+<span class="fc" id="L621">        tempStream.close();</span>
+<span class="fc" id="L622">        fileStream = null;</span>
+<span class="fc" id="L623">        tempStream = null;</span>
+<span class="fc" id="L624">        fileChannel = null;</span>
+<span class="fc" id="L625">        tempChannel = null;</span>
+<span class="fc" id="L626">        chainedOpens--;</span>
+<span class="fc" id="L627">    }</span>
+
+
+    // ##### ACCESSOR-METHODS FOR TESTING-PURPOSES #####
+
+    /**
+     * Accessor method for testing purposes.
+     * @throws IOException
+     */
+    long[] _getIndices(String userID) throws IOException {
+<span class="fc" id="L637">        openStreams();</span>
+<span class="fc" id="L638">        long[] result = getIndices(userID);</span>
+<span class="fc" id="L639">        closeStreams();</span>
+<span class="fc" id="L640">        return result;</span>
+    }
+
+    /**
+     * Accessor method for testing purposes.
+     * @throws IOException
+     */
+    long[][] _getAllIndices() throws IOException {
+<span class="fc" id="L648">        openStreams();</span>
+<span class="fc" id="L649">        long[][] result = getAllIndices();</span>
+<span class="fc" id="L650">        closeStreams();</span>
+<span class="fc" id="L651">        return result;</span>
+    }
+
+    /**
+     * Accessor method for testing purposes.
+     * @throws IOException
+     */
+    String[] _readAllIdentifiers() throws IOException {
+<span class="fc" id="L659">        openStreams();</span>
+<span class="fc" id="L660">        String[] ids = readAllIdentifiers();</span>
+<span class="fc" id="L661">        closeStreams();</span>
+
+        // As we are adding the identifiers in a backwards fashion, we need to flip the array before returning it.
+<span class="fc" id="L664">        String[] result = new String[ids.length];</span>
+<span class="fc" id="L665">        int i = 0;</span>
+<span class="fc" id="L666">        int i2 = ids.length - 1;</span>
+<span class="fc bfc" id="L667" title="All 2 branches covered.">        while (i &lt; ids.length)</span>
+<span class="fc" id="L668">            result[i++] = ids[i2--];</span>
+
+<span class="fc" id="L670">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

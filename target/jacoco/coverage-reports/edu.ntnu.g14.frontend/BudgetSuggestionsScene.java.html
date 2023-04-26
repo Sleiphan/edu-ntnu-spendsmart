@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BudgetSuggestionsScene.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">edu.ntnu.g14.frontend</a> &gt; <span class="el_source">BudgetSuggestionsScene.java</span></div><h1>BudgetSuggestionsScene.java</h1><pre class="source lang-java linenums">package edu.ntnu.g14.frontend;
+
+import java.math.BigDecimal;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import edu.ntnu.g14.*;
+import edu.ntnu.g14.dao.BudgetDAO;
+import javafx.animation.PauseTransition;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
+<span class="nc" id="L21">public class BudgetSuggestionsScene {</span>
+<span class="nc" id="L22">    static Stage stage = BankApplication.getStage();</span>
+    static BudgetDAO budgetDAO;
+
+    static Budget userBudget;
+
+<span class="nc" id="L27">    static User loggedInUser = BankApplication.loggedInUser;</span>
+
+    static Group revenueComponents;
+
+
+<span class="nc" id="L32">    static BudgetSuggestion budgetSuggestion= new BudgetSuggestion();</span>
+
+<span class="nc" id="L34">    static BigDecimal totalRevenue = BigDecimal.ZERO;</span>
+
+    static TextField savingsInput;
+
+    static Group selectTypeComponents;
+
+    static Button createBudgetBtn;
+    static VBox revenueBox;
+
+    private static Tooltip tooltip;
+    /**
+    * The {@code BudgetSuggestionsScene} class represents the graphical user interface
+    * for generating budget suggestions in the Bank Application.
+    * It contains various UI components to create and view suggested budgets.
+    * This class makes use of the {@code BudgetSuggestion} class to generate
+    * budget suggestions based on user input.
+    */
+
+    static public Scene scene() throws IOException {
+
+
+
+        try {
+<span class="nc" id="L57">            budgetDAO = new BudgetDAO(&quot;saves/budgets.txt&quot;);</span>
+<span class="nc" id="L58">        } catch (IOException e) {</span>
+<span class="nc" id="L59">            e.printStackTrace();</span>
+<span class="nc" id="L60">        }</span>
+<span class="nc" id="L61">        Text title = ApplicationObjects.newText(&quot;Budget Suggestion&quot;, 30, false, 250, 50);</span>
+        // Create components
+<span class="nc" id="L63">        selectTypeComponents = createSelectTypeComponents();</span>
+
+<span class="nc" id="L65">        revenueComponents = createRevenueComponents();</span>
+
+        // Hide revenue, expenditure and createBudgetBtn components initially
+<span class="nc" id="L68">        revenueComponents.setVisible(false);</span>
+
+<span class="nc" id="L70">        ImageView homeButton = ApplicationObjects.newImage(&quot;home.png&quot;, 10, 10, 20, 20);</span>
+<span class="nc" id="L71">        homeButton.setOnMouseClicked(e -&gt; {</span>
+            try {
+<span class="nc" id="L73">                stage.setScene(MainPageScene.scene());</span>
+<span class="nc" id="L74">            } catch (IOException e1) {</span>
+<span class="nc" id="L75">                e1.printStackTrace();</span>
+<span class="nc" id="L76">            }</span>
+<span class="nc" id="L77">        });</span>
+<span class="nc" id="L78">        Button dropDownButton = ApplicationObjects.newButton(&quot;test&quot;, 676, 10, 10, 10, 10);</span>
+<span class="nc" id="L79">        Group dropDown = ApplicationObjects.dropDownMenu();</span>
+<span class="nc" id="L80">        ImageView manageUserButton = ApplicationObjects.newImage(&quot;user.png&quot;, 646, 10, 20, 20);</span>
+<span class="nc" id="L81">        Group root = new Group(selectTypeComponents, revenueComponents, dropDownButton, homeButton, manageUserButton, title);</span>
+<span class="nc" id="L82">        dropDownButton.setOnAction(e -&gt; root.getChildren().add(dropDown));</span>
+
+<span class="nc" id="L84">        Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());</span>
+<span class="nc" id="L85">        Group userButtons = ApplicationObjects.userMenu();</span>
+<span class="nc" id="L86">        manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -&gt; {</span>
+<span class="nc" id="L87">            root.getChildren().add(userButtons);</span>
+<span class="nc" id="L88">            event.consume();</span>
+<span class="nc" id="L89">        });</span>
+<span class="nc" id="L90">        scene.setOnMouseClicked(e -&gt; {</span>
+<span class="nc" id="L91">            root.getChildren().remove(userButtons);</span>
+<span class="nc" id="L92">            root.getChildren().remove(dropDown);</span>
+<span class="nc" id="L93">        });</span>
+<span class="nc" id="L94">        scene.setFill(ApplicationObjects.getSceneColor());</span>
+
+<span class="nc" id="L96">        return scene;</span>
+    }
+    /**
+     * Creates the components for selecting the budget type, age, gender, and household.
+     * The method creates a group of components and sets the appropriate visibility and action listeners.
+     *
+     * @return a Group of components for selecting the budget type, age, gender, and household
+     */
+    private static Group createSelectTypeComponents() {
+        // Create components for selecting type, age, gender, and household
+
+        // Add a listener to the personal choice box
+<span class="nc" id="L108">        Text selectInfo = ApplicationObjects.newText(&quot;Please select a budget type&quot;, 15, false, 50, 85);</span>
+<span class="nc" id="L109">        String[] personals = {&quot;Select Type&quot;, &quot;Age &amp; Gender&quot;, &quot;Household&quot;};</span>
+<span class="nc" id="L110">        ChoiceBox&lt;String&gt; personal = ApplicationObjects.newChoiceBox(personals, 150, 34, 15, 50, 100);</span>
+<span class="nc" id="L111">        personal.setValue(&quot;Select Type&quot;);</span>
+<span class="nc" id="L112">        ToggleGroup genderToggleGroup = new ToggleGroup();</span>
+<span class="nc" id="L113">        RadioButton maleRadioButton = new RadioButton(&quot;Male&quot;);</span>
+<span class="nc" id="L114">        maleRadioButton.setToggleGroup(genderToggleGroup);</span>
+<span class="nc" id="L115">        maleRadioButton.setUserData(&quot;MALE&quot;);</span>
+<span class="nc" id="L116">        maleRadioButton.setLayoutX(350);</span>
+<span class="nc" id="L117">        maleRadioButton.setLayoutY(100);</span>
+
+<span class="nc" id="L119">        RadioButton femaleRadioButton = new RadioButton(&quot;Female&quot;);</span>
+<span class="nc" id="L120">        femaleRadioButton.setToggleGroup(genderToggleGroup);</span>
+<span class="nc" id="L121">        femaleRadioButton.setUserData(&quot;FEMALE&quot;);</span>
+<span class="nc" id="L122">        femaleRadioButton.setLayoutX(350);</span>
+<span class="nc" id="L123">        femaleRadioButton.setLayoutY(120);</span>
+
+        // Hide gender RadioButtons by default
+<span class="nc" id="L126">        maleRadioButton.setVisible(false);</span>
+<span class="nc" id="L127">        femaleRadioButton.setVisible(false);</span>
+
+<span class="nc" id="L129">        TextField AgeInput = ApplicationObjects.newTextField(&quot;Enter Age&quot;, 210, 100, 130, 30, 15);</span>
+        //ChoiceBox with Household Category elements
+<span class="nc" id="L131">        List&lt;String&gt; householdChoiceList = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">        for (HouseholdCategory category : HouseholdCategory.values()) {</span>
+<span class="nc" id="L133">            householdChoiceList.add(category.toString().toLowerCase().replaceAll(&quot;_&quot;, &quot; &quot;));</span>
+        }
+<span class="nc" id="L135">        String[] householdChoices = householdChoiceList.toArray(new String[0]);</span>
+<span class="nc" id="L136">        ChoiceBox&lt;String&gt; HouseholdInput = ApplicationObjects.newChoiceBox(householdChoices, 150, 34, 15, 210, 100);</span>
+<span class="nc" id="L137">        HouseholdInput.setValue(HouseholdCategory.LIVING_ALONE.toString().toLowerCase().replaceAll(&quot;_&quot;, &quot; &quot;));</span>
+<span class="nc" id="L138">        HouseholdInput.setVisible(false);</span>
+
+<span class="nc" id="L140">        AgeInput.setVisible(false);</span>
+
+        // Add a listener to the personal choice box
+<span class="nc" id="L143">        personal.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, selectedValue) -&gt; {</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">            if (selectedValue.equals(&quot;Age &amp; Gender&quot;)) {</span>
+<span class="nc" id="L145">                AgeInput.setVisible(true);</span>
+<span class="nc" id="L146">                maleRadioButton.setVisible(true);</span>
+<span class="nc" id="L147">                femaleRadioButton.setVisible(true);</span>
+<span class="nc" id="L148">                HouseholdInput.setVisible(false);</span>
+<span class="nc" id="L149">                selectInfo.setVisible(false);</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">            } else if (selectedValue.equals(&quot;Household&quot;)) {</span>
+<span class="nc" id="L151">                AgeInput.setVisible(false);</span>
+<span class="nc" id="L152">                maleRadioButton.setVisible(false);</span>
+<span class="nc" id="L153">                femaleRadioButton.setVisible(false);</span>
+<span class="nc" id="L154">                HouseholdInput.setVisible(true);</span>
+<span class="nc" id="L155">                selectInfo.setVisible(false);</span>
+            } else {
+<span class="nc" id="L157">                AgeInput.setVisible(false);</span>
+<span class="nc" id="L158">                maleRadioButton.setVisible(false);</span>
+<span class="nc" id="L159">                femaleRadioButton.setVisible(false);</span>
+<span class="nc" id="L160">                HouseholdInput.setVisible(false);</span>
+            }
+<span class="nc" id="L162">        });</span>
+
+        // When the 'Create' button is clicked
+<span class="nc" id="L165">        Button continueBtnSelectType = ApplicationObjects.newButton(&quot;Continue&quot;, 500, 480, 157, 25, 16);</span>
+<span class="nc" id="L166">        continueBtnSelectType.setOnAction(e -&gt; {</span>
+<span class="nc" id="L167">            String selectedValue = personal.getValue();</span>
+<span class="nc bnc" id="L168" title="All 2 branches missed.">            if (selectedValue.equals(&quot;Select Type&quot;)) {</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">                if (tooltip == null) {</span>
+<span class="nc" id="L170">                    tooltip = new Tooltip(&quot;Please select a type before pressing continue&quot;);</span>
+<span class="nc" id="L171">                    continueBtnSelectType.setTooltip(tooltip);</span>
+                }
+<span class="nc" id="L173">                tooltip.show(continueBtnSelectType.getScene().getWindow());</span>
+
+                // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+<span class="nc" id="L176">                PauseTransition pause = new PauseTransition(Duration.seconds(5));</span>
+<span class="nc" id="L177">                pause.setOnFinished(event -&gt; tooltip.hide());</span>
+<span class="nc" id="L178">                pause.play();</span>
+
+<span class="nc" id="L180">                return;</span>
+            }
+            // Get the input values for Age, Gender, and Household
+
+<span class="nc" id="L184">            String inputAge = AgeInput.getText();</span>
+<span class="nc bnc" id="L185" title="All 2 branches missed.">            String inputGender = genderToggleGroup.getSelectedToggle() != null ? genderToggleGroup.getSelectedToggle().getUserData().toString() : &quot;&quot;;</span>
+<span class="nc" id="L186">            String inputHousehold = HouseholdInput.getValue();</span>
+<span class="nc bnc" id="L187" title="All 6 branches missed.">            if (selectedValue.equals(&quot;Age &amp; Gender&quot;) &amp;&amp; (inputAge.isEmpty() || inputGender.isEmpty())) {</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">                if (tooltip == null) {</span>
+<span class="nc bnc" id="L189" title="All 4 branches missed.">                    if (inputAge.isEmpty() &amp;&amp; !inputGender.isEmpty()) {</span>
+<span class="nc" id="L190">                        tooltip = new Tooltip(&quot;Please enter in Age&quot;);</span>
+<span class="nc bnc" id="L191" title="All 2 branches missed.">                    } else if (!inputAge.isEmpty()) {</span>
+<span class="nc" id="L192">                        tooltip = new Tooltip(&quot;Please select a gender, sorry if your gender is not an option&quot;);</span>
+                    } else {
+<span class="nc" id="L194">                        tooltip = new Tooltip(&quot;Please enter age and select a gender, sorry if your gender is not an option&quot;);</span>
+                    }
+<span class="nc" id="L196">                    continueBtnSelectType.setTooltip(tooltip);</span>
+                }
+<span class="nc" id="L198">                tooltip.show(continueBtnSelectType.getScene().getWindow());</span>
+
+                // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+<span class="nc" id="L201">                PauseTransition pause = new PauseTransition(Duration.seconds(5));</span>
+<span class="nc" id="L202">                pause.setOnFinished(event -&gt; tooltip.hide());</span>
+<span class="nc" id="L203">                pause.play();</span>
+
+<span class="nc" id="L205">                return;</span>
+            }
+
+            else {
+<span class="nc" id="L209">                processSelectTypeInput(selectedValue, inputAge, inputGender, inputHousehold);</span>
+            }
+
+<span class="nc" id="L212">            selectTypeComponents.setVisible(false);</span>
+<span class="nc" id="L213">            revenueComponents.setVisible(true);</span>
+
+<span class="nc" id="L215">        });</span>
+
+
+<span class="nc" id="L218">        return new Group(selectInfo,personal, AgeInput, maleRadioButton, femaleRadioButton, HouseholdInput, continueBtnSelectType);</span>
+    }
+    /**
+     * Creates the components for selecting and inputting revenues.
+     * The method creates a group of components and sets the appropriate visibility and action listeners.
+     *
+     * @return a Group of components for selecting and inputting revenues
+     */
+    private static Group createRevenueComponents() {
+        // Create components for selecting and inputting revenues
+<span class="nc" id="L228">        Text infoRevenue = ApplicationObjects.newText(&quot;Select revenue type, add amount\n and add revenue item to budget&quot;, 15, false, 50,100);</span>
+<span class="nc" id="L229">        List&lt;String&gt; revenueChoiceList = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L230" title="All 2 branches missed.">        for (BudgetCategory category : BudgetCategory.values()) {</span>
+<span class="nc bnc" id="L231" title="All 2 branches missed.">            if (category.getType().equals(&quot;r&quot;)) {</span>
+<span class="nc" id="L232">                revenueChoiceList.add(category.toString().toLowerCase().replaceAll(&quot;_&quot;, &quot; &quot;));</span>
+            }
+        }
+<span class="nc" id="L235">        String[] revenueChoices = revenueChoiceList.toArray(new String[0]);</span>
+<span class="nc" id="L236">        ChoiceBox&lt;String&gt; revenue = ApplicationObjects.newChoiceBox(revenueChoices, 150, 34, 15, 0, 0);</span>
+<span class="nc" id="L237">        revenue.setValue(BudgetCategory.SALARY.toString());</span>
+
+
+<span class="nc" id="L240">        TextField revenueInput = ApplicationObjects.newTextField(&quot;Enter Amount&quot;, 0, 0, 130, 30, 15);</span>
+<span class="nc" id="L241">        Button addRevenueItemBtn = ApplicationObjects.newButton(&quot;Add revenue to budget&quot;, 0, 0, 157, 25, 16);</span>
+<span class="nc" id="L242">        addRevenueItemBtn.setOnAction(e -&gt; {</span>
+<span class="nc bnc" id="L243" title="All 2 branches missed.">            if (revenueInput.getText().isEmpty()) {</span>
+<span class="nc bnc" id="L244" title="All 2 branches missed.">                if (tooltip == null) {</span>
+<span class="nc" id="L245">                    tooltip = new Tooltip(&quot;Please enter an amount, to create a revenue item&quot;);</span>
+<span class="nc" id="L246">                    addRevenueItemBtn.setTooltip(tooltip);</span>
+                }
+<span class="nc" id="L248">                tooltip.show(addRevenueItemBtn.getScene().getWindow());</span>
+
+                // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+<span class="nc" id="L251">                PauseTransition pause = new PauseTransition(Duration.seconds(5));</span>
+<span class="nc" id="L252">                pause.setOnFinished(event -&gt; tooltip.hide());</span>
+<span class="nc" id="L253">                pause.play();</span>
+
+<span class="nc" id="L255">                return;</span>
+            }
+<span class="nc" id="L257">            BudgetCategory selectedItem = BudgetCategory.valueOf(revenue.getValue().toUpperCase().replaceAll(&quot; &quot;, &quot;_&quot;));</span>
+<span class="nc" id="L258">            String inputText = revenueInput.getText();</span>
+<span class="nc" id="L259">            addRevenueToBudget(selectedItem, inputText);</span>
+<span class="nc" id="L260">        });</span>
+<span class="nc" id="L261">        Text savingsInfo = ApplicationObjects.newText(&quot;Please enter the amount you\nto save for the month&quot;, 15, false, 50,100);</span>
+<span class="nc" id="L262">        savingsInfo.setVisible(false);</span>
+<span class="nc" id="L263">        savingsInput = ApplicationObjects.newTextField(&quot;Enter Savings Amount&quot;, 50, 130, 130, 30, 15);</span>
+<span class="nc" id="L264">        savingsInput.setVisible(false);</span>
+
+<span class="nc" id="L266">        Button continueBtnRevenue = ApplicationObjects.newButton(&quot;Continue&quot;, 500, 480, 157, 25, 16);</span>
+<span class="nc" id="L267">        continueBtnRevenue.setOnAction(e -&gt; {</span>
+<span class="nc bnc" id="L268" title="All 4 branches missed.">            if (userBudget == null || userBudget.getEntries().isEmpty()) {</span>
+<span class="nc bnc" id="L269" title="All 2 branches missed.">                if (tooltip == null) {</span>
+<span class="nc" id="L270">                    tooltip = new Tooltip(&quot;Please add a revenue item&quot;);</span>
+<span class="nc" id="L271">                    continueBtnRevenue.setTooltip(tooltip);</span>
+                }
+<span class="nc" id="L273">                tooltip.show(continueBtnRevenue.getScene().getWindow());</span>
+
+                // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+<span class="nc" id="L276">                PauseTransition pause = new PauseTransition(Duration.seconds(5));</span>
+<span class="nc" id="L277">                pause.setOnFinished(event -&gt; tooltip.hide());</span>
+<span class="nc" id="L278">                pause.play();</span>
+
+<span class="nc" id="L280">                return;</span>
+            }
+<span class="nc bnc" id="L282" title="All 2 branches missed.">            if (!revenueInput.getText().isEmpty()) {</span>
+                //hide and show components
+<span class="nc" id="L284">                savingsInput.setVisible(true);</span>
+<span class="nc" id="L285">                createBudgetBtn.setVisible(true);</span>
+<span class="nc" id="L286">                revenueBox.setVisible(false);</span>
+<span class="nc" id="L287">                infoRevenue.setVisible(false);</span>
+<span class="nc" id="L288">                savingsInfo.setVisible(true);</span>
+            }
+<span class="nc" id="L290">        });</span>
+
+
+<span class="nc" id="L293">        createBudgetBtn =  ApplicationObjects.newButton(&quot;Create Budget&quot;, 500, 480, 157, 25, 16);</span>
+<span class="nc" id="L294">        createBudgetBtn.setVisible(false);</span>
+<span class="nc" id="L295">        createBudgetBtn.setOnAction(e -&gt; {</span>
+<span class="nc bnc" id="L296" title="All 2 branches missed.">            if (savingsInput.getText().isEmpty()) {</span>
+<span class="nc bnc" id="L297" title="All 2 branches missed.">                if (tooltip == null) {</span>
+<span class="nc" id="L298">                    tooltip = new Tooltip(&quot;Please enter the amount\n you want to save, you can also enter\n 0 if you don't want to save any money&quot;);</span>
+<span class="nc" id="L299">                    addRevenueItemBtn.setTooltip(tooltip);</span>
+                }
+<span class="nc" id="L301">                tooltip.show(addRevenueItemBtn.getScene().getWindow());</span>
+
+                // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+<span class="nc" id="L304">                PauseTransition pause = new PauseTransition(Duration.seconds(5));</span>
+<span class="nc" id="L305">                pause.setOnFinished(event -&gt; tooltip.hide());</span>
+<span class="nc" id="L306">                pause.play();</span>
+
+<span class="nc" id="L308">                return;</span>
+<span class="nc bnc" id="L309" title="All 2 branches missed.">            } else if (totalRevenue.compareTo(new BigDecimal(savingsInput.getText())) &lt; 0) {</span>
+<span class="nc bnc" id="L310" title="All 2 branches missed.">                if (tooltip == null) {</span>
+<span class="nc" id="L311">                    tooltip = new Tooltip(&quot;Your savings can not be bigger than your revenue&quot;);</span>
+<span class="nc" id="L312">                    addRevenueItemBtn.setTooltip(tooltip);</span>
+                }
+<span class="nc" id="L314">                tooltip.show(addRevenueItemBtn.getScene().getWindow());</span>
+
+                // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+<span class="nc" id="L317">                PauseTransition pause = new PauseTransition(Duration.seconds(5));</span>
+<span class="nc" id="L318">                pause.setOnFinished(event -&gt; tooltip.hide());</span>
+<span class="nc" id="L319">                pause.play();</span>
+
+<span class="nc" id="L321">                return;</span>
+            }
+            // Retrieve the input savings amount and convert it to BigDecimal
+<span class="nc bnc" id="L324" title="All 2 branches missed.">            BigDecimal savingsAmount = new BigDecimal(savingsInput.getText().isEmpty() ? &quot;0&quot; : savingsInput.getText());</span>
+
+            // Calculate the remaining amount after savings
+<span class="nc" id="L327">            BigDecimal remainingAmount = totalRevenue.subtract(savingsAmount);</span>
+
+            // Generate budget suggestions based on the remaining amount
+<span class="nc" id="L330">            Map&lt;BudgetCategory, BigDecimal&gt; suggestedBudgetItems = budgetSuggestion.suggestBudget(remainingAmount);</span>
+
+            // Add the suggested budget items and savings to userBudget
+<span class="nc bnc" id="L333" title="All 2 branches missed.">            for (Map.Entry&lt;BudgetCategory, BigDecimal&gt; entry : suggestedBudgetItems.entrySet()) {</span>
+<span class="nc" id="L334">                userBudget.addBudgetItem(new BudgetItem(entry.getKey(), entry.getValue()));</span>
+<span class="nc" id="L335">            }</span>
+
+<span class="nc" id="L337">            totalRevenue = sumOfRevenue(totalRevenue, savingsInput.getText());</span>
+            // Update the total revenue
+            try {
+<span class="nc" id="L340">                budgetDAO.setBudget(loggedInUser.getLoginInfo().getUserId(), userBudget);</span>
+                // Navigate to the BudgetingScene or another desired page after saving the budget
+<span class="nc" id="L342">                stage.setScene(BudgetingScene.scene());</span>
+<span class="nc" id="L343">            } catch (IOException e1) {</span>
+<span class="nc" id="L344">                e1.printStackTrace();</span>
+<span class="nc" id="L345">            }</span>
+<span class="nc" id="L346">            BudgetingScene.refreshData();</span>
+<span class="nc" id="L347">        });</span>
+<span class="nc" id="L348">        revenueBox = new VBox();</span>
+<span class="nc" id="L349">        revenueBox.setLayoutX(50);</span>
+<span class="nc" id="L350">        revenueBox.setLayoutY(130);</span>
+<span class="nc" id="L351">        revenueBox.setSpacing(10);</span>
+<span class="nc" id="L352">        revenueBox.getChildren().addAll(revenue, revenueInput, addRevenueItemBtn);</span>
+
+<span class="nc" id="L354">        return new Group(infoRevenue, savingsInfo, revenueBox, continueBtnRevenue,  savingsInput, createBudgetBtn);</span>
+    }
+
+    /**
+     * Adds a revenue item to the user's budget.
+     * This method takes a BudgetCategory and a string input, converts the input to a BigDecimal,
+     * and adds the new BudgetItem to the user's budget.
+     *
+     * @param selectedItem a BudgetCategory representing the type of revenue item
+     * @param inputText a String representing the amount of the revenue item
+     */
+    private static void addRevenueToBudget(BudgetCategory selectedItem, String inputText) {
+<span class="nc" id="L366">        BigDecimal amount = new BigDecimal(inputText);</span>
+
+<span class="nc" id="L368">        BudgetItem budgetItem = new BudgetItem(selectedItem, amount);</span>
+<span class="nc" id="L369">        userBudget.addBudgetItem(budgetItem);</span>
+
+        // Update the totalRevenue
+<span class="nc" id="L372">        totalRevenue = totalRevenue.add(amount);</span>
+
+        // Update the loggedInUser's budget
+<span class="nc" id="L375">        loggedInUser.setBudget(userBudget);</span>
+
+        // Get the updated User object after updating the budget
+<span class="nc" id="L378">        User updatedUser = loggedInUser;</span>
+
+        // Update the loggedInUser object in the BudgetingScene class
+<span class="nc" id="L381">        BudgetingScene.setLoggedInUser(updatedUser);</span>
+<span class="nc" id="L382">    }</span>
+    /**
+     *Calculates the sum of the total revenue and the savings amount.
+     *
+     *@param totalRevenue a BigDecimal representing the current total revenue
+     *@param savingsAmount a String representing the savings amount to be added
+     *@return a BigDecimal representing the new total revenue after adding the savings amount
+     */
+    private static BigDecimal sumOfRevenue(BigDecimal totalRevenue, String savingsAmount) {
+<span class="nc bnc" id="L391" title="All 2 branches missed.">        BigDecimal savings = new BigDecimal(savingsAmount.isEmpty() ? &quot;0&quot; : savingsAmount);</span>
+<span class="nc" id="L392">        return totalRevenue.subtract(savings);</span>
+    }
+
+    /**
+
+     * Processes the input data from the select type components and initializes the user's budget.
+     * This method creates a new Budget object based on the selectedValue and associates it with the loggedInUser.
+     *
+     * @param selectedValue a String representing the selected budget type
+     * @param inputAge a String representing the input age (if applicable)
+     * @param inputGender a String representing the input gender (if applicable)
+     * @param inputHousehold a String representing the input household size (if applicable)
+     */
+    private static void processSelectTypeInput(String selectedValue, String inputAge, String inputGender, String inputHousehold) {
+        // Create a new budget object and associate it with the loggedInUser
+<span class="nc bnc" id="L407" title="All 2 branches missed.">        if (selectedValue.equals(&quot;Age &amp; Gender&quot;)) {</span>
+<span class="nc" id="L408">            byte age = Byte.parseByte(inputAge);</span>
+<span class="nc" id="L409">            GenderCategory Gender = GenderCategory.valueOf(inputGender.toUpperCase());</span>
+<span class="nc" id="L410">            userBudget = new Budget( age, Gender);</span>
+<span class="nc bnc" id="L411" title="All 2 branches missed.">        } else if (selectedValue.equals(&quot;Household&quot;)) {</span>
+            // Convert the inputHousehold String to HouseholdCategory enum
+<span class="nc" id="L413">            HouseholdCategory householdSize = HouseholdCategory.valueOf(inputHousehold.toUpperCase().replaceAll(&quot; &quot;, &quot;_&quot;));</span>
+<span class="nc" id="L414">            userBudget = new Budget(householdSize);</span>
+        }
+<span class="nc" id="L416">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

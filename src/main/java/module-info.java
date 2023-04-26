@@ -1,4 +1,4 @@
-module edu.ntnu {
+module EconomyApplication {
     requires transitive javafx.controls;
     requires transitive javafx.graphics;
     requires java.sql;
@@ -7,6 +7,7 @@ module edu.ntnu {
     requires java.mail;
 
     exports edu.ntnu.g14;
-    opens edu.ntnu.g14 to javafx.graphics;
+
+    opens edu.ntnu.g14;
     exports edu.ntnu.g14.frontend;
 }

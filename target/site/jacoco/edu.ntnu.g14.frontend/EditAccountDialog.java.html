@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EditAccountDialog.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">edu.ntnu.g14.frontend</a> &gt; <span class="el_source">EditAccountDialog.java</span></div><h1>EditAccountDialog.java</h1><pre class="source lang-java linenums">package edu.ntnu.g14.frontend;
+
+import edu.ntnu.g14.Account;
+import edu.ntnu.g14.AccountCategory;
+import edu.ntnu.g14.BankApplication;
+import javafx.event.ActionEvent;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.util.Callback;
+
+public class EditAccountDialog extends Dialog&lt;Account&gt; {
+    private final Account account;
+    private TextField editAccountNameField;
+    private ComboBox&lt;String&gt; editAccountTypeBox;
+    private ButtonType deleteButtonType;
+
+    public EditAccountDialog(Account account) {
+<span class="nc" id="L21">        super();</span>
+<span class="nc" id="L22">        this.setTitle(&quot;Edit &quot; + account.getAccountName());</span>
+<span class="nc" id="L23">        this.account = account;</span>
+<span class="nc" id="L24">        buildUI();</span>
+<span class="nc" id="L25">        setResultConverter();</span>
+<span class="nc" id="L26">    }</span>
+
+    private void setResultConverter() {
+<span class="nc" id="L29">        Callback&lt;ButtonType, Account&gt; accountResultConverter = buttonType -&gt; {</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">            if (buttonType == ButtonType.OK) {</span>
+<span class="nc" id="L31">                editAccount();</span>
+<span class="nc" id="L32">                return account;</span>
+            }
+<span class="nc bnc" id="L34" title="All 2 branches missed.">            if (buttonType == deleteButtonType) {</span>
+<span class="nc bnc" id="L35" title="All 2 branches missed.">                if (BankApplication.loggedInUser.getAccountsAsList().size() == 1) {</span>
+<span class="nc" id="L36">                    Alert cannotDeleteAccount = new Alert(Alert.AlertType.WARNING);</span>
+<span class="nc" id="L37">                    cannotDeleteAccount.setHeaderText(&quot;Cannot delete Bank Account&quot;);</span>
+<span class="nc" id="L38">                    cannotDeleteAccount.setContentText(&quot;Account cannot be deleted since it's your last account&quot;);</span>
+<span class="nc" id="L39">                    cannotDeleteAccount.setTitle(&quot;Delete Bank Account&quot;);</span>
+<span class="nc" id="L40">                    cannotDeleteAccount.showAndWait();</span>
+<span class="nc" id="L41">                    return null;</span>
+                }
+<span class="nc" id="L43">                Alert deleteAccountAlert = new Alert(Alert.AlertType.CONFIRMATION);</span>
+<span class="nc" id="L44">                deleteAccountAlert.setHeaderText(&quot;Are you sure you want to delete the Bank Account?&quot;);</span>
+<span class="nc" id="L45">                deleteAccountAlert.setContentText(&quot;Are you sure you want to delete: &quot; + account.getAccountName() + &quot;?&quot;);</span>
+<span class="nc" id="L46">                deleteAccountAlert.setTitle(&quot;Delete Bank Account&quot;);</span>
+<span class="nc" id="L47">                deleteAccountAlert.showAndWait();</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">                if (deleteAccountAlert.getResult() == ButtonType.CANCEL) {</span>
+<span class="nc" id="L49">                    return null;</span>
+                }
+<span class="nc" id="L51">                BankApplication.loggedInUser.removeAccount(account);</span>
+<span class="nc" id="L52">                return account;</span>
+            }
+            else {
+<span class="nc" id="L55">                return null;</span>
+            }
+        };
+<span class="nc" id="L58">        setResultConverter(accountResultConverter);</span>
+<span class="nc" id="L59">    }</span>
+
+
+    private void editAccount() {
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (editAccountTypeBox.getValue() != null)</span>
+<span class="nc" id="L64">            account.setAccountType(AccountCategory.valueOf(editAccountTypeBox.getValue()</span>
+<span class="nc" id="L65">                .replaceAll(&quot; &quot;, &quot;_&quot;).toUpperCase()));</span>
+
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (!editAccountNameField.getText().isBlank())</span>
+<span class="nc" id="L68">            account.setAccountName(editAccountNameField.getText());</span>
+<span class="nc" id="L69">    }</span>
+
+    private void buildUI() {
+<span class="nc" id="L72">        Pane pane = createGridPane();</span>
+<span class="nc" id="L73">        getDialogPane().setContent(pane);</span>
+<span class="nc" id="L74">        deleteButtonType = new ButtonType(&quot;Delete Account&quot;);</span>
+<span class="nc" id="L75">        getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL, deleteButtonType);</span>
+
+<span class="nc" id="L77">        Button button = (Button) getDialogPane().lookupButton(ButtonType.OK);</span>
+<span class="nc" id="L78">        button.addEventFilter(ActionEvent.ACTION, actionEvent -&gt; {</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">            if (!validateDialog()) {</span>
+<span class="nc" id="L80">                actionEvent.consume();</span>
+            }
+<span class="nc" id="L82">        });</span>
+
+<span class="nc" id="L84">    }</span>
+
+    private boolean validateDialog() {
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        return (!editAccountNameField.getText().isBlank()</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">                &amp;&amp; !BankApplication.loggedInUser.checkIfAccountNameIsOccupied(editAccountNameField.getText()))</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">                || editAccountTypeBox.getValue() != null;</span>
+
+
+
+    }
+
+    private Pane createGridPane() {
+<span class="nc" id="L96">        VBox content = new VBox(10);</span>
+<span class="nc" id="L97">        Label editAccountNameLabel = new Label(&quot;Enter new name for your account:&quot;);</span>
+<span class="nc" id="L98">        Label editAccountTypeLabel = new Label(&quot;Choose the new type of your account:&quot;);</span>
+<span class="nc" id="L99">        this.editAccountNameField  = new TextField();</span>
+<span class="nc" id="L100">        this.editAccountTypeBox    = new ComboBox&lt;&gt;();</span>
+
+<span class="nc" id="L102">        this.editAccountTypeBox.getItems().addAll(ApplicationObjects.getAccountCategories());</span>
+<span class="nc" id="L103">        this.editAccountTypeBox.setPromptText(&quot;New account type&quot;);</span>
+<span class="nc" id="L104">        this.editAccountTypeBox.setMaxWidth(200);</span>
+<span class="nc" id="L105">        this.editAccountNameField.setPromptText(&quot;New account name&quot;);</span>
+<span class="nc" id="L106">        GridPane pane = new GridPane();</span>
+<span class="nc" id="L107">        pane.setHgap(10);</span>
+<span class="nc" id="L108">        pane.setVgap(5);</span>
+<span class="nc" id="L109">        pane.add(editAccountNameLabel, 0, 0);</span>
+<span class="nc" id="L110">        pane.add(editAccountNameField, 1,  0);</span>
+<span class="nc" id="L111">        GridPane.setHgrow(editAccountNameField, Priority.ALWAYS);</span>
+
+<span class="nc" id="L113">        pane.add(editAccountTypeLabel, 0, 1);</span>
+<span class="nc" id="L114">        pane.add(editAccountTypeBox, 1, 1);</span>
+<span class="nc" id="L115">        GridPane.setHgrow(editAccountTypeBox, Priority.ALWAYS);</span>
+
+
+
+<span class="nc" id="L119">        content.getChildren().addAll(pane);</span>
+
+<span class="nc" id="L121">        return content;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

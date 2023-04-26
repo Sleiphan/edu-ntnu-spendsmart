@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AccountDAO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">edu.ntnu.g14.dao</a> &gt; <span class="el_source">AccountDAO.java</span></div><h1>AccountDAO.java</h1><pre class="source lang-java linenums">package edu.ntnu.g14.dao;
+
+import edu.ntnu.g14.Account;
+import edu.ntnu.g14.Transaction;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class AccountDAO {
+
+    private final IndexedDataFile file;
+    private final Charset charset;
+
+    public AccountDAO(String filePath) throws IOException {
+<span class="nc" id="L18">        this(filePath, Charset.defaultCharset());</span>
+<span class="nc" id="L19">    }</span>
+
+<span class="nc" id="L21">    public AccountDAO(String filePath, Charset charset) throws IOException {</span>
+<span class="nc" id="L22">        this.file = new IndexedDataFile(filePath, charset);</span>
+<span class="nc" id="L23">        this.charset = charset;</span>
+<span class="nc" id="L24">    }</span>
+
+    public void replaceAllAccounts(String userID, Account[] accounts) throws IOException {
+<span class="nc" id="L27">        file.deleteIdentifier(userID);</span>
+
+<span class="nc bnc" id="L29" title="All 2 branches missed.">        for (Account account : accounts) {</span>
+<span class="nc" id="L30">            byte[] data = account.toCSVString().getBytes(charset);</span>
+<span class="nc" id="L31">            file.addNewData(userID, data);</span>
+        }
+<span class="nc" id="L33">    }</span>
+
+    public void setAccount(String userID, Account account) throws IOException {
+<span class="nc" id="L36">        Account[] accounts = getAllAccountsForUser(userID);</span>
+
+<span class="nc" id="L38">        int size = -1;</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">        if (accounts == null)</span>
+<span class="nc" id="L40">            size = 0;</span>
+        else
+<span class="nc" id="L42">            size = accounts.length;</span>
+
+<span class="nc" id="L44">        int index = -1;</span>
+
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        for (int i = 0; i &lt; size; i++)</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">            if (accounts[i].getAccountNumber().equals(account.getAccountNumber())) {</span>
+<span class="nc" id="L48">                index = i;</span>
+<span class="nc" id="L49">                break;</span>
+            }
+
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        if (index == -1) {</span>
+<span class="nc" id="L53">            addNewAccount(userID, account);</span>
+<span class="nc" id="L54">            return;</span>
+        }
+
+<span class="nc" id="L57">        accounts[index] = account;</span>
+
+<span class="nc" id="L59">        replaceAllAccounts(userID, accounts);</span>
+<span class="nc" id="L60">    }</span>
+
+    public void addNewAccount(String userID, Account obj) throws IOException {
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (obj == null)</span>
+<span class="nc" id="L64">            throw new IllegalArgumentException(&quot;Parameter account cannot be null&quot;);</span>
+
+<span class="nc" id="L66">        byte[] data = obj.toCSVString().getBytes(charset);</span>
+
+<span class="nc" id="L68">        file.addNewData(userID, data);</span>
+<span class="nc" id="L69">    }</span>
+
+    public Account getAccount(String userID, String accountNumber) throws IOException {
+<span class="nc" id="L72">        Account[] accounts = getAllAccountsForUser(userID);</span>
+
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        for (Account account : accounts)</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">            if (account.getAccountNumber().equals(accountNumber))</span>
+<span class="nc" id="L76">                return account;</span>
+
+<span class="nc" id="L78">        return null;</span>
+    }
+
+    public Account[] getAllAccountsForUser(String userID) throws IOException {
+<span class="nc" id="L82">        byte[][] data = file.readAllInIdentifier(userID);</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">        if (data == null)</span>
+<span class="nc" id="L84">            return null;</span>
+
+<span class="nc" id="L86">        return Arrays.stream(data)</span>
+<span class="nc" id="L87">                .map(arr -&gt; new String(arr, charset))</span>
+<span class="nc" id="L88">                .map(Account::fromCSVString)</span>
+<span class="nc" id="L89">                .toArray(Account[]::new);</span>
+    }
+
+    public void deleteUser(String userID) throws IOException {
+<span class="nc" id="L93">        file.deleteIdentifier(userID);</span>
+<span class="nc" id="L94">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

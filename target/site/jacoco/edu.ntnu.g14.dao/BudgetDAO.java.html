@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BudgetDAO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">edu.ntnu.g14.dao</a> &gt; <span class="el_source">BudgetDAO.java</span></div><h1>BudgetDAO.java</h1><pre class="source lang-java linenums">package edu.ntnu.g14.dao;
+
+import edu.ntnu.g14.Budget;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
+public class BudgetDAO {
+
+    private final IndexedDataFile file;
+    private final Charset charset;
+
+    public BudgetDAO(String filePath) throws IOException {
+<span class="fc" id="L20">        this(filePath, Charset.defaultCharset());</span>
+<span class="fc" id="L21">    }</span>
+
+<span class="fc" id="L23">    public BudgetDAO(String filePath, Charset charset) throws IOException {</span>
+<span class="fc" id="L24">        this.file = new IndexedDataFile(filePath, charset);</span>
+<span class="fc" id="L25">        this.charset = charset;</span>
+<span class="fc" id="L26">    }</span>
+
+    /**
+     *
+     * @param userID
+     * @param budget
+     * @throws IOException
+     */
+    public void setBudget(String userID, Budget budget) throws IOException {
+<span class="fc" id="L35">        byte[] data = budget.toCSV().getBytes(charset);</span>
+<span class="fc" id="L36">        boolean newData = file.containsIdentifier(userID);</span>
+
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">        if (newData)</span>
+<span class="nc" id="L39">            file.setData(userID, 0, data);</span>
+        else
+<span class="fc" id="L41">            file.addNewData(userID, data);</span>
+<span class="fc" id="L42">    }</span>
+
+    public Budget getBudget(String userID) throws IOException {
+<span class="fc" id="L45">        byte[] data = file.getData(userID, 0);</span>
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">        if (data == null)</span>
+<span class="nc" id="L47">            return null;</span>
+
+<span class="fc" id="L49">        String csv = new String(data, charset);</span>
+<span class="fc" id="L50">        return Budget.fromCSV(csv);</span>
+    }
+
+    public void deleteUser(String userID) throws IOException {
+<span class="nc" id="L54">        file.deleteIdentifier(userID);</span>
+<span class="nc" id="L55">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

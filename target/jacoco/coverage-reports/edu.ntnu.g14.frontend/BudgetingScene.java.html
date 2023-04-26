@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BudgetingScene.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">edu.ntnu.g14.frontend</a> &gt; <span class="el_source">BudgetingScene.java</span></div><h1>BudgetingScene.java</h1><pre class="source lang-java linenums">package edu.ntnu.g14.frontend;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import edu.ntnu.g14.*;
+import edu.ntnu.g14.dao.BudgetDAO;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.util.Callback;
+/**
+ * The {@code BudgetingScene} class represents the budgeting scene in the Bank Application,
+ * allowing users to view and edit their budget items, such as revenues and expenditures.
+ * &lt;p&gt;This class provides methods for creating, editing, and deleting budget items,
+ * as well as updating the savings value based on the user's budget.
+ */
+<span class="nc" id="L28">public class BudgetingScene {</span>
+<span class="nc" id="L29">    static Stage stage = BankApplication.getStage();</span>
+<span class="nc" id="L30">    private static User loggedInUser = BankApplication.loggedInUser;</span>
+    static BudgetDAO budgetDAO;
+    static TableView&lt;ObservableList&lt;Object&gt;&gt; revenues;
+    static TableView&lt;ObservableList&lt;Object&gt;&gt; expenditures;
+
+    static ContextMenu contextMenu;
+
+    static ContextMenu revenuesContextMenu;
+
+    static ContextMenu expendituresContextMenu;
+
+    static Button confirmEditButton;
+
+    static Text savings;
+
+
+
+    /**
+     * Generates the main budgeting scene.
+     *
+     * @return the budgeting {@link Scene}
+     * @throws IOException if there is an error accessing the budget file
+     */
+    static public Scene scene() throws IOException {
+<span class="nc" id="L54">        budgetDAO = getBudgetDAO();</span>
+
+<span class="nc" id="L56">        contextMenu = createContextMenu(null); // Pass null initially</span>
+<span class="nc" id="L57">        revenues = createRevenuesTable();</span>
+<span class="nc" id="L58">        expenditures = createExpendituresTable();</span>
+<span class="nc" id="L59">        revenuesContextMenu = createContextMenu(revenues);</span>
+<span class="nc" id="L60">        expendituresContextMenu = createContextMenu(expenditures);</span>
+
+<span class="nc" id="L62">        revenues.setOnContextMenuRequested(event -&gt; revenuesContextMenu.show(revenues, event.getScreenX(), event.getScreenY()));</span>
+<span class="nc" id="L63">        expenditures.setOnContextMenuRequested(event -&gt; expendituresContextMenu.show(expenditures, event.getScreenX(), event.getScreenY()));</span>
+
+
+<span class="nc" id="L66">        Label backgroundLabel = createBackgroundLabel();</span>
+<span class="nc" id="L67">        Text MonthlyBudget = createMonthlyBudgetText();</span>
+<span class="nc" id="L68">        savings = createSavingsText();</span>
+<span class="nc" id="L69">        updateSavings();</span>
+<span class="nc" id="L70">        Text infoText = createInfoText();</span>
+
+<span class="nc" id="L72">        Button createNewBudget = createCreateNewBudgetButton();</span>
+<span class="nc" id="L73">        Button budgetSuggestions = createBudgetSuggestionsButton();</span>
+
+<span class="nc" id="L75">        ImageView homeButton = createHomeButton();</span>
+<span class="nc" id="L76">        Button dropDownButton = createDropDownButton();</span>
+<span class="nc" id="L77">        Group dropDown = ApplicationObjects.dropDownMenu();</span>
+<span class="nc" id="L78">        ImageView manageUserButton = createManageUserButton();</span>
+
+<span class="nc" id="L80">        confirmEditButton = confirmEditButton();</span>
+
+<span class="nc" id="L82">        Group root = new Group(backgroundLabel, revenues, expenditures, confirmEditButton, createNewBudget,</span>
+                budgetSuggestions, MonthlyBudget, savings, infoText, dropDownButton, homeButton, manageUserButton);
+<span class="nc" id="L84">        dropDownButton.setOnAction(e -&gt; root.getChildren().add(dropDown));</span>
+
+<span class="nc" id="L86">        Scene scene = createScene(root, event -&gt; {</span>
+<span class="nc bnc" id="L87" title="All 4 branches missed.">            if (!revenues.contains(event.getX(), event.getY()) &amp;&amp; !expenditures.contains(event.getX(), event.getY())) {</span>
+<span class="nc" id="L88">                saveModifiedData();</span>
+            }
+<span class="nc" id="L90">        });</span>
+<span class="nc" id="L91">        scene.addEventFilter(MouseEvent.MOUSE_CLICKED, event -&gt; {</span>
+<span class="nc bnc" id="L92" title="All 4 branches missed.">            if (!revenues.contains(event.getX(), event.getY()) &amp;&amp; !expenditures.contains(event.getX(), event.getY())) {</span>
+<span class="nc" id="L93">                saveModifiedData();</span>
+<span class="nc" id="L94">                revenues.getSelectionModel().clearSelection();</span>
+<span class="nc" id="L95">                expenditures.getSelectionModel().clearSelection();</span>
+            }
+<span class="nc" id="L97">        });</span>
+
+
+
+<span class="nc" id="L101">        Group userButtons = ApplicationObjects.userMenu();</span>
+<span class="nc" id="L102">        addUserButtonsEventHandler(manageUserButton, root, userButtons);</span>
+<span class="nc" id="L103">        scene.setOnMouseClicked(e -&gt; {</span>
+<span class="nc" id="L104">            root.getChildren().remove(userButtons);</span>
+<span class="nc" id="L105">            root.getChildren().remove(dropDown);</span>
+<span class="nc" id="L106">        });</span>
+
+<span class="nc" id="L108">        return scene;</span>
+    }
+    /**
+     * Creates and returns a new {@link BudgetDAO} instance with the specified file path.
+     *
+     * @return a new {@link BudgetDAO} instance
+     * @throws IOException if there is an error accessing the file at the specified path
+     */
+    private static BudgetDAO getBudgetDAO() throws IOException {
+        try {
+<span class="nc" id="L118">            return new BudgetDAO(&quot;saves/budgets.txt&quot;);</span>
+<span class="nc" id="L119">        } catch (IOException e) {</span>
+<span class="nc" id="L120">            e.printStackTrace();</span>
+<span class="nc" id="L121">            throw e;</span>
+        }
+    }
+    /**
+     * Creates and returns a new {@link Scene} with the specified root {@link Group} and mouse click event handler.
+     *
+     * @param root the root {@link Group} for the scene
+     * @param mouseClickHandler the {@link EventHandler} for handling mouse click events on the scene
+     * @return a new {@link Scene} instance
+     */
+    private static Scene createScene(Group root, EventHandler&lt;MouseEvent&gt; mouseClickHandler) {
+<span class="nc" id="L132">        Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());</span>
+<span class="nc" id="L133">        scene.setFill(ApplicationObjects.getSceneColor());</span>
+<span class="nc" id="L134">        scene.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClickHandler);</span>
+<span class="nc" id="L135">        return scene;</span>
+    }
+
+    /**
+     * Adds an event handler to the specified {@link ImageView} that displays the user buttons group when clicked.
+     *
+     * @param manageUserButton the {@link ImageView} to add the event handler to
+     * @param root the root {@link Group} of the scene
+     * @param userButtons the {@link Group} containing the user buttons
+     */
+    private static void addUserButtonsEventHandler(ImageView manageUserButton, Group root, Group userButtons) {
+<span class="nc" id="L146">        manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -&gt; {</span>
+<span class="nc" id="L147">            root.getChildren().add(userButtons);</span>
+<span class="nc" id="L148">            event.consume();</span>
+<span class="nc" id="L149">        });</span>
+<span class="nc" id="L150">    }</span>
+    /**
+     * Initializes revenues data from the budget file.
+     *
+     * @return an {@link ObservableList} containing the revenues data
+     * @throws IOException if there is an error accessing the budget file
+     */
+    public static ObservableList&lt;ObservableList&lt;Object&gt;&gt; initializeRevenuesData() throws IOException {
+<span class="nc" id="L158">        ObservableList&lt;ObservableList&lt;Object&gt;&gt; revenuesData = FXCollections.observableArrayList();</span>
+<span class="nc" id="L159">        Budget budget = budgetDAO.getBudget(loggedInUser.getLoginInfo().getUserId());</span>
+        // Fetch revenues from budget and add them to revenuesData
+<span class="nc bnc" id="L161" title="All 2 branches missed.">        if (budget != null) {</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">            for (BudgetItem entry : budget.getEntries()) {</span>
+                // need to update budgetitem to contain getRevenues category
+<span class="nc bnc" id="L164" title="All 2 branches missed.">                if (entry.getCategory().getType().equals(&quot;r&quot;)) {</span>
+<span class="nc" id="L165">                    revenuesData.add(FXCollections.observableArrayList(entry.getCategory().</span>
+<span class="nc" id="L166">                            toString().toLowerCase().replaceAll(&quot;_&quot;, &quot; &quot;), entry.getFinancialValue()));</span>
+                }
+<span class="nc" id="L168">            }</span>
+        }
+
+<span class="nc" id="L171">        return revenuesData;</span>
+    }
+    /**
+     * Initializes expenditures data from the budget file.
+     *
+     * @return an {@link ObservableList} containing the expenditure data
+     */
+    public static ObservableList&lt;ObservableList&lt;Object&gt;&gt; initializeExpenditureData() {
+<span class="nc" id="L179">        ObservableList&lt;ObservableList&lt;Object&gt;&gt; expenditureData = FXCollections.observableArrayList();</span>
+<span class="nc" id="L180">        Budget budget = loggedInUser.getBudget();</span>
+        // Fetch expenditures from budget and add them to expenditureData
+<span class="nc bnc" id="L182" title="All 2 branches missed.">        if (budget != null) {</span>
+<span class="nc bnc" id="L183" title="All 2 branches missed.">            for (BudgetItem entry : budget.getEntries()) {</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">                if (entry.getCategory().getType().equals(&quot;e&quot;)) {</span>
+<span class="nc" id="L185">                    expenditureData.add(FXCollections.observableArrayList(entry.getCategory().</span>
+<span class="nc" id="L186">                            toString().toLowerCase().replaceAll(&quot;_&quot;,&quot; &quot;), entry.getFinancialValue()));</span>
+                }
+<span class="nc" id="L188">            }</span>
+        }
+<span class="nc" id="L190">        return expenditureData;</span>
+    }
+    /**
+     * Creates a context menu for the provided table view.
+     * @param tableView the table view for which the context menu is created
+     * @return the created context menu
+     */
+    private static ContextMenu createContextMenu(TableView&lt;ObservableList&lt;Object&gt;&gt; tableView) {
+<span class="nc" id="L198">        MenuItem addItem = new MenuItem(&quot;Add&quot;);</span>
+<span class="nc" id="L199">        addItem.setOnAction(e -&gt; addBudgetItem(tableView));</span>
+
+<span class="nc" id="L201">        MenuItem deleteItem = new MenuItem(&quot;Delete&quot;);</span>
+<span class="nc" id="L202">        deleteItem.setOnAction(e -&gt; deleteBudgetItem(tableView));</span>
+
+<span class="nc" id="L204">        ContextMenu contextMenu = new ContextMenu();</span>
+<span class="nc" id="L205">        contextMenu.getItems().addAll(addItem, deleteItem);</span>
+<span class="nc" id="L206">        return contextMenu;</span>
+    }
+
+    /**
+     * Creates a custom cell factory for the provided table view.
+     * @param tableView the table view for which the cell factory is created
+     * @param &lt;T&gt; the type of the items contained in the table
+     * @return the created cell factory
+     */
+    private static &lt;T&gt; Callback&lt;TableColumn&lt;ObservableList&lt;Object&gt;, T&gt;, TableCell&lt;ObservableList&lt;Object&gt;, T&gt;&gt; createCustomCellFactory(TableView&lt;ObservableList&lt;Object&gt;&gt; tableView) {
+<span class="nc" id="L216">        return param -&gt; new TableCell&lt;&gt;() {</span>
+            private TextField textField;
+
+            @Override
+            protected void updateItem(Object item, boolean empty) {
+<span class="nc" id="L221">                super.updateItem((T) item, empty);</span>
+<span class="nc bnc" id="L222" title="All 4 branches missed.">                if (empty || item == null) {</span>
+<span class="nc" id="L223">                    setGraphic(null);</span>
+                } else {
+<span class="nc" id="L225">                    int columnIndex = getTableView().getColumns().indexOf(getTableColumn());</span>
+
+<span class="nc bnc" id="L227" title="All 2 branches missed.">                    if (columnIndex == 0) {</span>
+                        ChoiceBox&lt;String&gt; choiceBox;
+<span class="nc bnc" id="L229" title="All 2 branches missed.">                        if (tableView == expenditures) {</span>
+<span class="nc" id="L230">                            List&lt;String&gt; expenditureChoiceList = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L231" title="All 2 branches missed.">                            for (BudgetCategory category : BudgetCategory.values()) {</span>
+<span class="nc bnc" id="L232" title="All 2 branches missed.">                                if (category.getType().equals(&quot;e&quot;)) {</span>
+<span class="nc" id="L233">                                    expenditureChoiceList.add(category.toString().toLowerCase().replaceAll(&quot;_&quot;, &quot; &quot;));</span>
+                                }
+                            }
+<span class="nc" id="L236">                            choiceBox = new ChoiceBox&lt;&gt;(FXCollections.observableArrayList(expenditureChoiceList));</span>
+<span class="nc" id="L237">                        } else {</span>
+<span class="nc" id="L238">                            List&lt;String&gt; revenueChoiceList = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L239" title="All 2 branches missed.">                            for (BudgetCategory category : BudgetCategory.values()) {</span>
+<span class="nc bnc" id="L240" title="All 2 branches missed.">                                if (category.getType().equals(&quot;r&quot;)) {</span>
+<span class="nc" id="L241">                                    revenueChoiceList.add(category.toString().toLowerCase().replaceAll(&quot;_&quot;, &quot; &quot;));</span>
+                                }
+                            }
+<span class="nc" id="L244">                            choiceBox = new ChoiceBox&lt;&gt;(FXCollections.observableArrayList(revenueChoiceList));</span>
+                        }
+
+<span class="nc" id="L247">                        choiceBox.setValue(item.toString());</span>
+<span class="nc" id="L248">                        choiceBox.valueProperty().addListener((observable, oldValue, newValue) -&gt; {</span>
+<span class="nc" id="L249">                            int index = getIndex();</span>
+<span class="nc" id="L250">                            tableView.getItems().get(index).set(0, newValue);</span>
+<span class="nc" id="L251">                            confirmEditButton.setVisible(true);</span>
+<span class="nc" id="L252">                        });</span>
+<span class="nc" id="L253">                        setGraphic(choiceBox);</span>
+<span class="nc" id="L254">                    } else {</span>
+<span class="nc" id="L255">                        textField = new TextField(item.toString());</span>
+<span class="nc" id="L256">                        textField.setOnAction(e -&gt; {</span>
+<span class="nc" id="L257">                            int index = getIndex();</span>
+<span class="nc" id="L258">                            tableView.getItems().get(index).set(1, textField.getText());</span>
+<span class="nc" id="L259">                            confirmEditButton.setVisible(true);// displays the confirm edit button if you press enter</span>
+<span class="nc" id="L260">                        });</span>
+<span class="nc" id="L261">                        textField.focusedProperty().addListener((observable, oldValue, newValue) -&gt; {</span>
+<span class="nc bnc" id="L262" title="All 2 branches missed.">                            if (!newValue) {</span>
+<span class="nc" id="L263">                                tableView.getItems().get(getIndex()).set(1, textField.getText());</span>
+<span class="nc" id="L264">                                confirmEditButton.setVisible(true); // displays confirm button if you press outside off the box</span>
+                            }
+<span class="nc" id="L266">                        });</span>
+<span class="nc" id="L267">                        setGraphic(textField);</span>
+
+                    }
+                }
+<span class="nc" id="L271">            }</span>
+        };
+    }
+
+    /**
+     * Adds a new budget item to the provided table view.
+     * @param tableView the table view to add the new budget item
+     */
+    private static void addBudgetItem(TableView&lt;ObservableList&lt;Object&gt;&gt; tableView) {
+<span class="nc" id="L280">        List&lt;String&gt; choiceList = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L281" title="All 2 branches missed.">        String type = tableView == revenues ? &quot;r&quot; : &quot;e&quot;;</span>
+<span class="nc bnc" id="L282" title="All 2 branches missed.">        for (BudgetCategory category : BudgetCategory.values()) {</span>
+<span class="nc bnc" id="L283" title="All 2 branches missed.">            if (category.getType().equals(type)) {</span>
+<span class="nc" id="L284">                choiceList.add(category.toString().toLowerCase().replaceAll(&quot;_&quot;, &quot; &quot;));</span>
+            }
+        }
+<span class="nc" id="L287">        ChoiceBox&lt;String&gt; choiceBox = new ChoiceBox&lt;&gt;(FXCollections.observableArrayList(choiceList));</span>
+<span class="nc" id="L288">        choiceBox.setValue(choiceList.get(0));</span>
+<span class="nc" id="L289">        double defaultAmount = 0.0;</span>
+
+<span class="nc" id="L291">        ObservableList&lt;Object&gt; newRow = FXCollections.observableArrayList(choiceBox, defaultAmount);</span>
+<span class="nc" id="L292">        tableView.getItems().add(newRow);</span>
+<span class="nc" id="L293">    }</span>
+
+    /**
+     * Deletes the selected budget item from the provided table view.
+     * @param tableView the table view from which the selected budget item will be deleted
+     */
+    private static void deleteBudgetItem(TableView&lt;ObservableList&lt;Object&gt;&gt; tableView) {
+<span class="nc" id="L300">        ObservableList&lt;Object&gt; selectedItem = tableView.getSelectionModel().getSelectedItem();</span>
+<span class="nc bnc" id="L301" title="All 2 branches missed.">        if (selectedItem != null) {</span>
+<span class="nc" id="L302">            tableView.getItems().remove(selectedItem);</span>
+<span class="nc" id="L303">            saveModifiedData(); // Save the changes to the file</span>
+        }
+<span class="nc" id="L305">    }</span>
+
+    /**
+     * Refreshes the data in the revenues and expenditures tables.
+     */
+    public static void refreshData() {
+        try {
+<span class="nc" id="L312">            revenues.setItems(initializeRevenuesData());</span>
+<span class="nc" id="L313">            expenditures.setItems(initializeExpenditureData());</span>
+<span class="nc" id="L314">            updateSavings();</span>
+<span class="nc" id="L315">        } catch (IOException e) {</span>
+<span class="nc" id="L316">            e.printStackTrace();</span>
+<span class="nc" id="L317">        }</span>
+<span class="nc" id="L318">    }</span>
+    /**
+     * Saves the modified budget data to the budget file.
+     */
+    public static void saveModifiedData() {
+        try {
+<span class="nc" id="L324">            Budget budget = loggedInUser.getBudget();</span>
+<span class="nc" id="L325">            budget.clearEntries();</span>
+<span class="nc bnc" id="L326" title="All 2 branches missed.">            for (ObservableList&lt;Object&gt; row : revenues.getItems()) {</span>
+<span class="nc bnc" id="L327" title="All 2 branches missed.">                String categoryString = row.get(0) instanceof ChoiceBox ? ((ChoiceBox&lt;String&gt;) row.get(0)).getValue() : row.get(0).toString();</span>
+<span class="nc" id="L328">                BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(row.get(1).toString()));</span>
+
+<span class="nc" id="L330">                BudgetCategory category = BudgetCategory.valueOf(categoryString.toUpperCase().replaceAll(&quot; &quot;, &quot;_&quot;));</span>
+<span class="nc" id="L331">                budget.addBudgetItem(new BudgetItem(category, amount));</span>
+<span class="nc" id="L332">            }</span>
+
+<span class="nc bnc" id="L334" title="All 2 branches missed.">            for (ObservableList&lt;Object&gt; row : expenditures.getItems()) {</span>
+<span class="nc bnc" id="L335" title="All 2 branches missed.">                String categoryString = row.get(0) instanceof ChoiceBox ? ((ChoiceBox&lt;String&gt;) row.get(0)).getValue() : row.get(0).toString();</span>
+<span class="nc" id="L336">                BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(row.get(1).toString()));</span>
+
+<span class="nc" id="L338">                BudgetCategory category = BudgetCategory.valueOf(categoryString.toUpperCase().replaceAll(&quot; &quot;, &quot;_&quot;));</span>
+<span class="nc" id="L339">                budget.addBudgetItem(new BudgetItem(category, amount));</span>
+<span class="nc" id="L340">            }</span>
+
+<span class="nc" id="L342">            budgetDAO.setBudget(loggedInUser.getLoginInfo().getUserId(), budget);</span>
+
+<span class="nc" id="L344">        } catch (IOException e) {</span>
+<span class="nc" id="L345">            e.printStackTrace();</span>
+<span class="nc" id="L346">        }</span>
+<span class="nc" id="L347">    }</span>
+    /**
+     * Updates the savings value by calculating the difference between the total revenues and total expenditures.
+     * Then sets the savings value to the loggedInUser's budget and updates the savings text on the screen.
+     */
+    private static void updateSavings() {
+<span class="nc" id="L353">        BigDecimal revenuesTotal = revenues.getItems().stream()</span>
+<span class="nc" id="L354">                .map(row -&gt; new BigDecimal(row.get(1).toString()))</span>
+<span class="nc" id="L355">                .reduce(BigDecimal.ZERO, BigDecimal::add);</span>
+<span class="nc" id="L356">        BigDecimal expendituresTotal = expenditures.getItems().stream()</span>
+<span class="nc" id="L357">                .map(row -&gt; new BigDecimal(row.get(1).toString()))</span>
+<span class="nc" id="L358">                .reduce(BigDecimal.ZERO, BigDecimal::add);</span>
+<span class="nc" id="L359">        BigDecimal savingsValue = revenuesTotal.subtract(expendituresTotal);</span>
+<span class="nc bnc" id="L360" title="All 2 branches missed.">        if (loggedInUser.getBudget() != null) {</span>
+<span class="nc" id="L361">            loggedInUser.getBudget().setSavings(savingsValue);</span>
+<span class="nc" id="L362">            savings.setText(&quot;Savings: &quot; + loggedInUser.getBudget().getSavings());</span>
+        }
+<span class="nc" id="L364">    }</span>
+
+    /**
+     * Sets the loggedInUser for the budgeting scene.
+     *
+     * @param user the {@link User} to be set as the loggedInUser
+     */
+    public static void setLoggedInUser(User user) {
+<span class="nc" id="L372">        loggedInUser = user;</span>
+<span class="nc" id="L373">    }</span>
+
+    /**
+     * Creates a new TableView for displaying revenues and configures its properties.
+     *
+     * @return the configured TableView for displaying revenues
+     * @throws IOException if an I/O error occurs
+     */
+    private static TableView&lt;ObservableList&lt;Object&gt;&gt; createRevenuesTable() throws IOException {
+<span class="nc" id="L382">        revenues = ApplicationObjects.newTableView(new String[]{&quot;Revenues&quot;, &quot;Amount&quot;}, 40, 70, 380, 120);</span>
+<span class="nc" id="L383">        revenues.setItems(initializeRevenuesData());</span>
+<span class="nc" id="L384">        revenues.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);</span>
+<span class="nc" id="L385">        revenues.setFixedCellSize(50);</span>
+
+<span class="nc" id="L387">        revenues.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -&gt; {</span>
+<span class="nc bnc" id="L388" title="All 2 branches missed.">            if (newValue != null) {</span>
+<span class="nc" id="L389">                revenues.setEditable(true);</span>
+            }
+<span class="nc" id="L391">        });</span>
+
+<span class="nc" id="L393">        revenues.getColumns().forEach(column -&gt; column.setCellFactory(createCustomCellFactory(revenues)));</span>
+
+<span class="nc" id="L395">        return revenues;</span>
+    }
+
+    /**
+     * Creates a new TableView for displaying expenditures and configures its properties.
+     *
+     * @return the configured TableView for displaying expenditures
+     */
+    private static TableView&lt;ObservableList&lt;Object&gt;&gt; createExpendituresTable() {
+<span class="nc" id="L404">        expenditures = ApplicationObjects.newTableView(new String[]{&quot;Expenditures&quot;, &quot;Budget&quot;}, 40, 210, 380, 250);</span>
+<span class="nc" id="L405">        expenditures.setItems(initializeExpenditureData());</span>
+<span class="nc" id="L406">        expenditures.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);</span>
+<span class="nc" id="L407">        expenditures.setFixedCellSize(50);</span>
+
+<span class="nc" id="L409">        expenditures.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -&gt; {</span>
+<span class="nc bnc" id="L410" title="All 2 branches missed.">            if (newValue != null) {</span>
+<span class="nc" id="L411">                expenditures.setEditable(true);</span>
+            }
+<span class="nc" id="L413">        });</span>
+
+<span class="nc" id="L415">        expenditures.getColumns().forEach(column -&gt; column.setCellFactory(createCustomCellFactory(expenditures)));</span>
+
+<span class="nc" id="L417">        return expenditures;</span>
+    }
+
+    /**
+     * Creates a new background label with a specific style and dimensions.
+     *
+     * @return the configured Label for the background
+     */
+    private static Label createBackgroundLabel() {
+<span class="nc" id="L426">        Label backgroundLabel = new Label();</span>
+<span class="nc" id="L427">        backgroundLabel.setPrefWidth(400);</span>
+<span class="nc" id="L428">        backgroundLabel.setPrefHeight(500);</span>
+<span class="nc" id="L429">        backgroundLabel.setLayoutX(30);</span>
+<span class="nc" id="L430">        backgroundLabel.setLayoutY(40);</span>
+<span class="nc" id="L431">        backgroundLabel.setStyle(&quot;-fx-background-color: #f0f0f0;&quot;);</span>
+<span class="nc" id="L432">        return backgroundLabel;</span>
+    }
+
+    /**
+     * Creates a new Text object for displaying the &quot;Monthly Budget&quot; title.
+     *
+     * @return the configured Text object for the &quot;Monthly Budget&quot; title
+     */
+    private static Text createMonthlyBudgetText() {
+<span class="nc" id="L441">        return ApplicationObjects.newText(&quot;Monthly Budget&quot;, 30, false, 40, 60);</span>
+    }
+
+    /**
+     * Creates a new Text object for displaying the savings value.
+     *
+     * @return the configured Text object for the savings value
+     */
+    private static Text createSavingsText() {
+<span class="nc bnc" id="L450" title="All 2 branches missed.">        BigDecimal savingsNum = loggedInUser.getBudget() != null ? loggedInUser.getBudget().getSavings() : BigDecimal.ZERO;</span>
+<span class="nc" id="L451">        savings = ApplicationObjects.newText(&quot;Savings: &quot; + savingsNum, 30, false, 40, 480);</span>
+<span class="nc" id="L452">        savings.setStyle(&quot;-fx-font-size: 14px; -fx-font-weight: bold;&quot;);</span>
+<span class="nc" id="L453">        return savings;</span>
+    }
+
+    /**
+     * Creates a new Text object for displaying informational text.
+     *
+     * @return the configured Text object for the informational text
+     */
+    private static Text createInfoText(){
+<span class="nc" id="L462">        return ApplicationObjects.newText(&quot;Right click on row, to add or delete budget item&quot;, 15, true, 100, 530 );</span>
+    }
+
+    /**
+     * Creates a new Button for creating a new budget and configures its properties.
+     *
+     * @return the configured Button for creating a new budget
+     */
+    private static Button createCreateNewBudgetButton() {
+<span class="nc" id="L471">        Button createNewBudget = ApplicationObjects.newButton(&quot;Create new budget&quot;, 470, 180, 157, 25, 16);</span>
+<span class="nc" id="L472">        createNewBudget.setOnAction(e -&gt; {</span>
+            try {
+<span class="nc" id="L474">                stage.setScene(CreateNewBudgetScene.scene());</span>
+<span class="nc" id="L475">            } catch (IOException e1) {</span>
+<span class="nc" id="L476">                e1.printStackTrace();</span>
+<span class="nc" id="L477">            }</span>
+<span class="nc" id="L478">        });</span>
+<span class="nc" id="L479">        return createNewBudget;</span>
+    }
+
+    /**
+     * Creates a new Button for accessing budget suggestions and configures its properties.
+     *
+     * @return the configured Button for accessing budget suggestions
+     */
+    private static Button createBudgetSuggestionsButton() {
+<span class="nc" id="L488">        Button budgetSuggestions = ApplicationObjects.newButton(&quot;Budget suggestion&quot;, 470, 270, 157, 25, 16);</span>
+<span class="nc" id="L489">        budgetSuggestions.setOnAction(e -&gt; {</span>
+            try {
+<span class="nc" id="L491">                stage.setScene(BudgetSuggestionsScene.scene());</span>
+<span class="nc" id="L492">            } catch (IOException e1) {</span>
+<span class="nc" id="L493">                e1.printStackTrace();</span>
+<span class="nc" id="L494">            }</span>
+<span class="nc" id="L495">        });</span>
+<span class="nc" id="L496">        return budgetSuggestions;</span>
+    }
+
+    /**
+     * Creates a new Button for confirming edits made to budget items and configures its properties.
+     *
+     * @return the configured Button for confirming budget item edits
+     */
+    private static Button confirmEditButton() {
+<span class="nc" id="L505">                confirmEditButton = ApplicationObjects.newButton(&quot;Confirm Edit&quot;, 270, 470, 157, 25, 16);</span>
+<span class="nc" id="L506">            confirmEditButton.setVisible(false);</span>
+<span class="nc" id="L507">            confirmEditButton.setOnAction(event -&gt; {</span>
+<span class="nc" id="L508">            saveModifiedData();</span>
+<span class="nc" id="L509">            refreshData();</span>
+<span class="nc" id="L510">            confirmEditButton.setVisible(false);</span>
+<span class="nc" id="L511">        });</span>
+<span class="nc" id="L512">        return confirmEditButton;</span>
+    }
+
+    /**
+     * Creates a new ImageView as a home button and configures its properties.
+     *
+     * @return the configured ImageView for the home button
+     * @throws FileNotFoundException if the image file is not found
+     */
+    private static ImageView createHomeButton() throws FileNotFoundException {
+<span class="nc" id="L522">        ImageView homeButton = ApplicationObjects.newImage(&quot;home.png&quot;, 10, 10, 20, 20);</span>
+<span class="nc" id="L523">        homeButton.setOnMouseClicked(e -&gt; {</span>
+            try {
+<span class="nc" id="L525">                stage.setScene(MainPageScene.scene());</span>
+<span class="nc" id="L526">            } catch (IOException e1) {</span>
+<span class="nc" id="L527">                e1.printStackTrace();</span>
+<span class="nc" id="L528">            }</span>
+<span class="nc" id="L529">        });</span>
+<span class="nc" id="L530">        return homeButton;</span>
+    }
+
+    /**
+     * Creates a new Button for a drop-down menu and configures its properties.
+     *
+     * @return the configured Button for the drop-down menu
+     */
+    private static Button createDropDownButton() {
+<span class="nc" id="L539">        return ApplicationObjects.newButton(&quot;test&quot;, 676, 10, 10, 10, 10);</span>
+    }
+
+    /**
+     * Creates a new ImageView as a user management button and configures its properties.
+     *
+     * @return the configured ImageView for the user management button
+     * @throws FileNotFoundException if the image file is not found
+     */
+    private static ImageView createManageUserButton() throws FileNotFoundException {
+<span class="nc" id="L549">        return ApplicationObjects.newImage(&quot;user.png&quot;, 646, 10, 20, 20);</span>
+    }
+
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,12 @@
+edu/ntnu/g14/TestFileManagement.class
+edu/ntnu/g14/TestBudget.class
+edu/ntnu/g14/dao/BudgetDAOTest.class
+edu/ntnu/g14/TestUser.class
+edu/ntnu/g14/dao/UserDAOTest.class
+edu/ntnu/g14/dao/IndexedDataFileTest.class
+edu/ntnu/g14/TestMain.class
+edu/ntnu/g14/dao/InvoiceDAOTest.class
+edu/ntnu/g14/dao/DAOToolsTest.class
+edu/ntnu/g14/TestBudgetItem.class
+edu/ntnu/g14/TestAccount.class
+edu/ntnu/g14/TestTransaction.class

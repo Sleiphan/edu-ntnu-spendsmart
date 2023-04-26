@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AccountCell.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">edu.ntnu.g14.frontend</a> &gt; <span class="el_source">AccountCell.java</span></div><h1>AccountCell.java</h1><pre class="source lang-java linenums">package edu.ntnu.g14.frontend;
+
+import edu.ntnu.g14.AccountCategory;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+public class AccountCell extends ListCell&lt;String&gt; {
+
+    public static final int FIT_HEIGHT = 20;
+    public static final int FIT_WIDTH = 22;
+<span class="nc" id="L22">    private final HBox hBox = new HBox(10);</span>
+
+    public AccountCell(String labelName, AccountCategory iconType, String amount) {
+<span class="nc" id="L25">        super();</span>
+<span class="nc" id="L26">        Pane pane = new Pane();</span>
+<span class="nc" id="L27">        ImageView icon = createIcon(iconType);</span>
+<span class="nc" id="L28">        Label amountLabel = new Label(&quot;Balance: &quot; + amount);</span>
+<span class="nc" id="L29">        amountLabel.setStyle(&quot;-fx-text-fill: #3477eb;&quot; +</span>
+                             &quot;-fx-font-size: 12px;&quot; +
+                             &quot;-fx-font-weight: 700;&quot;);
+<span class="nc" id="L32">        VBox vBox = new VBox();</span>
+<span class="nc" id="L33">        vBox.getChildren().addAll(new Label(labelName), amountLabel, pane);</span>
+<span class="nc" id="L34">        VBox.setMargin(amountLabel, new Insets(0,0,2,0));</span>
+
+<span class="nc" id="L36">        hBox.getChildren().addAll(icon, vBox, pane);</span>
+<span class="nc" id="L37">        hBox.setAlignment(Pos.CENTER);</span>
+<span class="nc" id="L38">        HBox.setHgrow(pane, Priority.ALWAYS);</span>
+<span class="nc" id="L39">    }</span>
+    private static ImageView createIcon(AccountCategory category) {
+        ImageView icon;
+        try {
+<span class="nc bnc" id="L43" title="All 5 branches missed.">            switch (category) {</span>
+                case PENSION_ACCOUNT:
+<span class="nc" id="L45">                    icon = new ImageView(new Image(new FileInputStream(&quot;src/main/resources/images/pension_account.png&quot;)));</span>
+<span class="nc" id="L46">                    icon.setFitWidth(FIT_WIDTH);</span>
+<span class="nc" id="L47">                    icon.setFitHeight(FIT_HEIGHT);</span>
+<span class="nc" id="L48">                    return icon;</span>
+                case SAVINGS_ACCOUNT:
+<span class="nc" id="L50">                    icon = new ImageView(new Image(new FileInputStream(&quot;src/main/resources/images/savings_account.png&quot;)));</span>
+<span class="nc" id="L51">                    icon.setFitWidth(FIT_WIDTH);</span>
+<span class="nc" id="L52">                    icon.setFitHeight(FIT_HEIGHT);</span>
+<span class="nc" id="L53">                    return icon;</span>
+                case CHECKING_ACCOUNT:
+<span class="nc" id="L55">                    icon = new ImageView(new Image(new FileInputStream(&quot;src/main/resources/images/checking_account.png&quot;)));</span>
+<span class="nc" id="L56">                    icon.setFitWidth(FIT_WIDTH);</span>
+<span class="nc" id="L57">                    icon.setFitHeight(FIT_HEIGHT);</span>
+<span class="nc" id="L58">                    return icon;</span>
+                case OTHER:
+<span class="nc" id="L60">                    icon = new ImageView(new Image(new FileInputStream(&quot;src/main/resources/images/other_account.png&quot;)));</span>
+<span class="nc" id="L61">                    icon.setFitWidth(FIT_WIDTH);</span>
+<span class="nc" id="L62">                    icon.setFitHeight(FIT_HEIGHT);</span>
+<span class="nc" id="L63">                    return icon;</span>
+<span class="nc" id="L64">                default: throw new IllegalArgumentException(&quot;Icon name does not correspond to icon&quot;);</span>
+            }
+<span class="nc" id="L66">        } catch (FileNotFoundException e) {</span>
+<span class="nc" id="L67">            throw new IllegalArgumentException(&quot;Icon not found&quot;);</span>
+        }
+    }
+
+    public HBox getHBox() {
+<span class="nc" id="L72">        return hBox;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

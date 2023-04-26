@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InvoiceScene.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">edu.ntnu.g14.frontend</a> &gt; <span class="el_source">InvoiceScene.java</span></div><h1>InvoiceScene.java</h1><pre class="source lang-java linenums">package edu.ntnu.g14.frontend;
+
+import edu.ntnu.g14.*;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
+
+import edu.ntnu.g14.dao.InvoiceDAO;
+import javafx.event.EventHandler;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.util.Callback;
+import org.apache.commons.validator.routines.BigDecimalValidator;
+
+<span class="nc" id="L22">public class InvoiceScene {</span>
+<span class="nc" id="L23">    static Stage stage = BankApplication.getStage();</span>
+
+    private static final String INVOICE_PATH = FileManagement.PATH_INVOICES;
+    private static InvoiceDAO invoiceFile;
+
+    static public Scene scene() throws IOException {
+<span class="nc" id="L29">        final User user = BankApplication.loggedInUser;</span>
+<span class="nc" id="L30">        final String userID = user.getLoginInfo().getUserId();</span>
+<span class="nc" id="L31">        invoiceFile = new InvoiceDAO(INVOICE_PATH);</span>
+
+<span class="nc" id="L33">        Text amount_t = ApplicationObjects.newText(&quot;Amount (kr):&quot;, 17, false, 11, 345 - 186);</span>
+<span class="nc" id="L34">        Text accountNum_t = ApplicationObjects.newText(&quot;Account number:&quot;, 17, false, 11, 376 - 186);</span>
+<span class="nc" id="L35">        Text cidComment_t = ApplicationObjects.newText(&quot;CID / Comment:&quot;, 17, false, 11, 407 - 186);</span>
+<span class="nc" id="L36">        Text dueDate_t = ApplicationObjects.newText(&quot;Due date:&quot;, 17, false, 11, 438 - 186);</span>
+<span class="nc" id="L37">        TextField amount_tf = ApplicationObjects.newTextField(&quot;Amount (kr)&quot;, 198, 322 - 186, 206, 20,</span>
+                14);
+<span class="nc" id="L39">        TextField accountNum_tf = ApplicationObjects.newTextField(&quot;Account number&quot;, 198, 353 - 186, 206,</span>
+                20, 14);
+<span class="nc" id="L41">        TextField cidComment_tf = ApplicationObjects.newTextField(&quot;CID / Comment&quot;, 198, 384 - 186, 206,</span>
+                20, 14);
+
+<span class="nc" id="L44">        DatePicker due_dp = new DatePicker();</span>
+<span class="nc" id="L45">        due_dp.setLayoutX(527 - 329);</span>
+<span class="nc" id="L46">        due_dp.setLayoutY(422 - 186);</span>
+<span class="nc" id="L47">        restrictDatePicker(due_dp, LocalDate.now());</span>
+
+<span class="nc" id="L49">        ListView&lt;Invoice&gt; invoices_lv = new ListView&lt;&gt;();</span>
+<span class="nc" id="L50">        invoices_lv.setLayoutX(782 - 329);</span>
+<span class="nc" id="L51">        invoices_lv.setLayoutY(326 - 186);</span>
+<span class="nc" id="L52">        invoices_lv.getItems().setAll(user.getAllInvoices());</span>
+<span class="nc" id="L53">        invoices_lv.setEditable(false);</span>
+
+<span class="nc" id="L55">        Button clear_bt = ApplicationObjects.newButton(&quot;Clear&quot;, 358 - 329, 570 - 186, 159, 61, 16);</span>
+<span class="nc" id="L56">        Button register_bt = ApplicationObjects.newButton(&quot;Register&quot;, 549 - 329, 570 - 186, 159, 61, 16);</span>
+<span class="nc" id="L57">        Button back_bt = ApplicationObjects.newButton(&quot;Back&quot;, 358 - 329, 637 - 186, 159, 35, 16);</span>
+<span class="nc" id="L58">        Button payNow_bt = ApplicationObjects.newButton(&quot;Pay now&quot;, 817 - 329, 493 - 186, 159, 61, 16);</span>
+<span class="nc" id="L59">        Button delete_bt = ApplicationObjects.newButton(&quot;Delete&quot;, 817 - 329, 570 - 186, 159, 61, 16);</span>
+
+<span class="nc" id="L61">        clear_bt.setOnAction(e -&gt; {</span>
+<span class="nc" id="L62">            amount_tf.clear();</span>
+<span class="nc" id="L63">            accountNum_tf.clear();</span>
+<span class="nc" id="L64">            cidComment_tf.clear();</span>
+<span class="nc" id="L65">            due_dp.setValue(null);</span>
+<span class="nc" id="L66">        });</span>
+<span class="nc" id="L67">        register_bt.setOnAction(e -&gt; {</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">            if (amount_tf.getText().isBlank()) {</span>
+<span class="nc" id="L69">                ApplicationObjects.alertBox(&quot;Missing input&quot;, &quot;Missing information&quot;,</span>
+                        &quot;Please enter the financial amount in the new invoice first.&quot;);
+<span class="nc" id="L71">                return;</span>
+            }
+
+<span class="nc bnc" id="L74" title="All 2 branches missed.">            if (accountNum_tf.getText().isBlank()) {</span>
+<span class="nc" id="L75">                ApplicationObjects.alertBox(&quot;Missing input&quot;, &quot;Missing information&quot;,</span>
+                        &quot;Please enter the account number this invoice .&quot;);
+<span class="nc" id="L77">                return;</span>
+            }
+
+<span class="nc" id="L80">            BigDecimal amount = BigDecimalValidator.getInstance().validate(amount_tf.getText());</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">            if (amount == null) {</span>
+<span class="nc" id="L82">                ApplicationObjects.alertBox(&quot;Invalid input&quot;, &quot;Invalid amount&quot;,</span>
+                        &quot;Could not understand the amount specified. Make sure to only enter numbers and use the period-sign instead of comma.&quot;);
+<span class="nc" id="L84">                return;</span>
+            }
+
+            // TODO: Check validity of account number.
+
+            // TODO: Reconsider use of Date class.
+<span class="nc" id="L90">            LocalDate due = due_dp.getValue();</span>
+<span class="nc" id="L91">            Invoice newInvoice = new Invoice(</span>
+<span class="nc" id="L92">                    due.atStartOfDay(ZoneId.systemDefault()).toLocalDate(), </span>
+                    amount,
+<span class="nc" id="L94">                    accountNum_tf.getText(),</span>
+<span class="nc" id="L95">                    cidComment_tf.getText());</span>
+<span class="nc" id="L96">            user.getAllInvoices().add(newInvoice);</span>
+
+<span class="nc bnc" id="L98" title="All 2 branches missed.">            if (!invoiceFile.addNewInvoice(user.getLoginInfo().getUserId(), newInvoice))</span>
+<span class="nc" id="L99">                ApplicationObjects.alertBox(&quot;Internal error&quot;, &quot;Failed to register invoice&quot;, &quot;The save file could be corrupted.&quot;);</span>
+
+<span class="nc" id="L101">            clear_bt.getOnAction().handle(null);</span>
+<span class="nc" id="L102">            invoices_lv.getItems().setAll(user.getAllInvoices());</span>
+<span class="nc" id="L103">        });</span>
+<span class="nc" id="L104">        back_bt.setOnAction(e -&gt; {</span>
+            try {
+<span class="nc" id="L106">                stage.setScene(MainPageScene.scene());</span>
+<span class="nc" id="L107">            } catch (IOException e1) {</span>
+               
+<span class="nc" id="L109">                e1.printStackTrace();</span>
+<span class="nc" id="L110">            }</span>
+<span class="nc" id="L111">        });</span>
+<span class="nc" id="L112">        payNow_bt.setOnAction(e -&gt; {</span>
+<span class="nc" id="L113">            int index = invoices_lv.getSelectionModel().getSelectedIndex();</span>
+<span class="nc" id="L114">            user.getAllInvoices().remove(index);</span>
+<span class="nc" id="L115">            invoiceFile.deleteInvoice(user.getLoginInfo().getUserId(), index);</span>
+<span class="nc" id="L116">            invoices_lv.getItems().setAll(user.getAllInvoices());</span>
+<span class="nc" id="L117">        });</span>
+<span class="nc" id="L118">        delete_bt.setOnAction(e -&gt; {</span>
+<span class="nc" id="L119">            int index = invoices_lv.getSelectionModel().getSelectedIndex();</span>
+<span class="nc" id="L120">            user.getAllInvoices().remove(index);</span>
+<span class="nc" id="L121">            invoiceFile.deleteInvoice(userID, index);</span>
+<span class="nc" id="L122">            invoices_lv.getItems().setAll(user.getAllInvoices());</span>
+<span class="nc" id="L123">        });</span>
+<span class="nc" id="L124">        invoices_lv.setOnMouseClicked(e -&gt; {</span>
+<span class="nc" id="L125">            Invoice selected = invoices_lv.getSelectionModel().getSelectedItem();</span>
+
+<span class="nc" id="L127">            amount_tf.setText(selected.getAmount().toString());</span>
+<span class="nc" id="L128">            accountNum_tf.setText(selected.getRecipientAccountNumber());</span>
+<span class="nc" id="L129">            cidComment_tf.setText(selected.getComment());</span>
+<span class="nc" id="L130">            due_dp.setValue(selected.getDueDate());</span>
+<span class="nc" id="L131">        });</span>
+
+<span class="nc" id="L133">        ImageView homeButton = ApplicationObjects.newImage(&quot;home.png&quot;, 10, 10, 20, 20);</span>
+<span class="nc" id="L134">        homeButton.setOnMouseClicked(e -&gt; {</span>
+            try {
+<span class="nc" id="L136">                stage.setScene(MainPageScene.scene());</span>
+<span class="nc" id="L137">            } catch (IOException e1) {</span>
+<span class="nc" id="L138">                e1.printStackTrace();</span>
+<span class="nc" id="L139">            }</span>
+<span class="nc" id="L140">        });</span>
+<span class="nc" id="L141">        Button dropDownButton = ApplicationObjects.newButton(&quot;test&quot;, 676, 10, 10, 10, 10);</span>
+<span class="nc" id="L142">        Group dropDown = ApplicationObjects.dropDownMenu();</span>
+<span class="nc" id="L143">        ImageView manageUserButton = ApplicationObjects.newImage(&quot;user.png&quot;, 646, 10, 20, 20);</span>
+<span class="nc" id="L144">        Group root = new Group(amount_t, accountNum_t, cidComment_t, dueDate_t,</span>
+        amount_tf, accountNum_tf, cidComment_tf,
+        invoices_lv, due_dp,
+        clear_bt, register_bt, payNow_bt, delete_bt, dropDownButton, homeButton, manageUserButton);
+<span class="nc" id="L148">        dropDownButton.setOnAction(e -&gt; {</span>
+<span class="nc" id="L149">            root.getChildren().add(dropDown);</span>
+<span class="nc" id="L150">        });</span>
+<span class="nc" id="L151">        root.getStylesheets().add(&quot;StyleSheet.css&quot;); </span>
+<span class="nc" id="L152">        Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());</span>
+        
+        
+<span class="nc" id="L155">        Group userButtons = ApplicationObjects.userMenu();</span>
+<span class="nc" id="L156">        manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler&lt;MouseEvent&gt;() {</span>
+            @Override
+            public void handle(MouseEvent event){
+<span class="nc" id="L159">                root.getChildren().add(userButtons);</span>
+<span class="nc" id="L160">                event.consume();</span>
+<span class="nc" id="L161">            }</span>
+        }); 
+<span class="nc" id="L163">        scene.setOnMouseClicked(e -&gt; {</span>
+<span class="nc" id="L164">            root.getChildren().remove(userButtons);</span>
+<span class="nc" id="L165">            root.getChildren().remove(dropDown);</span>
+<span class="nc" id="L166">        });</span>
+        
+<span class="nc" id="L168">        return scene;</span>
+    }
+    public static void restrictDatePicker(DatePicker datePicker, LocalDate minDate) {
+<span class="nc" id="L171">        final Callback&lt;DatePicker, DateCell&gt; dayCellFactory = new Callback&lt;&gt;() {</span>
+            @Override
+            public DateCell call(final DatePicker datePicker) {
+<span class="nc" id="L174">                return new DateCell() {</span>
+                    @Override
+                    public void updateItem(LocalDate item, boolean empty) {
+<span class="nc" id="L177">                        super.updateItem(item, empty);</span>
+<span class="nc bnc" id="L178" title="All 2 branches missed.">                        if (item.isBefore(minDate)) {</span>
+<span class="nc" id="L179">                            setDisable(true);</span>
+<span class="nc" id="L180">                            setStyle(&quot;-fx-background-color: #ffc0cb;&quot;);</span>
+                        }
+<span class="nc" id="L182">                    }</span>
+                };
+            }
+        };
+<span class="nc" id="L186">        datePicker.setDayCellFactory(dayCellFactory);</span>
+<span class="nc" id="L187">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

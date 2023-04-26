@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MainPageScene.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">edu.ntnu.g14.frontend</a> &gt; <span class="el_source">MainPageScene.java</span></div><h1>MainPageScene.java</h1><pre class="source lang-java linenums">package edu.ntnu.g14.frontend;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import edu.ntnu.g14.Account;
+import edu.ntnu.g14.BankApplication;
+import edu.ntnu.g14.FileManagement;
+import edu.ntnu.g14.Transaction;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
+<span class="nc" id="L23">public class MainPageScene {</span>
+<span class="nc" id="L24">    static Stage stage = BankApplication.getStage();</span>
+
+    static public Scene scene() throws IOException {
+<span class="nc" id="L27">        String [] columnTitlesLatestActivitiesTable = {&quot;Transaction&quot;, &quot;Amount&quot;};</span>
+<span class="nc" id="L28">        String [] columnTitlesDuePaymentsTable = {&quot;Date&quot;, &quot;Recipient&quot;, &quot;Amount&quot;};</span>
+
+<span class="nc" id="L30">        List&lt;Account&gt; accounts = BankApplication.loggedInUser.getAccountsAsList();</span>
+<span class="nc" id="L31">        ObservableList&lt;String&gt; accountNames = FXCollections.observableArrayList(getAccountsNames());</span>
+<span class="nc bnc" id="L32" title="All 2 branches missed.">        if (accounts.isEmpty()) {</span>
+<span class="nc" id="L33">            Dialog&lt;Account.AccountBuilder&gt; accountDialog = new AccountDialog(new Account.AccountBuilder());</span>
+<span class="nc" id="L34">            Optional&lt;Account.AccountBuilder&gt; result = accountDialog.showAndWait();</span>
+<span class="nc bnc" id="L35" title="All 2 branches missed.">            if (result.isPresent()) {</span>
+
+<span class="nc" id="L37">                addAndWriteAccount(accountNames, result.get());</span>
+            }
+            else {
+<span class="nc" id="L40">                return MainPageScene.scene();</span>
+            }
+        }
+
+<span class="nc" id="L44">        Group transfer = ApplicationObjects.newButtonWithIcon(&quot;Transfer&quot;, 30, 50, 157, 25, 16, &quot;transfer.png&quot;, TransferScene.scene());</span>
+
+<span class="nc" id="L46">        Group invoice = ApplicationObjects.newButtonWithIcon(&quot;Invoice&quot;, 192, 50, 157,25,16, &quot;invoice.png&quot;, InvoiceScene.scene());</span>
+
+<span class="nc" id="L48">        Group payment = ApplicationObjects.newButtonWithIcon(&quot;Payment&quot;, 30, 90, 157, 25, 16, &quot;payment.png&quot;, PaymentScene.scene());</span>
+
+<span class="nc" id="L50">        Group overview = ApplicationObjects.newButtonWithIcon(&quot;Overview&quot;, 192,90, 157,25,16, &quot;overview.png&quot;, GeneralOverviewScene.scene());</span>
+
+<span class="nc" id="L52">        Group accountsButton = ApplicationObjects.newButtonWithIcon(&quot;Accounts&quot;, 30,130, 157, 25, 16, &quot;account.png&quot;, AccountOverviewScene.scene(Optional.empty()));</span>
+
+<span class="nc" id="L54">        Group budgeting = ApplicationObjects.newButtonWithIcon(&quot;Budgeting&quot;, 192, 130, 157, 25,16, &quot;budget.png&quot;, BudgetingScene.scene());</span>
+
+<span class="nc" id="L56">        Text latestActivitiesText = ApplicationObjects.newText(&quot;Latest Activities&quot;, 20, false,130, 210);</span>
+<span class="nc" id="L57">        TableView latestActivitiesTable = ApplicationObjects.newTableView1(columnTitlesLatestActivitiesTable, 30, 230, 324, 300, BankApplication.loggedInUser.getAccountsAsList().stream().map(Account::getAccountNumber).collect(Collectors.toList()));</span>
+        ObservableList&lt;ObservableList&lt;Object&gt;&gt; latestActivitiesData;
+        try {
+<span class="nc" id="L60">            latestActivitiesData = initializeLatestActivitiesData();</span>
+<span class="nc" id="L61">            latestActivitiesTable.setItems(latestActivitiesData);</span>
+<span class="nc" id="L62">        } catch (IOException e1) {</span>
+<span class="nc" id="L63">            e1.printStackTrace();</span>
+<span class="nc" id="L64">        }</span>
+<span class="nc" id="L65">        latestActivitiesTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);</span>
+<span class="nc" id="L66">        Text duePaymentsText = ApplicationObjects.newText(&quot;Due Payments&quot;, 20, false, 473, 210);</span>
+<span class="nc" id="L67">        TableView duePaymentsTable = ApplicationObjects.newTableView(columnTitlesDuePaymentsTable, 728-30-324, 230, 324, 300);</span>
+<span class="nc" id="L68">        duePaymentsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);</span>
+<span class="nc" id="L69">        Text accountsText = ApplicationObjects.newText(&quot;Accounts&quot;, 20, false, 500, 30);</span>
+<span class="nc" id="L70">        ListView accountsListView = ApplicationObjects.newListView(getAccountsNames().toArray(String[]::new), 728-30-324, 50, 324, 115);</span>
+<span class="nc" id="L71">        accountsListView.setFixedCellSize(40);</span>
+<span class="nc" id="L72">        accountsListView.setStyle(&quot;-fx-font-family: \&quot;Helvetica Neue\&quot;;\n&quot; +</span>
+                &quot;    -fx-font-size: 16px;\n&quot; +
+                &quot;    -fx-alignment: center&quot;);
+
+<span class="nc" id="L76">        accountsListView.setOnMouseClicked(mouseEvent -&gt; {</span>
+            try {
+<span class="nc bnc" id="L78" title="All 2 branches missed.">                if (accountsListView.getSelectionModel().getSelectedItem() != null)</span>
+<span class="nc" id="L79">                    stage.setScene(AccountOverviewScene.scene(Optional.ofNullable(BankApplication.loggedInUser.getAccountWithAccountName(accountsListView.getSelectionModel().getSelectedItem().toString()))));</span>
+<span class="nc" id="L80">            } catch (IOException e) {</span>
+<span class="nc" id="L81">                throw new RuntimeException(e);</span>
+<span class="nc" id="L82">            }</span>
+<span class="nc" id="L83">        });</span>
+
+<span class="nc" id="L85">        Button dropDownButton = ApplicationObjects.newButton(&quot;test&quot;, 676, 10, 10, 10, 10);</span>
+<span class="nc" id="L86">        Group dropDown = ApplicationObjects.dropDownMenu();</span>
+<span class="nc" id="L87">        ImageView manageUserButton = ApplicationObjects.newImage(&quot;user.png&quot;, 646, 10, 20, 20);</span>
+<span class="nc" id="L88">        Group root = new Group(transfer, invoice, payment,</span>
+        overview, accountsButton, budgeting, latestActivitiesText, latestActivitiesTable,
+        duePaymentsTable, duePaymentsText, accountsListView, accountsText, dropDownButton, manageUserButton);
+<span class="nc" id="L91">        dropDownButton.setOnAction(e -&gt; {</span>
+<span class="nc" id="L92">            root.getChildren().add(dropDown);</span>
+<span class="nc" id="L93">        });</span>
+<span class="nc" id="L94">        root.getStylesheets().add(&quot;StyleSheet.css&quot;);</span>
+<span class="nc" id="L95">        Scene scene = new Scene(root, 728, 567, ApplicationObjects.getSceneColor());</span>
+
+
+<span class="nc" id="L98">        Group userButtons = ApplicationObjects.userMenu();</span>
+<span class="nc" id="L99">        manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler&lt;MouseEvent&gt;() {</span>
+            @Override
+            public void handle(MouseEvent event){
+<span class="nc" id="L102">                root.getChildren().add(userButtons);</span>
+<span class="nc" id="L103">                event.consume();</span>
+<span class="nc" id="L104">            }</span>
+        });
+<span class="nc" id="L106">        scene.setOnMouseClicked(e -&gt; {</span>
+<span class="nc" id="L107">            root.getChildren().remove(userButtons);</span>
+<span class="nc" id="L108">            root.getChildren().remove(dropDown);</span>
+<span class="nc" id="L109">        });</span>
+
+<span class="nc" id="L111">        return scene;</span>
+    }
+
+    static public ObservableList&lt;ObservableList&lt;Object&gt;&gt; initializeLatestActivitiesData() throws IOException {
+
+<span class="nc" id="L116">        int length = BankApplication.loggedInUser.getTransactions().length;</span>
+
+<span class="nc" id="L118">        Transaction[] transactions = FileManagement.readLatestTransactions(BankApplication.loggedInUser.getLoginInfo().getUserId(), length);</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        if (transactions == null)</span>
+<span class="nc" id="L120">            transactions = new Transaction[0];</span>
+<span class="nc" id="L121">        ObservableList&lt;ObservableList&lt;Object&gt;&gt; latestActivitiesData = FXCollections.observableArrayList();</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">        for(int i = 0; i &lt; Math.min(10, length); i++) {</span>
+<span class="nc" id="L123">            latestActivitiesData.add(FXCollections.observableArrayList(transactions[i].getToAccountNumber(), ApplicationObjects.formatCurrency(transactions[i].getAmount())));</span>
+        }
+
+<span class="nc" id="L126">        return  latestActivitiesData;</span>
+    }
+    private static List&lt;String&gt; getAccountsNames() {
+
+<span class="nc" id="L130">        return BankApplication.loggedInUser.getAccountsAsList()</span>
+<span class="nc" id="L131">                .stream().map(Account::getAccountName).collect(Collectors.toList());</span>
+    }
+    private static void addAndWriteAccount(ObservableList&lt;String&gt; accountNames, Account.AccountBuilder result) {
+<span class="nc" id="L134">        Account account = result.build();</span>
+<span class="nc" id="L135">        FileManagement.writeAccount(BankApplication.loggedInUser.getLoginInfo().getUserId(), account);</span>
+<span class="nc" id="L136">        accountNames.add(account.getAccountName());</span>
+<span class="nc" id="L137">        BankApplication.loggedInUser.addAccount(account);</span>
+<span class="nc" id="L138">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

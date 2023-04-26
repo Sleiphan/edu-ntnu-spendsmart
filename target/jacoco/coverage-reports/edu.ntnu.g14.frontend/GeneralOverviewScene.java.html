@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GeneralOverviewScene.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">demo</a> &gt; <a href="index.source.html" class="el_package">edu.ntnu.g14.frontend</a> &gt; <span class="el_source">GeneralOverviewScene.java</span></div><h1>GeneralOverviewScene.java</h1><pre class="source lang-java linenums">package edu.ntnu.g14.frontend;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.io.IOException;
+
+import edu.ntnu.g14.BankApplication;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.geometry.Side;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
+<span class="nc" id="L22">public class GeneralOverviewScene {</span>
+<span class="nc" id="L23">    static Stage stage = BankApplication.getStage();</span>
+    private static ObservableList&lt;PieChart.Data&gt; expenditurePieData;
+    private static ObservableList&lt;PieChart.Data&gt; incomePieData;
+    private static Text totalOfAllAccountsCombinedText;
+    private static Text bigSumText;
+    private static Text totalIncomeText;
+    private static Text totalExpensesText;
+    static public Scene scene() throws IOException {
+<span class="nc" id="L31">        String[] columnTitlesTransactionsTable = {&quot;Date&quot;, &quot;Transaction&quot;, &quot;Amount&quot;, &quot;Account&quot;};</span>
+<span class="nc" id="L32">        String monthlyExpensesPieChartTitle    = &quot;Expenses Last 30 Days&quot;;</span>
+<span class="nc" id="L33">        String yearlyExpensesPieChartTitle     = &quot;Expenses Last Year&quot;;</span>
+<span class="nc" id="L34">        String monthlyIncomePieChartTitle      = &quot;Income Last 30 Days&quot;;</span>
+<span class="nc" id="L35">        String yearlyIncomePieChartTitle       = &quot;Income Last Year&quot;;</span>
+<span class="nc" id="L36">        totalOfAllAccountsCombinedText = ApplicationObjects.newText(&quot;Total of all Accounts Combined (excl. Pension)&quot;, 16, false, 900/2 - 319/2, 50);</span>
+<span class="nc" id="L37">        setBigSumText();</span>
+
+<span class="nc" id="L39">        totalIncomeText = ApplicationObjects.newText(&quot;Income: &quot; + BankApplication.loggedInUser</span>
+<span class="nc" id="L40">                .incomeLast30Days(), 20, false, 0, 170);</span>
+<span class="nc" id="L41">        totalIncomeText.setX(203 - totalIncomeText.getLayoutBounds().getWidth()/2);</span>
+
+<span class="nc" id="L43">        totalExpensesText = ApplicationObjects.newText(&quot;Expenses: &quot; + BankApplication.loggedInUser</span>
+<span class="nc" id="L44">                .expensesLast30Days(), 20, false, 0, 170);</span>
+<span class="nc" id="L45">        totalExpensesText.setX(625 - totalExpensesText.getLayoutBounds().getWidth()/2);</span>
+
+<span class="nc" id="L47">        int expenditureDataWidth = 450;</span>
+<span class="nc" id="L48">        int expenditureDataHeight = 342;</span>
+<span class="nc" id="L49">        setPiesDataLast30Days();</span>
+
+<span class="nc" id="L51">        PieChart expenditurePieChart = new PieChart(expenditurePieData);</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        expenditurePieChart.setVisible(expenditurePieData.stream().anyMatch(pieData -&gt; pieData.getPieValue() != 0));</span>
+<span class="nc" id="L53">        expenditurePieChart.setLabelsVisible(false);</span>
+<span class="nc" id="L54">        expenditurePieChart.setAnimated(false);</span>
+<span class="nc" id="L55">        expenditurePieChart.setTitle(monthlyExpensesPieChartTitle);</span>
+<span class="nc" id="L56">        expenditurePieChart.setLegendVisible(true);</span>
+<span class="nc" id="L57">        expenditurePieChart.setLayoutX(400);</span>
+<span class="nc" id="L58">        expenditurePieChart.setLayoutY(283.5 - 120 + 20);</span>
+<span class="nc" id="L59">        expenditurePieChart.setStyle(&quot;-fx-pref-width: &quot; + expenditureDataWidth +&quot;;  \n&quot; +</span>
+                                     &quot;-fx-pref-height: &quot; + expenditureDataHeight +&quot;; \n&quot; +
+                                     &quot;-fx-min-width: &quot; + expenditureDataWidth + &quot;;   \n&quot; +
+                                     &quot;-fx-min-height: &quot; + expenditureDataHeight +&quot;;  \n&quot; +
+                                     &quot;-fx-max-width: &quot; + expenditureDataWidth +&quot;;   \n&quot; +
+                                     &quot;-fx-max-height: &quot; + expenditureDataHeight+&quot;;   &quot;);
+
+
+<span class="nc" id="L67">        PieChart incomePieChart = new PieChart(incomePieData);</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        incomePieChart.setVisible(expenditurePieData.stream().anyMatch(pieData -&gt; pieData.getPieValue() != 0));</span>
+<span class="nc" id="L69">        incomePieChart.setAnimated(false);</span>
+<span class="nc" id="L70">        incomePieChart.setLegendSide(Side.BOTTOM);</span>
+<span class="nc" id="L71">        incomePieChart.setTitle(monthlyIncomePieChartTitle);</span>
+<span class="nc" id="L72">        incomePieChart.setLayoutX(-50);</span>
+<span class="nc" id="L73">        incomePieChart.setLayoutY((float) 567/2 - 120 + 20);</span>
+<span class="nc" id="L74">        incomePieChart.setLegendVisible(true);</span>
+<span class="nc" id="L75">        incomePieChart.setLabelsVisible(false);</span>
+<span class="nc" id="L76">        incomePieChart.setStyle(&quot;-fx-pref-width: 500; \n&quot; +</span>
+                &quot;-fx-pref-height: 300; \n&quot; +
+                &quot;-fx-min-width: 500;   \n&quot; +
+                &quot;-fx-min-height: 300;  \n&quot; +
+                &quot;-fx-max-width: 500;   \n&quot; +
+                &quot;-fx-max-height: 300;  &quot;);
+
+<span class="nc" id="L83">        Button intervalToggle = ApplicationObjects.newButton(&quot;Yearly&quot;, 70, 75, 100, 20, 16);</span>
+
+<span class="nc" id="L85">        TableView&lt;ObservableList&lt;Object&gt;&gt; transactionsTables = ApplicationObjects.newTableView(columnTitlesTransactionsTable, 40, 230, 658, 300);</span>
+<span class="nc" id="L86">        transactionsTables.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);</span>
+
+<span class="nc" id="L88">        intervalToggle.setOnMouseClicked(actionEvent -&gt; {</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">            if (!expenditurePieChart.getTitle().equals(yearlyExpensesPieChartTitle)) {</span>
+<span class="nc" id="L90">                totalIncomeText.setVisible(true);</span>
+<span class="nc" id="L91">                totalExpensesText.setVisible(true);</span>
+<span class="nc" id="L92">                expenditurePieChart.setVisible(true);</span>
+<span class="nc" id="L93">                incomePieChart.setVisible(true);</span>
+<span class="nc" id="L94">                setPiesDataLastYear();</span>
+<span class="nc" id="L95">                setTotalIncomeText(false);</span>
+<span class="nc" id="L96">                setTotalExpensesText(false);</span>
+<span class="nc" id="L97">                expenditurePieChart.setData(expenditurePieData);</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">                expenditurePieChart.setVisible(expenditurePieData.stream().anyMatch(pieData -&gt; pieData.getPieValue() != 0));</span>
+<span class="nc" id="L99">                expenditurePieChart.setTitle(yearlyExpensesPieChartTitle);</span>
+<span class="nc" id="L100">                incomePieChart.setTitle(yearlyIncomePieChartTitle);</span>
+<span class="nc" id="L101">                incomePieChart.setData(incomePieData);</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">                incomePieChart.setVisible(incomePieData.stream().anyMatch(pieData -&gt; pieData.getPieValue() != 0));</span>
+<span class="nc" id="L103">                intervalToggle.setText(&quot;Monthly&quot;);</span>
+            }
+            else {
+<span class="nc" id="L106">                totalIncomeText.setVisible(true);</span>
+<span class="nc" id="L107">                totalExpensesText.setVisible(true);</span>
+<span class="nc" id="L108">                expenditurePieChart.setVisible(true);</span>
+<span class="nc" id="L109">                incomePieChart.setVisible(true);</span>
+<span class="nc" id="L110">                setPiesDataLast30Days();</span>
+<span class="nc" id="L111">                setTotalIncomeText(true);</span>
+<span class="nc" id="L112">                setTotalExpensesText(true);</span>
+<span class="nc" id="L113">                expenditurePieChart.setTitle(monthlyExpensesPieChartTitle);</span>
+<span class="nc" id="L114">                expenditurePieChart.setData(expenditurePieData);</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">                expenditurePieChart.setVisible(expenditurePieData.stream().anyMatch(pieData -&gt; pieData.getPieValue() != 0));</span>
+<span class="nc" id="L116">                incomePieChart.setTitle(monthlyIncomePieChartTitle);</span>
+<span class="nc" id="L117">                incomePieChart.setData(incomePieData);</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">                incomePieChart.setVisible(incomePieData.stream().anyMatch(pieData -&gt; pieData.getPieValue() != 0));</span>
+<span class="nc" id="L119">                intervalToggle.setText(&quot;Yearly&quot;);</span>
+            }
+<span class="nc" id="L121">        });</span>
+
+
+
+
+
+
+
+<span class="nc" id="L129">        ImageView homeButton = ApplicationObjects.newImage(&quot;home.png&quot;, 24, 12, 20, 20);</span>
+<span class="nc" id="L130">        homeButton.setOnMouseClicked(e -&gt; {</span>
+            try {
+<span class="nc" id="L132">                stage.setScene(MainPageScene.scene());</span>
+<span class="nc" id="L133">            } catch (IOException e1) {</span>
+<span class="nc" id="L134">                e1.printStackTrace();</span>
+<span class="nc" id="L135">            }</span>
+<span class="nc" id="L136">        });</span>
+<span class="nc" id="L137">        Button dropDownButton = ApplicationObjects.newButton(&quot;test&quot;, 835, 12, 10, 10, 10);</span>
+<span class="nc" id="L138">        Group dropDown = ApplicationObjects.dropDownMenuGeneralOverview();</span>
+<span class="nc" id="L139">        ImageView manageUserButton = ApplicationObjects.newImage(&quot;user.png&quot;, 798, 12, 20, 20);</span>
+<span class="nc" id="L140">        Group root = new Group(totalOfAllAccountsCombinedText, bigSumText,</span>
+                totalIncomeText, totalExpensesText,
+                dropDownButton, homeButton, manageUserButton, expenditurePieChart, incomePieChart, intervalToggle);
+<span class="nc" id="L143">        dropDownButton.setOnAction(e -&gt; {</span>
+<span class="nc" id="L144">            root.getChildren().add(dropDown);</span>
+<span class="nc" id="L145">        });</span>
+<span class="nc" id="L146">        root.getStylesheets().addAll(&quot;StyleSheet.css&quot;);</span>
+<span class="nc" id="L147">        Scene scene = new Scene(root, 900, 567, ApplicationObjects.getSceneColor());</span>
+
+
+<span class="nc" id="L150">        Group userButtons = ApplicationObjects.userMenuGeneralOverview();</span>
+
+<span class="nc" id="L152">        manageUserButton.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler&lt;MouseEvent&gt;() {</span>
+            @Override
+            public void handle(MouseEvent event) {
+<span class="nc" id="L155">                root.getChildren().add(userButtons);</span>
+<span class="nc" id="L156">                event.consume();</span>
+<span class="nc" id="L157">            }</span>
+        });
+
+<span class="nc" id="L160">        scene.setOnMouseClicked(e -&gt; {</span>
+<span class="nc" id="L161">            root.getChildren().remove(userButtons);</span>
+<span class="nc" id="L162">            root.getChildren().remove(dropDown);</span>
+<span class="nc" id="L163">        });</span>
+<span class="nc" id="L164">        return scene;</span>
+
+    }
+    private static void setPiesDataLast30Days() {
+<span class="nc" id="L168">        List&lt;PieChart.Data&gt; pieChartExpenditureData = Arrays.stream(ApplicationObjects.getBudgetExpenditureCategories())</span>
+<span class="nc" id="L169">                .map(category -&gt; new PieChart.Data(category, BankApplication.loggedInUser</span>
+<span class="nc" id="L170">                        .getTotalExpenseOfCategoryLast30Days(category))).collect(Collectors.toList());</span>
+<span class="nc" id="L171">        expenditurePieData = FXCollections.observableArrayList(pieChartExpenditureData);</span>
+
+<span class="nc" id="L173">        List&lt;PieChart.Data&gt; pieChartIncomeData = Arrays.stream(ApplicationObjects.getBudgetIncomeCategories())</span>
+<span class="nc" id="L174">                .map(category -&gt; new PieChart.Data(category, BankApplication.loggedInUser</span>
+<span class="nc" id="L175">                .getTotalIncomeOfCategoryLast30Days(category))).collect(Collectors.toList());</span>
+<span class="nc" id="L176">        incomePieData = FXCollections.observableArrayList(pieChartIncomeData);</span>
+<span class="nc" id="L177">    }</span>
+
+    private static void setBigSumText() {
+<span class="nc" id="L180">        bigSumText = ApplicationObjects.newText(BankApplication.loggedInUser</span>
+<span class="nc" id="L181">                .amountAllAccounts(), 35, false, 346, 100);</span>
+<span class="nc" id="L182">        bigSumText.setX((float) 900/2 - bigSumText.getLayoutBounds().getWidth()/2);</span>
+<span class="nc" id="L183">    }</span>
+
+    private static void setTotalIncomeText(Boolean monthOrYear) {
+<span class="nc bnc" id="L186" title="All 2 branches missed.">        if (monthOrYear) {</span>
+<span class="nc" id="L187">            totalIncomeText.setText(&quot;Income: &quot; + BankApplication.loggedInUser</span>
+<span class="nc" id="L188">                    .incomeLast30Days());</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">            if (BankApplication.loggedInUser.incomeLast30Days().replaceAll(&quot; &quot;, &quot;&quot;).equals(&quot;0&quot;))</span>
+<span class="nc" id="L190">                totalIncomeText.setVisible(false);</span>
+        }
+        else {
+<span class="nc" id="L193">            totalIncomeText.setText(&quot;Income: &quot; + BankApplication.loggedInUser</span>
+<span class="nc" id="L194">                    .incomeLastYear()       );</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">            if (BankApplication.loggedInUser.incomeLastYear().replaceAll(&quot; &quot;, &quot;&quot;).equals(&quot;0&quot;))</span>
+<span class="nc" id="L196">                totalIncomeText.setVisible(false);</span>
+        }
+<span class="nc" id="L198">        totalIncomeText.setX(203 - totalIncomeText.getLayoutBounds().getWidth()/2);</span>
+<span class="nc" id="L199">    }</span>
+
+    public static void setTotalExpensesText(Boolean monthOrYear) {
+<span class="nc bnc" id="L202" title="All 2 branches missed.">        if (monthOrYear) {</span>
+<span class="nc" id="L203">            totalExpensesText.setText(&quot;Expenses: &quot; + BankApplication.loggedInUser</span>
+<span class="nc" id="L204">                    .expensesLast30Days());</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">            if (BankApplication.loggedInUser.expensesLast30Days().replaceAll(&quot; &quot;, &quot;&quot;).equals(&quot;0&quot;))</span>
+<span class="nc" id="L206">                totalExpensesText.setVisible(false);</span>
+        } else {
+<span class="nc" id="L208">            totalExpensesText.setText(&quot;Expenses: &quot; + BankApplication.loggedInUser</span>
+<span class="nc" id="L209">                    .expensesLastYear());</span>
+<span class="nc bnc" id="L210" title="All 2 branches missed.">            if (BankApplication.loggedInUser.expensesLastYear().replaceAll(&quot; &quot;,&quot;&quot;).equals(&quot;0&quot;))</span>
+<span class="nc" id="L211">                totalExpensesText.setVisible(false);</span>
+        }
+<span class="nc" id="L213">        totalExpensesText.setX(625 - totalExpensesText.getLayoutBounds().getWidth()/2);</span>
+<span class="nc" id="L214">    }</span>
+
+    private static void setPiesDataLastYear() {
+<span class="nc" id="L217">        List&lt;PieChart.Data&gt; pieChartExpenditureData = Arrays.stream(ApplicationObjects.getBudgetExpenditureCategories())</span>
+<span class="nc" id="L218">                .map(category -&gt; new PieChart.Data(category, BankApplication.loggedInUser</span>
+<span class="nc" id="L219">                        .getTotalExpenseOfCategoryLastYear(category))).collect(Collectors.toList());</span>
+<span class="nc" id="L220">        expenditurePieData = FXCollections.observableArrayList(pieChartExpenditureData);</span>
+
+<span class="nc" id="L222">        List&lt;PieChart.Data&gt; pieChartIncomeData = Arrays.stream(ApplicationObjects.getBudgetIncomeCategories())</span>
+<span class="nc" id="L223">                .map(category -&gt; new PieChart.Data(category, BankApplication.loggedInUser</span>
+<span class="nc" id="L224">                        .getTotalIncomeOfCategoryLastYear(category))).collect(Collectors.toList());</span>
+<span class="nc" id="L225">        incomePieData = FXCollections.observableArrayList(pieChartIncomeData);</span>
+<span class="nc" id="L226">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
