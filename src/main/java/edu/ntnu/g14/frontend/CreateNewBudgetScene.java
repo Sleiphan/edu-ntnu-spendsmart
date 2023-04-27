@@ -452,7 +452,7 @@ public class CreateNewBudgetScene {
    * @param budgetDAO    BudgetDAO instance for saving the budget
    */
   private static void addRevenueToBudget(BudgetCategory selectedItem, String inputText,
-      BudgetDAO budgetDAO, ChoiceBox<String> expenditureChoiceBox) {
+      BudgetDAO budgetDAO, ChoiceBox<String> revenueChoiceBox) {
     BigDecimal amount = new BigDecimal(inputText);
 
     BudgetItem budgetItem = new BudgetItem(selectedItem, amount);
@@ -477,11 +477,11 @@ public class CreateNewBudgetScene {
     }
     BudgetingScene.refreshData();
     // Remove the selected category from the choice box
-    expenditureChoiceBox.getItems().remove(expenditureChoiceBox.getValue());
+    revenueChoiceBox.getItems().remove(revenueChoiceBox.getValue());
 
     // Set the first available category as the new value (if any)
-    if (!expenditureChoiceBox.getItems().isEmpty()) {
-      expenditureChoiceBox.setValue(expenditureChoiceBox.getItems().get(0));
+    if (!revenueChoiceBox.getItems().isEmpty()) {
+      revenueChoiceBox.setValue(revenueChoiceBox.getItems().get(0));
     }
   }
 

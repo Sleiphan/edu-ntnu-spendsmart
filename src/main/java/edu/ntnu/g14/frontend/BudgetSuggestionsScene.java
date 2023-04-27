@@ -24,6 +24,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -140,6 +141,11 @@ public class BudgetSuggestionsScene {
     femaleRadioButton.setVisible(false);
 
     TextField AgeInput = ApplicationObjects.newTextField("Enter Age", 210, 100, 130, 30, 15);
+    AgeInput.addEventFilter(KeyEvent.KEY_TYPED, event -> {
+      if (!event.getCharacter().matches("\\d")) { // Check if the character is a digit
+        event.consume(); // If it's not a digit, consume the event to prevent it from being processed
+      }
+    });
     //ChoiceBox with Household Category elements
     List<String> householdChoiceList = new ArrayList<>();
     for (HouseholdCategory category : HouseholdCategory.values()) {
@@ -256,6 +262,26 @@ public class BudgetSuggestionsScene {
     revenue.setValue(BudgetCategory.SALARY.toString());
 
     TextField revenueInput = ApplicationObjects.newTextField("Enter Amount", 0, 0, 130, 30, 15);
+    revenueInput.addEventFilter(KeyEvent.KEY_TYPED, KeyEvent -> {
+      String input = KeyEvent.getCharacter();
+      String currentText = revenueInput.getText();
+
+      if (!input.matches("[\\d.]") || (input.equals(".") && currentText.contains("."))) {
+        if (input.matches("[,]")) {
+          if (tooltip == null) {
+            tooltip = new Tooltip("Please use '.', to indicate decimal point");
+            revenueInput.setTooltip(tooltip);
+          }
+          tooltip.show(revenueInput.getScene().getWindow());
+
+          // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+          PauseTransition pause = new PauseTransition(Duration.seconds(5));
+          pause.setOnFinished(event -> tooltip.hide());
+          pause.play();
+        }
+        KeyEvent.consume(); // If it's not a valid character or already contains a decimal point, consume the event
+      }
+    });
     Button addRevenueItemBtn = ApplicationObjects.newButton("Add revenue to budget", 0, 0, 157, 25,
         16);
     addRevenueItemBtn.setOnAction(e -> {
@@ -282,6 +308,26 @@ public class BudgetSuggestionsScene {
         "Please enter the amount you\nto save for the month", 15, false, 50, 100);
     savingsInfo.setVisible(false);
     savingsInput = ApplicationObjects.newTextField("Enter Savings Amount", 50, 130, 130, 30, 15);
+    savingsInput.addEventFilter(KeyEvent.KEY_TYPED, KeyEvent -> {
+      String input = KeyEvent.getCharacter();
+      String currentText = savingsInput.getText();
+
+      if (!input.matches("[\\d.]") || (input.equals(".") && currentText.contains("."))) {
+        if (input.matches("[,]")) {
+          if (tooltip == null) {
+            tooltip = new Tooltip("Please use '.', to indicate decimal point");
+            createBudgetBtn.setTooltip(tooltip);
+          }
+          tooltip.show(createBudgetBtn.getScene().getWindow());
+
+          // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+          PauseTransition pause = new PauseTransition(Duration.seconds(5));
+          pause.setOnFinished(event -> tooltip.hide());
+          pause.play();
+        }
+        KeyEvent.consume(); // If it's not a valid character or already contains a decimal point, consume the event
+      }
+    });
     savingsInput.setVisible(false);
 
     Button continueBtnRevenue = ApplicationObjects.newButton("Continue", 500, 480, 157, 25, 16);

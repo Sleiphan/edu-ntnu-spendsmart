@@ -77,7 +77,6 @@ public class BudgetingScene {
     
     budgetDAO = getBudgetDAO();
 
-    contextMenu = createContextMenu(null); // Pass null initially
     revenues = createRevenuesTable();
     expenditures = createExpendituresTable();
     revenuesContextMenu = createContextMenu(revenues);
@@ -122,7 +121,7 @@ public class BudgetingScene {
           event.getY())) {
         saveModifiedData();
         revenues.getSelectionModel().clearSelection();
-        expenditures.getSelectionModel().clearSelection();
+        //expenditures.getSelectionModel().clearSelection(); did not work for some reason:(
       }
     });
 
