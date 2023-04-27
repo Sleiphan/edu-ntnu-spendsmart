@@ -64,6 +64,7 @@ public class ManageUserChangePasswordScene {
     TextField reNewPasswordField = ApplicationObjects.newTextField("", 594 - 329, 544 - 136, 326,
         30, 0);
 
+
     // Show an error message to the user, e.g., a dialog box, saying the old password is incorrect
     confirmButton.setOnAction(event -> {
       String oldPasswordInput = oldPasswordField.getText();
@@ -88,6 +89,10 @@ public class ManageUserChangePasswordScene {
           alert.setHeaderText("The you have to enter the new password twice");
           alert.setContentText(newPasswordInput + " is not the same as: " + reNewPasswordInput);
           alert.showAndWait();
+          oldPasswordField.clear();
+          newPasswordField.clear();
+          reNewPasswordField.clear();
+          return;
         }
         // Show an error message to the user, e.g., a dialog box, saying the new passwords do not match
       }
