@@ -352,7 +352,9 @@ public class ApplicationObjects {
     button.setOnAction(e -> {
         playing.stop();
         stage.setScene(scene);
-        play.play();
+        if (ApplicationObjects.soundOn()) {
+          play.play();
+        }
     });
     Group group = new Group(button, icon);
     return group;
