@@ -2,4 +2,4 @@
 .vscode/
 EconomyApplication/EconomyApplication.iml
 EconomyApplication/testfiles
-target
+/target/
