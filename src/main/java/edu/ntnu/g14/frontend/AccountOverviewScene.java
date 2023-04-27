@@ -81,7 +81,7 @@ public class AccountOverviewScene {
         688, 300,
         BankApplication.loggedInUser.getAccountsAsList().stream().map(Account::getAccountNumber)
             .collect(Collectors.toList()));
-    lastTransactionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+    lastTransactionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     if (accountComboBox.getValue() != null) {
       setCurrentAccount(accountComboBox.getValue());
     }
