@@ -55,7 +55,7 @@ public class LoginChooseUserScene {
     Button confirm = ApplicationObjects.newButton("Confirm", 0, 110, 150, 20, 15);
     Button soundButton = ApplicationObjects.newButton("Sound on?", 10, 260, 150, 20, 15);
     soundButton.setOnAction(e -> {
-      if (soundButton.getText().equals("Sound on?") || soundButton.getText().equals("OFF")) {
+      if (soundButton.getText().equals("OFF")) {
         soundButton.setText("ON");
         ApplicationObjects.setSound(true);
         textToSpeach.play();

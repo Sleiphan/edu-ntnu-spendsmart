@@ -97,12 +97,20 @@ public class FileManagement {
         Files.createDirectories(Path.of(s.substring(0, lastFS)));
       }
 
+      boolean newFile = false;
+
       try {
         if (Files.notExists(file)) {
           Files.createFile(file);
+          newFile = true;
         }
       } catch (FileAlreadyExistsException e) {
         // Skip
+      }
+
+      if (!newFile) {
+        String data = Files.readString(file, DATA_CHARSET).replaceAll("\r\n(?!\\s)", "\n");
+        Files.writeString(file, data, DATA_CHARSET);
       }
     }
   }
