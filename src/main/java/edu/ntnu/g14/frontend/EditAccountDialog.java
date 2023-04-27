@@ -1,8 +1,8 @@
 package edu.ntnu.g14.frontend;
 
+import edu.ntnu.g14.BankApplication;
 import edu.ntnu.g14.model.Account;
 import edu.ntnu.g14.model.AccountCategory;
-import edu.ntnu.g14.BankApplication;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;

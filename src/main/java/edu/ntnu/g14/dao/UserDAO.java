@@ -41,6 +41,65 @@ public class UserDAO {
   }
 
   /**
+   * Parses the given User object into a CSV string.
+   *
+   * @param user the User object to parse
+   * @return a CSV string representing the User object
+   */
+  static String parse(User user) {
+    return parse(user.getLoginInfo()) + USER_DATA_SEPARATOR +
+        "\"" + user.getEmail() + "\"" + USER_DATA_SEPARATOR +
+        "\"" + user.getLastName() + "\"" + USER_DATA_SEPARATOR +
+        "\"" + user.getFirstName() + "\"";
+  }
+
+  /**
+   * Parses the given CSV string into a User object.
+   *
+   * @param csv the CSV string to parse
+   * @return a User object representing the CSV string
+   */
+  static User parseUser(String csv) {
+    String[] fields = csv.split(USER_DATA_SEPARATOR + "(?!\\s)");
+
+    Login login = parseLogin(fields[0]);
+    String email = fields[1].substring(1, fields[1].length() - 1);
+    String lastName = fields[2].substring(1, fields[2].length() - 1);
+    String firstName = fields[3].substring(1, fields[3].length() - 1);
+
+    return new User(null, null, login, email, lastName, firstName, null, null);
+  }
+
+  /**
+   * Parses the given Login object into a CSV string.
+   *
+   * @param login the Login object to parse
+   * @return a CSV string representing the Login object
+   */
+  static String parse(Login login) {
+    return "\"" + login.getUserId() + "\"" + LOGIN_DATA_SEPARATOR +
+        "\"" + login.getUserName() + "\"" + LOGIN_DATA_SEPARATOR +
+        "\"" + login.getPassword() + "\"";
+  }
+
+  /**
+   * Parses the given CSV string into a Login object.
+   *
+   * @param csv the CSV string to parse
+   * @return a Login object representing the CSV string
+   */
+  static Login parseLogin(String csv) {
+    String[] fields = Arrays.stream(csv.split(LOGIN_DATA_SEPARATOR + "(?!\\s)"))
+        .map(s -> s.substring(1, s.length() - 1))
+        .toArray(String[]::new);
+
+    String id = fields[0];
+    String name = fields[1];
+    String pass = fields[2];
+    return new Login(name, pass, id);
+  }
+
+  /**
    * Returns an array of Login objects representing all logins stored in the user data file.
    *
    * @return an array of Login objects representing all logins stored in the user data file, or null
@@ -106,65 +165,6 @@ public class UserDAO {
     } else {
       file.addNewData(userID, data);
     }
-  }
-
-  /**
-   * Parses the given User object into a CSV string.
-   *
-   * @param user the User object to parse
-   * @return a CSV string representing the User object
-   */
-  static String parse(User user) {
-    return parse(user.getLoginInfo()) + USER_DATA_SEPARATOR +
-        "\"" + user.getEmail() + "\"" + USER_DATA_SEPARATOR +
-        "\"" + user.getLastName() + "\"" + USER_DATA_SEPARATOR +
-        "\"" + user.getFirstName() + "\"";
-  }
-
-  /**
-   * Parses the given CSV string into a User object.
-   *
-   * @param csv the CSV string to parse
-   * @return a User object representing the CSV string
-   */
-  static User parseUser(String csv) {
-    String[] fields = csv.split(USER_DATA_SEPARATOR + "(?!\\s)");
-
-    Login login = parseLogin(fields[0]);
-    String email = fields[1].substring(1, fields[1].length() - 1);
-    String lastName = fields[2].substring(1, fields[2].length() - 1);
-    String firstName = fields[3].substring(1, fields[3].length() - 1);
-
-    return new User(null, null, login, email, lastName, firstName, null, null);
-  }
-
-  /**
-   * Parses the given Login object into a CSV string.
-   *
-   * @param login the Login object to parse
-   * @return a CSV string representing the Login object
-   */
-  static String parse(Login login) {
-    return "\"" + login.getUserId() + "\"" + LOGIN_DATA_SEPARATOR +
-        "\"" + login.getUserName() + "\"" + LOGIN_DATA_SEPARATOR +
-        "\"" + login.getPassword() + "\"";
-  }
-
-  /**
-   * Parses the given CSV string into a Login object.
-   *
-   * @param csv the CSV string to parse
-   * @return a Login object representing the CSV string
-   */
-  static Login parseLogin(String csv) {
-    String[] fields = Arrays.stream(csv.split(LOGIN_DATA_SEPARATOR + "(?!\\s)"))
-        .map(s -> s.substring(1, s.length() - 1))
-        .toArray(String[]::new);
-
-    String id = fields[0];
-    String name = fields[1];
-    String pass = fields[2];
-    return new Login(name, pass, id);
   }
 
   /**

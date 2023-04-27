@@ -1,13 +1,13 @@
 package edu.ntnu.g14.frontend;
 
 import edu.ntnu.g14.BankApplication;
+import edu.ntnu.g14.dao.BudgetDAO;
 import edu.ntnu.g14.model.Budget;
 import edu.ntnu.g14.model.BudgetCategory;
 import edu.ntnu.g14.model.BudgetItem;
 import edu.ntnu.g14.model.GenderCategory;
 import edu.ntnu.g14.model.HouseholdCategory;
 import edu.ntnu.g14.model.User;
-import edu.ntnu.g14.dao.BudgetDAO;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -146,8 +146,9 @@ public class CreateNewBudgetScene {
 
       if (!event.isConsumed()) {
         String data = AgeInput.getText() + event.getCharacter();
-        if (data.isEmpty())
+        if (data.isEmpty()) {
           data = "0";
+        }
         int currentValue = Integer.parseInt(data);
         if (currentValue > Byte.MAX_VALUE) {
           AgeInput.setText("" + Byte.MAX_VALUE);
@@ -504,7 +505,8 @@ public class CreateNewBudgetScene {
    * @param inputText    String representing the amount of the expenditure item
    * @param budgetDAO    BudgetDAO instance for saving the budget
    */
-  private static void addExpenditureToBudget(BudgetCategory selectedItem, String inputText, BudgetDAO budgetDAO, ChoiceBox<String> expenditureChoiceBox) {
+  private static void addExpenditureToBudget(BudgetCategory selectedItem, String inputText,
+      BudgetDAO budgetDAO, ChoiceBox<String> expenditureChoiceBox) {
     BigDecimal amount = new BigDecimal(inputText);
 
     BudgetItem budgetItem = new BudgetItem(selectedItem, amount);

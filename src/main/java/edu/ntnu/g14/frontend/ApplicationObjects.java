@@ -1,8 +1,8 @@
 package edu.ntnu.g14.frontend;
 
+import edu.ntnu.g14.BankApplication;
 import edu.ntnu.g14.model.Account;
 import edu.ntnu.g14.model.AccountCategory;
-import edu.ntnu.g14.BankApplication;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -46,17 +46,14 @@ import javafx.stage.Stage;
 
 public class ApplicationObjects {
 
+  public static final DateTimeFormatter dateFormatter =
+      DateTimeFormatter.ofPattern("dd/MM/yyyy");
   public static String borderColor = "#000000";
   public static String backgroundColor = "#b6bbbf";
   public static Color sceneColor = Color.valueOf("#e4eff7");
-
-  static Stage stage = BankApplication.getStage();
-
-  public static final DateTimeFormatter dateFormatter =
-      DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-
   public static boolean sounds;
+  public static MediaPlayer playing;
+  static Stage stage = BankApplication.getStage();
 
   public static boolean soundOn() {
     return sounds;
@@ -94,14 +91,12 @@ public class ApplicationObjects {
     return new Group(rectangle, logOut, manageUser);
   }
 
-  public static MediaPlayer playing;
-
-  public static void setPlaying(MediaPlayer play){
-    playing = play;
+  public static MediaPlayer getPlaying() {
+    return playing;
   }
 
-  public static MediaPlayer getPlaying(){
-    return playing;
+  public static void setPlaying(MediaPlayer play) {
+    playing = play;
   }
 
   public static Group userMenu() {
@@ -124,6 +119,7 @@ public class ApplicationObjects {
         setPlaying(sound);
         if (ApplicationObjects.soundOn()) {
           sound.play();
+          setPlaying(sound);
         }
         stage.setScene(UserManagementScene.scene());
       } catch (IOException e1) {
@@ -332,7 +328,8 @@ public class ApplicationObjects {
   }
 
   public static Group newButtonWithIcon(String text, int x, int y, int width, int height,
-      int fontSize, String iconname, Scene scene, MediaPlayer playing, MediaPlayer play) throws FileNotFoundException {
+      int fontSize, String iconname, Scene scene, MediaPlayer playing, MediaPlayer play)
+      throws FileNotFoundException {
     Button button = new Button(text);
     button.setLayoutX(x);
     button.setLayoutY(y);
@@ -351,11 +348,11 @@ public class ApplicationObjects {
       }
     });
     button.setOnAction(e -> {
-        playing.stop();
-        stage.setScene(scene);
-        if (ApplicationObjects.soundOn()) {
-          play.play();
-        }
+      playing.stop();
+      stage.setScene(scene);
+      if (ApplicationObjects.soundOn()) {
+        play.play();
+      }
     });
     Group group = new Group(button, icon);
     return group;

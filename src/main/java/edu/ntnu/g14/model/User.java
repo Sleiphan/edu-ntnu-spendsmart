@@ -16,11 +16,11 @@ import java.util.stream.Stream;
  */
 public class User extends Personalia {
 
+  private static final String CSV_DELIMITER = ",";
   private final List<Account> accounts;
   private final List<Invoice> invoices;
   private final List<Transaction> transactions;
   private Budget budget;
-  private static final String CSV_DELIMITER = ",";
 
   /**
    * Constructs a new User object with the given information.
@@ -116,6 +116,15 @@ public class User extends Personalia {
   }
 
   /**
+   * Sets the budget of the user.
+   *
+   * @param newBudget the new budget of the user
+   */
+  public void setBudget(Budget newBudget) {
+    this.budget = newBudget;
+  }
+
+  /**
    * Returns the user information as a comma-separated values string.
    *
    * @return the user information as a CSV string
@@ -127,15 +136,6 @@ public class User extends Personalia {
         CSV_DELIMITER + this.getLoginInfo().getPassword() +
         CSV_DELIMITER + this.getFirstName() +
         CSV_DELIMITER + this.getLastName();
-  }
-
-  /**
-   * Sets the budget of the user.
-   *
-   * @param newBudget the new budget of the user
-   */
-  public void setBudget(Budget newBudget) {
-    this.budget = newBudget;
   }
 
   /**
@@ -378,7 +378,7 @@ public class User extends Personalia {
    * Calculates the total expenses or income for a specific budget category for the last calendar
    * year.
    *
-   * @param category        the name of the budget category to calculate expenses or income for
+   * @param category the name of the budget category to calculate expenses or income for
    * @return the total amount of expenses or income for the given category over the last calendar
    * year
    */
@@ -404,10 +404,15 @@ public class User extends Personalia {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     User user = (User) o;
-    return Objects.equals(accounts, user.accounts) && Objects.equals(invoices, user.invoices) && Objects.equals(transactions, user.transactions) && Objects.equals(budget, user.budget);
+    return Objects.equals(accounts, user.accounts) && Objects.equals(invoices, user.invoices)
+        && Objects.equals(transactions, user.transactions) && Objects.equals(budget, user.budget);
   }
 
   @Override

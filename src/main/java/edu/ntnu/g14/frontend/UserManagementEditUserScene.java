@@ -7,7 +7,6 @@ import edu.ntnu.g14.model.FileManagement;
 import edu.ntnu.g14.model.User;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -31,8 +30,8 @@ import javafx.stage.Stage;
 
 public class UserManagementEditUserScene {
 
-  private static User loggedInUser = BankApplication.loggedInUser;
   static Stage stage = BankApplication.getStage();
+  private static User loggedInUser = BankApplication.loggedInUser;
 
   /**
    * Creates and returns the user management edit user scene.
@@ -85,7 +84,8 @@ public class UserManagementEditUserScene {
           Alert invalidEmailAlert = new Alert(Alert.AlertType.ERROR);
           invalidEmailAlert.setTitle("Invalid Email");
           invalidEmailAlert.setHeaderText("The email you have entered is invalid");
-          invalidEmailAlert.setContentText("Please enter a valid email address (e.g., user@example.com)");
+          invalidEmailAlert.setContentText(
+              "Please enter a valid email address (e.g., user@example.com)");
           invalidEmailAlert.showAndWait();
         }
       }
@@ -170,6 +170,7 @@ public class UserManagementEditUserScene {
 
     return scene;
   }
+
   /**
    * Checks for valid email using RFC 5322
    *
@@ -184,7 +185,6 @@ public class UserManagementEditUserScene {
     }
     return pattern.matcher(email).matches();
   }
-
 
 
 }

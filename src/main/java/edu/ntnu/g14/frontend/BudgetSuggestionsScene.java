@@ -1,6 +1,7 @@
 package edu.ntnu.g14.frontend;
 
 import edu.ntnu.g14.BankApplication;
+import edu.ntnu.g14.dao.BudgetDAO;
 import edu.ntnu.g14.model.Budget;
 import edu.ntnu.g14.model.BudgetCategory;
 import edu.ntnu.g14.model.BudgetItem;
@@ -8,7 +9,6 @@ import edu.ntnu.g14.model.BudgetSuggestion;
 import edu.ntnu.g14.model.GenderCategory;
 import edu.ntnu.g14.model.HouseholdCategory;
 import edu.ntnu.g14.model.User;
-import edu.ntnu.g14.dao.BudgetDAO;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;

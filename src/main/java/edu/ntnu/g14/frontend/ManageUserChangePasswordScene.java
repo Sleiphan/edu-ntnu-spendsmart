@@ -5,8 +5,6 @@ import edu.ntnu.g14.model.FileManagement;
 import edu.ntnu.g14.model.User;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -29,8 +27,8 @@ import javafx.stage.Stage;
  */
 public class ManageUserChangePasswordScene {
 
-  static Stage stage = BankApplication.getStage();
   private static final User loggedInUser = BankApplication.loggedInUser;
+  static Stage stage = BankApplication.getStage();
 
   /**
    * Creates and returns a Scene object for changing the password of a user.
@@ -51,7 +49,8 @@ public class ManageUserChangePasswordScene {
     userInfoBox.setLayoutX(220);
     userInfoBox.setLayoutY(75);
 
-    Button cancelButton = ApplicationObjects.newButton("Go Back", 594 - 329, 399 - 136, 159, 61, 16);
+    Button cancelButton = ApplicationObjects.newButton("Go Back", 594 - 329, 399 - 136, 159, 61,
+        16);
     cancelButton.setOnAction(event -> {
       try {
         stage.setScene(UserManagementScene.scene());
@@ -73,7 +72,6 @@ public class ManageUserChangePasswordScene {
         0);
     TextField reNewPasswordField = ApplicationObjects.newTextField("", 594 - 329, 544 - 136, 326,
         30, 0);
-
 
     // Show an error message to the user, e.g., a dialog box, saying the old password is incorrect
     confirmButton.setOnAction(event -> {
@@ -108,7 +106,7 @@ public class ManageUserChangePasswordScene {
       } else {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Wrong password");
-        alert.setHeaderText("Incorrect old password: " +oldPasswordInput);
+        alert.setHeaderText("Incorrect old password: " + oldPasswordInput);
         alert.showAndWait();
         oldPasswordField.clear();
         newPasswordField.clear();

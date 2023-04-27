@@ -18,9 +18,9 @@ import org.junit.jupiter.api.TestInstance;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DAOToolsTest {
 
+  private static final Charset charset = StandardCharsets.UTF_8;
   private final String filePath = "DAOToolsTest.txt";
   private final String tempPath = filePath + ".temp";
-  private static final Charset charset = StandardCharsets.UTF_8;
   RandomAccessFile testFile;
   RandomAccessFile tempFile;
 

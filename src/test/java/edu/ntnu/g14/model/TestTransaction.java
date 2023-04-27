@@ -1,14 +1,16 @@
 package edu.ntnu.g14.model;
 
-import edu.ntnu.g14.model.BudgetCategory;
-import edu.ntnu.g14.model.Transaction;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 class TestTransaction {
+
   String fromAccountId;
   String toAccountId;
   BigDecimal amount;
@@ -43,27 +45,31 @@ class TestTransaction {
   @Test
   void testConstructor_withInvalidFromAccountNumber() {
     String invalidFromAccountNumber = "123.4567.8910";
-    assertThrows(IllegalArgumentException.class, () -> new Transaction(invalidFromAccountNumber, toAccountId, amount,
-        description, dateOfTransaction, category));
+    assertThrows(IllegalArgumentException.class,
+        () -> new Transaction(invalidFromAccountNumber, toAccountId, amount,
+            description, dateOfTransaction, category));
   }
 
   @Test
   void testConstructor_withInvalidToAccountNumber() {
     String invalidToAccountNumber = "123.4567.8910";
-    assertThrows(IllegalArgumentException.class, () -> new Transaction(fromAccountId, invalidToAccountNumber, amount,
-        description, dateOfTransaction, category));
+    assertThrows(IllegalArgumentException.class,
+        () -> new Transaction(fromAccountId, invalidToAccountNumber, amount,
+            description, dateOfTransaction, category));
   }
 
   @Test
   void testConstructor_withNullDescription() {
-    assertThrows(IllegalArgumentException.class, () -> new Transaction(fromAccountId, toAccountId, amount,
-        null, dateOfTransaction, category));
+    assertThrows(IllegalArgumentException.class,
+        () -> new Transaction(fromAccountId, toAccountId, amount,
+            null, dateOfTransaction, category));
   }
 
   @Test
   void testConstructor_withNullDateOfTransaction() {
-    assertThrows(IllegalArgumentException.class, () -> new Transaction(fromAccountId, toAccountId, amount,
-        description, null, category));
+    assertThrows(IllegalArgumentException.class,
+        () -> new Transaction(fromAccountId, toAccountId, amount,
+            description, null, category));
   }
 
   @Test
@@ -84,7 +90,8 @@ class TestTransaction {
     String invalidFromAccountNumber = "123.4567.8910";
     Transaction.TransactionBuilder transactionBuilder = new Transaction.TransactionBuilder();
 
-    assertThrows(IllegalArgumentException.class, () -> transactionBuilder.fromAccountNumber(invalidFromAccountNumber));
+    assertThrows(IllegalArgumentException.class,
+        () -> transactionBuilder.fromAccountNumber(invalidFromAccountNumber));
   }
 
   @Test
@@ -92,7 +99,8 @@ class TestTransaction {
     String invalidToAccountNumber = "123.4567.8910";
     Transaction.TransactionBuilder transactionBuilder = new Transaction.TransactionBuilder();
 
-    assertThrows(IllegalArgumentException.class, () -> transactionBuilder.toAccountNumber(invalidToAccountNumber));
+    assertThrows(IllegalArgumentException.class,
+        () -> transactionBuilder.toAccountNumber(invalidToAccountNumber));
   }
 
   @Test
@@ -101,6 +109,7 @@ class TestTransaction {
 
     assertThrows(IllegalArgumentException.class, () -> transactionBuilder.description(null));
   }
+
   @Test
   void testTransactionBuilder_withNullDateOfTransaction() {
     Transaction.TransactionBuilder transactionBuilder = new Transaction.TransactionBuilder();
@@ -119,9 +128,11 @@ class TestTransaction {
         .category(category);
 
     Transaction transaction = transactionBuilder.build();
-    String expectedToString = "Transaction{fromAccountNumber=" + fromAccountId + ", toAccountNumber=" + toAccountId +
-        ", amount=" + amount + ", description=" + description + ", dateOfTransaction=" + dateOfTransaction +
-        ", category=" + category + '}';
+    String expectedToString =
+        "Transaction{fromAccountNumber=" + fromAccountId + ", toAccountNumber=" + toAccountId +
+            ", amount=" + amount + ", description=" + description + ", dateOfTransaction="
+            + dateOfTransaction +
+            ", category=" + category + '}';
 
     assertEquals(expectedToString, transaction.toString());
   }

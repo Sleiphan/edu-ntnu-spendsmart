@@ -1,10 +1,10 @@
 package edu.ntnu.g14.frontend;
 
 import edu.ntnu.g14.BankApplication;
+import edu.ntnu.g14.dao.InvoiceDAO;
 import edu.ntnu.g14.model.FileManagement;
 import edu.ntnu.g14.model.Invoice;
 import edu.ntnu.g14.model.User;
-import edu.ntnu.g14.dao.InvoiceDAO;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
@@ -28,13 +28,12 @@ import org.apache.commons.validator.routines.BigDecimalValidator;
 
 public class InvoiceScene {
 
-  static Stage stage = BankApplication.getStage();
-
   private static final String INVOICE_PATH = FileManagement.PATH_INVOICES;
+  static Stage stage = BankApplication.getStage();
   private static InvoiceDAO invoiceFile;
 
   static public Scene scene() throws IOException {
-  
+
     final User user = BankApplication.loggedInUser;
     final String userID = user.getLoginInfo().getUserId();
     invoiceFile = new InvoiceDAO(INVOICE_PATH);

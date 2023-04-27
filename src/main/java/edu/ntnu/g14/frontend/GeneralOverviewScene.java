@@ -32,7 +32,6 @@ public class GeneralOverviewScene {
   private static Text totalExpensesText;
 
   static public Scene scene() throws IOException {
-    
 
     String[] columnTitlesTransactionsTable = {"Date", "Transaction", "Amount", "Account"};
     String monthlyExpensesPieChartTitle = "Expenses Last 30 Days";
