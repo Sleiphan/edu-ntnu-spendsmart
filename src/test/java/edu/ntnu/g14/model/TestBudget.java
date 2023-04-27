@@ -109,7 +109,7 @@ public class TestBudget {
     assertEquals(new BigDecimal("20000"), budget.getSavings());
 
     assertThrows(IllegalArgumentException.class, () -> budget.setSavings(null));
-    assertThrows(IllegalArgumentException.class, () -> budget.setSavings(new BigDecimal("-20000")));
+    assertDoesNotThrow(() -> budget.setSavings(new BigDecimal("-20000")));
   }
 
   @Test
