@@ -7,6 +7,8 @@ import edu.ntnu.g14.model.FileManagement;
 import edu.ntnu.g14.model.User;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -72,6 +74,23 @@ public class UserManagementEditUserScene {
     });
 
     Button confirmEmail = ApplicationObjects.newButton("Confirm Email", 0, 0, 157, 25, 16);
+    TextField emailTextField = new TextField();
+    emailTextField.setPromptText("Enter your email");
+
+    emailTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+      if (!newValue) { // Check when the TextField loses focus
+        String emailInput = emailTextField.getText();
+        if (!isValidEmail(emailInput)) {
+          // Show an error message using an Alert
+          Alert invalidEmailAlert = new Alert(Alert.AlertType.ERROR);
+          invalidEmailAlert.setTitle("Invalid Email");
+          invalidEmailAlert.setHeaderText("The email you have entered is invalid");
+          invalidEmailAlert.setContentText("Please enter a valid email address (e.g., user@example.com)");
+          invalidEmailAlert.showAndWait();
+        }
+      }
+    });
+
     confirmEmail.setOnAction(event -> {
       Alert emailAlert = new Alert(Alert.AlertType.CONFIRMATION);
       emailAlert.setTitle("Confirm Email Change");
@@ -151,5 +170,22 @@ public class UserManagementEditUserScene {
 
     return scene;
   }
+  /**
+   * Checks for valid email using RFC 5322
+   *
+   * @param email email input form user
+   * @return true if match false, if no match
+   */
+  private static boolean isValidEmail(String email) {
+    String emailRegex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
+    Pattern pattern = Pattern.compile(emailRegex);
+    if (email == null) {
+      return false;
+    }
+    return pattern.matcher(email).matches();
+  }
+
+
+
 }
 

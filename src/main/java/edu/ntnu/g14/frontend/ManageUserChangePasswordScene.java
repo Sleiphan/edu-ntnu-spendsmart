@@ -5,10 +5,13 @@ import edu.ntnu.g14.model.FileManagement;
 import edu.ntnu.g14.model.User;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -48,7 +51,14 @@ public class ManageUserChangePasswordScene {
     userInfoBox.setLayoutX(220);
     userInfoBox.setLayoutY(75);
 
-    Button cancelButton = ApplicationObjects.newButton("Cancel", 594 - 329, 399 - 136, 159, 61, 16);
+    Button cancelButton = ApplicationObjects.newButton("Go Back", 594 - 329, 399 - 136, 159, 61, 16);
+    cancelButton.setOnAction(event -> {
+      try {
+        stage.setScene(UserManagementScene.scene());
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    });
     Button confirmButton = ApplicationObjects.newButton("Confirm", 761 - 329, 399 - 136, 159, 61,
         16);
     Text oldPassword = ApplicationObjects.newText("Enter old password", 16, false, 446 - 329,
@@ -95,6 +105,15 @@ public class ManageUserChangePasswordScene {
           return;
         }
         // Show an error message to the user, e.g., a dialog box, saying the new passwords do not match
+      } else {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Wrong password");
+        alert.setHeaderText("Incorrect old password: " +oldPasswordInput);
+        alert.showAndWait();
+        oldPasswordField.clear();
+        newPasswordField.clear();
+        reNewPasswordField.clear();
+        return;
       }
       try {
         stage.setScene(UserManagementScene.scene());
