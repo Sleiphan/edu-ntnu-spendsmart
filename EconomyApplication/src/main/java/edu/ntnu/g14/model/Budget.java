@@ -195,7 +195,7 @@ public class Budget {
       throw new IllegalArgumentException("Savings cannot be null");
     }
     if (savings.compareTo(BigDecimal.ZERO) < 0) {
-      throw new IllegalArgumentException("Savings cannot be a negative number.");
+      savings=BigDecimal.ZERO; // savings can not be negative
     }
     this.savings = savings;
     updateCalculations();
