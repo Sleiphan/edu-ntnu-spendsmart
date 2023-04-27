@@ -121,7 +121,9 @@ public class ApplicationObjects {
         playing.stop();
         MediaPlayer sound = ApplicationObjects.newSound("userManagementScene");
         setPlaying(sound);
-        sound.play();
+        if (ApplicationObjects.soundOn()) {
+          sound.play();
+        }
         stage.setScene(UserManagementScene.scene());
       } catch (IOException e1) {
 
@@ -139,7 +141,9 @@ public class ApplicationObjects {
         playing.stop();
         MediaPlayer sound = ApplicationObjects.newSound("invoiceScene");
         setPlaying(sound);
-        sound.play();
+        if (ApplicationObjects.soundOn()) {
+          sound.play();
+        }
         stage.setScene(InvoiceScene.scene());
       } catch (IOException e1) {
         e1.printStackTrace();
@@ -151,7 +155,9 @@ public class ApplicationObjects {
         playing.stop();
         MediaPlayer sound = ApplicationObjects.newSound("transferScene");
         setPlaying(sound);
-        sound.play();
+        if (ApplicationObjects.soundOn()) {
+          sound.play();
+        }
         stage.setScene(TransferScene.scene());
       } catch (IOException e1) {
         e1.printStackTrace();
@@ -163,7 +169,9 @@ public class ApplicationObjects {
         playing.stop();
         MediaPlayer sound = ApplicationObjects.newSound("transferScene");
         setPlaying(sound);
-        sound.play();
+        if (ApplicationObjects.soundOn()) {
+          sound.play();
+        }
         stage.setScene(PaymentScene.scene());
       } catch (IOException e1) {
         e1.printStackTrace();
@@ -175,7 +183,9 @@ public class ApplicationObjects {
         playing.stop();
         MediaPlayer sound = ApplicationObjects.newSound("accountOverviewScene");
         setPlaying(sound);
-        sound.play();
+        if (ApplicationObjects.soundOn()) {
+          sound.play();
+        }
         stage.setScene(AccountOverviewScene.scene(null));
       } catch (IOException e1) {
 
@@ -188,7 +198,9 @@ public class ApplicationObjects {
         playing.stop();
         MediaPlayer sound = ApplicationObjects.newSound("generalOverviewScene");
         setPlaying(sound);
-        sound.play();
+        if (ApplicationObjects.soundOn()) {
+          sound.play();
+        }
         stage.setScene(GeneralOverviewScene.scene());
       } catch (IOException e1) {
 
@@ -201,7 +213,9 @@ public class ApplicationObjects {
         playing.stop();
         MediaPlayer sound = ApplicationObjects.newSound("budgetingScene");
         setPlaying(sound);
-        sound.play();
+        if (ApplicationObjects.soundOn()) {
+          sound.play();
+        }
         stage.setScene(BudgetingScene.scene());
       } catch (IOException e1) {
 
@@ -219,7 +233,9 @@ public class ApplicationObjects {
         playing.stop();
         MediaPlayer sound = ApplicationObjects.newSound("invoiceScene");
         setPlaying(sound);
-        sound.play();
+        if (ApplicationObjects.soundOn()) {
+          sound.play();
+        }
         stage.setScene(InvoiceScene.scene());
       } catch (IOException e1) {
         e1.printStackTrace();
@@ -231,7 +247,9 @@ public class ApplicationObjects {
         playing.stop();
         MediaPlayer sound = ApplicationObjects.newSound("transferScene");
         setPlaying(sound);
-        sound.play();
+        if (ApplicationObjects.soundOn()) {
+          sound.play();
+        }
         stage.setScene(TransferScene.scene());
       } catch (IOException e1) {
         e1.printStackTrace();
@@ -243,7 +261,9 @@ public class ApplicationObjects {
         playing.stop();
         MediaPlayer sound = ApplicationObjects.newSound("transferScene");
         setPlaying(sound);
-        sound.play();
+        if (ApplicationObjects.soundOn()) {
+          sound.play();
+        }
         stage.setScene(PaymentScene.scene());
       } catch (IOException e1) {
         e1.printStackTrace();
@@ -255,7 +275,9 @@ public class ApplicationObjects {
         playing.stop();
         MediaPlayer sound = ApplicationObjects.newSound("accountOverviewScene");
         setPlaying(sound);
-        sound.play();
+        if (ApplicationObjects.soundOn()) {
+          sound.play();
+        }
         stage.setScene(AccountOverviewScene.scene(null));
       } catch (IOException e1) {
 
@@ -268,7 +290,9 @@ public class ApplicationObjects {
         playing.stop();
         MediaPlayer sound = ApplicationObjects.newSound("generalOverviewScene");
         setPlaying(sound);
-        sound.play();
+        if (ApplicationObjects.soundOn()) {
+          sound.play();
+        }
         stage.setScene(GeneralOverviewScene.scene());
       } catch (IOException e1) {
 
@@ -281,7 +305,9 @@ public class ApplicationObjects {
         playing.stop();
         MediaPlayer sound = ApplicationObjects.newSound("budgetingScene");
         setPlaying(sound);
-        sound.play();
+        if (ApplicationObjects.soundOn()) {
+          sound.play();
+        }
         stage.setScene(BudgetingScene.scene());
       } catch (IOException e1) {
 
