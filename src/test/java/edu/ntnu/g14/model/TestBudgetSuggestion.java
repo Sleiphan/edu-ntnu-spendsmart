@@ -1,18 +1,16 @@
 package edu.ntnu.g14.model;
 
-import edu.ntnu.g14.model.BudgetCategory;
-import edu.ntnu.g14.model.BudgetSuggestion;
-import java.math.RoundingMode;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 public class TestBudgetSuggestion {
+
   private BudgetSuggestion budgetSuggestion;
 
   @BeforeEach
@@ -26,12 +24,15 @@ public class TestBudgetSuggestion {
     Map<BudgetCategory, BigDecimal> budgetMap = budgetSuggestion.suggestBudget(totalIncome);
 
     assertNotNull(budgetMap, "Budget map should not be null");
-    assertEquals(budgetMap.get(BudgetCategory.FOOD_AND_DRINK), calculatePercentage(totalIncome, 40));
-    assertEquals(budgetMap.get(BudgetCategory.CLOTHES_AND_SHOES), calculatePercentage(totalIncome, 10));
+    assertEquals(budgetMap.get(BudgetCategory.FOOD_AND_DRINK),
+        calculatePercentage(totalIncome, 40));
+    assertEquals(budgetMap.get(BudgetCategory.CLOTHES_AND_SHOES),
+        calculatePercentage(totalIncome, 10));
     assertEquals(budgetMap.get(BudgetCategory.PERSONAL_CARE), calculatePercentage(totalIncome, 10));
     assertEquals(budgetMap.get(BudgetCategory.LEISURE), calculatePercentage(totalIncome, 10));
     assertEquals(budgetMap.get(BudgetCategory.TRAVEL), calculatePercentage(totalIncome, 5));
-    assertEquals(budgetMap.get(BudgetCategory.ALCOHOL_AND_TOBACCO), calculatePercentage(totalIncome, 2));
+    assertEquals(budgetMap.get(BudgetCategory.ALCOHOL_AND_TOBACCO),
+        calculatePercentage(totalIncome, 2));
     assertEquals(budgetMap.get(BudgetCategory.OTHER), calculatePercentage(totalIncome, 23));
   }
 
@@ -41,12 +42,15 @@ public class TestBudgetSuggestion {
     Map<BudgetCategory, BigDecimal> budgetMap = budgetSuggestion.suggestBudget(totalIncome);
 
     assertNotNull(budgetMap, "Budget map should not be null");
-    assertEquals(budgetMap.get(BudgetCategory.FOOD_AND_DRINK), calculatePercentage(totalIncome, 30));
-    assertEquals(budgetMap.get(BudgetCategory.CLOTHES_AND_SHOES), calculatePercentage(totalIncome, 12));
+    assertEquals(budgetMap.get(BudgetCategory.FOOD_AND_DRINK),
+        calculatePercentage(totalIncome, 30));
+    assertEquals(budgetMap.get(BudgetCategory.CLOTHES_AND_SHOES),
+        calculatePercentage(totalIncome, 12));
     assertEquals(budgetMap.get(BudgetCategory.PERSONAL_CARE), calculatePercentage(totalIncome, 12));
     assertEquals(budgetMap.get(BudgetCategory.LEISURE), calculatePercentage(totalIncome, 13));
     assertEquals(budgetMap.get(BudgetCategory.TRAVEL), calculatePercentage(totalIncome, 8));
-    assertEquals(budgetMap.get(BudgetCategory.ALCOHOL_AND_TOBACCO), calculatePercentage(totalIncome, 2));
+    assertEquals(budgetMap.get(BudgetCategory.ALCOHOL_AND_TOBACCO),
+        calculatePercentage(totalIncome, 2));
     assertEquals(budgetMap.get(BudgetCategory.OTHER), calculatePercentage(totalIncome, 23));
   }
 
@@ -56,12 +60,15 @@ public class TestBudgetSuggestion {
     Map<BudgetCategory, BigDecimal> budgetMap = budgetSuggestion.suggestBudget(totalIncome);
 
     assertNotNull(budgetMap, "Budget map should not be null");
-    assertEquals(budgetMap.get(BudgetCategory.FOOD_AND_DRINK), calculatePercentage(totalIncome, 20));
-    assertEquals(budgetMap.get(BudgetCategory.CLOTHES_AND_SHOES), calculatePercentage(totalIncome, 10));
+    assertEquals(budgetMap.get(BudgetCategory.FOOD_AND_DRINK),
+        calculatePercentage(totalIncome, 20));
+    assertEquals(budgetMap.get(BudgetCategory.CLOTHES_AND_SHOES),
+        calculatePercentage(totalIncome, 10));
     assertEquals(budgetMap.get(BudgetCategory.PERSONAL_CARE), calculatePercentage(totalIncome, 15));
     assertEquals(budgetMap.get(BudgetCategory.LEISURE), calculatePercentage(totalIncome, 15));
     assertEquals(budgetMap.get(BudgetCategory.TRAVEL), calculatePercentage(totalIncome, 10));
-    assertEquals(budgetMap.get(BudgetCategory.ALCOHOL_AND_TOBACCO), calculatePercentage(totalIncome, 2));
+    assertEquals(budgetMap.get(BudgetCategory.ALCOHOL_AND_TOBACCO),
+        calculatePercentage(totalIncome, 2));
     assertEquals(budgetMap.get(BudgetCategory.OTHER), calculatePercentage(totalIncome, 28));
   }
 
@@ -71,12 +78,15 @@ public class TestBudgetSuggestion {
     Map<BudgetCategory, BigDecimal> budgetMap = budgetSuggestion.suggestBudget(totalIncome);
 
     assertNotNull(budgetMap, "Budget map should not be null");
-    assertEquals(budgetMap.get(BudgetCategory.FOOD_AND_DRINK), calculatePercentage(totalIncome, 15));
-    assertEquals(budgetMap.get(BudgetCategory.CLOTHES_AND_SHOES), calculatePercentage(totalIncome, 15));
+    assertEquals(budgetMap.get(BudgetCategory.FOOD_AND_DRINK),
+        calculatePercentage(totalIncome, 15));
+    assertEquals(budgetMap.get(BudgetCategory.CLOTHES_AND_SHOES),
+        calculatePercentage(totalIncome, 15));
     assertEquals(budgetMap.get(BudgetCategory.PERSONAL_CARE), calculatePercentage(totalIncome, 15));
     assertEquals(budgetMap.get(BudgetCategory.LEISURE), calculatePercentage(totalIncome, 15));
     assertEquals(budgetMap.get(BudgetCategory.TRAVEL), calculatePercentage(totalIncome, 15));
-    assertEquals(budgetMap.get(BudgetCategory.ALCOHOL_AND_TOBACCO), calculatePercentage(totalIncome, 5));
+    assertEquals(budgetMap.get(BudgetCategory.ALCOHOL_AND_TOBACCO),
+        calculatePercentage(totalIncome, 5));
     assertEquals(budgetMap.get(BudgetCategory.OTHER), calculatePercentage(totalIncome, 20));
   }
 

@@ -1,11 +1,11 @@
 package edu.ntnu.g14.model;
 
-import edu.ntnu.g14.model.BudgetCategory;
-import edu.ntnu.g14.model.Payment;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 class TestPayment {
 
@@ -20,7 +20,8 @@ class TestPayment {
     LocalDate dateOfTransaction = LocalDate.now();
     BudgetCategory category = BudgetCategory.ALCOHOL_AND_TOBACCO;
 
-    Payment payment = new Payment(fromAccountId, amount, description, toAccountId, dueDate, CID, dateOfTransaction, category);
+    Payment payment = new Payment(fromAccountId, amount, description, toAccountId, dueDate, CID,
+        dateOfTransaction, category);
 
     assertNotNull(payment, "Payment object should not be null");
   }
@@ -38,7 +39,8 @@ class TestPayment {
       LocalDate dateOfTransaction = LocalDate.now();
       BudgetCategory category = BudgetCategory.ALCOHOL_AND_TOBACCO;
 
-      new Payment(fromAccountId, amount, description, toAccountId, dueDate, CID, dateOfTransaction, category);
+      new Payment(fromAccountId, amount, description, toAccountId, dueDate, CID, dateOfTransaction,
+          category);
     });
   }
 
@@ -54,7 +56,8 @@ class TestPayment {
       LocalDate dateOfTransaction = LocalDate.now();
       BudgetCategory category = BudgetCategory.ALCOHOL_AND_TOBACCO;
 
-      new Payment(fromAccountId, amount, description, toAccountId, dueDate, CID, dateOfTransaction, category);
+      new Payment(fromAccountId, amount, description, toAccountId, dueDate, CID, dateOfTransaction,
+          category);
     });
   }
 }

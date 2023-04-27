@@ -1,7 +1,7 @@
 package edu.ntnu.g14.frontend;
 
-import edu.ntnu.g14.model.Account;
 import edu.ntnu.g14.BankApplication;
+import edu.ntnu.g14.model.Account;
 import edu.ntnu.g14.model.FileManagement;
 import edu.ntnu.g14.model.Transaction;
 import java.io.IOException;
@@ -13,10 +13,13 @@ import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.MediaPlayer;
@@ -33,7 +36,7 @@ public class AccountOverviewScene {
   private static Text accountNumberText;
 
   static public Scene scene(Optional<Account> account) throws IOException {
-   
+
     List<Account> accounts = BankApplication.loggedInUser.getAccountsAsList();
     ObservableList<String> accountNames = FXCollections.observableArrayList(getAccountsNames());
 
@@ -41,12 +44,12 @@ public class AccountOverviewScene {
 
     ComboBox<String> accountComboBox = ApplicationObjects.newComboBox(columnTitlesTransactionsTable,
         364, 30, 30, 364 - (364 / 2), 50);
-    accountComboBox.setButtonCell(new ListCell(){
+    accountComboBox.setButtonCell(new ListCell() {
 
       @Override
       protected void updateItem(Object item, boolean empty) {
         super.updateItem(item, empty);
-        if(empty || item==null){
+        if (empty || item == null) {
           setStyle("-fx-font-size:16;");
           setStyle("-fx-alignment: left;");
         } else {

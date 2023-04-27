@@ -1,13 +1,13 @@
 package edu.ntnu.g14.frontend;
 
 import edu.ntnu.g14.BankApplication;
+import edu.ntnu.g14.dao.BudgetDAO;
 import edu.ntnu.g14.model.Budget;
 import edu.ntnu.g14.model.BudgetCategory;
 import edu.ntnu.g14.model.BudgetItem;
 import edu.ntnu.g14.model.GenderCategory;
 import edu.ntnu.g14.model.HouseholdCategory;
 import edu.ntnu.g14.model.User;
-import edu.ntnu.g14.dao.BudgetDAO;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -142,6 +142,18 @@ public class CreateNewBudgetScene {
     AgeInput.addEventFilter(KeyEvent.KEY_TYPED, event -> {
       if (!event.getCharacter().matches("\\d")) { // Check if the character is a digit
         event.consume(); // If it's not a digit, consume the event to prevent it from being processed
+      }
+
+      if (!event.isConsumed()) {
+        String data = AgeInput.getText() + event.getCharacter();
+        if (data.isEmpty()) {
+          data = "0";
+        }
+        int currentValue = Integer.parseInt(data);
+        if (currentValue > Byte.MAX_VALUE) {
+          AgeInput.setText("" + Byte.MAX_VALUE);
+          event.consume();
+        }
       }
     });
 
@@ -452,7 +464,7 @@ public class CreateNewBudgetScene {
    * @param budgetDAO    BudgetDAO instance for saving the budget
    */
   private static void addRevenueToBudget(BudgetCategory selectedItem, String inputText,
-      BudgetDAO budgetDAO, ChoiceBox<String> expenditureChoiceBox) {
+      BudgetDAO budgetDAO, ChoiceBox<String> revenueChoiceBox) {
     BigDecimal amount = new BigDecimal(inputText);
 
     BudgetItem budgetItem = new BudgetItem(selectedItem, amount);
@@ -477,11 +489,11 @@ public class CreateNewBudgetScene {
     }
     BudgetingScene.refreshData();
     // Remove the selected category from the choice box
-    expenditureChoiceBox.getItems().remove(expenditureChoiceBox.getValue());
+    revenueChoiceBox.getItems().remove(revenueChoiceBox.getValue());
 
     // Set the first available category as the new value (if any)
-    if (!expenditureChoiceBox.getItems().isEmpty()) {
-      expenditureChoiceBox.setValue(expenditureChoiceBox.getItems().get(0));
+    if (!revenueChoiceBox.getItems().isEmpty()) {
+      revenueChoiceBox.setValue(revenueChoiceBox.getItems().get(0));
     }
   }
 
@@ -493,7 +505,8 @@ public class CreateNewBudgetScene {
    * @param inputText    String representing the amount of the expenditure item
    * @param budgetDAO    BudgetDAO instance for saving the budget
    */
-  private static void addExpenditureToBudget(BudgetCategory selectedItem, String inputText, BudgetDAO budgetDAO, ChoiceBox<String> expenditureChoiceBox) {
+  private static void addExpenditureToBudget(BudgetCategory selectedItem, String inputText,
+      BudgetDAO budgetDAO, ChoiceBox<String> expenditureChoiceBox) {
     BigDecimal amount = new BigDecimal(inputText);
 
     BudgetItem budgetItem = new BudgetItem(selectedItem, amount);

@@ -8,14 +8,12 @@ import java.util.List;
 public class Budget {
 
   private static final char CSV_DELIMITER = ',';
-
+  private final List<BudgetItem> entries = new ArrayList<>();
   private BigDecimal salary = BigDecimal.ZERO;
   private BigDecimal savings = BigDecimal.ZERO;
   private byte age;
   private GenderCategory gender;
-
   private HouseholdCategory household;
-  private final List<BudgetItem> entries = new ArrayList<>();
 
 
   /**
@@ -46,6 +44,34 @@ public class Budget {
 
   }
 
+  public static Budget fromCSV(String data) {
+    final String[] fields = data.split(CSV_DELIMITER + "(?!\\s)");
+    final BigDecimal salary = new BigDecimal(fields[0]);
+    final BigDecimal savings = new BigDecimal(fields[1]);
+    final byte age = Byte.parseByte(fields[2]);
+    final GenderCategory gender =
+        fields[3].equals("null") ? null : GenderCategory.valueOf(fields[3]);
+    final HouseholdCategory householdCategory =
+        fields[4].equals("null") ? null : HouseholdCategory.valueOf(fields[4]);
+    final List<BudgetItem> entries = new ArrayList<>();
+
+    for (int i = 5; i < fields.length; i++) {
+      entries.add(BudgetItem.fromCSV(fields[i]));
+    }
+
+    Budget budget = new Budget(age, gender);
+    budget.setSalary(salary);
+    budget.setSavings(savings);
+    budget.setSavings(savings);
+    budget.setHouseholdCategory(householdCategory);
+
+    for (BudgetItem i : entries) {
+      budget.addBudgetItem(i);
+      i.setAssociatedBudget(budget);
+    }
+
+    return budget;
+  }
 
   /**
    * Adds a new budget item to this budget.
@@ -119,36 +145,6 @@ public class Budget {
         allEntries;
   }
 
-
-  public static Budget fromCSV(String data) {
-    final String[] fields = data.split(CSV_DELIMITER + "(?!\\s)");
-    final BigDecimal salary = new BigDecimal(fields[0]);
-    final BigDecimal savings = new BigDecimal(fields[1]);
-    final byte age = Byte.parseByte(fields[2]);
-    final GenderCategory gender =
-        fields[3].equals("null") ? null : GenderCategory.valueOf(fields[3]);
-    final HouseholdCategory householdCategory =
-        fields[4].equals("null") ? null : HouseholdCategory.valueOf(fields[4]);
-    final List<BudgetItem> entries = new ArrayList<>();
-
-    for (int i = 5; i < fields.length; i++) {
-      entries.add(BudgetItem.fromCSV(fields[i]));
-    }
-
-    Budget budget = new Budget(age, gender);
-    budget.setSalary(salary);
-    budget.setSavings(savings);
-    budget.setSavings(savings);
-    budget.setHouseholdCategory(householdCategory);
-
-    for (BudgetItem i : entries) {
-      budget.addBudgetItem(i);
-      i.setAssociatedBudget(budget);
-    }
-
-    return budget;
-  }
-
   private void setHouseholdCategory(HouseholdCategory householdCategory) {
     this.household = householdCategory;
   }
@@ -168,6 +164,18 @@ public class Budget {
     this.entries.clear();
   }
 
+  public HouseholdCategory getCategory() {
+    return household;
+  }
+
+  /**
+   * Returns the salary registered with this budget.
+   *
+   * @return the salary registered with this budget.
+   */
+  public BigDecimal getSalary() {
+    return salary;
+  }
 
   /**
    * Sets the salary registered with this budget.
@@ -186,6 +194,15 @@ public class Budget {
   }
 
   /**
+   * Returns the savings registered with this budget.
+   *
+   * @return the savings registered with this budget.
+   */
+  public BigDecimal getSavings() {
+    return savings;
+  }
+
+  /**
    * Sets the savings registered with this budget.
    *
    * @param savings the savings registered with this budget.
@@ -195,10 +212,19 @@ public class Budget {
       throw new IllegalArgumentException("Savings cannot be null");
     }
     if (savings.compareTo(BigDecimal.ZERO) < 0) {
-      savings=BigDecimal.ZERO; // savings can not be negative
+      savings = BigDecimal.ZERO; // savings can not be negative
     }
     this.savings = savings;
     updateCalculations();
+  }
+
+  /**
+   * Returns the gender of the person following this budget.
+   *
+   * @return the gender of the person following this budget.
+   */
+  public GenderCategory getGender() {
+    return gender;
   }
 
   /**
@@ -209,37 +235,6 @@ public class Budget {
   public void setGender(GenderCategory gender) {
     this.gender = gender;
     updateCalculations();
-  }
-
-  public HouseholdCategory getCategory() {
-    return household;
-  }
-
-  /**
-   * Returns the salary registered with this budget.
-   *
-   * @return the salary registered with this budget.
-   */
-  public BigDecimal getSalary() {
-    return salary;
-  }
-
-  /**
-   * Returns the savings registered with this budget.
-   *
-   * @return the savings registered with this budget.
-   */
-  public BigDecimal getSavings() {
-    return savings;
-  }
-
-  /**
-   * Returns the gender of the person following this budget.
-   *
-   * @return the gender of the person following this budget.
-   */
-  public GenderCategory getGender() {
-    return gender;
   }
 
   /**

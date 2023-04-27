@@ -45,6 +45,15 @@ public class Personalia {
   }
 
   /**
+   * Sets the email address of this person
+   *
+   * @param email the new email address to set
+   */
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  /**
    * Returns a blurred version of the email address, where only the first and last characters of the
    * handle are visible and the rest of the characters are replaced with asterisks. If the email
    * address is null or less than 3 characters long, it will return the original email address.
@@ -61,15 +70,6 @@ public class Personalia {
       handleArray[i] = '*';
     }
     return new String(handleArray) + email.substring(email.lastIndexOf("@"));
-  }
-
-  /**
-   * Sets the email address of this person
-   *
-   * @param email the new email address to set
-   */
-  public void setEmail(String email) {
-    this.email = email;
   }
 
   /**

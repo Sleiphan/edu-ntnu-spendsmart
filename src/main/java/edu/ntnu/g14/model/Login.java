@@ -6,9 +6,9 @@ package edu.ntnu.g14.model;
  */
 public class Login {
 
+  private final String userId;
   private String userName;
   private String password;
-  private final String userId;
 
   /**
    * Creates a new Login object with the specified username, password, and user ID.

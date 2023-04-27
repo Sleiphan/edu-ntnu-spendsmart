@@ -32,21 +32,19 @@ import javafx.stage.Stage;
  */
 public class PaymentConfirmationScene {
 
-  static Stage stage = BankApplication.getStage();
-  private static ArrayList<String> paymentInfo;
-
+  /**
+   * This variable is used to format the due date of the payment to the format dd/MM/yyyy
+   */
+  public static final DateTimeFormatter dateFormatter =
+      DateTimeFormatter.ofPattern("dd/MM/yyyy");
   /**
    * This variable is used to format the due date of the payment to the format from input, which is
    * dd.MM.yyyy Used to make due date parseable by LocalDate.parse()
    */
   private static final DateTimeFormatter formatter =
       DateTimeFormatter.ofPattern("dd.MM.yyyy");
-
-  /**
-   * This variable is used to format the due date of the payment to the format dd/MM/yyyy
-   */
-  public static final DateTimeFormatter dateFormatter =
-      DateTimeFormatter.ofPattern("dd/MM/yyyy");
+  static Stage stage = BankApplication.getStage();
+  private static ArrayList<String> paymentInfo;
 
   /**
    * This class represents the scene for confirming a payment. It contains a table with information

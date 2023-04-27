@@ -10,12 +10,13 @@ import java.util.Objects;
  */
 public class Invoice {
 
+  public static final DateTimeFormatter dateFormatter =
+      DateTimeFormatter.ofPattern("dd/MM/yyyy");
+  public static final String CSV_FIELD_DELIMITER = ";";
   private LocalDate dueDate;
   private BigDecimal amount;
   private String recipientAccountNumber;
   private String comment;
-  public static final DateTimeFormatter dateFormatter =
-      DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
   /**
    * Constructor for an Invoice object with a due date, an amount, a recipient account number, and a
@@ -51,6 +52,22 @@ public class Invoice {
     this.amount = amount;
     this.recipientAccountNumber = recipientAccountNumber;
     this.comment = comment;
+  }
+
+  /**
+   * Creates a new invoice object from a CSV string representation.
+   *
+   * @param csvString the CSV string representation of the invoice
+   * @return a new invoice object created from the CSV string representation
+   */
+  public static Invoice fromCSVString(String csvString) {
+    String[] fields = csvString.split(CSV_FIELD_DELIMITER + "(?!\\s)");
+    String recipient = fields[2];
+    BigDecimal amount = new BigDecimal(fields[1]);
+    LocalDate dateOfTransaction = LocalDate.parse(fields[0], dateFormatter);
+    String comment = fields[3].substring(1, fields[3].length() - 1);
+
+    return new Invoice(dateOfTransaction, amount, recipient, comment);
   }
 
   /**
@@ -98,8 +115,6 @@ public class Invoice {
     return comment;
   }
 
-  public static final String CSV_FIELD_DELIMITER = ";";
-
   /**
    * Returns a CSV string representation of the invoice.
    *
@@ -112,28 +127,18 @@ public class Invoice {
         "\"" + comment + "\"";
   }
 
-  /**
-   * Creates a new invoice object from a CSV string representation.
-   *
-   * @param csvString the CSV string representation of the invoice
-   * @return a new invoice object created from the CSV string representation
-   */
-  public static Invoice fromCSVString(String csvString) {
-    String[] fields = csvString.split(CSV_FIELD_DELIMITER + "(?!\\s)");
-    String recipient = fields[2];
-    BigDecimal amount = new BigDecimal(fields[1]);
-    LocalDate dateOfTransaction = LocalDate.parse(fields[0], dateFormatter);
-    String comment = fields[3].substring(1, fields[3].length() - 1);
-
-    return new Invoice(dateOfTransaction, amount, recipient, comment);
-  }
-
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     Invoice invoice = (Invoice) o;
-    return Objects.equals(dueDate, invoice.dueDate) && Objects.equals(amount, invoice.amount) && Objects.equals(recipientAccountNumber, invoice.recipientAccountNumber) && Objects.equals(comment, invoice.comment);
+    return Objects.equals(dueDate, invoice.dueDate) && Objects.equals(amount, invoice.amount)
+        && Objects.equals(recipientAccountNumber, invoice.recipientAccountNumber) && Objects.equals(
+        comment, invoice.comment);
   }
 
   @Override

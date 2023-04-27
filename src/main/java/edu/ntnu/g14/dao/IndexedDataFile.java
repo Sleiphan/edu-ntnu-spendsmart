@@ -25,19 +25,16 @@ public class IndexedDataFile {
 
   private final File fileFile;
   private final File tempFile;
-
+  /**
+   * This class uses an internal charset to read and write the index-section of the file.
+   */
+  private final Charset charset;
   private RandomAccessFile fileStream;
   private RandomAccessFile tempStream;
   private FileChannel fileChannel;
   private FileChannel tempChannel;
   private int chainedOpens;
-
   private long dataStartPosition;
-
-  /**
-   * This class uses an internal charset to read and write the index-section of the file.
-   */
-  private final Charset charset;
 
   /**
    * Constructs a new IndexedDataFile object given a file path and default charset.
@@ -447,8 +444,7 @@ public class IndexedDataFile {
           }
         }
         dataPos = fileStream.getFilePointer();
-      }
-      else {
+      } else {
         dataPos--;
         dataEnd--;
       }

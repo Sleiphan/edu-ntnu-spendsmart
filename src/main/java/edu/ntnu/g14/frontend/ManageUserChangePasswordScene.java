@@ -9,6 +9,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -26,8 +27,8 @@ import javafx.stage.Stage;
  */
 public class ManageUserChangePasswordScene {
 
-  static Stage stage = BankApplication.getStage();
   private static final User loggedInUser = BankApplication.loggedInUser;
+  static Stage stage = BankApplication.getStage();
 
   /**
    * Creates and returns a Scene object for changing the password of a user.
@@ -48,7 +49,15 @@ public class ManageUserChangePasswordScene {
     userInfoBox.setLayoutX(220);
     userInfoBox.setLayoutY(75);
 
-    Button cancelButton = ApplicationObjects.newButton("Cancel", 594 - 329, 399 - 136, 159, 61, 16);
+    Button cancelButton = ApplicationObjects.newButton("Go Back", 594 - 329, 399 - 136, 159, 61,
+        16);
+    cancelButton.setOnAction(event -> {
+      try {
+        stage.setScene(UserManagementScene.scene());
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    });
     Button confirmButton = ApplicationObjects.newButton("Confirm", 761 - 329, 399 - 136, 159, 61,
         16);
     Text oldPassword = ApplicationObjects.newText("Enter old password", 16, false, 446 - 329,
@@ -63,7 +72,6 @@ public class ManageUserChangePasswordScene {
         0);
     TextField reNewPasswordField = ApplicationObjects.newTextField("", 594 - 329, 544 - 136, 326,
         30, 0);
-
 
     // Show an error message to the user, e.g., a dialog box, saying the old password is incorrect
     confirmButton.setOnAction(event -> {
@@ -95,6 +103,15 @@ public class ManageUserChangePasswordScene {
           return;
         }
         // Show an error message to the user, e.g., a dialog box, saying the new passwords do not match
+      } else {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Wrong password");
+        alert.setHeaderText("Incorrect old password: " + oldPasswordInput);
+        alert.showAndWait();
+        oldPasswordField.clear();
+        newPasswordField.clear();
+        reNewPasswordField.clear();
+        return;
       }
       try {
         stage.setScene(UserManagementScene.scene());

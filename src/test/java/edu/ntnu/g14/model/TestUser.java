@@ -1,16 +1,9 @@
 package edu.ntnu.g14.model;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import edu.ntnu.g14.model.Account;
-import edu.ntnu.g14.model.AccountCategory;
-import edu.ntnu.g14.model.Budget;
-import edu.ntnu.g14.model.BudgetCategory;
-import edu.ntnu.g14.model.GenderCategory;
-import edu.ntnu.g14.model.Invoice;
-import edu.ntnu.g14.model.Login;
-import edu.ntnu.g14.model.Transaction;
-import edu.ntnu.g14.model.User;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -18,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class TestUser {
+
   User testUser;
   Account testAccount;
   Invoice testInvoice;
@@ -56,6 +50,7 @@ public class TestUser {
   public void testGetFirstName() {
     assertEquals("knut", testUser.getFirstName());
   }
+
   @Test
   public void testGetLastName() {
     assertEquals("knut", testUser.getLastName());

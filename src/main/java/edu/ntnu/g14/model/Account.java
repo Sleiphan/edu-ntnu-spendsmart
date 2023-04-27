@@ -8,16 +8,15 @@ import java.math.RoundingMode;
  */
 public class Account {
 
+  private static final String CSV_FIELD_DELIMITER = ";";
+  // Unique reference of account in the bank system, as String
+  private final String accountNumber;
   // Type of account, as AccountCategory
   private AccountCategory accountType;
   // Funds in the account, as BigDecimal
   private BigDecimal amount;
-  // Unique reference of account in the bank system, as String
-  private final String accountNumber;
   // Name of the account assigned by a user, as String
   private String accountName;
-
-  private static final String CSV_FIELD_DELIMITER = ";";
 
   /**
    * This constructor facilitates the creation of instances of this class
@@ -59,6 +58,29 @@ public class Account {
   }
 
   /**
+   * This method parses an account CSV string, and instantiates an account
+   *
+   * @param csvString Account CSV String, as String
+   * @return Account that equals the fields of CSV String, as Account
+   */
+  public static Account fromCSVString(String csvString) {
+    String[] fields = csvString.split(CSV_FIELD_DELIMITER);
+    AccountCategory accountType = AccountCategory.valueOf(fields[0]);
+    BigDecimal amount = new BigDecimal(fields[1]);
+    String accountNumber = fields[2];
+    String accountName = fields[3];
+    String finalAccountName =
+        accountName.endsWith(",") ? accountName.substring(0, fields[3].length() - 1)
+            : accountName;
+
+    return new AccountBuilder().amount(amount)
+        .accountCategory(accountType)
+        .accountNumber(accountNumber)
+        .accountName(finalAccountName)
+        .build();
+  }
+
+  /**
    * This method removes an amount from this account
    *
    * @param subtrahend Subtrahend, as BigDecimal
@@ -88,18 +110,6 @@ public class Account {
    */
   public AccountCategory getAccountType() {
     return accountType;
-  }
-
-  /**
-   * This method changes the name of an account. The new name must be unique to a users accounts
-   *
-   * @param newName
-   */
-  public void setAccountName(String newName) {
-    if (newName.isBlank()) {
-      throw new IllegalArgumentException("Account name cannot be left blank");
-    }
-    this.accountName = newName;
   }
 
   public void setAccountType(AccountCategory accountType) {
@@ -133,6 +143,18 @@ public class Account {
     return accountName;
   }
 
+  /**
+   * This method changes the name of an account. The new name must be unique to a users accounts
+   *
+   * @param newName
+   */
+  public void setAccountName(String newName) {
+    if (newName.isBlank()) {
+      throw new IllegalArgumentException("Account name cannot be left blank");
+    }
+    this.accountName = newName;
+  }
+
   public boolean equals(Object o) {
     if (!(o instanceof Account)) {
       return false;
@@ -157,29 +179,6 @@ public class Account {
         accountName;
 
     return sb;
-  }
-
-  /**
-   * This method parses an account CSV string, and instantiates an account
-   *
-   * @param csvString Account CSV String, as String
-   * @return Account that equals the fields of CSV String, as Account
-   */
-  public static Account fromCSVString(String csvString) {
-    String[] fields = csvString.split(CSV_FIELD_DELIMITER);
-    AccountCategory accountType = AccountCategory.valueOf(fields[0]);
-    BigDecimal amount = new BigDecimal(fields[1]);
-    String accountNumber = fields[2];
-    String accountName = fields[3];
-    String finalAccountName =
-        accountName.endsWith(",") ? accountName.substring(0, fields[3].length() - 1)
-            : accountName;
-
-    return new AccountBuilder().amount(amount)
-        .accountCategory(accountType)
-        .accountNumber(accountNumber)
-        .accountName(finalAccountName)
-        .build();
   }
 
   /**

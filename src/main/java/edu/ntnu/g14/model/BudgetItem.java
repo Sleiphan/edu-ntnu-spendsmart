@@ -1,7 +1,6 @@
 package edu.ntnu.g14.model;
 
 import java.math.BigDecimal;
-import org.apache.commons.validator.routines.BigDecimalValidator;
 
 /**
  * This class represents the individual entries of a complete budget. Every Budget consists of
@@ -60,18 +59,6 @@ public class BudgetItem {
   }
 
   /**
-   * Returns a string representation of the BudgetItem object in CSV format.
-   *
-   * @return a string in CSV format with financialValue, description, and category separated by
-   * CSV_DELIMITER
-   */
-  public String toCSV() {
-    return financialValue.toPlainString() + CSV_DELIMITER +
-        "\"" + description + "\"" + CSV_DELIMITER +
-        category;
-  }
-
-  /**
    * Creates a BudgetItem object from a CSV string representation.
    *
    * @param data a string in CSV format with financialValue, description, and category separated by
@@ -87,6 +74,18 @@ public class BudgetItem {
     BudgetCategory category = BudgetCategory.valueOf(fields[2]);
 
     return new BudgetItem(financialValue, description, category);
+  }
+
+  /**
+   * Returns a string representation of the BudgetItem object in CSV format.
+   *
+   * @return a string in CSV format with financialValue, description, and category separated by
+   * CSV_DELIMITER
+   */
+  public String toCSV() {
+    return financialValue.toPlainString() + CSV_DELIMITER +
+        "\"" + description + "\"" + CSV_DELIMITER +
+        category;
   }
 
   /**
@@ -148,16 +147,6 @@ public class BudgetItem {
   }
 
   /**
-   * Sets the category of this budget item.
-   *
-   * @param newCategory The new category of this budget item.
-   */
-  public void setCategory(BudgetCategory newCategory) {
-    category = newCategory;
-    updateBudgetCalculations();
-  }
-
-  /**
    * Returns the description of this budget item.
    *
    * @return the description of this budget item.
@@ -173,5 +162,15 @@ public class BudgetItem {
    */
   public BudgetCategory getCategory() {
     return category;
+  }
+
+  /**
+   * Sets the category of this budget item.
+   *
+   * @param newCategory The new category of this budget item.
+   */
+  public void setCategory(BudgetCategory newCategory) {
+    category = newCategory;
+    updateBudgetCalculations();
   }
 }

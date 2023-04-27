@@ -1,11 +1,11 @@
 package edu.ntnu.g14.frontend;
 
 import edu.ntnu.g14.BankApplication;
+import edu.ntnu.g14.dao.BudgetDAO;
 import edu.ntnu.g14.model.Budget;
 import edu.ntnu.g14.model.BudgetCategory;
 import edu.ntnu.g14.model.BudgetItem;
 import edu.ntnu.g14.model.User;
-import edu.ntnu.g14.dao.BudgetDAO;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -47,24 +47,18 @@ import javafx.util.Duration;
 public class BudgetingScene {
 
   static Stage stage = BankApplication.getStage();
-  private static User loggedInUser = BankApplication.loggedInUser;
   static BudgetDAO budgetDAO;
   static TableView<ObservableList<Object>> revenues;
   static TableView<ObservableList<Object>> expenditures;
-
   static ContextMenu contextMenu;
-
   static ContextMenu revenuesContextMenu;
-
   static ContextMenu expendituresContextMenu;
-
   static Button confirmEditButton;
-
   static Text savings;
+  private static User loggedInUser = BankApplication.loggedInUser;
   private static boolean skipListener = false;
 
   private static Tooltip tooltip;
-
 
 
   /**
@@ -74,10 +68,9 @@ public class BudgetingScene {
    * @throws IOException if there is an error accessing the budget file
    */
   static public Scene scene() throws IOException {
-    
+
     budgetDAO = getBudgetDAO();
 
-    contextMenu = createContextMenu(null); // Pass null initially
     revenues = createRevenuesTable();
     expenditures = createExpendituresTable();
     revenuesContextMenu = createContextMenu(revenues);
@@ -114,7 +107,7 @@ public class BudgetingScene {
     Scene scene = createScene(root, event -> {
       if (!revenues.contains(event.getX(), event.getY()) && !expenditures.contains(event.getX(),
           event.getY())) {
-          saveModifiedData();
+        saveModifiedData();
       }
     });
     scene.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
@@ -122,7 +115,7 @@ public class BudgetingScene {
           event.getY())) {
         saveModifiedData();
         revenues.getSelectionModel().clearSelection();
-        expenditures.getSelectionModel().clearSelection();
+        //expenditures.getSelectionModel().clearSelection(); did not work for some reason:(
       }
     });
 
@@ -293,7 +286,8 @@ public class BudgetingScene {
                 return;
               }
 
-              if (!oldValue.equals(newValue) && validateAndSetNewChoice(oldValue, newValue, tableView)) {
+              if (!oldValue.equals(newValue) && validateAndSetNewChoice(oldValue, newValue,
+                  tableView)) {
                 int index = getIndex();
                 tableView.getItems().get(index).set(0, newValue);
                 confirmEditButton.setVisible(true);
@@ -303,7 +297,6 @@ public class BudgetingScene {
                 skipListener = false;
               }
             });
-
 
             setGraphic(choiceBox);
           } else {
@@ -381,7 +374,8 @@ public class BudgetingScene {
     // If an available category is found, add a new row with that category
     if (availableCategory != null) {
       double defaultAmount = 0.0;
-      ObservableList<Object> newRow = FXCollections.observableArrayList(availableCategory, defaultAmount);
+      ObservableList<Object> newRow = FXCollections.observableArrayList(availableCategory,
+          defaultAmount);
       tableView.getItems().add(newRow);
     }
   }
@@ -420,7 +414,7 @@ public class BudgetingScene {
   public static void saveModifiedData() {
     try {
       Budget budget = loggedInUser.getBudget();
-      if (budget!=null) {
+      if (budget != null) {
         budget.clearEntries();
       }
       for (ObservableList<Object> row : revenues.getItems()) {
@@ -482,7 +476,9 @@ public class BudgetingScene {
   public static void setLoggedInUser(User user) {
     loggedInUser = user;
   }
-  private static boolean validateAndSetNewChoice(String oldValue, String newValue, TableView<ObservableList<Object>> tableView) {
+
+  private static boolean validateAndSetNewChoice(String oldValue, String newValue,
+      TableView<ObservableList<Object>> tableView) {
     boolean alreadyExists = false;
     for (ObservableList<Object> row : tableView.getItems()) {
       if (row.get(0).toString().equals(newValue)) {
@@ -502,7 +498,6 @@ public class BudgetingScene {
 
     return !alreadyExists;
   }
-
 
 
   /**

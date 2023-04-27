@@ -123,12 +123,15 @@ public class AccountDAO {
   public Account getAccount(String userID, String accountNumber) throws IOException {
     Account[] accounts = getAllAccountsForUser(userID);
 
-    if (accounts == null)
+    if (accounts == null) {
       return null;
+    }
 
-    for (Account account : accounts)
-      if (account.getAccountNumber().equals(accountNumber))
+    for (Account account : accounts) {
+      if (account.getAccountNumber().equals(accountNumber)) {
         return account;
+      }
+    }
 
     return null;
   }

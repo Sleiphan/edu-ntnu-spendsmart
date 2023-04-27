@@ -1,7 +1,5 @@
 package edu.ntnu.g14.model;
 
-import edu.ntnu.g14.model.BudgetCategory;
-import edu.ntnu.g14.model.BudgetItem;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 

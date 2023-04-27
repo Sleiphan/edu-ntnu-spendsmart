@@ -16,13 +16,19 @@ import java.util.regex.Pattern;
  */
 public class Transaction {
 
+  public static final String regexAccountNumber = "[0-9]{4}+\\.[0-9]{2}+\\.[0-9]{5}";
+  /**
+   * This method is used to convert a transaction object to a string that can be saved to a CSV
+   * file.
+   */
+  public static final String CSV_FIELD_DELIMITER = ";";
   private final String fromAccountNumber;
   private final String toAccountNumber;
   private final BigDecimal amount;
   private final String description;
   private final LocalDate dateOfTransaction;
   private final BudgetCategory category;
-  public static final String regexAccountNumber = "[0-9]{4}+\\.[0-9]{2}+\\.[0-9]{5}";
+
 
   /**
    * This constructor creates a transaction object with the given parameters.
@@ -62,7 +68,6 @@ public class Transaction {
     this.dateOfTransaction = dateOfTransaction;
   }
 
-
   public Transaction(TransactionBuilder transactionBuilder) {
     this.fromAccountNumber = transactionBuilder.fromAccountNumber;
     this.toAccountNumber = transactionBuilder.toAccountNumber;
@@ -70,6 +75,25 @@ public class Transaction {
     this.description = transactionBuilder.description;
     this.dateOfTransaction = transactionBuilder.dateOfTransaction;
     this.category = transactionBuilder.category;
+  }
+
+  /**
+   * This method is used to convert a string from a CSV file to a transaction object.
+   *
+   * @param csvString The string that is being converted to a transaction object
+   * @return The transaction object that is created from the string
+   */
+  public static Transaction fromCSVString(String csvString) {
+    String[] fields = csvString.split(CSV_FIELD_DELIMITER);
+    String fromAccountNumber = fields[3];
+    String toAccountNumber = fields[2];
+    BigDecimal amount = new BigDecimal(fields[1]);
+    String description = fields[4];
+    LocalDate dateOfTransaction = LocalDate.parse(fields[0], ApplicationObjects.dateFormatter);
+    BudgetCategory budgetCategory = BudgetCategory.valueOf(fields[5]);
+
+    return new Transaction(fromAccountNumber, toAccountNumber, amount, description,
+        dateOfTransaction, budgetCategory);
   }
 
   /**
@@ -165,12 +189,6 @@ public class Transaction {
     return dateOfTransaction.equals(t.dateOfTransaction);
   }
 
-  /**
-   * This method is used to convert a transaction object to a string that can be saved to a CSV
-   * file.
-   */
-  public static final String CSV_FIELD_DELIMITER = ";";
-
   public String toCSVString() {
     return dateOfTransaction.format(ApplicationObjects.dateFormatter) + CSV_FIELD_DELIMITER +
         amount + CSV_FIELD_DELIMITER +
@@ -178,25 +196,6 @@ public class Transaction {
         fromAccountNumber + CSV_FIELD_DELIMITER +
         description + CSV_FIELD_DELIMITER
         + category;
-  }
-
-  /**
-   * This method is used to convert a string from a CSV file to a transaction object.
-   *
-   * @param csvString The string that is being converted to a transaction object
-   * @return The transaction object that is created from the string
-   */
-  public static Transaction fromCSVString(String csvString) {
-    String[] fields = csvString.split(CSV_FIELD_DELIMITER);
-    String fromAccountNumber = fields[3];
-    String toAccountNumber = fields[2];
-    BigDecimal amount = new BigDecimal(fields[1]);
-    String description = fields[4];
-    LocalDate dateOfTransaction = LocalDate.parse(fields[0], ApplicationObjects.dateFormatter);
-    BudgetCategory budgetCategory = BudgetCategory.valueOf(fields[5]);
-
-    return new Transaction(fromAccountNumber, toAccountNumber, amount, description,
-        dateOfTransaction, budgetCategory);
   }
 
   public static class TransactionBuilder {
