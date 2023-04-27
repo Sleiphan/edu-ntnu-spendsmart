@@ -28,5 +28,7 @@ Verify that Java is installed with version 17+.
 
 For detailed usage instructions, refer to the 
 [User Manual in the project's GitLab.](https://gitlab.stud.idi.ntnu.no/idatt1002_2023_group14/idatt1002_2023_group14/-/wikis/Home/System/User-manual)
+
 ## Known Issues ⛔️
 
+Since the program uses the BigDecimal library, the program is quite relient on the set language of the host computer. Some test will fail if the host computer has a diffrent default language set than english. This should not affect the program itself, only the tests under TestUser.
