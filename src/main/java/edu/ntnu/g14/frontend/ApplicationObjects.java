@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -592,8 +593,11 @@ public class ApplicationObjects {
   }
 
   private static String decimalFormat(BigDecimal amount) {
-    DecimalFormat df = new DecimalFormat();
+    DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+    formatSymbols.setDecimalSeparator('.');
 
+    DecimalFormat df = new DecimalFormat();
+    df.setDecimalFormatSymbols(formatSymbols);
     df.setMaximumFractionDigits(2);
 
     df.setMinimumFractionDigits(2);
