@@ -92,7 +92,7 @@ public class GeneralOverviewScene {
 
     TableView<ObservableList<Object>> transactionsTables = ApplicationObjects.newTableView(
         columnTitlesTransactionsTable, 40, 230, 658, 300);
-    transactionsTables.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    transactionsTables.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
 
     intervalToggle.setOnMouseClicked(actionEvent -> {
       if (!expenditurePieChart.getTitle().equals(yearlyExpensesPieChartTitle)) {
