@@ -17,6 +17,7 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ContextMenu;
@@ -56,6 +57,8 @@ public class BudgetingScene {
   static Button confirmEditButton;
 
   static Text savings;
+  private static boolean skipListener = false;
+
 
 
   /**
@@ -105,7 +108,7 @@ public class BudgetingScene {
     Scene scene = createScene(root, event -> {
       if (!revenues.contains(event.getX(), event.getY()) && !expenditures.contains(event.getX(),
           event.getY())) {
-        saveModifiedData();
+          saveModifiedData();
       }
     });
     scene.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
@@ -182,14 +185,16 @@ public class BudgetingScene {
   public static ObservableList<ObservableList<Object>> initializeRevenuesData() throws IOException {
     ObservableList<ObservableList<Object>> revenuesData = FXCollections.observableArrayList();
     Budget budget = budgetDAO.getBudget(loggedInUser.getLoginInfo().getUserId());
+    if (budget == null) {
+      budget = new Budget();
+      loggedInUser.setBudget(budget);
+    }
     // Fetch revenues from budget and add them to revenuesData
-    if (budget != null) {
-      for (BudgetItem entry : budget.getEntries()) {
-        // need to update budgetitem to contain getRevenues category
-        if (entry.getCategory().getType().equals("r")) {
-          revenuesData.add(FXCollections.observableArrayList(entry.getCategory().
-              toString().toLowerCase().replaceAll("_", " "), entry.getFinancialValue()));
-        }
+    for (BudgetItem entry : budget.getEntries()) {
+      // need to update budgetitem to contain getRevenues category
+      if (entry.getCategory().getType().equals("r")) {
+        revenuesData.add(FXCollections.observableArrayList(entry.getCategory().
+            toString().toLowerCase().replaceAll("_", " "), entry.getFinancialValue()));
       }
     }
 
@@ -204,13 +209,15 @@ public class BudgetingScene {
   public static ObservableList<ObservableList<Object>> initializeExpenditureData() {
     ObservableList<ObservableList<Object>> expenditureData = FXCollections.observableArrayList();
     Budget budget = loggedInUser.getBudget();
+    if (budget == null) {
+      budget = new Budget();
+      loggedInUser.setBudget(budget);
+    }
     // Fetch expenditures from budget and add them to expenditureData
-    if (budget != null) {
-      for (BudgetItem entry : budget.getEntries()) {
-        if (entry.getCategory().getType().equals("e")) {
-          expenditureData.add(FXCollections.observableArrayList(entry.getCategory().
-              toString().toLowerCase().replaceAll("_", " "), entry.getFinancialValue()));
-        }
+    for (BudgetItem entry : budget.getEntries()) {
+      if (entry.getCategory().getType().equals("e")) {
+        expenditureData.add(FXCollections.observableArrayList(entry.getCategory().
+            toString().toLowerCase().replaceAll("_", " "), entry.getFinancialValue()));
       }
     }
     return expenditureData;
@@ -276,10 +283,22 @@ public class BudgetingScene {
 
             choiceBox.setValue(item.toString());
             choiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-              int index = getIndex();
-              tableView.getItems().get(index).set(0, newValue);
-              confirmEditButton.setVisible(true);
+              if (skipListener) {
+                return;
+              }
+
+              if (!oldValue.equals(newValue) && validateAndSetNewChoice(oldValue, newValue, tableView)) {
+                int index = getIndex();
+                tableView.getItems().get(index).set(0, newValue);
+                confirmEditButton.setVisible(true);
+              } else {
+                skipListener = true;
+                choiceBox.setValue(oldValue);
+                skipListener = false;
+              }
             });
+
+
             setGraphic(choiceBox);
           } else {
             textField = new TextField(item.toString());
@@ -317,13 +336,31 @@ public class BudgetingScene {
         choiceList.add(category.toString().toLowerCase().replaceAll("_", " "));
       }
     }
-    ChoiceBox<String> choiceBox = new ChoiceBox<>(FXCollections.observableArrayList(choiceList));
-    choiceBox.setValue(choiceList.get(0));
-    double defaultAmount = 0.0;
 
-    ObservableList<Object> newRow = FXCollections.observableArrayList(choiceBox, defaultAmount);
-    tableView.getItems().add(newRow);
+    // Find the first available budget category that is not already in the table
+    String availableCategory = null;
+    for (String category : choiceList) {
+      boolean alreadyExists = false;
+      for (ObservableList<Object> row : tableView.getItems()) {
+        if (row.get(0).toString().equals(category)) {
+          alreadyExists = true;
+          break;
+        }
+      }
+      if (!alreadyExists) {
+        availableCategory = category;
+        break;
+      }
+    }
+
+    // If an available category is found, add a new row with that category
+    if (availableCategory != null) {
+      double defaultAmount = 0.0;
+      ObservableList<Object> newRow = FXCollections.observableArrayList(availableCategory, defaultAmount);
+      tableView.getItems().add(newRow);
+    }
   }
+
 
   /**
    * Deletes the selected budget item from the provided table view.
@@ -335,6 +372,7 @@ public class BudgetingScene {
     if (selectedItem != null) {
       tableView.getItems().remove(selectedItem);
       saveModifiedData(); // Save the changes to the file
+      updateSavings();
     }
   }
 
@@ -357,7 +395,9 @@ public class BudgetingScene {
   public static void saveModifiedData() {
     try {
       Budget budget = loggedInUser.getBudget();
-      budget.clearEntries();
+      if (budget!=null) {
+        budget.clearEntries();
+      }
       for (ObservableList<Object> row : revenues.getItems()) {
         String categoryString =
             row.get(0) instanceof ChoiceBox ? ((ChoiceBox<String>) row.get(0)).getValue()
@@ -366,6 +406,7 @@ public class BudgetingScene {
 
         BudgetCategory category = BudgetCategory.valueOf(
             categoryString.toUpperCase().replaceAll(" ", "_"));
+        assert budget != null;
         budget.addBudgetItem(new BudgetItem(category, amount));
       }
 
@@ -377,9 +418,11 @@ public class BudgetingScene {
 
         BudgetCategory category = BudgetCategory.valueOf(
             categoryString.toUpperCase().replaceAll(" ", "_"));
+        assert budget != null;
         budget.addBudgetItem(new BudgetItem(category, amount));
       }
 
+      assert budget != null;
       budgetDAO.setBudget(loggedInUser.getLoginInfo().getUserId(), budget);
 
     } catch (IOException e) {
@@ -414,6 +457,28 @@ public class BudgetingScene {
   public static void setLoggedInUser(User user) {
     loggedInUser = user;
   }
+  private static boolean validateAndSetNewChoice(String oldValue, String newValue, TableView<ObservableList<Object>> tableView) {
+    boolean alreadyExists = false;
+    for (ObservableList<Object> row : tableView.getItems()) {
+      if (row.get(0).toString().equals(newValue)) {
+        alreadyExists = true;
+        break;
+      }
+    }
+
+    if (alreadyExists) {
+      // Show a warning message, e.g., using an Alert
+      Alert alert = new Alert(Alert.AlertType.WARNING);
+      alert.setTitle("Duplicate Category");
+      alert.setHeaderText("This category is already in the table.");
+      alert.setContentText("Please select a different category.");
+      alert.showAndWait();
+    }
+
+    return !alreadyExists;
+  }
+
+
 
   /**
    * Creates a new TableView for displaying revenues and configures its properties.
