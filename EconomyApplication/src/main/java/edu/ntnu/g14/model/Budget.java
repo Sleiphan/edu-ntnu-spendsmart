@@ -30,8 +30,20 @@ public class Budget {
     this.household = HouseholdCategory.LIVING_ALONE;
   }
 
+  /**
+   * Creates a new empty budget.
+   *
+   * @param householdSize the household category for this Budget
+   */
   public Budget(HouseholdCategory householdSize) {
     this.household = householdSize;
+  }
+
+  /**
+   * Null constructor
+   */
+  public Budget() {
+
   }
 
 
@@ -93,8 +105,11 @@ public class Budget {
       allEntries.append(b.toCSV()).append(CSV_DELIMITER);
     }
 
-    // Pop the last element, as it is a lone delimiter.
-    allEntries.deleteCharAt(allEntries.length() - 1);
+    // Check if allEntries is not empty before attempting to delete the last character
+    if (allEntries.length() > 0) {
+      // Pop the last element, as it is a lone delimiter.
+      allEntries.deleteCharAt(allEntries.length() - 1);
+    }
 
     return salary.toPlainString() + CSV_DELIMITER +
         savings.toPlainString() + CSV_DELIMITER +
@@ -103,6 +118,7 @@ public class Budget {
         household + CSV_DELIMITER +
         allEntries;
   }
+
 
   public static Budget fromCSV(String data) {
     final String[] fields = data.split(CSV_DELIMITER + "(?!\\s)");
