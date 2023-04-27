@@ -1,0 +1,76 @@
+.menu-bar {
+  -fx-background-color: white;
+  -fx-opacity: 0.5;
+  -fx-border-width: 2.0;
+}
+
+.menu-bar .label {
+  -fx-font-size: 14.0pt;
+  -fx-font-family: "Bookman Old Style";
+  -fx-text-fill: black;
+  -fx-font-weight: bold;
+  -fx-padding: 10.0px;
+}
+
+
+.combo-box {
+  -fx-border-width: 0.5px;
+  -fx-border-color: #ACACAC;
+  -fx-border-radius: 50px;
+  -fx-background-radius: 50px;
+  -fx-padding: 0px;
+  -fx-font-weight: 700;
+  -fx-font-family: 'Open Sans', 'Helvetica Neue', 'Arial', 'sans-serif';
+}
+
+.combo-box:hover {
+
+  -fx-text-fill: white;
+
+}
+
+.combo-box-base:hover {
+  -fx-border-color: green;
+}
+
+.combo-box-base:focused {
+  -fx-text-fill: blue;
+}
+
+
+.combo-box .list-view .list-ce:filled {
+  -fx-text-fill: black;
+  -fx-font-size: 12px;
+  -fx-font-weight: 700;
+
+}
+
+
+.combo-box .list-view {
+
+  -fx-border-width: 0.5px;
+  -fx-border-color: #ACACAC;
+  -fx-background-color: white;
+  -fx-padding: 0px;
+  -fx-font-weight: 700;
+  -fx-border-radius: 10px 10px 0px 0px;
+  -fx-background-radius: 10px 10px 0px 0px;
+}
+
+.combo-box, .combo-box .list-view .list-cell {
+  -fx-font-family: 'Arial';
+}
+
+Text {
+  -fx-font-family: 'Helvetica Neue';
+  -fx-font-weight: 700;
+}
+
+.accountComboBox {
+  -fx-alignment: left;
+}
+
+.table-cell {
+  -fx-font-size: 16px;
+  -fx-alignment: center;
+}
