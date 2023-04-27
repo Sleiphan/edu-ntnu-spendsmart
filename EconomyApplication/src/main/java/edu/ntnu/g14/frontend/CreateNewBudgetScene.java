@@ -22,6 +22,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -138,6 +139,11 @@ public class CreateNewBudgetScene {
     femaleRadioButton.setVisible(false);
 
     TextField AgeInput = ApplicationObjects.newTextField("Enter Age", 210, 100, 130, 30, 15);
+    AgeInput.addEventFilter(KeyEvent.KEY_TYPED, event -> {
+      if (!event.getCharacter().matches("\\d")) { // Check if the character is a digit
+        event.consume(); // If it's not a digit, consume the event to prevent it from being processed
+      }
+    });
 
     List<String> householdChoiceList = new ArrayList<>();
     for (HouseholdCategory category : HouseholdCategory.values()) {
@@ -276,6 +282,27 @@ public class CreateNewBudgetScene {
     revenue.setValue(BudgetCategory.SALARY.toString());
 
     TextField revenueInput = ApplicationObjects.newTextField("Enter Amount", 0, 0, 157, 30, 16);
+    // Add an event filter to the TextField to only accept numbers and a single decimal point
+    revenueInput.addEventFilter(KeyEvent.KEY_TYPED, KeyEvent -> {
+      String input = KeyEvent.getCharacter();
+      String currentText = revenueInput.getText();
+
+      if (!input.matches("[\\d.]") || (input.equals(".") && currentText.contains("."))) {
+        if (input.matches("[,]")) {
+          if (tooltip == null) {
+            tooltip = new Tooltip("Please use '.', to indicate decimal point");
+            createBudgetBtn.setTooltip(tooltip);
+          }
+          tooltip.show(createBudgetBtn.getScene().getWindow());
+
+          // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+          PauseTransition pause = new PauseTransition(Duration.seconds(5));
+          pause.setOnFinished(event -> tooltip.hide());
+          pause.play();
+        }
+        KeyEvent.consume(); // If it's not a valid character or already contains a decimal point, consume the event
+      }
+    });
     Button addRevenueItemBtn = ApplicationObjects.newButton("Add revenue to budget", 0, 0, 200, 25,
         16);
     addRevenueItemBtn.setOnAction(e -> {
@@ -293,10 +320,26 @@ public class CreateNewBudgetScene {
 
         return;
       }
+      String selectedValue = revenue.getValue();
+      if (selectedValue == null) {
+        if (tooltip == null) {
+          tooltip = new Tooltip("No more categories available to add");
+          createBudgetBtn.setTooltip(tooltip);
+        }
+        tooltip.show(createBudgetBtn.getScene().getWindow());
+
+        // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+        PauseTransition pause = new PauseTransition(Duration.seconds(5));
+        pause.setOnFinished(event -> tooltip.hide());
+        pause.play();
+
+        return;
+      }
+
       BudgetCategory selectedItem = BudgetCategory.valueOf(
-          revenue.getValue().toUpperCase().replaceAll(" ", "_"));
+          selectedValue.toUpperCase().replaceAll(" ", "_"));
       String inputText = revenueInput.getText();
-      addRevenueToBudget(selectedItem, inputText, budgetDAO);
+      addRevenueToBudget(selectedItem, inputText, budgetDAO, revenue);
     });
 
     VBox revenueBox = new VBox();
@@ -332,6 +375,27 @@ public class CreateNewBudgetScene {
         BudgetCategory.FOOD_AND_DRINK.toString().toLowerCase().replaceAll("_", " "));
 
     TextField expenditureInput = ApplicationObjects.newTextField("Enter Amount", 0, 0, 157, 30, 16);
+    // Add an event filter to the TextField to only accept numbers and a single decimal point
+    expenditureInput.addEventFilter(KeyEvent.KEY_TYPED, KeyEvent -> {
+      String input = KeyEvent.getCharacter();
+      String currentText = expenditureInput.getText();
+
+      if (!input.matches("[\\d.]") || (input.equals(".") && currentText.contains("."))) {
+        if (input.matches("[,]")) {
+          if (tooltip == null) {
+            tooltip = new Tooltip("Please use '.', to indicate decimal point");
+            createBudgetBtn.setTooltip(tooltip);
+          }
+          tooltip.show(createBudgetBtn.getScene().getWindow());
+
+          // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+          PauseTransition pause = new PauseTransition(Duration.seconds(5));
+          pause.setOnFinished(event -> tooltip.hide());
+          pause.play();
+        }
+        KeyEvent.consume(); // If it's not a valid character or already contains a decimal point, consume the event
+      }
+    });
     Button addExpenditureItemBtn = ApplicationObjects.newButton("Add expenditure to Budget", 0, 0,
         200, 25, 16);
     addExpenditureItemBtn.setOnAction(e -> {
@@ -349,10 +413,26 @@ public class CreateNewBudgetScene {
 
         return;
       }
+      String selectedValue = expenditure.getValue();
+      if (selectedValue == null) {
+        if (tooltip == null) {
+          tooltip = new Tooltip("No more categories available to add");
+          createBudgetBtn.setTooltip(tooltip);
+        }
+        tooltip.show(createBudgetBtn.getScene().getWindow());
+
+        // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+        PauseTransition pause = new PauseTransition(Duration.seconds(5));
+        pause.setOnFinished(event -> tooltip.hide());
+        pause.play();
+
+        return;
+      }
+
       BudgetCategory selectedItem = BudgetCategory.valueOf(
-          expenditure.getValue().toUpperCase().replaceAll(" ", "_"));
+          selectedValue.toUpperCase().replaceAll(" ", "_"));
       String inputText = expenditureInput.getText();
-      addExpenditureToBudget(selectedItem, inputText, budgetDAO);
+      addExpenditureToBudget(selectedItem, inputText, budgetDAO, expenditure);
     });
     VBox expenditureBox = new VBox();
     expenditureBox.setLayoutX(50);
@@ -372,7 +452,7 @@ public class CreateNewBudgetScene {
    * @param budgetDAO    BudgetDAO instance for saving the budget
    */
   private static void addRevenueToBudget(BudgetCategory selectedItem, String inputText,
-      BudgetDAO budgetDAO) {
+      BudgetDAO budgetDAO, ChoiceBox<String> expenditureChoiceBox) {
     BigDecimal amount = new BigDecimal(inputText);
 
     BudgetItem budgetItem = new BudgetItem(selectedItem, amount);
@@ -396,6 +476,13 @@ public class CreateNewBudgetScene {
       e.printStackTrace();
     }
     BudgetingScene.refreshData();
+    // Remove the selected category from the choice box
+    expenditureChoiceBox.getItems().remove(expenditureChoiceBox.getValue());
+
+    // Set the first available category as the new value (if any)
+    if (!expenditureChoiceBox.getItems().isEmpty()) {
+      expenditureChoiceBox.setValue(expenditureChoiceBox.getItems().get(0));
+    }
   }
 
   /**
@@ -406,8 +493,7 @@ public class CreateNewBudgetScene {
    * @param inputText    String representing the amount of the expenditure item
    * @param budgetDAO    BudgetDAO instance for saving the budget
    */
-  private static void addExpenditureToBudget(BudgetCategory selectedItem, String inputText,
-      BudgetDAO budgetDAO) {
+  private static void addExpenditureToBudget(BudgetCategory selectedItem, String inputText, BudgetDAO budgetDAO, ChoiceBox<String> expenditureChoiceBox) {
     BigDecimal amount = new BigDecimal(inputText);
 
     BudgetItem budgetItem = new BudgetItem(selectedItem, amount);
@@ -431,7 +517,16 @@ public class CreateNewBudgetScene {
       e.printStackTrace();
     }
     BudgetingScene.refreshData();
+
+    // Remove the selected category from the choice box
+    expenditureChoiceBox.getItems().remove(expenditureChoiceBox.getValue());
+
+    // Set the first available category as the new value (if any)
+    if (!expenditureChoiceBox.getItems().isEmpty()) {
+      expenditureChoiceBox.setValue(expenditureChoiceBox.getItems().get(0));
+    }
   }
+
 
   /**
    * Processes the input values from the budget type selection and creates a new budget object based
