@@ -1,5 +1,4 @@
 .idea/
 .vscode/
-EconomyApplication/EconomyApplication.iml
-EconomyApplication/testfiles
+EconomyApplication.iml
 target/
