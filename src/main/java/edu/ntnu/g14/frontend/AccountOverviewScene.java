@@ -1,19 +1,12 @@
 package edu.ntnu.g14.frontend;
 
-import edu.ntnu.g14.model.Account;
 import edu.ntnu.g14.BankApplication;
+import edu.ntnu.g14.model.Account;
 import edu.ntnu.g14.model.FileManagement;
 import edu.ntnu.g14.model.Transaction;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -22,6 +15,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class AccountOverviewScene {
 
@@ -81,7 +81,7 @@ public class AccountOverviewScene {
         688, 300,
         BankApplication.loggedInUser.getAccountsAsList().stream().map(Account::getAccountNumber)
             .collect(Collectors.toList()));
-    lastTransactionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+    lastTransactionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     if (accountComboBox.getValue() != null) {
       setCurrentAccount(accountComboBox.getValue());
     }
