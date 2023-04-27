@@ -1,10 +1,14 @@
 package edu.ntnu.g14.dao;
 
-import edu.ntnu.g14.Login;
-import edu.ntnu.g14.User;
+import edu.ntnu.g14.model.*;
 import org.junit.jupiter.api.Test;
 
 public class UserDAOTest {
+
+    private String testFilePath = "userTest.txt";
+
+    private UserDAO dao;
+
 
     @Test
     public void parseLogin() {
@@ -28,7 +32,8 @@ public class UserDAOTest {
         String name = "Username";
         String pass = "Password123";
         String id = "#grg4";
-        User u = new User(null, null, new Login(name, pass, id), email, lastName, firstName, null, null);
+        User u = new User(null, null, new Login(name, pass, id), email, lastName, firstName, null,
+                null);
 
         String text = UserDAO.parse(u);
         User copy = UserDAO.parseUser(text);
@@ -40,4 +45,5 @@ public class UserDAOTest {
         assert u.getLoginInfo().getPassword().equals(copy.getLoginInfo().getPassword());
         assert u.getLoginInfo().getUserId().equals(copy.getLoginInfo().getUserId());
     }
+
 }
