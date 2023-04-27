@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -27,12 +28,15 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.Duration;
 
 /**
  * The {@code BudgetingScene} class represents the budgeting scene in the Bank Application, allowing
@@ -58,6 +62,8 @@ public class BudgetingScene {
 
   static Text savings;
   private static boolean skipListener = false;
+
+  private static Tooltip tooltip;
 
 
 
@@ -313,6 +319,25 @@ public class BudgetingScene {
                 tableView.getItems().get(getIndex()).set(1, textField.getText());
                 confirmEditButton.setVisible(
                     true); // displays confirm button if you press outside off the box
+              }
+            });
+            textField.addEventFilter(KeyEvent.KEY_TYPED, KeyEvent -> {
+              String input = KeyEvent.getCharacter();
+              String currentText = textField.getText();
+
+              if (!input.matches("[\\d.]") || (input.equals(".") && currentText.contains("."))) {
+                if (input.matches("[,]")) {
+                  if (tooltip == null) {
+                    tooltip = new Tooltip("Please use '.', to indicate decimal point");
+                  }
+                  tooltip.show(getScene().getWindow());
+
+                  // Set the duration after which the tooltip will be hidden (e.g., 5 seconds)
+                  PauseTransition pause = new PauseTransition(Duration.seconds(5));
+                  pause.setOnFinished(event -> tooltip.hide());
+                  pause.play();
+                }
+                KeyEvent.consume(); // If it's not a valid character or already contains a decimal point, consume the event
               }
             });
             setGraphic(textField);
