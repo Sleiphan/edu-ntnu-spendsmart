@@ -1,4 +1,4 @@
-package edu.ntnu.g14;
+package edu.ntnu.g14.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
