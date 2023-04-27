@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: edu.ntnu.g14.dao.IndexedDataFileTest
--------------------------------------------------------------------------------
-Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.026 s - in edu.ntnu.g14.dao.IndexedDataFileTest

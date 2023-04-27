@@ -1,4 +1,0 @@
---patch-module
-EconomyApplication=_
---add-reads
-EconomyApplication=ALL-UNNAMED

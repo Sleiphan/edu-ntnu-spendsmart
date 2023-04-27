@@ -5,9 +5,6 @@ module EconomyApplication {
     requires commons.validator;
     requires org.json;
     requires java.mail;
-
     exports edu.ntnu.g14;
-
     opens edu.ntnu.g14;
-    exports edu.ntnu.g14.frontend;
 }
