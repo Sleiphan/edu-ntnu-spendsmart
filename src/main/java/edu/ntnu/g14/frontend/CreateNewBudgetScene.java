@@ -143,6 +143,17 @@ public class CreateNewBudgetScene {
       if (!event.getCharacter().matches("\\d")) { // Check if the character is a digit
         event.consume(); // If it's not a digit, consume the event to prevent it from being processed
       }
+
+      if (!event.isConsumed()) {
+        String data = AgeInput.getText() + event.getCharacter();
+        if (data.isEmpty())
+          data = "0";
+        int currentValue = Integer.parseInt(data);
+        if (currentValue > Byte.MAX_VALUE) {
+          AgeInput.setText("" + Byte.MAX_VALUE);
+          event.consume();
+        }
+      }
     });
 
     List<String> householdChoiceList = new ArrayList<>();
