@@ -13,6 +13,8 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import edu.ntnu.g14.model.Transaction;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -428,9 +430,9 @@ public class ApplicationObjects {
     return tableView;
   }
 
-  public static TableView<ObservableList<Object>> newTableView1(String[] columnTitles, double x,
+  public static TableView<ObservableList<Object>> newTableView2(String[] columnTitles, double x,
       double y,
-      double width, double height, List<String> accountNumbers) {
+      double width, double height, List<Transaction> transactions) {
     TableView<ObservableList<Object>> tableView = new TableView<>();
     tableView.setLayoutX(x);
     tableView.setLayoutY(y);
@@ -456,18 +458,28 @@ public class ApplicationObjects {
               setStyle("");
               return;
             }
+
+
             ObservableList<Object> rowData = getTableView().getItems().get(getIndex());
-            Object prevCellData = rowData.get(0); // get data from previous cell
-            if (accountNumbers.contains(prevCellData)) {
+            Object prevCellData = rowData.get(0); // get data from first cell
+
+            if (transactions.stream().map(Transaction::getToAccountNumber).
+                    anyMatch(toAccNumber -> toAccNumber.equals(prevCellData))) {
               setStyle("-fx-font-family: \"Helvetica Neue\";\n" +
                   "    -fx-font-size: 16px;\n" +
                   "    -fx-font-weight: bold;\n" +
                   "    -fx-text-fill: #3477eb;");
-            } else {
+            } else if (transactions.stream().map(Transaction::getFromAccountNumber)
+                    .anyMatch(fromAccnumber -> fromAccnumber.equals(prevCellData))) {
               setStyle("-fx-font-family: \"Helvetica Neue\";\n" +
                   "    -fx-font-size: 16px;\n" +
                   "    -fx-font-weight: bold;\n" +
                   "    -fx-text-fill: #eb344c;");
+            } else {
+              setStyle("-fx-font-family: \"Helvetica Neue\";\n" +
+                      "    -fx-font-size: 16px;\n" +
+                      "    -fx-font-weight: bold;\n" +
+                      "    -fx-text-fill: #211f1f;");
             }
             setText(item.toString());
           }
@@ -482,6 +494,59 @@ public class ApplicationObjects {
     return tableView;
   }
 
+  public static TableView<ObservableList<Object>> newTableView1(String[] columnTitles, double x,
+                                                                double y,
+                                                                double width, double height, List<String> accountNumbers) {
+    TableView<ObservableList<Object>> tableView = new TableView<>();
+    tableView.setLayoutX(x);
+    tableView.setLayoutY(y);
+    tableView.setPrefWidth(width);
+    tableView.setPrefHeight(height);
+
+    int numberOfColumns = columnTitles.length;
+
+    // create columns
+    for (String title : columnTitles) {
+      TableColumn<ObservableList<Object>, Object> column = new TableColumn<>(title);
+
+      // set cell factory for second or third column (index 1)
+      if (tableView.getColumns().size() == 1 && numberOfColumns < 3
+              || tableView.getColumns().size() == 2) {
+        column.setCellFactory(param -> new TableCell<>() {
+          @Override
+          protected void updateItem(Object item, boolean empty) {
+            super.updateItem(item, empty);
+
+            if (item == null || empty) {
+              setText("");
+              setStyle("");
+              return;
+            }
+            ObservableList<Object> rowData = getTableView().getItems().get(getIndex());
+            Object prevCellData = rowData.get(0); // get data from previous cell
+            if (accountNumbers.contains(prevCellData)) {
+              setStyle("-fx-font-family: \"Helvetica Neue\";\n" +
+                      "    -fx-font-size: 16px;\n" +
+                      "    -fx-font-weight: bold;\n" +
+                      "    -fx-text-fill: #3477eb;");
+            } else {
+              setStyle("-fx-font-family: \"Helvetica Neue\";\n" +
+                      "    -fx-font-size: 16px;\n" +
+                      "    -fx-font-weight: bold;\n" +
+                      "    -fx-text-fill: #eb344c;");
+            }
+            setText(item.toString());
+          }
+        });
+      }
+
+      column.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(
+              param.getValue().get(tableView.getColumns().indexOf(column))));
+      tableView.getColumns().add(column);
+    }
+
+    return tableView;
+  }
   public static ListView<String> newListView(String[] elements, double x, double y, double width,
       double height) {
     ListView<String> listView = new ListView<>();

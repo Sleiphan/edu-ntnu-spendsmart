@@ -6,6 +6,8 @@ import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -41,11 +43,9 @@ public class GeneralOverviewScene {
     totalOfAllAccountsCombinedText = ApplicationObjects.newText(
         "Total of all Accounts Combined (excl. Pension)", 16, false, 900 / 2 - 319 / 2, 50);
     setBigSumText();
-
     totalIncomeText = ApplicationObjects.newText("Income: " + BankApplication.loggedInUser
         .incomeLast30Days(), 20, false, 0, 170);
     totalIncomeText.setX(203 - totalIncomeText.getLayoutBounds().getWidth() / 2);
-
     totalExpensesText = ApplicationObjects.newText("Expenses: " + BankApplication.loggedInUser
         .expensesLast30Days(), 20, false, 0, 170);
     totalExpensesText.setX(625 - totalExpensesText.getLayoutBounds().getWidth() / 2);
@@ -55,8 +55,8 @@ public class GeneralOverviewScene {
     setPiesDataLast30Days();
 
     PieChart expenditurePieChart = new PieChart(expenditurePieData);
-    expenditurePieChart.setVisible(
-        expenditurePieData.stream().anyMatch(pieData -> pieData.getPieValue() != 0));
+    Platform.runLater(() -> expenditurePieChart.setVisible(
+        expenditurePieData.stream().anyMatch(pieData -> pieData.getPieValue() != 0)));
     expenditurePieChart.setLabelsVisible(false);
     expenditurePieChart.setAnimated(false);
     expenditurePieChart.setTitle(monthlyExpensesPieChartTitle);
@@ -71,8 +71,8 @@ public class GeneralOverviewScene {
         "-fx-max-height: " + expenditureDataHeight + ";   ");
 
     PieChart incomePieChart = new PieChart(incomePieData);
-    incomePieChart.setVisible(
-        expenditurePieData.stream().anyMatch(pieData -> pieData.getPieValue() != 0));
+    Platform.runLater(() -> incomePieChart.setVisible(
+        incomePieData.stream().anyMatch(pieData -> pieData.getPieValue() != 0)));
     incomePieChart.setAnimated(false);
     incomePieChart.setLegendSide(Side.BOTTOM);
     incomePieChart.setTitle(monthlyIncomePieChartTitle);
