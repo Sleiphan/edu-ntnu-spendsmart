@@ -80,10 +80,9 @@ public class AccountOverviewScene {
     amountText.setLayoutX((double) 728 / 2 - amountText.getLayoutBounds().getWidth() / 2);
     accountNumberText.setLayoutX(
         (double) 728 / 2 - accountNumberText.getLayoutBounds().getWidth() / 2);
-    lastTransactionsTable = ApplicationObjects.newTableView1(columnTitlesTransactionsTable, 20, 230,
+    lastTransactionsTable = ApplicationObjects.newTableView2(columnTitlesTransactionsTable, 20, 230,
         688, 300,
-        BankApplication.loggedInUser.getAccountsAsList().stream().map(Account::getAccountNumber)
-            .collect(Collectors.toList()));
+        BankApplication.loggedInUser.getTransactionsAsList());
     lastTransactionsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     if (accountComboBox.getValue() != null) {
       setCurrentAccount(accountComboBox.getValue());
@@ -224,7 +223,7 @@ public class AccountOverviewScene {
             add(FXCollections.observableArrayList(transaction.getToAccountNumber(),
                 transaction.getDateOfTransaction().format(ApplicationObjects.dateFormatter),
                 ApplicationObjects.formatCurrency(transaction.getAmount())));
-      } else {
+      } else if (transaction.getToAccountNumber().equals(account.getAccountNumber())) {
         lastTransactionsData.add(
             FXCollections.observableArrayList(transaction.getFromAccountNumber(),
                 transaction.getDateOfTransaction().format(ApplicationObjects.dateFormatter),
@@ -240,11 +239,11 @@ public class AccountOverviewScene {
       lastTransactionsData.
           add(FXCollections.observableArrayList(transaction.getToAccountNumber(),
               transaction.getDateOfTransaction().format(ApplicationObjects.dateFormatter),
-              transaction.getAmount()));
+              ApplicationObjects.formatCurrency(transaction.getAmount())));
     } else {
       lastTransactionsData.add(FXCollections.observableArrayList(transaction.getFromAccountNumber(),
           transaction.getDateOfTransaction().format(ApplicationObjects.dateFormatter),
-          transaction.getAmount()));
+          ApplicationObjects.formatCurrency(transaction.getAmount())));
     }
   }
 

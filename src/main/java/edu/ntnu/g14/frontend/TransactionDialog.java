@@ -13,14 +13,7 @@ import java.time.LocalDate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javafx.event.ActionEvent;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DateCell;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -118,6 +111,14 @@ public class TransactionDialog extends Dialog<Transaction.TransactionBuilder> {
   }
 
   private boolean validateDialog() {
+
+    chooseAccountComboBox.setStyle(null);
+    accountNumberField.setStyle(null);
+    amountField.setStyle(null);
+    descriptionField.setStyle(null);
+    dateOfTransactionField.setStyle(null);
+    categoryField.setStyle(null);
+
     BigDecimal amountBigDecimal;
 
     try {
@@ -136,6 +137,15 @@ public class TransactionDialog extends Dialog<Transaction.TransactionBuilder> {
     if (!Pattern.matches(regexAccountNumber, accountNumberField.getText())) {
       accountNumberField.setStyle(accountNumberField.getStyle() + "-fx-border-color: red;" +
           "-fx-border-width: 0.3px;");
+    }
+    if (BankApplication.loggedInUser.checkIfAccountNumberIsOccupied(accountNumberField.getText())) {
+      accountNumberField.setStyle(accountNumberField.getStyle() + "-fx-border-color: red;" +
+              "-fx-border-width: 0.3px;");
+      Alert accountNumberOccupiedAlert = new Alert(Alert.AlertType.ERROR);
+      accountNumberOccupiedAlert.setHeaderText("This account is yours!");
+      accountNumberOccupiedAlert.setContentText(
+              "You cannot receive/send money with an account number that is yours");
+      accountNumberOccupiedAlert.show();
     }
 
     if (descriptionField.getText().isBlank()) {
