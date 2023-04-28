@@ -72,6 +72,12 @@ public class AccountDialog extends Dialog<Account.AccountBuilder> {
   }
 
   private boolean validateDialog() {
+
+    amountField.setStyle(null);
+    amountField.setStyle(null);
+    accountNumberField.setStyle(null);
+    accountNameField.setStyle(null);
+
     String regexAccountNumber = "[0-9]{4}+\\.[0-9]{2}+\\.[0-9]{5}";
     BigDecimal amountBigDecimal;
     try {
